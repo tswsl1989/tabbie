@@ -53,7 +53,8 @@ if ($action == "display")
 {
 
 	//Open the text file
-	$fp=fopen("print\outputs\ChfAdjudDebateList_$roundno.html","w");
+	$filename = "print/outputs/chief_adjudicator_debate_list_$roundno.html";
+	$fp = fopen($filename, "w");
 	
 	$text="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\"> \n<html> \n <head> ";
 	$text.="<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/> \n";
@@ -98,7 +99,7 @@ $query .= "WHERE T.adjud_id IS NULL AND active='Y' ORDER BY ranking DESC";
 	fputs($fp,$text);
 	fclose($fp);
 	echo "<h3>File created successfully!</h3> ";
-	echo "<h3><a href=\"print/Outputs/ChfAdjudDebateList_$roundno.html\">Debate List for Round $roundno</a></h3> ";
+	echo "<h3><a href=\"$filename\">Debate List for Round $roundno</a></h3> ";
 }
 }
 

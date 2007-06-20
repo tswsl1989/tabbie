@@ -53,7 +53,8 @@ if ($action == "display")
 	$warning="null";
 	
 	//Open the text file
-	$fp=fopen("print\outputs\AdjudSheets.txt","w");
+	$filename = "print/outputs/adjudicator_sheets.txt";
+	$fp = fopen($filename, "w");
 	
 	// Display header-line
 //	echo "Round;Motion;Venue;OG;OO;CG;CO;Chair;Panelist1;Panelist2;Panelist3;OGSpkr1;OGSpkr2;OOSpkr1;OOSpkr2;CGSpkr1;CGSpkr2;COSpkr1;COSpkr2<br/>";

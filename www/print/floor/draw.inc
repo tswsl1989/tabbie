@@ -56,7 +56,8 @@ if ($action == "display")
 	$warning="null";
 	
 	//Open the text file
-	$fp=fopen("print\outputs\Draw_$roundno.html","w");
+	$filename = "print/outputs/draw_$roundno.html";
+	$fp = fopen($filename, "w");
 	
 	$text="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\"> \n<html> \n <head> ";
 	$text.="<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/> \n <style type=\"text/css\"> \n";
@@ -125,7 +126,7 @@ if ($action == "display")
 	fputs($fp,$text);
 	fclose($fp);
 	echo "File created successfully! <br/>";
-	echo "<a href=\"print/Outputs/Draw_$roundno.html\">Floor Managers' Draw (Round $roundno)</a> ";
+	echo "<a href=\"$filename\">Floor Managers' Draw (Round $roundno)</a> ";
 }
 
 ?>

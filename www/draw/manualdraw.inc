@@ -537,7 +537,7 @@ if ($exist)
 
     if ($action=="display")
       {
-        echo "<h3><a href=\"draw/freeadjud.php?nextround=$nextround\" target=\"_new\">List of Free Adjudicators</a></h3>";
+        echo "<h3><a href=\"freeadjud.php?nextround=$nextround\" target=\"_new\">List of Free Adjudicators</a></h3>";
 	//Display the table of calculated draw
         $query = 'SELECT A1.debate_id AS debate_id, T1.team_code AS ogt, T2.team_code AS oot, T3.team_code AS cgt, T4.team_code AS cot, U1.univ_code AS ogtc, U2.univ_code AS ootc, U3.univ_code AS cgtc, U4.univ_code AS cotc, venue_name, venue_location, T1.team_id AS ogid, T2.team_id AS ooid, T3.team_id AS cgid, T4.team_id AS coid ';
         $query .= "FROM temp_draw_round_$nextround AS A1, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4,venue ";

@@ -25,16 +25,16 @@ $result=mysql_query($query);
 $numresults=mysql_num_rows($result);
 
 if ($round && ($round<$numresults))
-	$action="showround";
+    $action="showround";
 else
-	$action="display";
+    $action="display";
 
 switch($action)
 {
     case "display":
                         break;
     case "showround":
-    			break;
+                break;
     default:
                         $action="display";
 }

@@ -27,11 +27,11 @@ if (mysql_num_rows($result)!=0)
   {
     echo "<table><tr><th>Name</th><th>Ranking</th><th>Conflicts</th></tr>\n";
        while($row=mysql_fetch_assoc($result))    
-	 {
-	   echo "<tr><td>{$row['adjud_name']}</td>";
-	   echo "<td>{$row['ranking']}</td>\n";
-	   echo ($row['conflicts'])?"<td>{$row['conflicts']}</td>":"<td><b>None</b></td>";
-	 }
+     {
+       echo "<tr><td>{$row['adjud_name']}</td>";
+       echo "<td>{$row['ranking']}</td>\n";
+       echo ($row['conflicts'])?"<td>{$row['conflicts']}</td>":"<td><b>None</b></td>";
+     }
        echo "</table>";
   }
  else

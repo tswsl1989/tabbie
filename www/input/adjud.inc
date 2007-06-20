@@ -45,10 +45,10 @@ if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
         $query="SELECT * FROM university WHERE univ_code='$temp'";
         $result=mysql_query($query);
         if (mysql_num_rows($result)==0)
-	  {
+      {
             $msg[]="No such university as '$temp' exists. Please check.";
             $validate=0;
-	  }
+      }
       }
             
 
@@ -75,7 +75,7 @@ if ($action=="delete")
     
         //Check for Error
         if (mysql_affected_rows()==0)
-	  $msg[]="There were problems deleting : No such record.";
+      $msg[]="There were problems deleting : No such record.";
       }
     
     //Change Mode to Display
@@ -94,17 +94,17 @@ if ($actionhidden=="add")
         $result=mysql_query($query);
 
         if (!$result) //Error
-	  {
+      {
             $msg[]="There was some problem adding : ". mysql_error(); //Display Msg
             $action="add";
-	  }
+      }
 
         else
-	  {
+      {
             //If Okay Change Mode to Display
             $msg[]="Record Successfully Added";
             $action="display";
-	  }
+      }
       }
     else
       {
@@ -129,17 +129,17 @@ if ($actionhidden=="edit")
         
         //If not okay raise error else change mode to display
         if (!$result)
-	  {
+      {
             //Raise Error
             $msg[]="There were some problems editing : ".mysql_error();
             $action="edit";
-	  }
+      }
         else
-	  {
+      {
             //All okay
             $msg[]="Record edited successfully.";
             $action="display";
-	  }
+      }
       }
 
     else
@@ -161,19 +161,19 @@ if ($action=="edit")
         $query="SELECT * FROM adjudicator WHERE adjud_id='$adjud_id'";
         $result=mysql_query($query);
         if (mysql_num_rows($result)==0)
-	  {
+      {
             $msg[]="There were some problems editing : Record Not Found ";
             $action="display";
-	  }
+      }
         else
-	  {
+      {
             $row=mysql_fetch_assoc($result);
             $univ_id=$row['univ_id'];
             $adjud_name=$row['adjud_name'];
             $ranking=$row['ranking'];
             $active=$row['active'];
             $conflicts=$row['conflicts'];
-	  }
+      }
       }   
     
   }
@@ -217,35 +217,35 @@ if ($action=="display")
 
     if (mysql_num_rows($result)==0)
       {
-	//Print Empty Message    
-	echo "<h3>No Adjudicators Found.</h3>";
+    //Print Empty Message    
+    echo "<h3>No Adjudicators Found.</h3>";
     echo "<h3><a href=\"input.php?moduletype=adjud&amp;action=add\">Add New</a></h3>";
       }
     else
       {
                 
-	//Check whether to display Delete Button
-	$query="SHOW  TABLES  LIKE  '%_round_%'";
-	$showdeleteresult=mysql_query($query);
+    //Check whether to display Delete Button
+    $query="SHOW  TABLES  LIKE  '%_round_%'";
+    $showdeleteresult=mysql_query($query);
 
-	if (mysql_num_rows($showdeleteresult)!=0)
-	  $showdelete=0;
-	else
-	  $showdelete=1;
+    if (mysql_num_rows($showdeleteresult)!=0)
+      $showdelete=0;
+    else
+      $showdelete=1;
                 
-	//Print Table
-	?>
+    //Print Table
+    ?>
 
-	  <h3>Total No. of Adjudicators : <?echo mysql_num_rows($result)?> (<?echo mysql_num_rows($active_result)?>)</h3>
+      <h3>Total No. of Adjudicators : <?echo mysql_num_rows($result)?> (<?echo mysql_num_rows($active_result)?>)</h3>
 
-	     <?echo "<h3><a href=\"input.php?moduletype=adjud&amp;action=add\">Add New</a></h3>";?>
-	  <table>
-	     <tr><th>Name</th><th>University</th><th>Ranking</th><th>Active(Y/N)</th><th>Conflicts</th></tr>
-	     <? while($row=mysql_fetch_assoc($result)) { ?>
+         <?echo "<h3><a href=\"input.php?moduletype=adjud&amp;action=add\">Add New</a></h3>";?>
+      <table>
+         <tr><th>Name</th><th>University</th><th>Ranking</th><th>Active(Y/N)</th><th>Conflicts</th></tr>
+         <? while($row=mysql_fetch_assoc($result)) { ?>
 
-	  <tr <?if ($row['active']=='N') echo "style=\"color:red\"" ;?>>
-	    <td><?echo $row['adjud_name'];?></td>
-	<td><?echo $row['univ_code'];?></td>
+      <tr <?if ($row['active']=='N') echo "style=\"color:red\"" ;?>>
+        <td><?echo $row['adjud_name'];?></td>
+    <td><?echo $row['univ_code'];?></td>
    <td><?echo $row['ranking'];?></td>
     <td><?echo $row['active'];?></td>
    <td><?echo $row['conflicts'];?></td>
@@ -254,14 +254,14 @@ if ($action=="display")
       <?
 
        if ($showdelete)
-	 {
+     {
    ?>
    <td class="editdel"><a href="input.php?moduletype=adjud&amp;action=delete&amp;adjud_id=<?echo $row['adjud_id'];?>" onClick="return confirm('Are you sure?');">Delete</a></td>
 
    <?} //Do Not Remove  ?> 
-	  </tr>
-	      <?} //Do Not Remove  ?> 
-	</table>
+      </tr>
+          <?} //Do Not Remove  ?> 
+    </table>
 
 
   <?
@@ -282,41 +282,41 @@ if ($action=="display")
        <input type="text" id="adjud_name" name="adjud_name" value="<?echo $adjud_name;?>"/><br/><br/>
 
        <label for="univ_id">University</label>
-				 <select id="univ_id" name="univ_id">
-				 <?
-				 $query="SELECT univ_id,univ_code FROM university ORDER BY univ_code";
+                 <select id="univ_id" name="univ_id">
+                 <?
+                 $query="SELECT univ_id,univ_code FROM university ORDER BY univ_code";
      $result=mysql_query($query);
      while($row=mysql_fetch_assoc($result))
        {
                             
-	 if ($row['univ_id']==$univ_id)
-	   echo "<option selected value=\"{$row['univ_id']}\">{$row['univ_code']}</option>\n";
-	 else
-	   echo "<option value=\"{$row['univ_id']}\">{$row['univ_code']}</option>\n";
+     if ($row['univ_id']==$univ_id)
+       echo "<option selected value=\"{$row['univ_id']}\">{$row['univ_code']}</option>\n";
+     else
+       echo "<option value=\"{$row['univ_id']}\">{$row['univ_code']}</option>\n";
        }
                             
      ?>
        </select><br/><br/>
 
-	   <label for="conflicts">Conflicts (separate by comma)</label>
-	   <input type="text" id="conflicts" name="conflicts" value="<?echo $conflicts;?>"></input><br/><br/>
+       <label for="conflicts">Conflicts (separate by comma)</label>
+       <input type="text" id="conflicts" name="conflicts" value="<?echo $conflicts;?>"></input><br/><br/>
 
-	   <label for="ranking">Ranking</label>
-				    <input type="text" id="ranking" name="ranking" value="<?echo $ranking;?>"/><br/><br/>
+       <label for="ranking">Ranking</label>
+                    <input type="text" id="ranking" name="ranking" value="<?echo $ranking;?>"/><br/><br/>
 
-				    <label for="active">Active</label>
-				  <select id="active" name="active">
-				  <option value="Y" <?echo ($active=="Y")?"selected":""?>>Yes</option>
-				  <option value="N" <?echo ($active=="N")?"selected":""?>>No</option>
-				  </select> <br/><br/>
+                    <label for="active">Active</label>
+                  <select id="active" name="active">
+                  <option value="Y" <?echo ($active=="Y")?"selected":""?>>Yes</option>
+                  <option value="N" <?echo ($active=="N")?"selected":""?>>No</option>
+                  </select> <br/><br/>
 
-				  <input type="submit" value="<?echo ($action=="edit")?"Edit Adjudicator":"Add Adjudicator" ;?>"/>
-				  <input type="button" value="Cancel" onClick="location.replace('input.php?moduletype=adjud')"/>
-				  </form>
+                  <input type="submit" value="<?echo ($action=="edit")?"Edit Adjudicator":"Add Adjudicator" ;?>"/>
+                  <input type="button" value="Cancel" onClick="location.replace('input.php?moduletype=adjud')"/>
+                  </form>
             
-				  <?
+                  <?
             
-				  }
+                  }
 ?>
 
 </div>

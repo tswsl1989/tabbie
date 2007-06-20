@@ -25,10 +25,10 @@ $numresults=mysql_num_rows($result);
 switch($list)
 {
     case "adjsheet":
-    			$title.= " (Personalised Adjudication Sheets)";
+                $title.= " (Personalised Adjudication Sheets)";
                         break;
     case "main":
-    			break;
+                break;
     default:
                         $list="main";
 }

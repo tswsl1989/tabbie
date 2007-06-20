@@ -25,10 +25,10 @@ $numresults=mysql_num_rows($result);
 switch($list)
 {
     case "venue":
-    			$title.=" (Allocated Venues)";
-    			break;
+                $title.=" (Allocated Venues)";
+                break;
     case "main":
-    			break;
+                break;
     default:
                         $list="main";
 }

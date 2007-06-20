@@ -109,8 +109,8 @@ if (($action=="draw")&&($validate==1))//Check Action : Draw
     }
     
     else 
-    {	//Do Power Matching Draw for other rounds
-    	include("draw2.inc");
+    {    //Do Power Matching Draw for other rounds
+        include("draw2.inc");
     }
        
     //Store draw in temporary database
@@ -193,92 +193,92 @@ if (($validate==1))
         while($row=mysql_fetch_assoc($result))
         {
             echo "<tr>\n";
-               	$ogpoints=0;
-               	for ($i=1; $i<$nextround; $i++)
-		{	$pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['ogid']}' ";
-			$pointsresult=mysql_query($pointsquery);
-			$pointsrow=mysql_fetch_assoc($pointsresult);
-			if ($pointsrow)
-				$ogpoints = $ogpoints + 3;
-				
-			$pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['ogid']}' ";
-			$pointsresult=mysql_query($pointsquery);
-			$pointsrow=mysql_fetch_assoc($pointsresult);
-			if ($pointsrow)
-				$ogpoints = $ogpoints + 2;
-				
-			$pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['ogid']}' ";
-			$pointsresult=mysql_query($pointsquery);
-			$pointsrow=mysql_fetch_assoc($pointsresult);
-			if ($pointsrow)
-				$ogpoints = $ogpoints + 1;
-		}
-              	$oopoints=0;
-               	for ($i=1; $i<$nextround; $i++)
-		{	$pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['ooid']}' ";
-			$pointsresult=mysql_query($pointsquery);
-			$pointsrow=mysql_fetch_assoc($pointsresult);
-			if ($pointsrow)
-				$oopoints = $oopoints + 3;
-				
-			$pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['ooid']}' ";
-			$pointsresult=mysql_query($pointsquery);
-			$pointsrow=mysql_fetch_assoc($pointsresult);
-			if ($pointsrow)
-				$oopoints = $oopoints + 2;
-				
-			$pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['ooid']}' ";
-			$pointsresult=mysql_query($pointsquery);
-			$pointsrow=mysql_fetch_assoc($pointsresult);
-			if ($pointsrow)
-				$oopoints = $oopoints + 1;
-		}
+                   $ogpoints=0;
+                   for ($i=1; $i<$nextround; $i++)
+        {    $pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['ogid']}' ";
+            $pointsresult=mysql_query($pointsquery);
+            $pointsrow=mysql_fetch_assoc($pointsresult);
+            if ($pointsrow)
+                $ogpoints = $ogpoints + 3;
+                
+            $pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['ogid']}' ";
+            $pointsresult=mysql_query($pointsquery);
+            $pointsrow=mysql_fetch_assoc($pointsresult);
+            if ($pointsrow)
+                $ogpoints = $ogpoints + 2;
+                
+            $pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['ogid']}' ";
+            $pointsresult=mysql_query($pointsquery);
+            $pointsrow=mysql_fetch_assoc($pointsresult);
+            if ($pointsrow)
+                $ogpoints = $ogpoints + 1;
+        }
+                  $oopoints=0;
+                   for ($i=1; $i<$nextround; $i++)
+        {    $pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['ooid']}' ";
+            $pointsresult=mysql_query($pointsquery);
+            $pointsrow=mysql_fetch_assoc($pointsresult);
+            if ($pointsrow)
+                $oopoints = $oopoints + 3;
+                
+            $pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['ooid']}' ";
+            $pointsresult=mysql_query($pointsquery);
+            $pointsrow=mysql_fetch_assoc($pointsresult);
+            if ($pointsrow)
+                $oopoints = $oopoints + 2;
+                
+            $pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['ooid']}' ";
+            $pointsresult=mysql_query($pointsquery);
+            $pointsrow=mysql_fetch_assoc($pointsresult);
+            if ($pointsrow)
+                $oopoints = $oopoints + 1;
+        }
                 $cgpoints=0;
                 for ($i=1; $i<$nextround; $i++)
-		{	$pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['cgid']}' ";
-			$pointsresult=mysql_query($pointsquery);
-			$pointsrow=mysql_fetch_assoc($pointsresult);
-			if ($pointsrow)
-				$cgpoints = $cgpoints + 3;
-				
-			$pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['cgid']}' ";
-			$pointsresult=mysql_query($pointsquery);
-			$pointsrow=mysql_fetch_assoc($pointsresult);
-			if ($pointsrow)
-				$cgpoints = $cgpoints + 2;
-				
-			$pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['cgid']}' ";
-			$pointsresult=mysql_query($pointsquery);
-			$pointsrow=mysql_fetch_assoc($pointsresult);
-			if ($pointsrow)
-				$cgpoints = $cgpoints + 1;
-		}
-               	$copoints=0;
-               	for ($i=1; $i<$nextround; $i++)
-		{	$pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['coid']}' ";
-			$pointsresult=mysql_query($pointsquery);
-			$pointsrow=mysql_fetch_assoc($pointsresult);
-			if ($pointsrow)
-				$copoints = $copoints + 3;
-				
-			$pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['coid']}' ";
-			$pointsresult=mysql_query($pointsquery);
-			$pointsrow=mysql_fetch_assoc($pointsresult);
-			if ($pointsrow)
-				$copoints = $copoints + 2;
-				
-			$pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['coid']}' ";
-			$pointsresult=mysql_query($pointsquery);
-			$pointsrow=mysql_fetch_assoc($pointsresult);
-			if ($pointsrow)
-				$copoints = $copoints + 1;
-		}
-		
-		$totalpoints = $ogpoints + $oopoints + $cgpoints + $copoints;
+        {    $pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['cgid']}' ";
+            $pointsresult=mysql_query($pointsquery);
+            $pointsrow=mysql_fetch_assoc($pointsresult);
+            if ($pointsrow)
+                $cgpoints = $cgpoints + 3;
+                
+            $pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['cgid']}' ";
+            $pointsresult=mysql_query($pointsquery);
+            $pointsrow=mysql_fetch_assoc($pointsresult);
+            if ($pointsrow)
+                $cgpoints = $cgpoints + 2;
+                
+            $pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['cgid']}' ";
+            $pointsresult=mysql_query($pointsquery);
+            $pointsrow=mysql_fetch_assoc($pointsresult);
+            if ($pointsrow)
+                $cgpoints = $cgpoints + 1;
+        }
+                   $copoints=0;
+                   for ($i=1; $i<$nextround; $i++)
+        {    $pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['coid']}' ";
+            $pointsresult=mysql_query($pointsquery);
+            $pointsrow=mysql_fetch_assoc($pointsresult);
+            if ($pointsrow)
+                $copoints = $copoints + 3;
+                
+            $pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['coid']}' ";
+            $pointsresult=mysql_query($pointsquery);
+            $pointsrow=mysql_fetch_assoc($pointsresult);
+            if ($pointsrow)
+                $copoints = $copoints + 2;
+                
+            $pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['coid']}' ";
+            $pointsresult=mysql_query($pointsquery);
+            $pointsrow=mysql_fetch_assoc($pointsresult);
+            if ($pointsrow)
+                $copoints = $copoints + 1;
+        }
+        
+        $totalpoints = $ogpoints + $oopoints + $cgpoints + $copoints;
                 echo "<td>{$row['venue_name']}</td>\n";
-		echo "<td>{$row['ogtc']} {$row['ogt']} <br/> ($ogpoints) </td>\n";
-		echo "<td>{$row['ootc']} {$row['oot']} <br/> ($oopoints) </td>\n";
-		echo "<td>{$row['cgtc']} {$row['cgt']} <br/> ($cgpoints) </td>\n";
+        echo "<td>{$row['ogtc']} {$row['ogt']} <br/> ($ogpoints) </td>\n";
+        echo "<td>{$row['ootc']} {$row['oot']} <br/> ($oopoints) </td>\n";
+        echo "<td>{$row['cgtc']} {$row['cgt']} <br/> ($cgpoints) </td>\n";
                 echo "<td>{$row['cotc']} {$row['cot']} <br/> ($copoints) </td>\n";
                 echo "<td>$totalpoints </td>\n";                
 

@@ -50,7 +50,7 @@ if ($action=="delete")
     
         //Check for Error
         if (mysql_affected_rows()==0)
-	  $msg[]="There were problems deleting : No such record.";
+      $msg[]="There were problems deleting : No such record.";
       }
     
     //Change Mode to Display
@@ -69,17 +69,17 @@ if ($actionhidden=="add")
         $result=mysql_query($query);
 
         if (!$result) //Error
-	  {
+      {
             $msg[]="There was some problem adding : ". mysql_error(); //Display Msg
             $action="add";
-	  }
+      }
 
         else
-	  {
+      {
             //If Okay Change Mode to Display
             $msg[]="Record Successfully Added";
             $action="display";
-	  }
+      }
       }
     else
       {
@@ -104,17 +104,17 @@ if ($actionhidden=="edit")
         
         //If not okay raise error else change mode to display
         if (!$result)
-	  {
+      {
             //Raise Error
             $msg[]="There were some problems editing : ".mysql_error();
             $action="edit";
-	  }
+      }
         else
-	  {
+      {
             //All okay
             $msg[]="Record edited successfully.";
             $action="display";
-	  }
+      }
       }
 
     else
@@ -136,17 +136,17 @@ if ($action=="edit")
         $query="SELECT * FROM venue WHERE venue_id='$venue_id'";
         $result=mysql_query($query);
         if (mysql_num_rows($result)==0)
-	  {
+      {
             $msg[]="There were some problems editing : Record Not Found ";
             $action="display";
-	  }
+      }
         else
-	  {
+      {
             $row=mysql_fetch_assoc($result);
             $venue_name=$row['venue_name'];
             $venue_location=$row['venue_location'];
             $active=$row['active'];
-	  }
+      }
       }   
     
   }
@@ -194,40 +194,40 @@ if ($action=="display")
 
     if (mysql_num_rows($result)==0)
       {
-	//Print Empty Message    
-	echo "<h3>No Venues Found.</h3>";
-	echo "<h3><a href=\"input.php?moduletype=venue&amp;action=add\">Add New</a></h3>";
+    //Print Empty Message    
+    echo "<h3>No Venues Found.</h3>";
+    echo "<h3><a href=\"input.php?moduletype=venue&amp;action=add\">Add New</a></h3>";
       }
     else
       {
-	//Check whether to display Delete Button
-	$query="SHOW  TABLES  LIKE  '%_round_%'";
-	$showdeleteresult=mysql_query($query);
+    //Check whether to display Delete Button
+    $query="SHOW  TABLES  LIKE  '%_round_%'";
+    $showdeleteresult=mysql_query($query);
 
-	if (mysql_num_rows($showdeleteresult)!=0)
-	  $showdelete=0;
-	else
-	  $showdelete=1;
+    if (mysql_num_rows($showdeleteresult)!=0)
+      $showdelete=0;
+    else
+      $showdelete=1;
                 
-	//Print Table
-	?>
+    //Print Table
+    ?>
     <h3>Total No. of Venues : <?echo mysql_num_rows($result)?> (<?echo mysql_num_rows($active_result)?>)</h3>
 
     <?echo "<h3><a href=\"input.php?moduletype=venue&amp;action=add\">Add New</a></h3>";?>                
-	  <table>
-	     <tr><th>Name</th><th>Location</th><th>Active(Y/N)</th></tr>
-	     <? while($row=mysql_fetch_assoc($result)) { ?>
+      <table>
+         <tr><th>Name</th><th>Location</th><th>Active(Y/N)</th></tr>
+         <? while($row=mysql_fetch_assoc($result)) { ?>
 
-	  <tr <?if ($row['active']=='N') echo "style=\"color:red\"";?>>
-	    <td><?echo $row['venue_name'];?></td>
+      <tr <?if ($row['active']=='N') echo "style=\"color:red\"";?>>
+        <td><?echo $row['venue_name'];?></td>
             <td><?echo $row['venue_location'];?></td>
-	    <td><?echo $row['active'];?></td>
-	    <td class="editdel"><a href="input.php?moduletype=venue&amp;action=edit&amp;venue_id=<?echo $row['venue_id'];?>">Edit</a></td>
-	<?
-	if ($showdelete)
-	  {
-	?>
-	    <td class="editdel"><a href="input.php?moduletype=venue&amp;action=delete&amp;venue_id=<?echo $row['venue_id'];?>" onClick="return confirm('Are you sure?');">Delete</a></td>
+        <td><?echo $row['active'];?></td>
+        <td class="editdel"><a href="input.php?moduletype=venue&amp;action=edit&amp;venue_id=<?echo $row['venue_id'];?>">Edit</a></td>
+    <?
+    if ($showdelete)
+      {
+    ?>
+        <td class="editdel"><a href="input.php?moduletype=venue&amp;action=delete&amp;venue_id=<?echo $row['venue_id'];?>" onClick="return confirm('Are you sure?');">Delete</a></td>
 
        <?} //Do Not Remove ?>
   </tr>
@@ -256,21 +256,21 @@ if ($action=="display")
        <input type="text" id="venue_name" name="venue_name" value="<?echo $venue_name;?>"/><br/><br/>
 
        <label for="venue_location">Venue Location</label>
-				 <input type="text" id="venue_location" name="venue_location" value="<?echo $venue_location;?>"/><br/><br/>
+                 <input type="text" id="venue_location" name="venue_location" value="<?echo $venue_location;?>"/><br/><br/>
 
-				 <label for="active">Active</label>
-				     <select id="active" name="active">
-				     <option value="Y" <?echo ($active=="Y")?"selected":""?>>Yes</option>
-				     <option value="N" <?echo ($active=="N")?"selected":""?>>No</option>
-				     </select> <br/><br/>
+                 <label for="active">Active</label>
+                     <select id="active" name="active">
+                     <option value="Y" <?echo ($active=="Y")?"selected":""?>>Yes</option>
+                     <option value="N" <?echo ($active=="N")?"selected":""?>>No</option>
+                     </select> <br/><br/>
 
-				     <input type="submit" value="<?echo ($action=="edit")?"Edit Venue":"Add Venue" ;?>"/>
-				     <input type="button" value="Cancel" onClick="location.replace('input.php?moduletype=venue')"/>
-				     </form>
+                     <input type="submit" value="<?echo ($action=="edit")?"Edit Venue":"Add Venue" ;?>"/>
+                     <input type="button" value="Cancel" onClick="location.replace('input.php?moduletype=venue')"/>
+                     </form>
             
-				     <?
+                     <?
             
-				     }
+                     }
 ?>
 </div>
 </body>

@@ -24,7 +24,7 @@ $result=mysql_query($query);
 $numresults=mysql_num_rows($result);
 
 if (!$round)
-	$round=$numdraws;
+    $round=$numdraws;
 
 switch(@$action)
 {

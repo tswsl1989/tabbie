@@ -42,43 +42,43 @@ $venue_query .= "ORDER BY venue_name ";
 $venue_result = mysql_query($venue_query);
 
 while ($venue_row=mysql_fetch_assoc($venue_result))
-{	$venue_location = $venue_row['venue_location'];
-	$venue_name = $venue_row['venue_name'];
-	$debate_id = $venue_row['debate_id'];
-	$og = $venue_row['og_univ_code'].' '.$venue_row['og_team_code'];
-	$oo = $venue_row['oo_univ_code'].' '.$venue_row['oo_team_code'];
-	$cg = $venue_row['cg_univ_code'].' '.$venue_row['cg_team_code'];
-	$co = $venue_row['co_univ_code'].' '.$venue_row['co_team_code'];
+{    $venue_location = $venue_row['venue_location'];
+    $venue_name = $venue_row['venue_name'];
+    $debate_id = $venue_row['debate_id'];
+    $og = $venue_row['og_univ_code'].' '.$venue_row['og_team_code'];
+    $oo = $venue_row['oo_univ_code'].' '.$venue_row['oo_team_code'];
+    $cg = $venue_row['cg_univ_code'].' '.$venue_row['cg_team_code'];
+    $co = $venue_row['co_univ_code'].' '.$venue_row['co_team_code'];
 
-	$colour = @$color[$venue_location];
+    $colour = @$color[$venue_location];
 
-	$text= " <tr><td width=\"110\" style=\"background-color:$colour;\"><font size=\"5\"><b>$venue_name</b></font></td><td width=\"142\" style=\"background-color:$colour;\">$og</td><td width=\"142\" style=\"background-color:$colour;\">$oo</td><td width=\"142\" style=\"background-color:$colour;\">$cg</td><td width=\"142\" style=\"background-color:$colour;\">$co</td>\n ";
+    $text= " <tr><td width=\"110\" style=\"background-color:$colour;\"><font size=\"5\"><b>$venue_name</b></font></td><td width=\"142\" style=\"background-color:$colour;\">$og</td><td width=\"142\" style=\"background-color:$colour;\">$oo</td><td width=\"142\" style=\"background-color:$colour;\">$cg</td><td width=\"142\" style=\"background-color:$colour;\">$co</td>\n ";
 
-	// Get Chief Adjudicator
-	$chfadj_query = "SELECT adjud.adjud_name AS adjud_name FROM adjud_round_$roundno AS round, adjudicator AS adjud WHERE round.debate_id = $debate_id AND round.status = 'chair' AND adjud.adjud_id = round.adjud_id ";
-	$chfadj_result = mysql_query($chfadj_query);
-	$chfadj_row=mysql_fetch_assoc($chfadj_result);
-	$chair = $chfadj_row['adjud_name'];
-	$text.=" <td width=\"240\" style=\"background-color:$colour;\"><font size=\"5\"><b>* $chair</b>";
+    // Get Chief Adjudicator
+    $chfadj_query = "SELECT adjud.adjud_name AS adjud_name FROM adjud_round_$roundno AS round, adjudicator AS adjud WHERE round.debate_id = $debate_id AND round.status = 'chair' AND adjud.adjud_id = round.adjud_id ";
+    $chfadj_result = mysql_query($chfadj_query);
+    $chfadj_row=mysql_fetch_assoc($chfadj_result);
+    $chair = $chfadj_row['adjud_name'];
+    $text.=" <td width=\"240\" style=\"background-color:$colour;\"><font size=\"5\"><b>* $chair</b>";
 
-	// Get Panelists
-	$pnladj_query = "SELECT adjud.adjud_name AS adjud_name FROM adjud_round_$roundno AS round, adjudicator AS adjud WHERE round.debate_id = $debate_id AND round.status = 'panelist' AND adjud.adjud_id = round.adjud_id ";
-	$pnladj_result = mysql_query($pnladj_query);
-	while ($pnladj_row=mysql_fetch_assoc($pnladj_result))
-	{	$panelist = $pnladj_row['adjud_name'];
-		$text.=" <br/>* $panelist";
-	}
+    // Get Panelists
+    $pnladj_query = "SELECT adjud.adjud_name AS adjud_name FROM adjud_round_$roundno AS round, adjudicator AS adjud WHERE round.debate_id = $debate_id AND round.status = 'panelist' AND adjud.adjud_id = round.adjud_id ";
+    $pnladj_result = mysql_query($pnladj_query);
+    while ($pnladj_row=mysql_fetch_assoc($pnladj_result))
+    {    $panelist = $pnladj_row['adjud_name'];
+        $text.=" <br/>* $panelist";
+    }
 
-	// Get Trainees
-	$trnadj_query = "SELECT adjud.adjud_name AS adjud_name FROM adjud_round_$roundno AS round, adjudicator AS adjud WHERE round.debate_id = $debate_id AND round.status = 'trainee' AND adjud.adjud_id = round.adjud_id ";
-	$trnadj_result = mysql_query($trnadj_query);
-	while ($trnadj_row=mysql_fetch_assoc($trnadj_result))
-	{	$trainee = $trnadj_row['adjud_name'];
-		$text.=" <br/>* $trainee (Trainee)";
-	}
+    // Get Trainees
+    $trnadj_query = "SELECT adjud.adjud_name AS adjud_name FROM adjud_round_$roundno AS round, adjudicator AS adjud WHERE round.debate_id = $debate_id AND round.status = 'trainee' AND adjud.adjud_id = round.adjud_id ";
+    $trnadj_result = mysql_query($trnadj_query);
+    while ($trnadj_row=mysql_fetch_assoc($trnadj_result))
+    {    $trainee = $trnadj_row['adjud_name'];
+        $text.=" <br/>* $trainee (Trainee)";
+    }
 
-	$text.=" </font></td></tr>\n";
-	fputs($fp,$text);
+    $text.=" </font></td></tr>\n";
+    fputs($fp,$text);
 }
 
 $text=" </table></div> <br/>\n\n";
@@ -98,11 +98,11 @@ $text.=" pause() } \n";
 
 $text.=" function setSpeed(direction) { \n";
 $text.=" if (direction == 0) \n";
-$text.=" 	(scrollspeed == 0)?(scrollspeed=scrollspeed):(scrollspeed = scrollspeed - 1) \n";
+$text.="     (scrollspeed == 0)?(scrollspeed=scrollspeed):(scrollspeed = scrollspeed - 1) \n";
 $text.=" else { \n";
-$text.=" 	if (direction == 1) \n";
-$text.=" 		scrollspeed = scrollspeed + 1 \n";
-$text.=" 	} \n";
+$text.="     if (direction == 1) \n";
+$text.="         scrollspeed = scrollspeed + 1 \n";
+$text.="     } \n";
 $text.=" } \n";
 
 $text.=" function reset() { \n";
@@ -125,9 +125,9 @@ $text.=" dataobj.style.top=parseInt(dataobj.style.top)-scrollspeed \n";
 $text.=" //prompt(dataobj.style.top) \n";
 $text.=" //prompt(thelength*(-1)+marqueeheight) \n";
 $text.=" if (parseInt(dataobj.style.top)<(thelength*(-1)+520)) \n";
-$text.=" 	setTimeout(\"bottompause()\",50) \n";
+$text.="     setTimeout(\"bottompause()\",50) \n";
 $text.=" else \n";
-$text.=" 	setTimeout(\"scrolltest()\",movespeed) \n";
+$text.="     setTimeout(\"scrolltest()\",movespeed) \n";
 $text.=" } \n";
 
 $text.=" window.onload=initialize \n";

@@ -43,7 +43,7 @@ if ($action=="delete")
     
         //Check for Error
         if (mysql_affected_rows()==0)
-	  $msg[]="There were problems deleting : No such record.";
+      $msg[]="There were problems deleting : No such record.";
     
       }
 
@@ -63,17 +63,17 @@ if ($actionhidden=="add")
         $result=mysql_query($query);
 
         if (!$result) //Error
-	  {
+      {
             $msg[]="There was some problem adding : ". mysql_error(); //Display Msg
             $action="add";
-	  }
+      }
 
         else
-	  {
+      {
             //If Okay Change Mode to Display
             $msg[]="Record Successfully Added.";
             $action="display";
-	  }
+      }
       }
     else
       {
@@ -98,17 +98,17 @@ if ($actionhidden=="edit")
         
         //If not okay raise error else change mode to display
         if (!$result)
-	  {
+      {
             //Raise Error
             $msg[]="There were some problems editing : ".mysql_error();
             $action="edit";
-	  }
+      }
         else
-	  {
+      {
             //All okay
             $msg[]="Record edited successfully.";
             $action="display";
-	  }
+      }
       }
 
     else
@@ -131,16 +131,16 @@ if ($action=="edit")
         $query="SELECT * FROM university WHERE univ_id='$univ_id'";
         $result=mysql_query($query);
         if (mysql_num_rows($result)==0)
-	  {
+      {
             $msg[]="There were some problems editing : Record Not Found.";
             $action="display";
-	  }
+      }
         else
-	  {
+      {
             $row=mysql_fetch_assoc($result);
             $univ_name=$row['univ_name'];
             $univ_code=$row['univ_code'];
-	  }
+      }
       }   
     
   }
@@ -187,48 +187,48 @@ if ($action=="display")
 
     if (mysql_num_rows($result)==0)
       {
-	//Print Empty Message    
-	echo "<h3>No Universities Found.</h3>";
+    //Print Empty Message    
+    echo "<h3>No Universities Found.</h3>";
     echo "<h3><a href=\"input.php?moduletype=univ&amp;action=add\">Add New</a></h3>";
       }
     else
       {
 
-	//Check whether to display Delete Button
-	$query="SHOW  TABLES  LIKE  '%_round_%'";
-	$showdeleteresult=mysql_query($query);
+    //Check whether to display Delete Button
+    $query="SHOW  TABLES  LIKE  '%_round_%'";
+    $showdeleteresult=mysql_query($query);
 
-	if (mysql_num_rows($showdeleteresult)!=0)
-	  $showdelete=0;
-	else
-	  $showdelete=1;
+    if (mysql_num_rows($showdeleteresult)!=0)
+      $showdelete=0;
+    else
+      $showdelete=1;
                     
-	//Print Table
-	?>
-	    <h3>Total No. of Universities : <?echo mysql_num_rows($result)?></h3>
+    //Print Table
+    ?>
+        <h3>Total No. of Universities : <?echo mysql_num_rows($result)?></h3>
           <?echo "<h3><a href=\"input.php?moduletype=univ&amp;action=add\">Add New</a></h3>";?>      
-	  <table>
-	     <tr><th>Name</th><th>Code</th></tr>
-	     <? while($row=mysql_fetch_assoc($result)) { ?>
+      <table>
+         <tr><th>Name</th><th>Code</th></tr>
+         <? while($row=mysql_fetch_assoc($result)) { ?>
 
-	  <tr>
-	    <td><?echo $row['univ_name'];?></td>
+      <tr>
+        <td><?echo $row['univ_name'];?></td>
        <td><?echo $row['univ_code'];?></td>
-	  <td class="editdel"><a href="input.php?moduletype=univ&amp;action=edit&amp;univ_id=<?echo $row['univ_id'];?>">Edit</a></td>
-	  <?
-	  if ($showdelete)
-	    {
+      <td class="editdel"><a href="input.php?moduletype=univ&amp;action=edit&amp;univ_id=<?echo $row['univ_id'];?>">Edit</a></td>
+      <?
+      if ($showdelete)
+        {
          ?>
-	    <td class="editdel"><a href="input.php?moduletype=univ&amp;action=delete&amp;univ_id=<?echo $row['univ_id'];?>" onClick="return confirm('Are you sure?');">Delete</a></td>
-	       <?} //Do Not Remove ?>
-	  </tr>
+        <td class="editdel"><a href="input.php?moduletype=univ&amp;action=delete&amp;univ_id=<?echo $row['univ_id'];?>" onClick="return confirm('Are you sure?');">Delete</a></td>
+           <?} //Do Not Remove ?>
+      </tr>
 
-	      <?} //Do Not Remove  ?> 
+          <?} //Do Not Remove  ?> 
                     
-	</table>
+    </table>
 
                 
-	    <?
+        <?
             }
 
 
@@ -248,15 +248,15 @@ if ($action=="display")
        <input type="text" id="univ_name" name="univ_name" value="<?echo $univ_name;?>"/><br/><br/>
 
        <label for="univ_code">University Code</label>
-				<input type="text" id="univ_code" name="univ_code" value="<?echo $univ_code;?>"/><br/><br/>
+                <input type="text" id="univ_code" name="univ_code" value="<?echo $univ_code;?>"/><br/><br/>
 
-				<input type="submit" value="<?echo ($action=="edit")?"Edit University":"Add University" ;?>"/>
-				<input type="button" value="Cancel" onClick="location.replace('input.php?moduletype=univ')"/>
-				</form>
+                <input type="submit" value="<?echo ($action=="edit")?"Edit University":"Add University" ;?>"/>
+                <input type="button" value="Cancel" onClick="location.replace('input.php?moduletype=univ')"/>
+                </form>
             
-				<?
+                <?
             
-				}
+                }
 ?>
 </div>
 </body>

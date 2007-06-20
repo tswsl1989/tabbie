@@ -28,13 +28,13 @@ switch($list)
                         $title.=" (Team list)";
                         break;
     case "adj":
-    			$title.=" (Adjudicator list)";
-    			break;
+                $title.=" (Adjudicator list)";
+                break;
     case "draw":
-    			$title.=" (Draw)";
-    			break;
+                $title.=" (Draw)";
+                break;
     case "main":
-    			break;
+                break;
     default:
                         $list="main";
 }

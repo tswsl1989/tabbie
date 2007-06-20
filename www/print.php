@@ -15,8 +15,8 @@ if (!$moduletype) $moduletype="main"; //set to main if empty
 
 $list=trim(@$_POST['list']);
 if (!$list)
-{	$list=trim(@$_GET['list']);
-	if (!$list) $list="main"; //set to main if empty
+{    $list=trim(@$_GET['list']);
+    if (!$list) $list="main"; //set to main if empty
 }
 
 //Set document title according to module
@@ -27,17 +27,17 @@ switch($moduletype)
                     @$title .= " Adjudicator";
                     break;
    case "floor":
-   					@$title .= " Floor Managers";
-   					break;
+                       @$title .= " Floor Managers";
+                       break;
    case "chfadjud":
-   					@$title .= " Chief Adjudicator/DCAs";
-   					break;
+                       @$title .= " Chief Adjudicator/DCAs";
+                       break;
    case "tab":
-   					@$title .= " Tab Room";
-   					break;
+                       @$title .= " Tab Room";
+                       break;
    case "display":
-   					@$title .= " Display";
-   					break;
+                       @$title .= " Display";
+                       break;
    case "main":
                     @$title .= " Main Page";
                     break;

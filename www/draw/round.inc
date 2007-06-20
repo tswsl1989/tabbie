@@ -72,35 +72,35 @@ displayMessagesP(@$msg);
             
             echo "<td>";
             $pan_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
-	    $pan_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-	    $pan_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND status = 'panelist' ";
-	    $pan_result=mysql_query($pan_query);
-	    echo mysql_error();
+        $pan_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
+        $pan_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND status = 'panelist' ";
+        $pan_result=mysql_query($pan_query);
+        echo mysql_error();
 
-	    $num_panelists=mysql_num_rows($pan_result);
-	    if (@$numpanelists > 0) echo "<ul>\n";
-	    while($pan_row=mysql_fetch_assoc($pan_result))
-	    {	
-	      echo "<li>{$pan_row['adjud_name']}</li>";
-	    }
-	    if (@$numpanelists > 0) echo "</ul>\n";
-	    echo "</td>\n";
+        $num_panelists=mysql_num_rows($pan_result);
+        if (@$numpanelists > 0) echo "<ul>\n";
+        while($pan_row=mysql_fetch_assoc($pan_result))
+        {    
+          echo "<li>{$pan_row['adjud_name']}</li>";
+        }
+        if (@$numpanelists > 0) echo "</ul>\n";
+        echo "</td>\n";
 
             echo "<td>";
             $trainee_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
-	    $trainee_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-	    $trainee_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND status = 'trainee' ";
-	    $trainee_result=mysql_query($trainee_query);
-	    echo mysql_error();
+        $trainee_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
+        $trainee_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND status = 'trainee' ";
+        $trainee_result=mysql_query($trainee_query);
+        echo mysql_error();
 
-	    $num_trainee=mysql_num_rows($trainee_result);
-	    if (@$numtrainee > 0) echo "<ul>\n";
-	    while($trainee_row=mysql_fetch_assoc($trainee_result))
-	    {	
-	      echo "<li>{$trainee_row['adjud_name']}</li>";
-	    }
-	    if (@$numtrainee > 0) echo "</ul>\n";
-	    echo "</td>\n";
+        $num_trainee=mysql_num_rows($trainee_result);
+        if (@$numtrainee > 0) echo "<ul>\n";
+        while($trainee_row=mysql_fetch_assoc($trainee_result))
+        {    
+          echo "<li>{$trainee_row['adjud_name']}</li>";
+        }
+        if (@$numtrainee > 0) echo "</ul>\n";
+        echo "</td>\n";
 
        echo "</tr>\n";
         

@@ -24,15 +24,15 @@ $numresults=mysql_num_rows($result);
 
 switch($list)
 {
-    case "debatelist":	$title .=" (Debate List - Manual Draw)";
+    case "debatelist":    $title .=" (Debate List - Manual Draw)";
                         break;
-    case "adjlist":	$title .=" (Adjudicator History)";
-    			break;
-    case "freeadj":	$title .=" (Free Adjudicators - Manual Draw)";
-    			break;
+    case "adjlist":    $title .=" (Adjudicator History)";
+                break;
+    case "freeadj":    $title .=" (Free Adjudicators - Manual Draw)";
+                break;
     case "teamadjcount": $title .=" (Team-Adjudicator Count)";
-    			break;
-    case "main":	break;
+                break;
+    case "main":    break;
     default:
                         $list="main";
 }

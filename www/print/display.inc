@@ -25,12 +25,12 @@ $numresults=mysql_num_rows($result);
 switch($list)
 {
     case "draw":
-    			$title.= " (Draw)";
+                $title.= " (Draw)";
                         break;
-    case "teamcode":	$title.= " (Team Code)";
-    			break;
+    case "teamcode":    $title.= " (Team Code)";
+                break;
     case "main":
-    			break;
+                break;
     default:
                         $list="main";
 }

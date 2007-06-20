@@ -121,10 +121,10 @@ else
             $team_cg_id= $rowresults['team_cg_id'];
             $team_co_id= $rowresults['team_co_id'];
             $team_og_name=$rowresults['univ_og_code'].' '.$rowresults['team_og_code'];
-	    $team_oo_name=$rowresults['univ_oo_code'].' '.$rowresults['team_oo_code'];
-	    $team_cg_name=$rowresults['univ_cg_code'].' '.$rowresults['team_cg_code'];
-	    $team_co_name=$rowresults['univ_co_code'].' '.$rowresults['team_co_code'];
-	    $venue=$rowresults['venue_name'];
+        $team_oo_name=$rowresults['univ_oo_code'].' '.$rowresults['team_oo_code'];
+        $team_cg_name=$rowresults['univ_cg_code'].' '.$rowresults['team_cg_code'];
+        $team_co_name=$rowresults['univ_co_code'].' '.$rowresults['team_co_code'];
+        $venue=$rowresults['venue_name'];
 
 
             //Validate the values (numeric Between 1 and 100)
@@ -142,7 +142,7 @@ else
         $row=mysql_fetch_assoc($result);
         $speaker1_og_score=$row['points'];
         if ($speaker1_og_score == 0)
-        {	$speaker1_og_score=@$speaker1_og_post_score;
+        {    $speaker1_og_score=@$speaker1_og_post_score;
         }
         
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker2_og_id'";
@@ -150,126 +150,126 @@ else
         $row=mysql_fetch_assoc($result);
         $speaker2_og_score=$row['points'];
         if ($speaker2_og_score == 0)
-	{	$speaker2_og_score=@$speaker2_og_post_score;
-	}
+    {    $speaker2_og_score=@$speaker2_og_post_score;
+    }
 
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker1_oo_id'";
         $result=mysql_query($query);
         $row=mysql_fetch_assoc($result);
         $speaker1_oo_score=$row['points'];
         if ($speaker1_oo_score == 0)
-	{	$speaker1_oo_score=@$speaker1_oo_post_score;
-	}
+    {    $speaker1_oo_score=@$speaker1_oo_post_score;
+    }
         
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker2_oo_id'";
         $result=mysql_query($query);
         $row=mysql_fetch_assoc($result);
         $speaker2_oo_score=$row['points'];
         if ($speaker2_oo_score == 0)
-	{	$speaker2_oo_score=@$speaker2_oo_post_score;
-	}
+    {    $speaker2_oo_score=@$speaker2_oo_post_score;
+    }
 
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker1_cg_id'";
         $result=mysql_query($query);
         $row=mysql_fetch_assoc($result);
         $speaker1_cg_score=$row['points'];
         if ($speaker1_cg_score == 0)
-	{	$speaker1_cg_score=@$speaker1_cg_post_score;
-	}
+    {    $speaker1_cg_score=@$speaker1_cg_post_score;
+    }
 
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker2_cg_id'";
         $result=mysql_query($query);
         $row=mysql_fetch_assoc($result);
         $speaker2_cg_score=$row['points'];
         if ($speaker2_cg_score == 0)
-	{	$speaker2_cg_score=@$speaker2_cg_post_score;
-	}
+    {    $speaker2_cg_score=@$speaker2_cg_post_score;
+    }
 
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker1_co_id'";
         $result=mysql_query($query);
         $row=mysql_fetch_assoc($result);
         $speaker1_co_score=$row['points'];
         if ($speaker1_co_score == 0)
-	{	$speaker1_co_score=@$speaker1_co_post_score;
-	}
+    {    $speaker1_co_score=@$speaker1_co_post_score;
+    }
 
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker2_co_id'";
         $result=mysql_query($query);
         $row=mysql_fetch_assoc($result);
         $speaker2_co_score=$row['points'];
         if ($speaker2_co_score == 0)
-	{	$speaker2_co_score=@$speaker2_co_post_score;
-	}
+    {    $speaker2_co_score=@$speaker2_co_post_score;
+    }
 
     }
     
     
     if ($action=="doedit")
     {
-	$team_og_score = $speaker1_og_score + $speaker2_og_score;
-	$team_oo_score = $speaker1_oo_score + $speaker2_oo_score;
-	$team_cg_score = $speaker1_cg_score + $speaker2_cg_score;
-	$team_co_score = $speaker1_co_score + $speaker2_co_score;
+    $team_og_score = $speaker1_og_score + $speaker2_og_score;
+    $team_oo_score = $speaker1_oo_score + $speaker2_oo_score;
+    $team_cg_score = $speaker1_cg_score + $speaker2_cg_score;
+    $team_co_score = $speaker1_co_score + $speaker2_co_score;
         
         $result_score_array = array($team_og_score,$team_oo_score,$team_cg_score,$team_co_score);
-	$result_teamname_array = array($team_og_name,$team_oo_name,$team_cg_name,$team_co_name);
-	$result_teamid_array = array($team_og_id,$team_oo_id,$team_cg_id,$team_co_id);
+    $result_teamname_array = array($team_og_name,$team_oo_name,$team_cg_name,$team_co_name);
+    $result_teamid_array = array($team_og_id,$team_oo_id,$team_cg_id,$team_co_id);
 
-	array_multisort ($result_score_array, SORT_DESC,
-	    			$result_teamname_array,
-	    			$result_teamid_array);
+    array_multisort ($result_score_array, SORT_DESC,
+                    $result_teamname_array,
+                    $result_teamid_array);
       
         $query ="UPDATE `temp_result_round_$nextresult` SET ";
-	$query.="first = '$result_teamid_array[0]', ";
-	$query.="second = '$result_teamid_array[1]', ";
-	$query.="third = '$result_teamid_array[2]', ";
-	$query.="fourth = '$result_teamid_array[3]' ";
-	$query.="WHERE debate_id = '$debate_id' ";
-	$result=mysql_query($query);
-	if (!$result) //Get Error Message
-	  {	$msg[]="Error creating results table.".mysql_error();
-		$action="display";
-	}
-	
-	$temp_speaker_points_array = array($speaker1_og_score,$speaker2_og_score,$speaker1_oo_score,$speaker2_oo_score,$speaker1_cg_score,$speaker2_cg_score,$speaker1_co_score,$speaker2_co_score);
-	$temp_speaker_id_array = array($speaker1_og_id,$speaker2_og_id,$speaker1_oo_id,$speaker2_oo_id,$speaker1_cg_id,$speaker2_cg_id,$speaker1_co_id,$speaker2_co_id);
-		    
-	for ($i=0;$i<8;$i++)
-	{	$query ="UPDATE `temp_speaker_round_$nextresult` SET ";
-		$query.="points = '$temp_speaker_points_array[$i]' ";
-		$query.="WHERE debate_id = '$debate_id' AND speaker_id = '$temp_speaker_id_array[$i]' ";
-		$result=mysql_query($query);
-		if (!$result) //Get Error Message
-		  {	$msg[]="Error creating results table.".mysql_error();
-			$action="display";
-		}
-	}
+    $query.="first = '$result_teamid_array[0]', ";
+    $query.="second = '$result_teamid_array[1]', ";
+    $query.="third = '$result_teamid_array[2]', ";
+    $query.="fourth = '$result_teamid_array[3]' ";
+    $query.="WHERE debate_id = '$debate_id' ";
+    $result=mysql_query($query);
+    if (!$result) //Get Error Message
+      {    $msg[]="Error creating results table.".mysql_error();
+        $action="display";
+    }
+    
+    $temp_speaker_points_array = array($speaker1_og_score,$speaker2_og_score,$speaker1_oo_score,$speaker2_oo_score,$speaker1_cg_score,$speaker2_cg_score,$speaker1_co_score,$speaker2_co_score);
+    $temp_speaker_id_array = array($speaker1_og_id,$speaker2_og_id,$speaker1_oo_id,$speaker2_oo_id,$speaker1_cg_id,$speaker2_cg_id,$speaker1_co_id,$speaker2_co_id);
+            
+    for ($i=0;$i<8;$i++)
+    {    $query ="UPDATE `temp_speaker_round_$nextresult` SET ";
+        $query.="points = '$temp_speaker_points_array[$i]' ";
+        $query.="WHERE debate_id = '$debate_id' AND speaker_id = '$temp_speaker_id_array[$i]' ";
+        $result=mysql_query($query);
+        if (!$result) //Get Error Message
+          {    $msg[]="Error creating results table.".mysql_error();
+            $action="display";
+        }
+    }
     }
 
     if ($action=="process")
     {
         $team_og_score = $speaker1_og_score + $speaker2_og_score;
-	$team_oo_score = $speaker1_oo_score + $speaker2_oo_score;
-	$team_cg_score = $speaker1_cg_score + $speaker2_cg_score;
-	$team_co_score = $speaker1_co_score + $speaker2_co_score;
+    $team_oo_score = $speaker1_oo_score + $speaker2_oo_score;
+    $team_cg_score = $speaker1_cg_score + $speaker2_cg_score;
+    $team_co_score = $speaker1_co_score + $speaker2_co_score;
 
-    	$score_min = 1;
-    	$score_max = 100;
-    	if (($speaker1_og_score < $score_min) OR ($speaker1_og_score > $score_max) OR
-        	($speaker1_oo_score < $score_min) OR ($speaker1_oo_score > $score_max) OR
-        	($speaker1_cg_score < $score_min) OR ($speaker1_cg_score > $score_max) OR
-        	($speaker1_co_score < $score_min) OR ($speaker1_co_score > $score_max) OR
-		($speaker2_og_score < $score_min) OR ($speaker2_og_score > $score_max) OR
-        	($speaker2_oo_score < $score_min) OR ($speaker2_oo_score > $score_max) OR
-        	($speaker2_cg_score < $score_min) OR ($speaker2_cg_score > $score_max) OR
-        	($speaker2_co_score < $score_min) OR ($speaker2_co_score > $score_max)  )
+        $score_min = 1;
+        $score_max = 100;
+        if (($speaker1_og_score < $score_min) OR ($speaker1_og_score > $score_max) OR
+            ($speaker1_oo_score < $score_min) OR ($speaker1_oo_score > $score_max) OR
+            ($speaker1_cg_score < $score_min) OR ($speaker1_cg_score > $score_max) OR
+            ($speaker1_co_score < $score_min) OR ($speaker1_co_score > $score_max) OR
+        ($speaker2_og_score < $score_min) OR ($speaker2_og_score > $score_max) OR
+            ($speaker2_oo_score < $score_min) OR ($speaker2_oo_score > $score_max) OR
+            ($speaker2_cg_score < $score_min) OR ($speaker2_cg_score > $score_max) OR
+            ($speaker2_co_score < $score_min) OR ($speaker2_co_score > $score_max)  )
         {    $validate = 0;
              $msg[]="Invalid score entered for one or more debaters.";
         }
         
         if (($team_og_score == $team_oo_score) OR ($team_og_score == $team_cg_score) OR ($team_og_score == $team_co_score)
-        	OR ($team_oo_score == $team_cg_score) OR ($team_oo_score == $team_co_score)
-        	OR ($team_cg_score == $team_co_score)    )
+            OR ($team_oo_score == $team_cg_score) OR ($team_oo_score == $team_co_score)
+            OR ($team_cg_score == $team_co_score)    )
         {    $validate = 0;
              $msg[]="Two or more teams with same total scores";
         }
@@ -278,18 +278,18 @@ else
         {
             //Process the results and ask for confirmation
             
-	    $result_score_array = array($team_og_score,$team_oo_score,$team_cg_score,$team_co_score);
-	    $result_teamname_array = array($team_og_name,$team_oo_name,$team_cg_name,$team_co_name);
-	    $result_teamid_array = array($team_og_id,$team_oo_id,$team_cg_id,$team_co_id);
-	           	    
-	    $speaker1_og_post_score = @$_POST["speaker_$speaker1_og_id"];
-	    $speaker2_og_post_score = @$_POST["speaker_$speaker2_og_id"];
-	    $speaker1_oo_post_score = @$_POST["speaker_$speaker1_oo_id"];
-	    $speaker2_oo_post_score = @$_POST["speaker_$speaker2_oo_id"];
-	    $speaker1_cg_post_score = @$_POST["speaker_$speaker1_cg_id"];
-	    $speaker2_cg_post_score = @$_POST["speaker_$speaker2_cg_id"];
-	    $speaker1_co_post_score = @$_POST["speaker_$speaker1_co_id"];
-	    $speaker2_co_post_score = @$_POST["speaker_$speaker2_co_id"];
+        $result_score_array = array($team_og_score,$team_oo_score,$team_cg_score,$team_co_score);
+        $result_teamname_array = array($team_og_name,$team_oo_name,$team_cg_name,$team_co_name);
+        $result_teamid_array = array($team_og_id,$team_oo_id,$team_cg_id,$team_co_id);
+                       
+        $speaker1_og_post_score = @$_POST["speaker_$speaker1_og_id"];
+        $speaker2_og_post_score = @$_POST["speaker_$speaker2_og_id"];
+        $speaker1_oo_post_score = @$_POST["speaker_$speaker1_oo_id"];
+        $speaker2_oo_post_score = @$_POST["speaker_$speaker2_oo_id"];
+        $speaker1_cg_post_score = @$_POST["speaker_$speaker1_cg_id"];
+        $speaker2_cg_post_score = @$_POST["speaker_$speaker2_cg_id"];
+        $speaker1_co_post_score = @$_POST["speaker_$speaker1_co_id"];
+        $speaker2_co_post_score = @$_POST["speaker_$speaker2_co_id"];
 
         }
         else
@@ -315,7 +315,7 @@ else
 
         if (!$result) //Get Error Message
         {
-	  $msg[]="Error creating results table.".mysql_error();
+      $msg[]="Error creating results table.".mysql_error();
           $action="display";
         }
         else
@@ -342,8 +342,8 @@ else
             
             if(!$result)
             {
-	      $msg[]="Error creating speaker points table.".mysql_error();
-	      $action="display";
+          $msg[]="Error creating speaker points table.".mysql_error();
+          $action="display";
             }
             else
             {
@@ -376,65 +376,65 @@ else
         $row=mysql_fetch_assoc($result);
         
         foreach ($row as $aa)
-        {	if ($aa > 0)
-        	{	$validate = 0;
-        		$msg[]="1 or more speakers without any score entered. ";
-        	}
+        {    if ($aa > 0)
+            {    $validate = 0;
+                $msg[]="1 or more speakers without any score entered. ";
+            }
         }
         
         if ($validate == 1)
         {
-	        //Create and add values to results table
-	        
-	        $query ="CREATE TABLE `result_round_$nextresult` ( ";
-		$query.="`debate_id` mediumint(9) NOT NULL default '0',";
-		$query.="`first` mediumint(9) NOT NULL default '0',";
-		$query.="`second` mediumint(9) NOT NULL default '0',";
-		$query.="`third` mediumint(9) NOT NULL default '0',";
-		$query.="`fourth` mediumint(9) NOT NULL default '0',";
-		$query.="PRIMARY KEY  (`debate_id`))";
-		$result=mysql_query($query);
-		
-		if (!$result) //Get Error Message
-		  {	
-		    $msg[]="Error creating results table.".mysql_error();
-		    $action="display";
-		  }
-	        else
-		{	$query="INSERT INTO result_round_$nextresult SELECT * FROM temp_result_round_$nextresult";
-	            	mysql_query($query);
-	
-			//create speaker table
-		        $query ="CREATE TABLE `speaker_round_$nextresult` ( ";
-		        $query.="`speaker_id` mediumint(9) NOT NULL default '0',"; 
-		        $query.="`debate_id` mediumint(9) NOT NULL default '0',";
-		        $query.="`points` smallint(9) NOT NULL default '0', ";
-		        $query.="PRIMARY KEY (`speaker_id`))";
-			$result=mysql_query($query);
-		            
-		        if(!$result)
-			  {	$msg[]="Error creating speaker points table ".mysql_error();
-		                $action="display";
-		        }
-		        else
-		        {	$query="INSERT INTO speaker_round_$nextresult SELECT * FROM temp_speaker_round_$nextresult";
-	            		mysql_query($query);
-	            		
-	            		$query="DROP TABLE temp_result_round_$nextresult";
-				mysql_query($query);
-				$query="DROP TABLE temp_speaker_round_$nextresult";
-				mysql_query($query);
-				
-				//Redirect
-	            		header("Location: result.php?moduletype=round&action=showresult&roundno=$nextresult");
-		        }
-	        $result="display";
-	        }
-	}
-	else
-	{
-		$action="display"; //Go back to display mode
-	}
+            //Create and add values to results table
+            
+            $query ="CREATE TABLE `result_round_$nextresult` ( ";
+        $query.="`debate_id` mediumint(9) NOT NULL default '0',";
+        $query.="`first` mediumint(9) NOT NULL default '0',";
+        $query.="`second` mediumint(9) NOT NULL default '0',";
+        $query.="`third` mediumint(9) NOT NULL default '0',";
+        $query.="`fourth` mediumint(9) NOT NULL default '0',";
+        $query.="PRIMARY KEY  (`debate_id`))";
+        $result=mysql_query($query);
+        
+        if (!$result) //Get Error Message
+          {    
+            $msg[]="Error creating results table.".mysql_error();
+            $action="display";
+          }
+            else
+        {    $query="INSERT INTO result_round_$nextresult SELECT * FROM temp_result_round_$nextresult";
+                    mysql_query($query);
+    
+            //create speaker table
+                $query ="CREATE TABLE `speaker_round_$nextresult` ( ";
+                $query.="`speaker_id` mediumint(9) NOT NULL default '0',"; 
+                $query.="`debate_id` mediumint(9) NOT NULL default '0',";
+                $query.="`points` smallint(9) NOT NULL default '0', ";
+                $query.="PRIMARY KEY (`speaker_id`))";
+            $result=mysql_query($query);
+                    
+                if(!$result)
+              {    $msg[]="Error creating speaker points table ".mysql_error();
+                        $action="display";
+                }
+                else
+                {    $query="INSERT INTO speaker_round_$nextresult SELECT * FROM temp_speaker_round_$nextresult";
+                        mysql_query($query);
+                        
+                        $query="DROP TABLE temp_result_round_$nextresult";
+                mysql_query($query);
+                $query="DROP TABLE temp_speaker_round_$nextresult";
+                mysql_query($query);
+                
+                //Redirect
+                        header("Location: result.php?moduletype=round&action=showresult&roundno=$nextresult");
+                }
+            $result="display";
+            }
+    }
+    else
+    {
+        $action="display"; //Go back to display mode
+    }
 
     }
 
@@ -503,7 +503,7 @@ if ($nextresult==$numrounds)
 
                     echo "<tr>\n";
                     echo "<td class=\"editdel\"><a href=\"result.php?moduletype=currentround&amp;action=edit&amp;debate_id=$results_debate_id\">Edit</a></td>";
-		    echo "<td>$venue</td>\n";
+            echo "<td>$venue</td>\n";
                     echo "<td>$team_og_name (".returnposition($first,$second,$third,$fourth,$og).")</td>\n";
                     echo "<td>$team_oo_name (".returnposition($first,$second,$third,$fourth,$oo).")</td>\n";
                     echo "<td>$team_cg_name (".returnposition($first,$second,$third,$fourth,$cg).")</td>\n";
@@ -516,7 +516,7 @@ if ($nextresult==$numrounds)
 
             echo "</table>";
             echo "<a href=\"result.php?moduletype=currentround&amp;action=finalize\" onClick=\"return confirm('The results cannot be modified once finalised. Do you wish to continue?');\"><h3>Finalise Results</h3></a>";
-	    echo "<p class=\"msg\">* The numbers in the bracket indicate the standing</p>";
+        echo "<p class=\"msg\">* The numbers in the bracket indicate the standing</p>";
         }
         else
         {
@@ -537,11 +537,11 @@ if ($nextresult==$numrounds)
             </div>
             <form name="resultsinputform" action="result.php?moduletype=currentround&amp;action=process&amp;debate_id=<?echo $debate_id?>" method="POST">
             <? 
-	$tag="";
-	    if (((@$team_og_score == @$team_oo_score) OR (@$team_og_score == @$team_cg_score) OR (@$team_og_score == @$team_co_score)) AND $validate==0)
-	      $tag="class=\"error\"";
-	    ?>
-	<div id="og" <?echo $tag;?>>
+    $tag="";
+        if (((@$team_og_score == @$team_oo_score) OR (@$team_og_score == @$team_cg_score) OR (@$team_og_score == @$team_co_score)) AND $validate==0)
+          $tag="class=\"error\"";
+        ?>
+    <div id="og" <?echo $tag;?>>
 
                 <h3>OG: <? echo $team_og_name ?> </h3> 
 
@@ -553,11 +553,11 @@ if ($nextresult==$numrounds)
             </div>
 
             <? 
-	    $tag="";
-	    if (((@$team_oo_score == @$team_og_score) OR (@$team_oo_score == @$team_cg_score) OR (@$team_oo_score == @$team_co_score)) AND $validate==0)
-	      $tag="class=\"error\"";
-        	?>
-	    	
+        $tag="";
+        if (((@$team_oo_score == @$team_og_score) OR (@$team_oo_score == @$team_cg_score) OR (@$team_oo_score == @$team_co_score)) AND $validate==0)
+          $tag="class=\"error\"";
+            ?>
+            
              <div id="oo" <?echo $tag;?>>
                  <h3>OO: <? echo $team_oo_name ?> </h3> 
 
@@ -566,15 +566,15 @@ if ($nextresult==$numrounds)
                     
                     <label for="<?echo "speaker_$speaker2_oo_id";?>"><?echo $speaker2_oo_name;?></label>
                     <input type="text" id="<?echo "speaker_$speaker2_oo_id";?>" name="<?echo "speaker_$speaker2_oo_id";?>" value="<?echo $speaker2_oo_score;?>"/><br/><br/>
- 	    <? if (@$same_validate==0)  {echo "</font>";} ?>
+         <? if (@$same_validate==0)  {echo "</font>";} ?>
             </div>
 
             <? 
-	    $tag="";
+        $tag="";
 
-	    if (((@$team_cg_score == @$team_og_score) OR (@$team_cg_score == @$team_oo_score) OR (@$team_cg_score == @$team_co_score)) AND $validate==0)
-	      $tag="class=\"error\"";
-        	?>
+        if (((@$team_cg_score == @$team_og_score) OR (@$team_cg_score == @$team_oo_score) OR (@$team_cg_score == @$team_co_score)) AND $validate==0)
+          $tag="class=\"error\"";
+            ?>
 
             
             <div id="cg" <?echo $tag;?>>
@@ -589,10 +589,10 @@ if ($nextresult==$numrounds)
             </div>
 
             <? 
-	    $tag="";
-	    if (((@$team_co_score == @$team_og_score) OR (@$team_co_score == @$team_oo_score) OR (@$team_co_score == @$team_cg_score)) AND $validate==0)
-	      $tag="class=\"error\"";
-        	?>
+        $tag="";
+        if (((@$team_co_score == @$team_og_score) OR (@$team_co_score == @$team_oo_score) OR (@$team_co_score == @$team_cg_score)) AND $validate==0)
+          $tag="class=\"error\"";
+            ?>
 
             <div id="co" <?echo $tag;?>>
 
@@ -605,11 +605,11 @@ if ($nextresult==$numrounds)
                     <input type="text" id="<?echo "speaker_$speaker2_co_id";?>" name="<?echo "speaker_$speaker2_co_id";?>" value="<?echo $speaker2_co_score;?>"/><br/><br/>
                 
             </div>
-	       
-	    <div class="submit">
-	      <input type="submit" name="Submit" value="Submit">
-	      <input type="button" value="Cancel" onClick="location.replace('result.php?moduletype=currentround')"/>
-	    </div>
+           
+        <div class="submit">
+          <input type="submit" name="Submit" value="Submit">
+          <input type="button" value="Cancel" onClick="location.replace('result.php?moduletype=currentround')"/>
+        </div>
 
         </form>
               
@@ -617,20 +617,20 @@ if ($nextresult==$numrounds)
     }
     
     if($action=="process")
-    {	
+    {    
       echo "<h3>Debate Details</h3>\n";
       echo "<p>Venue : $venue</p>\n";
-		$rangequery = "SELECT * FROM highlight WHERE type = 'result' ";
-		$rangeresult = mysql_query($rangequery);
-		$rangerow = mysql_fetch_assoc($rangeresult);
-		if ($rangerow)
-		{	$lower_limit = $rangerow['lowerlimit'];
-			$upper_limit = $rangerow['upperlimit'];
-		}
-		else
-		{	$lower_limit = '0';
-			$upper_limit = '100';
-		}
+        $rangequery = "SELECT * FROM highlight WHERE type = 'result' ";
+        $rangeresult = mysql_query($rangequery);
+        $rangerow = mysql_fetch_assoc($rangeresult);
+        if ($rangerow)
+        {    $lower_limit = $rangerow['lowerlimit'];
+            $upper_limit = $rangerow['upperlimit'];
+        }
+        else
+        {    $lower_limit = '0';
+            $upper_limit = '100';
+        }
 
       //sort scores to find position
       $scores_arr['og']=$team_og_score;
@@ -645,14 +645,14 @@ if ($nextresult==$numrounds)
       echo "<h3>OG: $team_og_name</h3>\n";
       echo "<h3>($team_og_score)</h3>\n";
       if (($speaker1_og_score < $lower_limit) OR ($speaker1_og_score > $upper_limit))
-	echo "<p class=\"outrange\">$speaker1_og_name ($speaker1_og_score)</p>\n";
+    echo "<p class=\"outrange\">$speaker1_og_name ($speaker1_og_score)</p>\n";
       else
-	echo "<p>$speaker1_og_name ($speaker1_og_score)</p>\n";
+    echo "<p>$speaker1_og_name ($speaker1_og_score)</p>\n";
 
       if (($speaker2_og_score < $lower_limit) OR ($speaker2_og_score > $upper_limit))
-	echo "<p class=\"outrange\">$speaker2_og_name ($speaker2_og_score)</p>\n";
+    echo "<p class=\"outrange\">$speaker2_og_name ($speaker2_og_score)</p>\n";
       else
-	echo "<p>$speaker2_og_name ($speaker2_og_score)</p>\n";
+    echo "<p>$speaker2_og_name ($speaker2_og_score)</p>\n";
       echo "</div>\n";
       
       echo "<div id=\"oo\">\n";      
@@ -660,13 +660,13 @@ if ($nextresult==$numrounds)
       echo "<h3>OO: $team_oo_name</h3>\n";
       echo "<h3>($team_oo_score)</h3>\n";
       if (($speaker1_oo_score < $lower_limit) OR ($speaker1_oo_score > $upper_limit))
-	echo "<p class=\"outrange\">$speaker1_oo_name ($speaker1_oo_score)</p>\n";
+    echo "<p class=\"outrange\">$speaker1_oo_name ($speaker1_oo_score)</p>\n";
       else
-	echo "<p>$speaker1_oo_name ($speaker1_oo_score)</p>";
+    echo "<p>$speaker1_oo_name ($speaker1_oo_score)</p>";
       if (($speaker2_oo_score < $lower_limit) OR ($speaker2_oo_score > $upper_limit))
-	echo "<p class=\"outrange\">$speaker2_oo_name ($speaker2_oo_score)</p>\n";
+    echo "<p class=\"outrange\">$speaker2_oo_name ($speaker2_oo_score)</p>\n";
       else
-	echo "<p>$speaker2_oo_name ($speaker2_oo_score)</p>\n";
+    echo "<p>$speaker2_oo_name ($speaker2_oo_score)</p>\n";
       
       echo "</div>\n";
 
@@ -675,13 +675,13 @@ if ($nextresult==$numrounds)
       echo "<h3>CG: $team_cg_name</h3>\n";
       echo "<h3> ($team_cg_score)</h3>";
       if (($speaker1_cg_score < $lower_limit) OR ($speaker1_cg_score > $upper_limit))
-	echo "<p class=\"outrange\">$speaker1_cg_name ($speaker1_cg_score)</p>\n";
+    echo "<p class=\"outrange\">$speaker1_cg_name ($speaker1_cg_score)</p>\n";
       else
-	echo "<p>$speaker1_cg_name ($speaker1_cg_score)</p>\n";
+    echo "<p>$speaker1_cg_name ($speaker1_cg_score)</p>\n";
       if (($speaker2_cg_score < $lower_limit) OR ($speaker2_cg_score > $upper_limit))
-	echo "<p class=\"outrange\">$speaker2_cg_name ($speaker2_cg_score)</p>\n";
+    echo "<p class=\"outrange\">$speaker2_cg_name ($speaker2_cg_score)</p>\n";
       else
-	echo "<p>$speaker2_cg_name ($speaker2_cg_score)</p>\n";
+    echo "<p>$speaker2_cg_name ($speaker2_cg_score)</p>\n";
 
       echo "</div>\n";
       
@@ -690,13 +690,13 @@ if ($nextresult==$numrounds)
       echo "<h3>CO: $team_co_name</h3>\n";
       echo "<h3>($team_co_score)</h3>";
       if (($speaker1_co_score < $lower_limit) OR ($speaker1_co_score > $upper_limit))
-	echo "<p class=\"outrange\">$speaker1_co_name ($speaker1_co_score)</p>\n";
+    echo "<p class=\"outrange\">$speaker1_co_name ($speaker1_co_score)</p>\n";
       else
-	echo "<p>$speaker1_co_name ($speaker1_co_score)</p>\n";
+    echo "<p>$speaker1_co_name ($speaker1_co_score)</p>\n";
       if (($speaker2_co_score < $lower_limit) OR ($speaker2_co_score > $upper_limit))
-	echo "<p class=\"outrange\">$speaker2_co_name ($speaker2_co_score)</p>\n";
+    echo "<p class=\"outrange\">$speaker2_co_name ($speaker2_co_score)</p>\n";
       else
-	echo "<p>$speaker2_co_name ($speaker2_co_score)</p>\n";
+    echo "<p>$speaker2_co_name ($speaker2_co_score)</p>\n";
 
       echo "</div>\n";
 
@@ -706,8 +706,8 @@ if ($nextresult==$numrounds)
       
       
       array_multisort ($result_score_array, SORT_DESC,
-		       $result_teamname_array,
-		       $result_teamid_array);
+               $result_teamname_array,
+               $result_teamid_array);
       
 
 
@@ -729,8 +729,8 @@ if ($nextresult==$numrounds)
 
             <input type="button" name="Back" onClick="history.go(-1)" value="Back">
 
-       	    </form>
-	       </div>
+               </form>
+           </div>
               
         <?
     

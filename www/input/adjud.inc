@@ -10,12 +10,12 @@
 
 //Get POST values and validate/convert them
 
-$univ_id=trim($_POST['univ_id']);
-$adjud_name=trim($_POST['adjud_name']);
-$ranking=trim($_POST['ranking']);
-$active=strtoupper(trim($_POST['active']));
-$conflicts=strtoupper(trim($_POST['conflicts']));
-$actionhidden=trim($_POST['actionhidden']); //Hidden form variable to indicate action
+$univ_id=trim(@$_POST['univ_id']);
+$adjud_name=trim(@$_POST['adjud_name']);
+$ranking=trim(@$_POST['ranking']);
+$active=strtoupper(trim(@$_POST['active']));
+$conflicts=strtoupper(trim(@$_POST['conflicts']));
+$actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
 
 if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
   {
@@ -68,7 +68,7 @@ if ($action=="delete")
     else
       {
         //Delete Stuff
-        $adjud_id=trim($_GET['adjud_id']);
+        $adjud_id=trim(@$_GET['adjud_id']);
         $query="DELETE FROM adjudicator WHERE adjud_id='$adjud_id'";
         $result=mysql_query($query);
     
@@ -116,7 +116,7 @@ if ($actionhidden=="add")
 if ($actionhidden=="edit")
   {
     
-    $adjud_id=trim($_POST['adjud_id']);
+    $adjud_id=trim(@$_POST['adjud_id']);
     //Check Validation
     if ($validate==1)
       {
@@ -153,7 +153,7 @@ if ($action=="edit")
     //Check for Adjud ID. Issue Error and switch to display if missing or not found
     if ($actionhidden!="edit")
       {
-        $adjud_id=trim($_GET['adjud_id']); //Read in adjud_id from querystring
+        $adjud_id=trim(@$_GET['adjud_id']); //Read in adjud_id from querystring
         
 
         //Extract values from database

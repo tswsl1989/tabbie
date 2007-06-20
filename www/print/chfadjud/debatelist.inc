@@ -11,7 +11,7 @@ Purpose :   This file prints the debate list for the CA/DCAs for use before manu
 
 include("config/dbconnection.php"); //Database Connection
 
-$action=$_GET['action'];
+$action=@$_GET['action'];
 
 $roundno = $numdraws + 1;
 

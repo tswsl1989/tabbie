@@ -10,12 +10,12 @@ Purpose :   Handles all required print modules
 
 //Determine action and moduletype and branch accordingly
 
-$moduletype=trim($_GET['moduletype']); //moduletype : main, adjudicator, floor, chfadjud
+$moduletype=trim(@$_GET['moduletype']); //moduletype : main, adjudicator, floor, chfadjud
 if (!$moduletype) $moduletype="main"; //set to main if empty
 
-$list=trim($_POST['list']);
+$list=trim(@$_POST['list']);
 if (!$list)
-{	$list=trim($_GET['list']);
+{	$list=trim(@$_GET['list']);
 	if (!$list) $list="main"; //set to main if empty
 }
 

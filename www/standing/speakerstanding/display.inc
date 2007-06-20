@@ -8,12 +8,12 @@ Purpose :   Display the speaker standings.
            
 ******************************************************************************/
 
-$action=$_GET['action'];
-$warning=$_GET['warning'];
+$action=@$_GET['action'];
+$warning=@$_GET['warning'];
 
-$list=trim($_POST['list']);
+$list=trim(@$_POST['list']);
 if (!$list)
-{	$list=trim($_GET['list']); //list : all, esl, break, eslbreak
+{	$list=trim(@$_GET['list']); //list : all, esl, break, eslbreak
 	if (!$list) $list="all"; //set to all if empty
 }
 

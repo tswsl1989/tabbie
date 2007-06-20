@@ -9,7 +9,7 @@ Purpose :   Calculate the draw for the current round taking into account all
            
 ******************************************************************************/
 
-$action=trim($_GET['action']); //Check action
+$action=trim(@$_GET['action']); //Check action
 $title="Draw : Round ".$nextround;
 //Check for number of teams and venues
 $validate=1;

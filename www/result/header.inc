@@ -26,7 +26,7 @@
     <h2 class="hide">Results Submenu</h2>
     <ul>
       <?
-         $roundno=$_GET['roundno'];
+         $roundno=@$_GET['roundno'];
 	 for($x=0;$x<$numresults;$x++) 
 	   {
 	     if ($roundno==($x+1))

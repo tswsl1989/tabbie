@@ -10,9 +10,9 @@
 
 //Get POST values and validate/convert them
 
-$univ_name=trim($_POST['univ_name']);
-$univ_code=strtoupper(trim($_POST['univ_code']));
-$actionhidden=trim($_POST['actionhidden']); //Hidden form variable to indicate action
+$univ_name=trim(@$_POST['univ_name']);
+$univ_code=strtoupper(trim(@$_POST['univ_code']));
+$actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
 
 if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
   {
@@ -36,7 +36,7 @@ if ($action=="delete")
     else
       {    
         //Delete Stuff
-        $univ_id=trim($_GET['univ_id']);
+        $univ_id=trim(@$_GET['univ_id']);
         $query="DELETE FROM university WHERE univ_id='$univ_id'";
         $result=mysql_query($query);
     
@@ -85,7 +85,7 @@ if ($actionhidden=="add")
 if ($actionhidden=="edit")
   {
     
-    $univ_id=trim($_POST['univ_id']);
+    $univ_id=trim(@$_POST['univ_id']);
     //Check Validation
     if ($validate==1)
       {
@@ -123,7 +123,7 @@ if ($action=="edit")
     //Check for Univ ID. Issue Error and switch to display if missing or not found
     if ($actionhidden!="edit")
       {
-        $univ_id=trim($_GET['univ_id']); //Read in venue_id from querystring
+        $univ_id=trim(@$_GET['univ_id']); //Read in venue_id from querystring
         
 
         //Extract values from database

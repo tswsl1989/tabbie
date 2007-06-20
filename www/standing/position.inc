@@ -12,7 +12,7 @@ include("header.inc");
 
 include("config/dbconnection.php"); //Database Connection
 
-$round=trim($_POST['round']);
+$round=trim(@$_POST['round']);
 
 //Check Database
 $query="SHOW TABLES LIKE 'draw_round%'";

@@ -8,7 +8,7 @@ Purpose :   Display the team standings.
            
 ******************************************************************************/
 
-$action=$_GET['action'];
+$action=@$_GET['action'];
 
 $title = "Position Count";
 

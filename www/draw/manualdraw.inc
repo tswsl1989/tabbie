@@ -9,10 +9,10 @@
            
 ******************************************************************************/
 
-$action=trim($_GET['action']); //Check action
+$action=trim(@$_GET['action']); //Check action
 if ($action=="") $action="display";
 
-$debate_id=trim($_GET['debate_id']);
+$debate_id=trim(@$_GET['debate_id']);
 $title="Draw : Round ".$nextround;
 
 $query="SHOW TABLES LIKE 'temp%round_$nextround'";
@@ -48,7 +48,7 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
        {
 
 	 //Check for venue edit
-	 $venue_id_edit=$_POST["venueselect"];
+	 $venue_id_edit=@$_POST["venueselect"];
 	 if (($venue_id_edit)&&($venue_id_edit!=$venue_id))
 	   {
 	     //Check if venue valid
@@ -86,7 +86,7 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 	   {
 	     $adjud_id=$row['adjud_id'];
             
-	     if ($_POST["radio_$adjud_id"]=="chair") 
+	     if (@$_POST["radio_$adjud_id"]=="chair") 
 	       {
 		 if ($chief==0)
 		   $chief=1;
@@ -114,9 +114,9 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 	       {
 		 $adjud_id=$row['adjud_id'];
 
-		 if ($_POST["radio_$adjud_id"]!="none")
+		 if (@$_POST["radio_$adjud_id"]!="none")
 		   {
-		     $status=$_POST["radio_$adjud_id"];
+		     $status=@$_POST["radio_$adjud_id"];
 		     $validate=1;
 		     if ($status=="chair")
 		       {
@@ -126,7 +126,7 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 			 if (mysql_num_rows($chiefresult)>0)
 			   {
 			     $rowchief=mysql_fetch_assoc($chiefresult);
-			     if (($_POST["check_{$rowchief['adjud_id']}"])!="on")
+			     if ((@$_POST["check_{$rowchief['adjud_id']}"])!="on")
 			       {
 				 $validate=0;
 				 $msg[]="ERROR! Attempt to assign more than one Chair Adjudicator";
@@ -152,7 +152,7 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 	       {
 		 $adjud_id=$row['adjud_id'];
 
-		 if ($_POST["check_$adjud_id"]=="on")
+		 if (@$_POST["check_$adjud_id"]=="on")
 		   {
 		     $query="DELETE FROM temp_adjud_round_$nextround WHERE adjud_id='$adjud_id'";
 		     mysql_query($query);

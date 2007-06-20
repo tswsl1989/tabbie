@@ -11,10 +11,10 @@ Purpose :   Handle all the functions of the input module including the input
 
 //Determine action and moduletype and branch accordingly
 
-$moduletype=trim($_GET['moduletype']); //module type : adjud univ venue team main
+$moduletype=trim(@$_GET['moduletype']); //module type : adjud univ venue team main
 if (!$moduletype) $moduletype="main"; //set to main if empty
 
-$action=trim($_GET['action']); //action : add edit delete display
+$action=trim(@$_GET['action']); //action : add edit delete display
 if (!$action) $action="display"; //set to display if empty
 
 //Set document title according to module and action

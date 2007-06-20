@@ -13,7 +13,7 @@
 <div id="content">
 <h2>List of Free Adjudicators</h2>
 <?php
-$nextround=$_GET['nextround'];
+$nextround=@$_GET['nextround'];
 $query = "SELECT A.adjud_id, A.adjud_name, A.ranking, A.conflicts ";
 $query .= "FROM adjudicator A ";
 $query .= "LEFT JOIN temp_adjud_round_$nextround T ON A.adjud_id = T.adjud_id ";

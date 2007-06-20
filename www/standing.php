@@ -10,7 +10,7 @@ Purpose :   Handles all required displays
 
 //Determine action and moduletype and branch accordingly
 
-$moduletype=trim($_GET['moduletype']); //moduletype : main, teamstanding, speakerstanding, position
+$moduletype=trim(@$_GET['moduletype']); //moduletype : main, teamstanding, speakerstanding, position
 if (!$moduletype) $moduletype="main"; //set to main if empty
 
 //Set document title according to module and list

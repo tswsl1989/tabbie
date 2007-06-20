@@ -8,7 +8,7 @@ Purpose :   Display the round points breakup
            
 ******************************************************************************/
 
-$warning=$_GET['warning'];
+$warning=@$_GET['warning'];
 
 if (($numdraws <> $numresults) && !$round)
 {   
@@ -19,9 +19,9 @@ if (($numdraws <> $numresults) && !$round)
         $action = "warning";
 }
 
-$list=trim($_POST['list']);
+$list=trim(@$_POST['list']);
 if (!$list)
-{	$list=trim($_GET['list']); //list : all, esl, break, eslbreak
+{	$list=trim(@$_GET['list']); //list : all, esl, break, eslbreak
 	if (!$list) $list="all"; //set to all if empty
 }
 

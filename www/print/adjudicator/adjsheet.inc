@@ -8,8 +8,8 @@ Purpose :   Display the adjudicator print modules
            
 ******************************************************************************/
 
-$action=$_GET['action'];
-$warning=$_GET['warning'];
+$action=@$_GET['action'];
+$warning=@$_GET['warning'];
 
 if ($numdraws==$numresults)
 {   

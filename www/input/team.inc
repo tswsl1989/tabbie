@@ -10,14 +10,14 @@
 
 //Get POST values and validate/convert them
 
-$univ_id=trim($_POST['univ_id']);
-$team_code=trim($_POST['team_code']);
-$esl=strtoupper(trim($_POST['esl']));
-$active=strtoupper(trim($_POST['active']));
-$composite=strtoupper(trim($_POST['composite']));
-$speaker1=trim($_POST['speaker1']);
-$speaker2=trim($_POST['speaker2']);
-$actionhidden=trim($_POST['actionhidden']); //Hidden form variable to indicate action
+$univ_id=trim(@$_POST['univ_id']);
+$team_code=trim(@$_POST['team_code']);
+$esl=strtoupper(trim(@$_POST['esl']));
+$active=strtoupper(trim(@$_POST['active']));
+$composite=strtoupper(trim(@$_POST['composite']));
+$speaker1=trim(@$_POST['speaker1']);
+$speaker2=trim(@$_POST['speaker2']);
+$actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
 
 
 if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
@@ -76,7 +76,7 @@ if ($action=="delete")
       {    
     
         //Delete Stuff (From Both Speaker and Team)
-        $team_id=trim($_GET['team_id']);
+        $team_id=trim(@$_GET['team_id']);
     
         $query1="DELETE FROM speaker WHERE team_id='$team_id'";
         $result1=mysql_query($query1);
@@ -159,9 +159,9 @@ if ($actionhidden=="add")
 if ($actionhidden=="edit")
   {
     
-    $team_id=trim($_POST['team_id']);
-    $speaker1id=trim($_POST['speaker1id']);
-    $speaker2id=trim($_POST['speaker2id']);
+    $team_id=trim(@$_POST['team_id']);
+    $speaker1id=trim(@$_POST['speaker1id']);
+    $speaker2id=trim(@$_POST['speaker2id']);
     //Check Validation
     if ($validate==1)
       {
@@ -212,7 +212,7 @@ if ($action=="edit")
     //Check for Team ID. Issue Error and switch to display if missing or not found
     if ($actionhidden!="edit")
       {
-        $team_id=trim($_GET['team_id']); //Get team_id from querystring
+        $team_id=trim(@$_GET['team_id']); //Get team_id from querystring
 
         //Extract values from database
         $result=mysql_query("SELECT * FROM team WHERE team_id='$team_id'");

@@ -9,8 +9,8 @@ Purpose :   Display the results of the previous rounds in the tournament.
 ******************************************************************************/
 
 //Calculate Round Number (should have been already validated)
-$action=$_GET['action'];
-$roundno=$_GET['roundno'];
+$action=@$_GET['action'];
+$roundno=@$_GET['roundno'];
 
 $validate=1;
 if ((!$roundno)||(!ereg("^[1-9]$",$roundno)) )

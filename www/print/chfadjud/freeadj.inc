@@ -11,7 +11,7 @@ Purpose :   This file prints the free adjudicators for the CA/DCAs before manual
 
 include("config/dbconnection.php"); //Database Connection
 
-$action=$_GET['action'];
+$action=@$_GET['action'];
 
 $roundno = $numdraws + 1;
 

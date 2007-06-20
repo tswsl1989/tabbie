@@ -17,7 +17,7 @@ function present($adjud_id,$adj_array)
  }
 include("config/dbconnection.php"); //Database Connection
 
-$action=$_GET['action'];
+$action=@$_GET['action'];
 
 $roundno = $numdraws;
 

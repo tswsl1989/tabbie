@@ -10,10 +10,10 @@
 
 //Get POST values and validate/convert them
 
-$venue_name=trim($_POST['venue_name']);
-$venue_location=trim($_POST['venue_location']);
-$active=strtoupper(trim($_POST['active']));
-$actionhidden=trim($_POST['actionhidden']); //Hidden form variable to indicate action
+$venue_name=trim(@$_POST['venue_name']);
+$venue_location=trim(@$_POST['venue_location']);
+$active=strtoupper(trim(@$_POST['active']));
+$actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
 
 if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
   {
@@ -43,7 +43,7 @@ if ($action=="delete")
       {    
     
         //Delete Stuff
-        $venue_id=trim($_GET['venue_id']);
+        $venue_id=trim(@$_GET['venue_id']);
         $query="DELETE FROM venue WHERE venue_id='$venue_id'";
         $result=mysql_query($query);
     
@@ -91,7 +91,7 @@ if ($actionhidden=="add")
 if ($actionhidden=="edit")
   {
     
-    $venue_id=trim($_POST['venue_id']);
+    $venue_id=trim(@$_POST['venue_id']);
     //Check Validation
     if ($validate==1)
       {
@@ -128,7 +128,7 @@ if ($action=="edit")
     //Check for Venue ID. Issue Error and switch to display if missing or not found
     if ($actionhidden!="edit")
       {
-        $venue_id=trim($_GET['venue_id']); //Read in venue_id from querystring
+        $venue_id=trim(@$_GET['venue_id']); //Read in venue_id from querystring
         
 
         //Extract values from database

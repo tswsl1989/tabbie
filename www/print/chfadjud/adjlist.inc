@@ -11,7 +11,7 @@ Purpose :   This file prints the adjudicator history for the CA/DCAs
 
 include("config/dbconnection.php"); //Database Connection
 
-$action=$_GET['action'];
+$action=@$_GET['action'];
 
 $roundno = $numdraws;
 

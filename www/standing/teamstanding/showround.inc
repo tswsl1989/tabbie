@@ -8,12 +8,12 @@ Purpose :   Display the team standings at the end of a selected round
            
 ******************************************************************************/
 
-$action=$_GET['action'];
+$action=@$_GET['action'];
 $roundno=$round;
 
-$list=trim($_POST['list']);
+$list=trim(@$_POST['list']);
 if (!$list)
-{	$list=trim($_GET['list']); //list : all, esl, break, eslbreak
+{	$list=trim(@$_GET['list']); //list : all, esl, break, eslbreak
 	if (!$list) $list="all"; //set to all if empty
 }
 

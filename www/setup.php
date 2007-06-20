@@ -36,13 +36,13 @@ Purpose :   For the TD/CA to set the highlight ranges for draw and results
 <?
 include("config/dbconnection.php"); //Database Connection
 
-$action=trim($_GET['action']);
+$action=trim(@$_GET['action']);
 if (!$action) $action="display"; //set to round if empty
-$type=trim($_GET['type']);
-$actionhidden=trim($_POST['actionhidden']);
-$hiddentype=trim($_POST['hiddentype']);
-$lowerlimit=trim($_POST['lowerlimit']);
-$upperlimit=trim($_POST['upperlimit']);
+$type=trim(@$_GET['type']);
+$actionhidden=trim(@$_POST['actionhidden']);
+$hiddentype=trim(@$_POST['hiddentype']);
+$lowerlimit=trim(@$_POST['lowerlimit']);
+$upperlimit=trim(@$_POST['upperlimit']);
 
 
 if ($actionhidden =="edit") //do validation

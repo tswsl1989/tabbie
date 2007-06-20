@@ -12,7 +12,7 @@ Purpose :   This file manages all the functions of the draw, including creation
 
 include("config/dbconnection.php"); //Database Connection
 
-$moduletype=trim($_GET['moduletype']); //module type : round currentdraw
+$moduletype=trim(@$_GET['moduletype']); //module type : round currentdraw
 if (!$moduletype) $moduletype="round"; //set to round if empty
 
 

@@ -8,7 +8,7 @@ Purpose :   Handles the entry of results of the debates in the current draw.
            
 ******************************************************************************/
 
-$action=trim($_GET['action']); //Check action
+$action=trim(@$_GET['action']); //Check action
 $validate=1;
 
 
@@ -26,7 +26,7 @@ else
     if (($action=="doedit")||($action=="process")||($action=="edit"))
     {
         //Validate debate_id
-        $debate_id=$_GET['debate_id'];
+        $debate_id=@$_GET['debate_id'];
 
         $query="SELECT * FROM temp_result_round_$nextresult WHERE debate_id='$debate_id'";
         $result=mysql_query($query);
@@ -47,12 +47,12 @@ else
             $row=mysql_fetch_assoc($result);
             $speaker1_og_id=$row['speaker_id'];
             $speaker1_og_name=$row['speaker_name'];
-            $speaker1_og_score=$_POST["speaker_$speaker1_og_id"];
+            $speaker1_og_score=@$_POST["speaker_$speaker1_og_id"];
             //Get second speaker
             $row=mysql_fetch_assoc($result);
             $speaker2_og_id=$row['speaker_id'];
             $speaker2_og_name=$row['speaker_name'];
-            $speaker2_og_score=$_POST["speaker_$speaker2_og_id"];
+            $speaker2_og_score=@$_POST["speaker_$speaker2_og_id"];
 
             
             $query="SELECT S.speaker_id, S.speaker_name ";
@@ -64,12 +64,12 @@ else
             $row=mysql_fetch_assoc($result);
             $speaker1_oo_id=$row['speaker_id'];
             $speaker1_oo_name=$row['speaker_name'];
-            $speaker1_oo_score=$_POST["speaker_$speaker1_oo_id"];
+            $speaker1_oo_score=@$_POST["speaker_$speaker1_oo_id"];
             //Get second speaker
             $row=mysql_fetch_assoc($result);
             $speaker2_oo_id=$row['speaker_id'];
             $speaker2_oo_name=$row['speaker_name'];
-            $speaker2_oo_score=$_POST["speaker_$speaker2_oo_id"];
+            $speaker2_oo_score=@$_POST["speaker_$speaker2_oo_id"];
 
 
 
@@ -82,12 +82,12 @@ else
             $row=mysql_fetch_assoc($result);
             $speaker1_cg_id=$row['speaker_id'];
             $speaker1_cg_name=$row['speaker_name'];
-            $speaker1_cg_score=$_POST["speaker_$speaker1_cg_id"];
+            $speaker1_cg_score=@$_POST["speaker_$speaker1_cg_id"];
             //Get second speaker
             $row=mysql_fetch_assoc($result);
             $speaker2_cg_id=$row['speaker_id'];
             $speaker2_cg_name=$row['speaker_name'];
-            $speaker2_cg_score=$_POST["speaker_$speaker2_cg_id"];
+            $speaker2_cg_score=@$_POST["speaker_$speaker2_cg_id"];
            
             $query="SELECT S.speaker_id, S.speaker_name ";
             $query.="FROM temp_speaker_round_$nextresult TS, speaker S, draw_round_$nextresult D  ";
@@ -98,12 +98,12 @@ else
             $row=mysql_fetch_assoc($result);
             $speaker1_co_id=$row['speaker_id'];
             $speaker1_co_name=$row['speaker_name'];
-            $speaker1_co_score=$_POST["speaker_$speaker1_co_id"];
+            $speaker1_co_score=@$_POST["speaker_$speaker1_co_id"];
             //Get second speaker
             $row=mysql_fetch_assoc($result);
             $speaker2_co_id=$row['speaker_id'];
             $speaker2_co_name=$row['speaker_name'];
-            $speaker2_co_score=$_POST["speaker_$speaker2_co_id"];
+            $speaker2_co_score=@$_POST["speaker_$speaker2_co_id"];
             
 
             //Get Team Names & Venue
@@ -281,14 +281,14 @@ else
 	    $result_teamname_array = array($team_og_name,$team_oo_name,$team_cg_name,$team_co_name);
 	    $result_teamid_array = array($team_og_id,$team_oo_id,$team_cg_id,$team_co_id);
 	           	    
-	    $speaker1_og_post_score = $_POST["speaker_$speaker1_og_id"];
-	    $speaker2_og_post_score = $_POST["speaker_$speaker2_og_id"];
-	    $speaker1_oo_post_score = $_POST["speaker_$speaker1_oo_id"];
-	    $speaker2_oo_post_score = $_POST["speaker_$speaker2_oo_id"];
-	    $speaker1_cg_post_score = $_POST["speaker_$speaker1_cg_id"];
-	    $speaker2_cg_post_score = $_POST["speaker_$speaker2_cg_id"];
-	    $speaker1_co_post_score = $_POST["speaker_$speaker1_co_id"];
-	    $speaker2_co_post_score = $_POST["speaker_$speaker2_co_id"];
+	    $speaker1_og_post_score = @$_POST["speaker_$speaker1_og_id"];
+	    $speaker2_og_post_score = @$_POST["speaker_$speaker2_og_id"];
+	    $speaker1_oo_post_score = @$_POST["speaker_$speaker1_oo_id"];
+	    $speaker2_oo_post_score = @$_POST["speaker_$speaker2_oo_id"];
+	    $speaker1_cg_post_score = @$_POST["speaker_$speaker1_cg_id"];
+	    $speaker2_cg_post_score = @$_POST["speaker_$speaker2_cg_id"];
+	    $speaker1_co_post_score = @$_POST["speaker_$speaker1_co_id"];
+	    $speaker2_co_post_score = @$_POST["speaker_$speaker2_co_id"];
 
         }
         else

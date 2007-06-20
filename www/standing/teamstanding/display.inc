@@ -91,7 +91,7 @@ if ($action == "display")
 			
 	// Create array with all the team ids
 	$index=0;
-	while ($row=mysql_fetch_assoc($result))
+	while ($row = mysql_fetch_assoc($result))
 	{
 	    $team_array[$index] = array("index" => $index++,
 	                        "teamid" => $row['team_id'],
@@ -100,21 +100,24 @@ if ($action == "display")
 	                        "speaker" => 0);    
 	}
 	
-	
-	// Fill up all the team names
-	$index=0;
-	while ($index<count($team_array))
-	{
-	    $teamid = $team_array[$index]["teamid"];
-	    $name_query = "SELECT univ.univ_code AS univ_code, team.team_code AS team_code ";
-	    $name_query .= "FROM university AS univ, team AS team ";
-	    $name_query .= "WHERE team.team_id=$teamid AND team.univ_id = univ.univ_id ";
-	    $name_result = mysql_query($name_query);
-	    $name_row = mysql_fetch_assoc($name_result);
-	    $teamname = $name_row['univ_code'].' '.$name_row['team_code'];
-	    $team_array[$index++]["teamname"] = $teamname;
+	function fillUpTeamnames($team_array) {
+		$result = array();
+		// Fill up all the team names
+		foreach ($team_array as $cc)
+		{
+			$teamid = $cc["teamid"];
+			$name_query = "SELECT univ.univ_code AS univ_code, team.team_code AS team_code ";
+			$name_query .= "FROM university AS univ, team AS team ";
+			$name_query .= "WHERE team.team_id=$teamid AND team.univ_id = univ.univ_id ";
+			$name_result = mysql_query($name_query);
+			$name_row = mysql_fetch_assoc($name_result);
+			$teamname = $name_row['univ_code'].' '.$name_row['team_code'];
+			$cc["teamname"] = $teamname;
+			$result[] = $cc;
+		}
+		return $result;
 	}
-
+	$team_array = fillUpTeamnames($team_array);
 	
 	// Run through the array and add the points
 	foreach($team_array as $cc) 
@@ -178,13 +181,15 @@ if ($action == "display")
 	// Displaying the standings
 	echo "<table>\n";
 	echo "<tr><th>Position</th><th>Team Name</th><th>Score</th><th>Points</th></tr>\n";
-	for ($x=0;$x<count($team_array);$x++)
+	$x = 0;
+	foreach ($team_array as $cc)
 	{
+		$x++;
 	    echo "<tr>\n";
-	    	echo "<td>".($x+1)."</td>\n";
-	    	echo "<td>".$team_array[$x]["teamname"]."</td>\n";
-	    	echo "<td>".$team_array[$x]["score"]."</td>\n";
-	    	echo "<td>".$team_array[$x]["speaker"]."</td>\n";
+	    	echo "<td>".($x)."</td>\n";
+	    	echo "<td>".$cc["teamname"]."</td>\n";
+	    	echo "<td>".$cc["score"]."</td>\n";
+	    	echo "<td>".$cc["speaker"]."</td>\n";
 	    echo "</tr>\n";
 	    
 	}

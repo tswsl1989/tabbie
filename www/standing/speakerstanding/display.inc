@@ -93,19 +93,22 @@ if ($action == "display")
 	
 	
 	// Fill up all the team names
-	$index=0;
-	while ($index<count($speaker_array))
-	{
-	    $teamid = $speaker_array[$index]["teamid"];
-	    $name_query = "SELECT univ.univ_code AS univ_code, team.team_code AS team_code ";
-	    $name_query .= "FROM university AS univ, team AS team ";
-	    $name_query .= "WHERE team.team_id=$teamid AND team.univ_id = univ.univ_id ";
-	    $name_result = mysql_query($name_query);
-	    $name_row = mysql_fetch_assoc($name_result);
-	    $teamname = $name_row['univ_code'].' '.$name_row['team_code'];
-	    $speaker_array[$index++]["teamname"] = $teamname;
+	function fillUpTeamNames($speaker_array) {
+		$result = array();
+		foreach ($speaker_array as $speaker) {
+			$teamid = $speaker["teamid"];
+			$name_query = "SELECT univ.univ_code AS univ_code, team.team_code AS team_code ";
+			$name_query .= "FROM university AS univ, team AS team ";
+			$name_query .= "WHERE team.team_id=$teamid AND team.univ_id = univ.univ_id ";
+			$name_result = mysql_query($name_query);
+			$name_row = mysql_fetch_assoc($name_result);
+			$teamname = $name_row['univ_code'].' '.$name_row['team_code'];
+			$speaker["teamname"] = $teamname;
+			$result[] = $speaker;
+		}
+		return $result;
 	}
-	
+	$speaker_array = fillUpTeamNames($speaker_array);
 	
 	// Run through the array and add the points
 	foreach($speaker_array as $cc) 

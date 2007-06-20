@@ -54,66 +54,67 @@ if ($action == "display")
 	                        "co" => 0);    
 	}
 	
-	
 	// Run through the array and add the points
-	foreach($team_array as $cc) 
-	{
-		$index = $cc["index"];
-		$team_id = $cc["teamid"];
-		$og = 0;
-		$oo = 0;
-		$cg = 0;
-		$co = 0;
-		for ($x=1;$x<=$round;$x++)
-		{
-			// Check for OG
-			$score_query = "SELECT og FROM draw_round_$x WHERE og = '$team_id' ";
-			$score_result = mysql_query($score_query);
-			$score_count = mysql_num_rows($score_result);
-			if ($score_count > 0)
-				$og++;
+	function addPoints($team_array, $round) {
+		$result = array();
+		foreach($team_array as $team) {
+			$team_id = $team["teamid"];
+			$og = 0;
+			$oo = 0;
+			$cg = 0;
+			$co = 0;
+			for ($x = 1; $x <= $round; $x++)
+			{
+				// Check for OG
+				$score_query = "SELECT og FROM draw_round_$x WHERE og = '$team_id' ";
+				$score_result = mysql_query($score_query);
+				$score_count = mysql_num_rows($score_result);
+				if ($score_count > 0)
+					$og++;
+		
+				// Check for OO
+				$score_query = "SELECT oo FROM draw_round_$x WHERE oo = '$team_id' ";
+				$score_result = mysql_query($score_query);
+				$score_count = mysql_num_rows($score_result);
+				if ($score_count > 0)
+					$oo++;
+		
+				// Check for CG
+				$score_query = "SELECT cg FROM draw_round_$x WHERE cg = '$team_id' ";
+				$score_result = mysql_query($score_query);
+				$score_count = mysql_num_rows($score_result);
+				if ($score_count > 0)
+					$cg++;
+				
+				// Check for CO
+				$score_query = "SELECT co FROM draw_round_$x WHERE co = '$team_id' ";
+				$score_result = mysql_query($score_query);
+				$score_count = mysql_num_rows($score_result);
+				if ($score_count > 0)
+					$co++;
 	
-			// Check for OO
-			$score_query = "SELECT oo FROM draw_round_$x WHERE oo = '$team_id' ";
-			$score_result = mysql_query($score_query);
-			$score_count = mysql_num_rows($score_result);
-			if ($score_count > 0)
-				$oo++;
-	
-			// Check for CG
-			$score_query = "SELECT cg FROM draw_round_$x WHERE cg = '$team_id' ";
-			$score_result = mysql_query($score_query);
-			$score_count = mysql_num_rows($score_result);
-			if ($score_count > 0)
-				$cg++;
-			
-			// Check for CO
-			$score_query = "SELECT co FROM draw_round_$x WHERE co = '$team_id' ";
-			$score_result = mysql_query($score_query);
-			$score_count = mysql_num_rows($score_result);
-			if ($score_count > 0)
-				$co++;
-
+			}
+			$team["og"] = $og;
+			$team["oo"] = $oo;
+			$team["cg"] = $cg;
+			$team["co"] = $co;
+			$result[] = $team;
 		}
-		$team_array[$index]["og"] = $og;
-		$team_array[$index]["oo"] = $oo;
-		$team_array[$index]["cg"] = $cg;
-		$team_array[$index]["co"] = $co;
+		return $result;
 	}
+	$team_array = addPoints($team_array, $round);
 	
 	// Displaying the standings
 	echo "<table>\n";
 	echo "<tr><th>Team Name</th><th>OG</th><th>OO</th><th>CG</th><th>CO</th></tr>\n";
-	for ($x=0;$x<count($team_array);$x++)
-	{
+	foreach ($team_array as $team) {
 	    echo "<tr>\n";
-	    	echo "<td>".$team_array[$x]["teamname"]."</td>\n";
-	    	echo "<td>".$team_array[$x]["og"]."</td>\n";
-	    	echo "<td>".$team_array[$x]["oo"]."</td>\n";
-	    	echo "<td>".$team_array[$x]["cg"]."</td>\n";
-	    	echo "<td>".$team_array[$x]["co"]."</td>\n";
+	    	echo "<td>".$team["teamname"]."</td>\n";
+	    	echo "<td>".$team["og"]."</td>\n";
+	    	echo "<td>".$team["oo"]."</td>\n";
+	    	echo "<td>".$team["cg"]."</td>\n";
+	    	echo "<td>".$team["co"]."</td>\n";
 	    echo "</tr>\n";
-	    
 	}
 	echo "</table>\n";
 }	

@@ -51,7 +51,7 @@ if ($action == "display")
 {
 
 	//Open the text file
-	$filename = "print/outputs/chf_adjud_adj_list_$roundno.html"
+	$filename = "print/outputs/chf_adjud_adj_list_$roundno.html";
 	$fp = fopen($filename, "w");
 	
 	$text="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\"> \n<html> \n <head> ";

@@ -15,7 +15,7 @@ Purpose :   For the TD/CA to set the highlight ranges for draw and results
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-    <title>Input Module - <? echo $title;?></title>
+    <title>Input Module - <? echo @$title;?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="style.css">
 </head>

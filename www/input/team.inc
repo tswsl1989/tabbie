@@ -306,6 +306,7 @@ if ($action=="display")
       {
 	//Print Empty Message    
 	echo "<h3>No Teams Found.</h3>\n";
+    echo "<h3><a href=\"input.php?moduletype=team&amp;action=add\">Add New</a></h3>";
       }
     else
       {

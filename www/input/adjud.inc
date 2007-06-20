@@ -219,6 +219,7 @@ if ($action=="display")
       {
 	//Print Empty Message    
 	echo "<h3>No Adjudicators Found.</h3>";
+    echo "<h3><a href=\"input.php?moduletype=adjud&amp;action=add\">Add New</a></h3>";
       }
     else
       {

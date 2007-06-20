@@ -16,7 +16,7 @@ $query="SHOW TABLES LIKE 'draw_round%'";
 $result=mysql_query($query);
 $roundno=mysql_num_rows($result);
 
-$filename = "print/displayfiles/draw_$roundno.html";
+$filename = "print/display_files/draw_$roundno.html";
 $fp = fopen($filename, "w");
 
 $text="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\"> \n<html> \n <head> ";
@@ -50,7 +50,7 @@ while ($venue_row=mysql_fetch_assoc($venue_result))
 	$cg = $venue_row['cg_univ_code'].' '.$venue_row['cg_team_code'];
 	$co = $venue_row['co_univ_code'].' '.$venue_row['co_team_code'];
 
-	$colour=$color[$venue_location];
+	$colour = @$color[$venue_location];
 
 	$text= " <tr><td width=\"110\" style=\"background-color:$colour;\"><font size=\"5\"><b>$venue_name</b></font></td><td width=\"142\" style=\"background-color:$colour;\">$og</td><td width=\"142\" style=\"background-color:$colour;\">$oo</td><td width=\"142\" style=\"background-color:$colour;\">$cg</td><td width=\"142\" style=\"background-color:$colour;\">$co</td>\n ";
 
@@ -135,8 +135,11 @@ $text.=" window.onload=initialize \n";
 $text.=" </script>\n </div>\n </body>\n </html>\n ";
 fputs($fp,$text);
 fclose($fp);
+copy($filename, "print/display_files/external.html");
 echo "<h3>File created successfully! </h3>";
 ?>
+<p><a href="print/display_files/external.html">Show file for this round</a></p>
+<p><a href="print/display_files/tabdisplay.html">Display Tab</a></p>
 </div>
 </body>
 </html>

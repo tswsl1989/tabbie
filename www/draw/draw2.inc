@@ -1,14 +1,8 @@
 <?
-/******************************************************************************
-File    :   draw2.php
-
-Author  :   AK
-
-Purpose :   This file manages all the functions of the draw from round 2 
-        onwards.
-
-******************************************************************************/
-
+/*
+Purpose : This file manages all the functions of the draw from round 2 
+          onwards.
+*/
 
 /* ====================================================================== */
 /* To input test data into the array in any sequence                      */
@@ -61,17 +55,6 @@ while($row=mysql_fetch_assoc($result))
 /* To sort the array containing the containing team names and points      */
 /* ====================================================================== */
 
-/*
-print "Teams originally: <BR>";
-foreach($teams as $cc) {
-    foreach($cc as $dd) {
-        print "&nbsp; $dd";
-    }
-    print "<BR>";
-}
-print "<P>";
-*/
-
 $top_value = 0;
 foreach($teams as $aa) {
     if ($aa[1] > $top_value) {
@@ -93,17 +76,6 @@ while ($while_count >= 0) {
     }
     $while_count--;
 }
-
-
-/*
-print "Teams sorted : <BR>";
-foreach($sorted_array as $cc) {
-    foreach($cc as $k => $dd) {
-        print ". . .$k => $dd";
-    }
-    print "<BR>";
-}
-*/
 
 
 /* ====================================================================== */
@@ -139,16 +111,6 @@ for ($j=$random_count_start; $j < $number_of_teams; $j++) {
     $sorted_array[$j]["name"] = $sorted_array[$random]["name"];
     $sorted_array[$random]["name"] = $temp_variable;
 }
-
-/*
-print "Teams randomised: <BR>";
-foreach($sorted_array as $cc) {
-    foreach($cc as $k => $dd) {
-        print ". . .$k => $dd";
-    }
-    print "<BR>";
-}
-*/
 
 
 /* ====================================================================== */
@@ -337,20 +299,5 @@ for ($x=0;$x<count($sorted_array);$x=$x+4)
     for ($j=0;$j<4;$j++)
         $teamarray[$x+$j][0] = $temp_array[$j];
 }
-
-
-
-/*
-print "Teams rearramged within each debate: <BR>";
-foreach($teamarray as $cc) {
-    foreach($cc as $dd) {
-        print ". . . $dd";
-    }
-    print "<BR>";
-}
-*/
-
-
-
 
 ?>

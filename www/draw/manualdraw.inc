@@ -8,7 +8,7 @@
  the possible rules mentioned in the Tab rules draft.
            
 ******************************************************************************/
-require("includes/display.inc");
+require_once("includes/display.inc");
 
 $action=trim(@$_GET['action']); //Check action
 if ($action=="") $action="display";

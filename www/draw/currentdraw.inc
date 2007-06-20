@@ -4,23 +4,25 @@ Purpose :   Calculate the draw for the current round taking into account all
             the possible rules mentioned in the Tab rules draft.
 */
 require_once("includes/display.inc");
+require_once("includes/db_tools.inc");
+
 $action = @$_GET['action'];
 $title="Draw : Round " . $nextround;
 
 function count_rows($table, $where_clause = "1 = 1") {
     $query = "SELECT COUNT(*) FROM $table WHERE $where_clause";
-    $result = mysql_query($query);
+    $result = q($query);
     $row = mysql_fetch_row($result);
     return $row[0];
 }
 
 function get_num_rounds() {
-    $result = mysql_query("SHOW TABLES LIKE 'draw_round%'");
+    $result = q("SHOW TABLES LIKE 'draw_round%'");
     $numdraws = mysql_num_rows($result);
 }
 
 function get_num_completed_rounds() {
-    $result = mysql_query("SHOW TABLES LIKE 'result_round%'");
+    $result = q("SHOW TABLES LIKE 'result_round%'");
     $numdraws = mysql_num_rows($result);
 }
 
@@ -58,13 +60,13 @@ if (($action=="draw") && ($validate == 1)) {
 
     //Load Teams from Database
     $query="SELECT team_id, univ_id FROM team WHERE active='Y'";
-    $result=mysql_query($query);
+    $result=q($query);
 
     //Do Random Draw for first round
     if ($nextround==1)
     {
         $query="SELECT team_id, univ_id  FROM team WHERE active='Y'";
-        $result=mysql_query($query);
+        $result=q($query);
 
         //Load into array
         $index=0;
@@ -99,8 +101,8 @@ if (($action=="draw") && ($validate == 1)) {
     }
 
     //Store draw in temporary database
-    $tablename="temp_draw_round_$nextround";
-    mysql_query("DROP TABLE `$tablename`");
+    $tablename = "temp_draw_round_$nextround";
+    q("DROP TABLE `$tablename`");
 
     $query= "CREATE TABLE $tablename (
 debate_id MEDIUMINT(9) NOT NULL ,
@@ -111,26 +113,20 @@ co MEDIUMINT(9) NOT NULL ,
 venue_id MEDIUMINT(9) NOT NULL ,
 PRIMARY KEY (debate_id))";
 
-    $result = mysql_query($query);
-
-    $result1 = mysql_query("SELECT venue_id FROM venue WHERE active='Y'");
+    $result = q($query);
+    
+    $result1 = q("SELECT venue_id FROM venue WHERE active='Y'");
     while ($row1 = mysql_fetch_assoc($result1)) {
         $venue[] = $row1['venue_id'];
     }
 
-    //randomize order of venues
-    for($x=0; $x<count($venue); $x++) {
-        $randnum=rand(0,count($venue)-1);
-        $temp=$venue[$randnum];
-        $venue[$randnum]=$venue[$x];
-        $venue[$x]=$temp;
-    }
-
-    $index=0;
-    while ($index<count($teamarray))
+    shuffle($venue);
+    
+    $index = 0;
+    while ($index < count($teamarray))
     {
         //generate debate ID after multiplying current round with 10000
-        $debate_id=(10000 * $nextround) + ($index/4);
+        $debate_id = (10000 * $nextround) + ($index/4);
 
         $og=$teamarray[$index++][0];
         $oo=$teamarray[$index++][0];
@@ -139,8 +135,7 @@ PRIMARY KEY (debate_id))";
         $venue_id=array_shift($venue);
 
         //insert into database
-        $query="INSERT INTO $tablename(debate_id,og,oo,cg,co,venue_id) VALUES('$debate_id','$og','$oo','$cg','$co','$venue_id')";
-        $result=mysql_query($query);
+        q("INSERT INTO $tablename (debate_id, og, oo, cg, co, venue_id) VALUES('$debate_id', '$og', '$oo', '$cg', '$co', '$venue_id')");
 
     }
     include("adjud_alloc.inc");
@@ -162,7 +157,7 @@ if (($validate==1))
     $query .= "WHERE og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND A1.venue_id=venue.venue_id "; 
     $query .= "ORDER BY venue_name";
 
-    $result=mysql_query($query);
+    $result=q($query);
     
     if ($result)
     {
@@ -175,19 +170,19 @@ if (($validate==1))
                    $ogpoints=0;
                    for ($i=1; $i<$nextround; $i++)
         {    $pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['ogid']}' ";
-            $pointsresult=mysql_query($pointsquery);
+            $pointsresult=q($pointsquery);
             $pointsrow=mysql_fetch_assoc($pointsresult);
             if ($pointsrow)
                 $ogpoints = $ogpoints + 3;
                 
             $pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['ogid']}' ";
-            $pointsresult=mysql_query($pointsquery);
+            $pointsresult=q($pointsquery);
             $pointsrow=mysql_fetch_assoc($pointsresult);
             if ($pointsrow)
                 $ogpoints = $ogpoints + 2;
                 
             $pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['ogid']}' ";
-            $pointsresult=mysql_query($pointsquery);
+            $pointsresult=q($pointsquery);
             $pointsrow=mysql_fetch_assoc($pointsresult);
             if ($pointsrow)
                 $ogpoints = $ogpoints + 1;
@@ -195,19 +190,19 @@ if (($validate==1))
                   $oopoints=0;
                    for ($i=1; $i<$nextround; $i++)
         {    $pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['ooid']}' ";
-            $pointsresult=mysql_query($pointsquery);
+            $pointsresult=q($pointsquery);
             $pointsrow=mysql_fetch_assoc($pointsresult);
             if ($pointsrow)
                 $oopoints = $oopoints + 3;
                 
             $pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['ooid']}' ";
-            $pointsresult=mysql_query($pointsquery);
+            $pointsresult=q($pointsquery);
             $pointsrow=mysql_fetch_assoc($pointsresult);
             if ($pointsrow)
                 $oopoints = $oopoints + 2;
                 
             $pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['ooid']}' ";
-            $pointsresult=mysql_query($pointsquery);
+            $pointsresult=q($pointsquery);
             $pointsrow=mysql_fetch_assoc($pointsresult);
             if ($pointsrow)
                 $oopoints = $oopoints + 1;
@@ -215,19 +210,19 @@ if (($validate==1))
                 $cgpoints=0;
                 for ($i=1; $i<$nextround; $i++)
         {    $pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['cgid']}' ";
-            $pointsresult=mysql_query($pointsquery);
+            $pointsresult=q($pointsquery);
             $pointsrow=mysql_fetch_assoc($pointsresult);
             if ($pointsrow)
                 $cgpoints = $cgpoints + 3;
                 
             $pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['cgid']}' ";
-            $pointsresult=mysql_query($pointsquery);
+            $pointsresult=q($pointsquery);
             $pointsrow=mysql_fetch_assoc($pointsresult);
             if ($pointsrow)
                 $cgpoints = $cgpoints + 2;
                 
             $pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['cgid']}' ";
-            $pointsresult=mysql_query($pointsquery);
+            $pointsresult=q($pointsquery);
             $pointsrow=mysql_fetch_assoc($pointsresult);
             if ($pointsrow)
                 $cgpoints = $cgpoints + 1;
@@ -235,19 +230,19 @@ if (($validate==1))
                    $copoints=0;
                    for ($i=1; $i<$nextround; $i++)
         {    $pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['coid']}' ";
-            $pointsresult=mysql_query($pointsquery);
+            $pointsresult=q($pointsquery);
             $pointsrow=mysql_fetch_assoc($pointsresult);
             if ($pointsrow)
                 $copoints = $copoints + 3;
                 
             $pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['coid']}' ";
-            $pointsresult=mysql_query($pointsquery);
+            $pointsresult=q($pointsquery);
             $pointsrow=mysql_fetch_assoc($pointsresult);
             if ($pointsrow)
                 $copoints = $copoints + 2;
                 
             $pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['coid']}' ";
-            $pointsresult=mysql_query($pointsquery);
+            $pointsresult=q($pointsquery);
             $pointsrow=mysql_fetch_assoc($pointsresult);
             if ($pointsrow)
                 $copoints = $copoints + 1;
@@ -263,7 +258,7 @@ if (($validate==1))
 
                 //Find Chief Adjudicator
                 $query="SELECT A.adjud_name AS adjud_name FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='chair' AND T.debate_id='{$row['debate_id']}'";
-                $resultadjud=mysql_query($query);
+                $resultadjud=q($query);
 
                 if (mysql_num_rows($resultadjud)==0)
                     echo "<td><b>None Assigned</b></td>";
@@ -275,7 +270,7 @@ if (($validate==1))
 
                 //Find Panelists
                 $query="SELECT A.adjud_name AS adjud_name FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='panelist' AND T.debate_id='{$row['debate_id']}'";
-                $resultadjud=mysql_query($query);
+                $resultadjud=q($query);
 
                 if (mysql_num_rows($resultadjud)==0)
                     echo "<td><b>None Assigned</b></td>";

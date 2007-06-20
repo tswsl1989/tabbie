@@ -9,7 +9,7 @@ Purpose :   This file prints the list of allocated venues (for the tab room)
 ******************************************************************************/
 
 
-include("config/dbconnection.php"); //Database Connection
+include("includes/dbconnection.php"); //Database Connection
 
 $action=@$_GET['action'];
 $warning=@$_GET['warning'];

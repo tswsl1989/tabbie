@@ -9,7 +9,7 @@ Purpose :   This file prints the debate list with venue (for the floor managers)
 ******************************************************************************/
 
 
-include("config/dbconnection.php"); //Database Connection
+include("includes/dbconnection.php"); //Database Connection
 
 $action=@$_GET['action'];
 $warning=@$_GET['warning'];

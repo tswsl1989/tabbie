@@ -9,7 +9,7 @@ Purpose :   This file handles the print modules for the CA/DCAs
 ******************************************************************************/
 
 
-include("config/dbconnection.php"); //Database Connection
+include("includes/dbconnection.php"); //Database Connection
 
 include("header.inc");
 

@@ -15,7 +15,7 @@ function present($adjud_id,$adj_array)
   return -1;
   
  }
-include("config/dbconnection.php"); //Database Connection
+include("includes/dbconnection.php"); //Database Connection
 
 $action=@$_GET['action'];
 

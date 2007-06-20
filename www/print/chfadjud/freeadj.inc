@@ -9,7 +9,7 @@ Purpose :   This file prints the free adjudicators for the CA/DCAs before manual
 ******************************************************************************/
 
 
-include("config/dbconnection.php"); //Database Connection
+include("includes/dbconnection.php"); //Database Connection
 
 $action=@$_GET['action'];
 

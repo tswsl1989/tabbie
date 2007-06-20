@@ -10,7 +10,7 @@ Purpose :   This file manages all the functions related to the results
 ******************************************************************************/
 
 include("result/func.php"); //Helper Functions
-include("config/dbconnection.php"); //Database Connection
+include("includes/dbconnection.php"); //Database Connection
 
 $moduletype=trim(@$_GET['moduletype']); //module type : round currentround
 if (!$moduletype) $moduletype="currentround"; //set to round if empty

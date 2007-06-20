@@ -9,7 +9,7 @@ Purpose :   This file handles the display of the teams standings
 ******************************************************************************/
 
 
-include("config/dbconnection.php"); //Database Connection
+include("includes/dbconnection.php"); //Database Connection
 
 include("header.inc");
 

@@ -9,7 +9,7 @@ Purpose :   This file prints the debate list for the CA/DCAs for use before manu
 ******************************************************************************/
 
 
-include("config/dbconnection.php"); //Database Connection
+include("includes/dbconnection.php"); //Database Connection
 
 $action=@$_GET['action'];
 

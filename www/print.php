@@ -48,7 +48,7 @@ switch($moduletype)
 }
 
 //Make database connection
-include("config/dbconnection.php");
+include("includes/dbconnection.php");
 
 //Load respective module
 include("print/$moduletype.inc");

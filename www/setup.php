@@ -34,7 +34,7 @@ Purpose :   For the TD/CA to set the highlight ranges for draw and results
   </div>
 
 <?
-include("config/dbconnection.php"); //Database Connection
+include("includes/dbconnection.php"); //Database Connection
 
 $action=trim(@$_GET['action']);
 if (!$action) $action="display"; //set to round if empty

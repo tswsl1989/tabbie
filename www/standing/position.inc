@@ -10,7 +10,7 @@ Purpose :   This file displays the number of times each team has debated in each
 
 include("header.inc");
 
-include("config/dbconnection.php"); //Database Connection
+include("includes/dbconnection.php"); //Database Connection
 
 $round=trim(@$_POST['round']);
 

@@ -1,3 +1,6 @@
+DROP DATABASE tabbie;
+CREATE DATABASE tabbie;
+
 CREATE TABLE adjudicator (
   adjud_id mediumint(9) NOT NULL auto_increment,
   univ_id mediumint(9) NOT NULL default '0',

@@ -1,12 +1,6 @@
 <?
-/******************************************************************************
-File    :   setup.php
+require_once("includes/display.inc");
 
-Author  :   AK
-
-Purpose :   For the TD/CA to set the highlight ranges for draw and results
-
-******************************************************************************/
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -14,7 +8,7 @@ Purpose :   For the TD/CA to set the highlight ranges for draw and results
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-    <title>Input Module - <? echo $title;?></title>
+    <title>Input Module - Setup</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="style.css">
 </head>
@@ -114,16 +108,7 @@ switch ($action)
 echo "<div id=\"content\">\n";
 echo "<h2>$title</h2>\n";
 
-//Display Messages
-if (count($msg)>0)
-{
-  echo "<ul class=\"err\">\n";
-  for($x=0;$x<count($msg);$x++)
-    echo "<li>".$msg[$x]."</li>\n";
-
-  echo "</ul>";
-
-}
+displayMessagesUL(@$msg);
 
 if ($action=="display")
 {	echo "<table> ";

@@ -7,6 +7,7 @@
  Purpose :   Handle Add/Edit/Delete University
            
 ******************************************************************************/
+require("includes/display.inc");
 
 //Get POST values and validate/convert them
 
@@ -176,15 +177,7 @@ echo "<div id=\"content\">";
                 
 echo "<h2>$title</h2>\n"; //title
 
-//Display Messages
-if (count($msg)>0)
-{
-  echo "<ul class=\"err\">\n";
-  for($x=0;$x<count($msg);$x++)
-    echo "<li>".$msg[$x]."</li>\n";
-
-  echo "</ul>";
-}
+displayMessages(@$msg);
    
 //Check for Display
 if ($action=="display")

@@ -7,6 +7,7 @@
  Purpose :   Handle Venue Add/Edit/Delete. Called from Input Main
            
 ******************************************************************************/
+require("includes/display.inc");
 
 //Get POST values and validate/convert them
 
@@ -181,16 +182,7 @@ include("header.inc");
 echo "<div id=\"content\">\n";                
 echo "<h2>$title</h2>\n"; //title
 
-//Display Messages
-if (count($msg)>0)
-{
-  echo "<ul class=\"err\">\n";
-  for($x=0;$x<count($msg);$x++)
-    echo "<li>".$msg[$x]."</li>\n";
-
-  echo "</ul>";
-
-}
+displayMessages(@$msg);
 
    
 //Check for Display

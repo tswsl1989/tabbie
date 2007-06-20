@@ -21,24 +21,24 @@ if (!$action) $action="display"; //set to display if empty
 switch($moduletype)
 {
     case "adjud":
-                    $title.=" Adjudicator ";
+                    @$title .= " Adjudicator ";
                     break;
     case "univ":
-                    $title.=" University ";
+                    @$title .= " University ";
                     break;
     case "venue":                   
-                    $title.=" Venue ";
+                    @$title .= " Venue ";
                     break;
    case "team":
-                    $title.=" Team ";
+                    @$title .= " Team ";
                     break;
 
    case "main":
-                    $title.=" Main ";
+                    @$title .= " Main ";
                     break;
    default:
-                    $title=" Main ";
-                    $moduletype="main";
+                    $title = " Main ";
+                    $moduletype = "main";
                     break;
    
 }

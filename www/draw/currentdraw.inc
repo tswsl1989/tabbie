@@ -1,75 +1,60 @@
 <?
-/******************************************************************************
-File    :   currentdraw.inc
-
-Author  :   Deepak Jois
-
+/*
 Purpose :   Calculate the draw for the current round taking into account all
             the possible rules mentioned in the Tab rules draft.
-           
-******************************************************************************/
-require("includes/display.inc");
+*/
+require_once("includes/display.inc");
+$action = @$_GET['action'];
+$title="Draw : Round " . $nextround;
 
-$action=trim(@$_GET['action']); //Check action
-$title="Draw : Round ".$nextround;
+function count_rows($table, $where_clause = "1 = 1") {
+    $query = "SELECT COUNT(*) FROM $table WHERE $where_clause";
+    $result = mysql_query($query);
+    $row = mysql_fetch_row($result);
+    return $row[0];
+}
+
+function get_num_rounds() {
+    $result = mysql_query("SHOW TABLES LIKE 'draw_round%'");
+    $numdraws = mysql_num_rows($result);
+}
+
+function get_num_completed_rounds() {
+    $result = mysql_query("SHOW TABLES LIKE 'result_round%'");
+    $numdraws = mysql_num_rows($result);
+}
+
 //Check for number of teams and venues
-$validate=1;
+$validate = 1;
 
-$query="SELECT COUNT(*) AS numteams FROM team WHERE active='Y'";
-$result=mysql_query($query);
-$row=mysql_fetch_assoc($result);
-$numteams=$row['numteams'];
-//Check if number of teams is not zero and a multiple of 4
-if (($numteams<4)||(($numteams%4)>0))
-{
+$numteams = count_rows("team", "active='Y'");
+if ($numteams < 4 || ($numteams % 4) > 0) {
     $validate=0;
-    $msg[]="Number of teams is not correct for the draw to take place.Make sure that the number of teams is a multiple of four.";
+    $msg[] = "Number of teams is not correct for the draw to take place. Make sure that the number of teams is a multiple of four.";
 }
 
-$query="SELECT COUNT(*) FROM venue WHERE active='Y'";
-$result=mysql_query($query);
-$row=mysql_fetch_row($result);
-$numvenues=$row[0];
-
-//Check if number of venues is equal to the number needed
-if ($numvenues<($numteams/4))
-{
-    $validate=0;
-    $msg[]="There are not enough venues to accomodate the teams.";
+$numvenues = count_rows("venue", "active='Y'");
+if ($numvenues < ($numteams / 4)) {
+    $validate = 0;
+    $msg[] = "There are not enough venues to accomodate the teams.";
 }
 
-//Check if enough number of adjudicators
-$query="SELECT COUNT(*) FROM adjudicator WHERE active='Y'";
-$result=mysql_query($query);
-$row=mysql_fetch_row($result);
-$numadjud=$row[0];
-
-//Check if there are enough adjudicators
-if ($numadjud<($numteams/4))
-{
-    $validate=0;
-    $msg[]="Number of Adjudicators is not enough. Please activate enough adjudicators.";
-    $msg[]="No of Adjudicators : ". $numadjud;
+$numadjud = count_rows("adjudicator", "active='Y'");
+if ($numadjud < ($numteams / 4)) {
+    $validate = 0;
+    $msg[] = "The are insufficient adjudicators to adjudicate the debates.";
+    $msg[] = "Nr of Adjudicators : " . $numadjud;
 }
 
-//Get Number of  Rounds Completed
-$query="SHOW TABLES LIKE 'draw_round%'";
-$result=mysql_query($query);
-$numrounds=mysql_num_rows($result);
+$numrounds = get_num_rounds();
+$numresults= get_num_completed_rounds();
 
-//Get Number of Rounds result entered for
-$query="SHOW TABLES LIKE 'result_round%'";
-$result=mysql_query($query);
-$numresults=mysql_num_rows($result);
-
-if ($numrounds <> $numresults)
-{
+if ($numrounds != $numresults) {
     $validate=0;
-    $msg[]="The results for the last round have not been entered.Please enter the results and then try again.";
+    $msg[] = "The results for the last round have not been entered. Please enter the results and then try again.";
 }
 
-if (($action=="draw")&&($validate==1))//Check Action : Draw
-{
+if (($action=="draw") && ($validate == 1)) {
 
     //Load Teams from Database
     $query="SELECT team_id, univ_id FROM team WHERE active='Y'";
@@ -321,22 +306,15 @@ if (($validate==1))
     }
 
     //Display Summary of Current Status
-        
-    //No of Teams
     echo "<h3>No. of Teams : $numteams</h3>";
-    //No of Venues
     echo "<h3>No. of Venues : $numvenues</h3>";
-    //No of Adjudicators
     echo "<h3>No. of Adjudicators : $numadjud</h3>";
 
-    //Also display the pools in table format
 }
 
-//Display Button
-    if ($validate==1)
-    {    
-      echo "<h3><a href=\"draw.php?moduletype=currentdraw&amp;action=draw\">Calculate Draw</a></h3>";
-    }
+if ($validate == 1) {
+    echo "<h3><a href=\"draw.php?moduletype=currentdraw&amp;action=draw\">Calculate Draw</a></h3>";
+}
 
 ?>
 </div>

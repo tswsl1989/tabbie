@@ -1,0 +1,7 @@
+Instructions to use the scrolling tab display
+------------------------------------------------------------------------------------------------------------
+Each draw files is created in the format of "Draw_" followed by the round nbr.
+For example,
+Draw_1.html, Draw_2.html, etc.
+
+The round that needs to be displayed, please change the file name manually to "external.html" and then launch "tabdisplay.html". This will provide the scrolling tab display for the particular round.

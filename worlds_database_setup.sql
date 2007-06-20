@@ -90,4 +90,14 @@ CREATE TABLE venue (
   PRIMARY KEY  (venue_id),
   UNIQUE KEY venue_name (venue_name)
 ) TYPE=MyISAM;
+# --------------------------------------------------------
 
+#
+# Table structure for table `highlight`
+#
+
+CREATE TABLE highlight (
+  lowerlimit char(50),
+  upperlimit char(50),
+  type char(50)
+) TYPE=MyISAM;

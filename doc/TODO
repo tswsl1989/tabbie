@@ -1,8 +1,6 @@
 Check process end-to-end
 	Mail-merge of adjudicator forms
 
-Replace all tabs by 4 spaces
-
 Ease of manual input
 	Turn of auto-completion (Danger!)
 	Jump to relevant part of the page
@@ -18,7 +16,7 @@ Importing and exporting
 	XML
 
 Make something that can run on any machine (packaged, online solution)
-
+	.htaccess file governs who can see what
 
 Make plug-out points
 

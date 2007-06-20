@@ -3,7 +3,7 @@
 function displayMessagesUL($messages) {
     if (count($messages) > 0) {
         echo "<ul class=\"err\">\n";
-        foreach ($msg as $message)
+        foreach ($messages as $message)
             echo "<li>$message</li>\n";
         echo "</ul>";
     }

@@ -657,8 +657,8 @@ if ($exist)
 			$upperlimit = $rangerow['upperlimit'];
 		}
 		else
-		{	$lowerlimit = '100';
-			$upperlimit = '0';
+		{	$lowerlimit = '0';
+			$upperlimit = '100';
 		}
 		if (($totalpoints >= $lowerlimit) AND ($totalpoints <= $upperlimit))
 			$highlight = 1;

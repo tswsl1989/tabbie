@@ -182,7 +182,7 @@ include("header.inc");
 echo "<div id=\"content\">\n";                
 echo "<h2>$title</h2>\n"; //title
 
-displayMessages(@$msg);
+displayMessagesUL(@$msg);
 
    
 //Check for Display

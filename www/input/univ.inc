@@ -177,7 +177,7 @@ echo "<div id=\"content\">";
                 
 echo "<h2>$title</h2>\n"; //title
 
-displayMessages(@$msg);
+displayMessagesUL(@$msg);
    
 //Check for Display
 if ($action=="display")

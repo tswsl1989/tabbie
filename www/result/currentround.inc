@@ -7,6 +7,7 @@ Author  :   Deepak Jois
 Purpose :   Handles the entry of results of the debates in the current draw.
            
 ******************************************************************************/
+require("includes/display.inc");
 
 $action=trim(@$_GET['action']); //Check action
 $validate=1;
@@ -141,7 +142,7 @@ else
         $row=mysql_fetch_assoc($result);
         $speaker1_og_score=$row['points'];
         if ($speaker1_og_score == 0)
-        {	$speaker1_og_score=$speaker1_og_post_score;
+        {	$speaker1_og_score=@$speaker1_og_post_score;
         }
         
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker2_og_id'";
@@ -149,7 +150,7 @@ else
         $row=mysql_fetch_assoc($result);
         $speaker2_og_score=$row['points'];
         if ($speaker2_og_score == 0)
-	{	$speaker2_og_score=$speaker2_og_post_score;
+	{	$speaker2_og_score=@$speaker2_og_post_score;
 	}
 
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker1_oo_id'";
@@ -157,7 +158,7 @@ else
         $row=mysql_fetch_assoc($result);
         $speaker1_oo_score=$row['points'];
         if ($speaker1_oo_score == 0)
-	{	$speaker1_oo_score=$speaker1_oo_post_score;
+	{	$speaker1_oo_score=@$speaker1_oo_post_score;
 	}
         
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker2_oo_id'";
@@ -165,7 +166,7 @@ else
         $row=mysql_fetch_assoc($result);
         $speaker2_oo_score=$row['points'];
         if ($speaker2_oo_score == 0)
-	{	$speaker2_oo_score=$speaker2_oo_post_score;
+	{	$speaker2_oo_score=@$speaker2_oo_post_score;
 	}
 
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker1_cg_id'";
@@ -173,7 +174,7 @@ else
         $row=mysql_fetch_assoc($result);
         $speaker1_cg_score=$row['points'];
         if ($speaker1_cg_score == 0)
-	{	$speaker1_cg_score=$speaker1_cg_post_score;
+	{	$speaker1_cg_score=@$speaker1_cg_post_score;
 	}
 
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker2_cg_id'";
@@ -181,7 +182,7 @@ else
         $row=mysql_fetch_assoc($result);
         $speaker2_cg_score=$row['points'];
         if ($speaker2_cg_score == 0)
-	{	$speaker2_cg_score=$speaker2_cg_post_score;
+	{	$speaker2_cg_score=@$speaker2_cg_post_score;
 	}
 
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker1_co_id'";
@@ -189,7 +190,7 @@ else
         $row=mysql_fetch_assoc($result);
         $speaker1_co_score=$row['points'];
         if ($speaker1_co_score == 0)
-	{	$speaker1_co_score=$speaker1_co_post_score;
+	{	$speaker1_co_score=@$speaker1_co_post_score;
 	}
 
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker2_co_id'";
@@ -197,7 +198,7 @@ else
         $row=mysql_fetch_assoc($result);
         $speaker2_co_score=$row['points'];
         if ($speaker2_co_score == 0)
-	{	$speaker2_co_score=$speaker2_co_post_score;
+	{	$speaker2_co_score=@$speaker2_co_post_score;
 	}
 
     }
@@ -460,16 +461,7 @@ include("header.inc");
 echo "<div id=\"content\">";
 echo "<h2>$title</h2>\n"; //title
 
-//Display Messages
-if (count($msg)>0)
-{
-  echo "<ul class=\"err\">\n";
-  for($x=0;$x<count($msg);$x++)
-    echo "<li>".$msg[$x]."</li>\n";
-
-  echo "</ul>";
-
-}
+displayMessagesUL(@$msg);
 
 if ($nextresult==$numrounds)
 {
@@ -546,7 +538,7 @@ if ($nextresult==$numrounds)
             <form name="resultsinputform" action="result.php?moduletype=currentround&amp;action=process&amp;debate_id=<?echo $debate_id?>" method="POST">
             <? 
 	$tag="";
-	    if ((($team_og_score == $team_oo_score) OR ($team_og_score == $team_cg_score) OR ($team_og_score == $team_co_score)) AND $validate==0)
+	    if (((@$team_og_score == @$team_oo_score) OR (@$team_og_score == @$team_cg_score) OR (@$team_og_score == @$team_co_score)) AND $validate==0)
 	      $tag="class=\"error\"";
 	    ?>
 	<div id="og" <?echo $tag;?>>
@@ -562,7 +554,7 @@ if ($nextresult==$numrounds)
 
             <? 
 	    $tag="";
-	    if ((($team_oo_score == $team_og_score) OR ($team_oo_score == $team_cg_score) OR ($team_oo_score == $team_co_score)) AND $validate==0)
+	    if (((@$team_oo_score == @$team_og_score) OR (@$team_oo_score == @$team_cg_score) OR (@$team_oo_score == @$team_co_score)) AND $validate==0)
 	      $tag="class=\"error\"";
         	?>
 	    	
@@ -574,13 +566,13 @@ if ($nextresult==$numrounds)
                     
                     <label for="<?echo "speaker_$speaker2_oo_id";?>"><?echo $speaker2_oo_name;?></label>
                     <input type="text" id="<?echo "speaker_$speaker2_oo_id";?>" name="<?echo "speaker_$speaker2_oo_id";?>" value="<?echo $speaker2_oo_score;?>"/><br/><br/>
- 	    <? if ($same_validate==0)  {echo "</font>";} ?>
+ 	    <? if (@$same_validate==0)  {echo "</font>";} ?>
             </div>
 
             <? 
 	    $tag="";
 
-	    if ((($team_cg_score == $team_og_score) OR ($team_cg_score == $team_oo_score) OR ($team_cg_score == $team_co_score)) AND $validate==0)
+	    if (((@$team_cg_score == @$team_og_score) OR (@$team_cg_score == @$team_oo_score) OR (@$team_cg_score == @$team_co_score)) AND $validate==0)
 	      $tag="class=\"error\"";
         	?>
 
@@ -598,7 +590,7 @@ if ($nextresult==$numrounds)
 
             <? 
 	    $tag="";
-	    if ((($team_co_score == $team_og_score) OR ($team_co_score == $team_oo_score) OR ($team_co_score == $team_cg_score)) AND $validate==0)
+	    if (((@$team_co_score == @$team_og_score) OR (@$team_co_score == @$team_oo_score) OR (@$team_co_score == @$team_cg_score)) AND $validate==0)
 	      $tag="class=\"error\"";
         	?>
 
@@ -636,8 +628,8 @@ if ($nextresult==$numrounds)
 			$upper_limit = $rangerow['upperlimit'];
 		}
 		else
-		{	$lower_limit = '100';
-			$upper_limit = '0';
+		{	$lower_limit = '0';
+			$upper_limit = '100';
 		}
 
       //sort scores to find position

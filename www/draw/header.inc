@@ -27,7 +27,7 @@
       <?
 	 for($x=0;$x<$numdraws;$x++) 
 	   {
-	     if ($roundno==($x+1))
+	     if (@$roundno==($x+1))
 	       $tag="class=\"activemain\"";
 	     else
 	       $tag="";

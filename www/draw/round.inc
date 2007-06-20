@@ -7,6 +7,7 @@ Author  :   Deepak Jois
 Purpose :   Display the draws of the previous rounds in the tournament.
            
 ******************************************************************************/
+require("includes/display.inc");
 
 //Calculate Round Number (should have been already validated)
 $action=@$_GET['action'];
@@ -37,11 +38,7 @@ include("header.inc");
 echo "<div id=\"content\">\n";
 echo "<h2>$title</h2>\n"; //title
 
-
-//Display Messages
-for($x=0;$x<count($msg);$x++)
-    echo "<p class=\"err\">".$msg[$x]."</p>\n";
-
+displayMessagesP(@$msg);
 
 //Display draw information
 
@@ -81,12 +78,12 @@ for($x=0;$x<count($msg);$x++)
 	    echo mysql_error();
 
 	    $num_panelists=mysql_num_rows($pan_result);
-	    if ($numpanelists>0) echo "<ul>\n";
+	    if (@$numpanelists > 0) echo "<ul>\n";
 	    while($pan_row=mysql_fetch_assoc($pan_result))
 	    {	
 	      echo "<li>{$pan_row['adjud_name']}</li>";
 	    }
-	    if ($numpanelists>0) echo "</ul>\n";
+	    if (@$numpanelists > 0) echo "</ul>\n";
 	    echo "</td>\n";
 
             echo "<td>";
@@ -97,12 +94,12 @@ for($x=0;$x<count($msg);$x++)
 	    echo mysql_error();
 
 	    $num_trainee=mysql_num_rows($trainee_result);
-	    if ($numtrainee>0) echo "<ul>\n";
+	    if (@$numtrainee > 0) echo "<ul>\n";
 	    while($trainee_row=mysql_fetch_assoc($trainee_result))
 	    {	
 	      echo "<li>{$trainee_row['adjud_name']}</li>";
 	    }
-	    if ($numtrainee>0) echo "</ul>\n";
+	    if (@$numtrainee > 0) echo "</ul>\n";
 	    echo "</td>\n";
 
        echo "</tr>\n";

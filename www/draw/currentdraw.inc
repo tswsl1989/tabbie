@@ -8,6 +8,7 @@ Purpose :   Calculate the draw for the current round taking into account all
             the possible rules mentioned in the Tab rules draft.
            
 ******************************************************************************/
+require("includes/display.inc");
 
 $action=trim(@$_GET['action']); //Check action
 $title="Draw : Round ".$nextround;
@@ -171,16 +172,7 @@ include("header.inc");
 echo "<div id=\"content\">";
 echo "<h2>$title</h2>\n"; //title
 
-//Display Messages
-if (count($msg)>0)
-{
-  echo "<ul class=\"err\">\n";
-  for($x=0;$x<count($msg);$x++)
-    echo "<li>".$msg[$x]."</li>\n";
-
-  echo "</ul>";
-
-}
+displayMessagesUL(@$msg);
          
 //Display Draw if required
 if (($validate==1))

@@ -8,6 +8,7 @@
  the possible rules mentioned in the Tab rules draft.
            
 ******************************************************************************/
+require("includes/display.inc");
 
 $action=trim(@$_GET['action']); //Check action
 if ($action=="") $action="display";
@@ -274,17 +275,7 @@ include("header.inc");
 echo "<div id=\"content\">";
 echo "<h2>$title</h2>";
 
-//Display Messages
-if (count($msg)>0)
-{
-  echo "<ul class=\"err\">\n";
-  for($x=0;$x<count($msg);$x++)
-    echo "<li>".$msg[$x]."</li>\n";
-
-  echo "</ul>";
-
-}
-
+displayMessagesUL(@$msg);
 
 if ($exist)
   {    
@@ -565,7 +556,7 @@ if ($exist)
 	      {
                 
 		echo "<tr>\n";
-		$highlightlastmodified=(($lastmodified)&&($row['debate_id']==$lastmodified));
+		$highlightlastmodified=((@$lastmodified)&&($row['debate_id']==$lastmodified));
                	$ogpoints=0;
                	for ($i=1; $i<$nextround; $i++)
 		  {	$pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['ogid']}' ";

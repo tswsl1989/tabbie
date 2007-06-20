@@ -7,6 +7,7 @@ Author  :   AK
 Purpose :   Display the results of the previous rounds in the tournament.
            
 ******************************************************************************/
+require("includes/display.inc");
 
 //Calculate Round Number (should have been already validated)
 $action=@$_GET['action'];
@@ -39,10 +40,7 @@ include("header.inc");
 echo "<div id=\"content\">";
 echo "<h2>$title</h2>\n"; //title
 
-//Display Messages
-for($x=0;$x<count($msg);$x++)
-    echo "<p class=\"err\">".$msg[$x]."</p>\n";
-
+displayMessagesP(@$msg);
 
 //Display draw information
 

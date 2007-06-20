@@ -24,7 +24,7 @@ $numresults=mysql_num_rows($result);
 
 $roundno=$numresults;
 
-switch($action)
+switch(@$action)
 {
     case "display":
                         break;

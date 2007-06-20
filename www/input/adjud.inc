@@ -206,7 +206,7 @@ include("header.inc");
 echo "<div id=\"content\">\n";
 echo "<h2>$title</h2>\n"; //titlek
 
-displayMessages(@$msg);
+displayMessagesUL(@$msg);
    
 //Check for Display
 if ($action=="display")

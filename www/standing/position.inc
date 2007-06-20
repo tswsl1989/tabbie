@@ -26,7 +26,7 @@ $numresults=mysql_num_rows($result);
 if (!$round)
 	$round=$numdraws;
 
-switch($action)
+switch(@$action)
 {
     case "display":
                         break;

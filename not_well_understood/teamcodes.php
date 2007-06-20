@@ -1,7 +1,7 @@
 <?
 //Make connection to database
 mysql_connect("localhost", "root", "");
-mysql_select_db("worlds0");
+mysql_select_db("tabbie");
 
 $query="SELECT univ_name,univ_code FROM university ORDER BY univ_name";
 $result=mysql_query($query);

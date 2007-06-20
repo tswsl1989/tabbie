@@ -20,7 +20,7 @@ Purpose :   For the TD/CA to set the highlight ranges for draw and results
 </head>
 
 <body>
-  <h1 id="main">Worlds Universities Debating Championships</h1>
+  <h1 id="main">Tabbie - British Parliamentary Debating Tabbing Software</h1>
   <div id="mainmenu">
     <h2 class="hide">Main Menu</h2>
     <ul>

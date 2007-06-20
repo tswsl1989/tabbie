@@ -1,12 +1,6 @@
 <?
-/******************************************************************************
-File    :   round.inc
+//Purpose :   Display the draws of the previous rounds in the tournament.
 
-Author  :   Deepak Jois
-
-Purpose :   Display the draws of the previous rounds in the tournament.
-           
-******************************************************************************/
 require("includes/display.inc");
 
 //Calculate Round Number (should have been already validated)

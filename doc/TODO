@@ -1,0 +1,30 @@
+Check process end-to-end
+	Mail-merge of adjudicator forms
+
+Replace all tabs by 4 spaces
+
+Ease of manual input
+	Turn of auto-completion (Danger!)
+	Jump to relevant part of the page
+
+Displaying
+	Remove worlds logo's
+	Fix scrolling
+	Introduce pictures for teams
+
+Importing and exporting
+	SQL
+	CSS
+	XML
+
+Make something that can run on any machine (packaged, online solution)
+
+
+Make plug-out points
+
+Delete teams
+
+*** KNOWN BUGS ***
+@ operator missing in many places
+lack of modularisation / factoring out
+"Results for the last draw have been entered already." (print page)

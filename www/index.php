@@ -35,7 +35,7 @@ Purpose :   For the TD/CA to set the highlight ranges for draw and results
   </div>
 
   <div id="content">
-  	<h2>TAB Software for WORLDS'04</h2>
+  	<h2>Tabbie - British Parliamentary Debating Tabbing Software</h2>
   	<h3>Use the links above to use tab.</h3>
   </div>
 

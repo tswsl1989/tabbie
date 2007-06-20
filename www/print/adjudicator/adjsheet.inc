@@ -174,7 +174,7 @@ if ($action == "display")
 	
 	fclose($fp);
 	echo "File created successfully! <br/>";
-	echo "<a href=\"print/Outputs/\">Output Folder</a> ";
+	echo "<a href=\"$filename\">Download</a> ";
 }
 	
 ?>

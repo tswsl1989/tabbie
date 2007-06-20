@@ -19,7 +19,7 @@ $row=mysql_fetch_assoc($result);
 $numdebates=$row['numdebates'];
 
 //Load and order adjudicators by ranking
-$query="SELECT adjud_id,conflicts FROM ADJUDICATOR WHERE active='Y' AND ranking>0 ORDER BY ranking DESC";
+$query="SELECT adjud_id,conflicts FROM adjudicator WHERE active='Y' AND ranking>0 ORDER BY ranking DESC";
 $result=mysql_query($query);
 
 $index=0;

@@ -24,25 +24,25 @@ if (!$list)
 switch($moduletype)
 {
    case "adjudicator":
-                    $title.=" Adjudicator";
+                    @$title .= " Adjudicator";
                     break;
    case "floor":
-   					$title.=" Floor Managers";
+   					@$title .= " Floor Managers";
    					break;
    case "chfadjud":
-   					$title.=" Chief Adjudicator/DCAs";
+   					@$title .= " Chief Adjudicator/DCAs";
    					break;
    case "tab":
-   					$title.=" Tab Room";
+   					@$title .= " Tab Room";
    					break;
    case "display":
-   					$title.=" Display";
+   					@$title .= " Display";
    					break;
    case "main":
-                    $title.=" Main Page";
+                    @$title .= " Main Page";
                     break;
    default:
-                    $title.=" Main Page";
+                    @$title .= " Main Page";
                     $moduletype="main";
                     break;
 }

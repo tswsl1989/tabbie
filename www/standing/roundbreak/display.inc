@@ -10,7 +10,7 @@ Purpose :   Display the round points breakup
 
 $warning=@$_GET['warning'];
 
-if (($numdraws <> $numresults) && !$round)
+if (($numdraws <> $numresults) && !@$round)
 {   
     $warnmsg[]="Results for the ongoing draw (Round ".$numdraws.") has not been entered.";
     $warnmsg[]="This round will not be reflected in the standings.";

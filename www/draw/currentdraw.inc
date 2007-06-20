@@ -59,13 +59,13 @@ if (($action=="draw") && ($validate == 1)) {
     //Load Teams from Database
     $query="SELECT team_id, univ_id FROM team WHERE active='Y'";
     $result=mysql_query($query);
-    
+
     //Do Random Draw for first round
     if ($nextround==1)
     {
         $query="SELECT team_id, univ_id  FROM team WHERE active='Y'";
         $result=mysql_query($query);
-        
+
         //Load into array
         $index=0;
 
@@ -84,7 +84,7 @@ if (($action=="draw") && ($validate == 1)) {
            //Swap Numbers
            $temp0= $teamarray[$randnum][0]; 
            $temp1= $teamarray[$randnum][1];
-           
+
            $teamarray[$randnum][0]=$teamarray[$x][0];
            $teamarray[$randnum][1]=$teamarray[$x][1];
 
@@ -92,62 +92,56 @@ if (($action=="draw") && ($validate == 1)) {
            $teamarray[$x][1]=$temp1;
        }
     }
-    
+
     else 
     {    //Do Power Matching Draw for other rounds
         include("draw2.inc");
     }
-       
+
     //Store draw in temporary database
-    
-    //create table
     $tablename="temp_draw_round_$nextround";
-    $query = "DROP TABLE `$tablename`";
-    $result=mysql_query($query);
-   
-    $query= "CREATE TABLE $tablename (";
-    $query.= "debate_id MEDIUMINT(9) NOT NULL ,";
-    $query.= "og MEDIUMINT(9) NOT NULL ,";
-    $query.= "oo MEDIUMINT(9) NOT NULL ,";
-    $query.= "cg MEDIUMINT(9) NOT NULL ,";
-    $query.= "co MEDIUMINT(9) NOT NULL ,";
-    $query.= "venue_id MEDIUMINT(9) NOT NULL ,";
-    $query.= "PRIMARY KEY (debate_id))";
-    $result=mysql_query($query);
-    if (!$result)
-        $msg[]=mysql_error();
+    mysql_query("DROP TABLE `$tablename`");
 
-        $result1=mysql_query("SELECT venue_id FROM venue WHERE active='Y'");
-        while ($row1=mysql_fetch_assoc($result1))
-        {
-            $venue[]=$row1['venue_id'];//Load Venues
-        }
+    $query= "CREATE TABLE $tablename (
+debate_id MEDIUMINT(9) NOT NULL ,
+og MEDIUMINT(9) NOT NULL ,
+oo MEDIUMINT(9) NOT NULL ,
+cg MEDIUMINT(9) NOT NULL ,
+co MEDIUMINT(9) NOT NULL ,
+venue_id MEDIUMINT(9) NOT NULL ,
+PRIMARY KEY (debate_id))";
 
-         //randomize order of venues
-         for($x=0;$x<count($venue);$x++)
-         {
-             $randnum=rand(0,count($venue)-1);
-             $temp=$venue[$randnum];
-             $venue[$randnum]=$venue[$x];
-             $venue[$x]=$temp;
-         }
-         
+    $result = mysql_query($query);
+
+    $result1 = mysql_query("SELECT venue_id FROM venue WHERE active='Y'");
+    while ($row1 = mysql_fetch_assoc($result1)) {
+        $venue[] = $row1['venue_id'];
+    }
+
+    //randomize order of venues
+    for($x=0; $x<count($venue); $x++) {
+        $randnum=rand(0,count($venue)-1);
+        $temp=$venue[$randnum];
+        $venue[$randnum]=$venue[$x];
+        $venue[$x]=$temp;
+    }
+
     $index=0;
     while ($index<count($teamarray))
     {
-        //generate debate ID after multiplying current round with 100
-        $debate_id=(100*$nextround)+($index/4);
-        
+        //generate debate ID after multiplying current round with 10000
+        $debate_id=(10000 * $nextround) + ($index/4);
+
         $og=$teamarray[$index++][0];
         $oo=$teamarray[$index++][0];
         $cg=$teamarray[$index++][0];
         $co=$teamarray[$index++][0];
         $venue_id=array_shift($venue);
-        
+
         //insert into database
         $query="INSERT INTO $tablename(debate_id,og,oo,cg,co,venue_id) VALUES('$debate_id','$og','$oo','$cg','$co','$venue_id')";
         $result=mysql_query($query);
-       
+
     }
     include("adjud_alloc.inc");
 }

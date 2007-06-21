@@ -165,9 +165,6 @@ if ($action == "display")
             $cospkr_row = mysql_fetch_assoc($cospkr_result);
         }
 
-
-        //Display each individual line
-//        echo "$roundno;$motion;$venue_location;$venue_name;$og;$oo;$cg;$co;$chair;$panelist_1;$panelist_2;$panelist_3;$ogspkr1;$ogspkr2;$oospkr1;$oospkr2;$cgspkr1;$cgspkr2;$cospkr1;$cospkr2<br/>";
         $text = "$roundno;$motion;$venue_location;$venue_name;$og;$oo;$cg;$co;$chair;$panelist_1;$panelist_2;$panelist_3;$ogspkr1;$ogspkr2;$oospkr1;$oospkr2;$cgspkr1;$cgspkr2;$cospkr1;$cospkr2\n";
         fputs($fp,$text);
     }

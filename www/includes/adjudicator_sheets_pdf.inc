@@ -43,6 +43,7 @@ function adjudicator_sheets_pdf($filename, $data) {
     $pdf = new FPDF("L");
     foreach ($data as $r) {
         $pdf->AddPage();
+        $pdf->SetLeftMargin(25);
         $pdf->SetLineWidth(1.0);
         $pdf->SetFont('Arial','B', 16);
         $pdf->Cell(220, 10, "Venue: " . $r['venue']);

@@ -179,6 +179,39 @@ class DrawTest(unittest.TestCase):
         self.assertEquals(0, positionedTeam.badness())
         positionedTeam = PositionedTeam(Team(x, x, [1, 1, 1, 0]), 0, x)
         self.assertEquals(Team(x, x, [2, 1, 1, 0]).badness(), positionedTeam.badness())
+        
+    def testValidate(self):
+        x = ignored = 0
+        teams0 = [
+            Team(0, 3, [x, x, x, x]),
+            Team(1, 3, [x, x, x, x]),
+            Team(2, 2, [x, x, x, x]),
+            Team(3, 2, [x, x, x, x])]
+        teams1 = [
+            Team(4, 1, [x, x, x, x]),
+            Team(5, 1, [x, x, x, x]),
+            Team(6, 1, [x, x, x, x]),
+            Team(7, 0, [x, x, x, x])]
+        teams2 = [
+            Team(8, 1, [x, x, x, x]),
+            Team(9, 1, [x, x, x, x]),
+            Team(10, 1, [x, x, x, x]),
+            Team(11, 0, [x, x, x, x])]
+        teams4 = [
+            Team(12, 3, [x, x, x, x]),
+            Team(13, 3, [x, x, x, x]),
+            Team(14, 2, [x, x, x, x]),
+            Team(15, 2, [x, x, x, x])]
+        
+        self.assertTrue(validate(teams0 + teams1, [Debate(teams0), Debate(teams1)]))
+        
+        self.assertFalse(validate(teams0 + teams1, [Debate(teams1), Debate(teams0)]))
+        self.assertTrue(validate(teams1 + teams2, [Debate(teams1), Debate(teams2)]))
+        self.assertFalse(validate(teams0 + teams4, [Debate(teams0), Debate(teams4)]))
+        
+        #input != output
+        self.assertFalse(validate(teams1 + teams2, [Debate(teams0), Debate(teams1)]))
+
 
 if __name__ == "__main__":
     unittest.main()

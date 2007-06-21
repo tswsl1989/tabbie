@@ -47,6 +47,14 @@ class Team:
             result = [x - lo for x in result]
         return result
         
+    #def __eq__(self, other):
+        #if other.__class__ != Team:
+            #return False
+        #if other.id != self.id:
+            #return False
+        #if other.points != self.p
+        #return True
+        
 class PositionedTeam:
     
     def __init__(self, team, position, debate):
@@ -62,7 +70,7 @@ class PositionedTeam:
         
 class Debate:
     
-    def __init__(self, positions, level):
+    def __init__(self, positions, level = None):
         self.positions = positions
         self.level = level
     
@@ -74,6 +82,12 @@ class Debate:
 
     def __repr__(self):
         return "Debate: (%s)" % self.positions
+    
+    def __eq__(self, other):
+        if other.__class__ != Debate:
+            return False
+        if other.positions != self.positions:
+            return False
     
 def brackets(teams):
     result = {}
@@ -245,18 +259,46 @@ def justKeepSwapping(teams):
                     break
         result.extend(partialSolution.debates)
     return result
-    
+
+def pullUpCount(teams):
+    levelDicts = {}
+    result = []
+    teams = list(reversed(sorted(teams, cmpPoints)))
+    while teams:
+        level = teams[0].points
+        if not level in levelDicts:
+            levelDicts[level] = {}
+        levelDict = levelDicts[level]
+        for team in teams[:4]:
+            if not team.points in levelDict:
+                levelDict[team.points] = 0
+            levelDict[team.points] += 1
+        result.append(levelDict)
+        teams = teams[4:]
+    return result
+
+def validate(teams, debates):
+    teamsInDebates = []
+    pullUpCounts = pullUpCount(teams)
+    for i, debate in enumerate(debates):
+        teamsInDebates.extend(debate.positions)
+        for team in debate.positions:
+            if not team.points in pullUpCounts[i]:
+                return False
+            pullUpCounts[i][team.points] -= 1
+    return set(teamsInDebates) == set(teams)
+
+def score(debates):
+    return Solution2(debates).badness()
+
 if __name__ == "__main__":
     teams = read()
     print "Teams: "
     for team in teams:
         print team
     debates = justKeepSwapping(teams)
-    print "SCORE", Solution2(debates).badness()
+    print "Score:", score(debates)
+    if not validate(teams, debates):
+        print "ERROR ERROR ERROR"
     for debate in debates:
         print debate
-        
-
-#TODO:
-# multiple step optimalization
-# checking for errors

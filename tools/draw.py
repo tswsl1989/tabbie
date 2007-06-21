@@ -6,7 +6,7 @@ def cmpBadness(something, somethingElse):
     return something.badness() - somethingElse.badness()
 
 def cmpPoints(teamA, teamB):
-    return teamA.points() - teamB.points()
+    return teamA.points - teamB.points
 
 def twoparts(x):
     return x / 2, x / 2 + x % 2
@@ -191,10 +191,11 @@ def isSwappable(positionedTeam1, positionedTeam2):
     return positionedTeam1.team.points == positionedTeam2.team.points or \
         positionedTeam1.debate.level == positionedTeam2.debate.level
 
+def swapTwoTeams(teamInPositionA, teamInPositionB):
+    teamInPositionA.debate.positions[teamInPositionA.position] = teamInPositionB.team
+    teamInPositionB.debate.positions[teamInPositionB.position] = teamInPositionA.team
+
 def justKeepSwapping(teams):
-    print "Teams: "
-    for team in teams:
-        print team
     bla = debatesPerLevel(brackets(teams))
     matrix = Matrix(bla)
     levelsWithDebates = {}
@@ -202,16 +203,18 @@ def justKeepSwapping(teams):
     for bunchOfLevels in matrix.connectedLevels():
         #init
         selectedTeams = [team for team in teams if (team.points in bunchOfLevels)]
-        selectedTeams = list(reversed(sorted(selectedTeams)))
+        selectedTeams = list(reversed(sorted(selectedTeams, cmp = cmpPoints)))
         debates = []
         while selectedTeams:
             debates.append(Debate(selectedTeams[:4], selectedTeams[0].points))
             selectedTeams = selectedTeams[4:]
         partialSolution = Solution2(debates)
+        nullSwapAttempts = 100
         while True:
             if partialSolution.badness() == 0:
                 break
             positionedTeams = sorted(partialSolution.teamsInPosition(), cmpBadness)
+            nullSwappers = []
             while positionedTeams:
                 worst = positionedTeams.pop()
                 possibleSwappers = [team for team in positionedTeams if isSwappable(team, worst)]
@@ -224,19 +227,31 @@ def justKeepSwapping(teams):
                     f2 = PositionedTeam(swapper.team, worst.position, worst.debate)
                     futureBadness = f1.badness() + f2.badness()
                     netEffect = currentBadness - futureBadness
+                    if netEffect == 0:
+                        nullSwappers.append((worst, swapper))
                     if netEffect > bestEffect:
                         bestSwapper = swapper
                 if bestSwapper:
-                    bestSwapper.debate.positions[bestSwapper.position] = worst.team
-                    worst.debate.positions[worst.position] = bestSwapper.team
+                    swapTwoTeams(bestSwapper, worst)
+                    nullSwapAttempts = 100
                     break
             else:
-                break
+                if nullSwapAttempts > 0 and nullSwappers:
+                    from random import sample
+                    a, b = sample(nullSwappers, 1)[0]
+                    swapTwoTeams(a, b)
+                    nullSwapAttempts -= 1
+                else:
+                    break
         result.extend(partialSolution.debates)
     return result
     
 if __name__ == "__main__":
-    debates = justKeepSwapping(read())
+    teams = read()
+    print "Teams: "
+    for team in teams:
+        print team
+    debates = justKeepSwapping(teams)
     print "SCORE", Solution2(debates).badness()
     for debate in debates:
         print debate

@@ -8,15 +8,27 @@ def cmpBadnes(teamA, teamB):
 def cmpPoints(teamA, teamB):
     return teamA.points() - teamB.points()
 
-def badness(l):
+def xxbadness(l):
+    l = sorted(l)
+    m = l[3]
     result = 0
-    for e in l:
-        diff = (e - min(l))
-        if diff > 0:
-            result += (diff - 1) ** 2
-    if result > 0:
-        result += l.count(min(l))
+    for i, e in enumerate(l):
+        result += (m * e) ** i
     return result
+
+def twoparts(x):
+    return x / 2, x / 2 + x % 2
+
+def badness(l):
+    x, y = twoparts(sum(l))
+    a, b = twoparts(x)
+    c, d = twoparts(y)
+    return xxbadness(l) - xxbadness([a, b, c, d])
+    
+def plusPos(l, i):
+    l2 = l[:]
+    l2[i] += 1
+    return l2
 
 class Team:
     
@@ -30,6 +42,22 @@ class Team:
     
     def badness(self):
         return badness(self.positions)
+    
+    def relativeBadness(self):
+        result = [badness(plusPos(self.positions, position)) for position in range(4)]
+        if min(result) != 0:
+            lo = min(result)
+            result = [x - lo for x in result]
+        return result
+        
+class PositionedTeam:
+    
+    def __init__(self, position, team):
+        self.position = position
+        self.team = team
+        
+    def badness(self):
+        return self.team.relativeBadness()[self.position]
         
 class Debate:
     

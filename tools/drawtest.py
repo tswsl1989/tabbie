@@ -5,25 +5,42 @@ from draw import *
 class DrawTest(unittest.TestCase):
     
     def testBadness(self):
-        x = ignored = 0
-        self.assertEquals([0, 0, 0, 0], [team.badness() for team in [
-            Team(x, x, [0, 0, 0, 0]),
-            Team(x, x, [9, 9, 9, 9]),
-            Team(x, x, [0, 0, 1, 1]),
-            Team(x, x, [0, 1, 1, 1])]])
+        """Badness is an important operator of our algorithm.
         
-        l = [team.badness() for team in [
-            Team(x, x, [1, 1, 1, 1]),
-            Team(x, x, [0, 1, 1, 2]),
-            Team(x, x, [0, 0, 1, 2]),
-            Team(x, x, [0, 0, 0, 2]),
-            Team(x, x, [0, 1, 1, 3]),
-            Team(x, x, [0, 1, 2, 3])]]
-        prev = -1
-        for e in l:
-            self.assertTrue(e > prev, "%s is not strictly growing" %l)
-            prev = e
-            
+        Notes.:
+        Badness comparisons between lists of different sums are irrelant, 
+        because they are not used in practice"""
+        def check(l):
+            prev = -1
+            for e in l:
+                self.assertTrue(e > prev, "%s is not strictly growing" %l)
+                prev = e
+        
+        x = ignored = 0
+        self.assertEquals([0, 0, 0, 0], [badness(l) for l in [
+            [0, 0, 0, 0],
+            [9, 9, 9, 9],
+            [0, 0, 1, 1],
+            [0, 1, 1, 1]]])
+        
+        check([badness(l) for l in [[0, 0, 1, 1], [0, 0, 0, 2]]])
+        check([badness(l) for l in [[0, 1, 1, 1], [0, 0, 1, 2], [0, 0, 0, 3]]])
+        check([badness(l) for l in [[1, 1, 1, 1], [0, 1, 1, 2], [0, 0, 2, 2], [0, 0, 1, 3], [0, 0, 0, 4]]])
+        
+        #relative differences increase as well...
+        check([badness(b) - badness(a) for a, b in [
+            ([1, 1, 1, 1], [0, 1, 1, 2]),
+            ([0, 1, 1, 2], [0, 0, 2, 2]),
+            ([0, 0, 2, 2], [0, 0, 1, 3]),
+            ([0, 0, 1, 3], [0, 0, 0, 4])]])
+    
+    def testRelativeBadness(self):
+        x = ignored = 0
+        self.assertEquals([0, 0, 0, 0], Team(x, x, [0, 0, 0, 0]).relativeBadness())
+        self.assertEquals([4, 0, 0, 0], Team(x, x, [1, 0, 0, 0]).relativeBadness())
+        self.assertEquals([0, 3, 3, 5], Team(x, x, [0, 1, 1, 2]).relativeBadness())
+        self.assertEquals([0, 4, 6, 8], Team(x, x, [0, 1, 2, 3]).relativeBadness())
+    
     def testDebateBadness(self):
         x = ignored = 0
         debate = Debate([
@@ -143,8 +160,21 @@ class DrawTest(unittest.TestCase):
         matrix = Matrix(debatesPerLevel)
         self.assertEquals([[5, 4]], matrix.connectedLevels())
         
-
+    #def testSelectTeamsOrderedByBadness(self):
+        #x = ignored = 0
+        #solution = Solution({1: [Debate([
+            #Team(0, x, [0, 1, 1, 1]),
+            #Team(1, x, [1, 1, 0, 1]),
+            #Team(2, x, [0, 0, 2, 1]),
+            #Team(3, x, [0, 0, 0, 3])])]})
+        #result = solution.teamsInPosition()
         
+    def testTeamInPosition(self):
+        x = ignored = 0
+        positionedTeam = PositionedTeam(0, Team(x, x, [0, 1, 1, 1]))
+        self.assertEquals(0, positionedTeam.badness())
+        positionedTeam = PositionedTeam(0, Team(x, x, [1, 1, 1, 0]))
+        self.assertEquals(Team(x, x, [2, 1, 1, 0]).badness(), positionedTeam.badness())
 
 if __name__ == "__main__":
     unittest.main()

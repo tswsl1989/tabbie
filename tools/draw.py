@@ -1,58 +1,103 @@
 #!/usr/bin/python
-#begin python cookbook code
-def k_subsets_i(n, k):
-    '''
-    Yield each subset of size k from the set of intergers 0 .. n - 1
-    n -- an integer > 0
-    k -- an integer > 0
-    '''
-    # Validate args
-    if n < 0:
-        raise ValueError('n must be > 0, got n=%d' % n)
-    if k < 0:
-        raise ValueError('k must be > 0, got k=%d' % k)
-    # check base cases
-    if k == 0 or n < k:
-        yield set()
-    elif n == k:
-        yield set(range(n))
-
-    else:
-        # Use recursive formula based on binomial coeffecients:
-        # choose(n, k) = choose(n - 1, k - 1) + choose(n - 1, k)
-        for s in k_subsets_i(n - 1, k - 1):
-            s.add(n - 1)
-            yield s
-        for s in k_subsets_i(n - 1, k):
-            yield s
-
-def k_subsets(s, k):
-    '''
-    Yield all subsets of size k from set (or list) s
-    s -- a set or list (any iterable will suffice)
-    k -- an integer > 0
-    '''
-    s = list(s)
-    n = len(s)
-    for k_set in k_subsets_i(n, k):
-        yield set([s[i] for i in k_set])
-#end python cookbook code
-
 from sys import stdin
+from math import ceil
+
+def badness(l):
+    result = 0
+    for e in l:
+        diff = (e - min(l))
+        if diff > 0:
+            result += (diff - 1) ** 2
+    if result > 0:
+        result += l.count(min(l))
+    return result
 
 class Team:
     
-    def __init__(self, id, points, og, oo, cg, co):
+    def __init__(self, id, points, positions):
         self.id = id
         self.points = points
-        self.og = og
-        self.oo = oo
-        self.cg = cg
-        self.co = co
+        self.positions = positions
     
     def __repr__(self):
-        return "(%s)" % ", ".join(map(str, [self.id, self.points, self.og, self.oo, self.cg, self.co]))
+        return "Team: (%s, %s, %s)" % (self.id, self.points, self.positions)
+    
+    def badness(self):
+        return badness(self.positions)
+        
+class Debate:
+    
+    def __init__(self, positions):
+        self.positions = positions
+    
+    def badness(self):
+        matrix = [team.positions for team in self.positions]
+        for i in range(3):
+            matrix[i][i] += 1
+        return sum([badness(l) for l in matrix])
 
+    def __repr__(self):
+        return "Debate: (%s)" % self.positions
+    
+def brackets(teams):
+    result = {}
+    for team in teams:
+        if team.points not in result:
+            result[team.points] = set()
+        result[team.points].add(team)
+    return result
+
+def debatesPerLevel(brackets):
+    missing = 0
+    missingOnLevel = 999
+    result = {}
+    for level, teams in reversed(sorted(brackets.items())):
+        teamsLeftOnThisLevel = len(teams)
+        if missing:
+            teamsFromThisLevel = min(missing, len(teams))
+            missing -= teamsFromThisLevel
+            teamsLeftOnThisLevel = len(teams) - teamsFromThisLevel
+            result[missingOnLevel][1].append((level, teamsFromThisLevel))
+        if teamsLeftOnThisLevel:
+            result[level] = (int(ceil(1.0 * teamsLeftOnThisLevel / 4)), [(level, teamsLeftOnThisLevel)])
+            if teamsLeftOnThisLevel % 4:
+                missing = 4 - (teamsLeftOnThisLevel % 4)
+                missingOnLevel = level
+    return result
+
+class Matrix:
+    
+    def __init__(self, debatesPerLevel):
+        self.debatesPerLevel = debatesPerLevel
+        self.data = {}
+        for level, (debates, l) in debatesPerLevel.items():
+            self.data[level] = [debates for x in range(4)]
+            
+    def freeAtLevel(self, level):
+        if not level in self.data:
+            return [0 for x in range(4)]
+        return self.data[level]
+    
+    def freeAtPosition(self, level, position):
+        return self.freeAtLevel[position]
+    
+    def connectedLevels(self):
+        result = []
+        currentConnection = set([])
+        for level, (nrOfDebates, l) in reversed(sorted(self.debatesPerLevel.items())):
+            if not level in currentConnection and currentConnection:
+                result.append(list(reversed(sorted(currentConnection))))
+                currentConnection = set([])
+            currentConnection.update([level for level, teams in l])
+        if currentConnection:
+            result.append(list(reversed(sorted(currentConnection))))
+        return result
+    
+    def set(level, position):
+        self.data[level][position] -= 1
+        
+    def unset(level, position):
+        self.data[level][position] += 1
 
 def read():
     teams = []
@@ -60,48 +105,25 @@ def read():
     line = stdin.readline()
     while line:
         id, points, og, oo, cg, co = map(int, map(str.strip, line.split("\t")))
-        teams.append(Team(id, points, og, oo, cg, co))
+        teams.append(Team(id, points, [og, oo, cg, co]))
         line = stdin.readline()
     return teams
 
-def cmpPoints(teamA, teamB):
-	return teamA.points - teamB.points
-
-def baddness(l):
-    result = 0
-    for e in l:
-        diff = (e - min(l))
-        if diff > 0:
-            result += (diff - 1) ** 2
-    return result
-
-def splitInToBrackets(teams):
-    brackets = {}
-    for team in teams:
-        if team.points not in brackets:
-            brackets[team.points] = []
-        brackets[team.points].append(team)
-    return map(lambda (x, y): y, (reversed(sorted(brackets.items()))))
-
-def bruteForceInBrackets(teams):
-    brackets = splitInToBrackets(teams)
-
-    uberBracket = []
-    i = 0
-    while len(uberBracket) < 4:
-        uberBracket.extend(brackets[i])
-        i += 1
-    combinations = k_subsets(uberBracket, 4)
-    for combination in combinations:
-        print combination
-    
-
-bruteForceInBrackets(read())
+if __name__ == "__main__":
+    algorithmOne(read())
 
 
-#print baddness([0, 0, 0, 0])
-#print baddness([0, 0, 0, 1])
-#print baddness([0, 1, 1, 1])
-#print baddness([0, 1, 1, 2])
-#print baddness([0, 1, 2, 2])
-#print baddness([0, 1, 1, 3])
+#=>
+
+#7 => 1 debate, 4 places @level 7
+#6 => 2 deabte, 6 places @level 6
+#5 => 2 debates, 2 places @level 6, 2 debates, 6 places @level 5
+#4 => 2 debates, 2 places @ level 5, 1 debate, 4 places @ level 4
+#3 => 1 debate, 4 places @ level 3
+#2 => 1 debate, 2 places @ level 2
+#1 => 1 debate, 2 places @ level 2
+
+#=>
+
+#order by badness.
+#take highest badness first. reduce by moving to 

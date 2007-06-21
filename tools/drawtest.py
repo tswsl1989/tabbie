@@ -26,6 +26,7 @@ class DrawTest(unittest.TestCase):
         check([badness(l) for l in [[0, 0, 1, 1], [0, 0, 0, 2]]])
         check([badness(l) for l in [[0, 1, 1, 1], [0, 0, 1, 2], [0, 0, 0, 3]]])
         check([badness(l) for l in [[1, 1, 1, 1], [0, 1, 1, 2], [0, 0, 2, 2], [0, 0, 1, 3], [0, 0, 0, 4]]])
+        check([badness(l) for l in [[1, 1, 1, 2], [0, 1, 2, 2], [0, 1, 1, 3], [0, 0, 2, 3], [0, 0, 1, 4], [0, 0, 0, 5]]])
         
         #relative differences increase as well...
         check([badness(b) - badness(a) for a, b in [
@@ -38,8 +39,8 @@ class DrawTest(unittest.TestCase):
         x = ignored = 0
         self.assertEquals([0, 0, 0, 0], Team(x, x, [0, 0, 0, 0]).relativeBadness())
         self.assertEquals([4, 0, 0, 0], Team(x, x, [1, 0, 0, 0]).relativeBadness())
-        self.assertEquals([0, 3, 3, 5], Team(x, x, [0, 1, 1, 2]).relativeBadness())
-        self.assertEquals([0, 4, 6, 8], Team(x, x, [0, 1, 2, 3]).relativeBadness())
+        self.assertEquals([0, 4, 4, 16], Team(x, x, [0, 1, 1, 2]).relativeBadness())
+        self.assertEquals([0, 12, 32, 60], Team(x, x, [0, 1, 2, 3]).relativeBadness())
     
     def testDebateBadness(self):
         x = ignored = 0

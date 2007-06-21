@@ -8,22 +8,19 @@ def cmpBadnes(teamA, teamB):
 def cmpPoints(teamA, teamB):
     return teamA.points() - teamB.points()
 
-def xxbadness(l):
-    l = sorted(l)
-    m = l[3]
-    result = 0
-    for i, e in enumerate(l):
-        result += (m * e) ** i
-    return result
-
 def twoparts(x):
     return x / 2, x / 2 + x % 2
 
 def badness(l):
+    def f(L1, L2):
+        return sum([(l1 - l2) ** 2 for l1, l2 in zip(L1, L2)])
     x, y = twoparts(sum(l))
     a, b = twoparts(x)
     c, d = twoparts(y)
-    return xxbadness(l) - xxbadness([a, b, c, d])
+    ideal = sorted([a, b, c, d])
+    lo = sum(l) / 4
+    compare = [lo, lo, lo, lo]
+    return (f(compare, sorted(l)) - f(ideal, compare)) ** 2
     
 def plusPos(l, i):
     l2 = l[:]

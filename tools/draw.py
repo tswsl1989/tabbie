@@ -191,14 +191,14 @@ class Solution2:
                 result.append(PositionedTeam(team, position, debate))
         return result
 
-def read():
+def read(f):
     teams = []
-    ignored = stdin.readline()
-    line = stdin.readline()
+    ignored = f.readline()
+    line = f.readline()
     while line:
         id, points, og, oo, cg, co = map(int, map(str.strip, line.split("\t")))
         teams.append(Team(id, points, [og, oo, cg, co]))
-        line = stdin.readline()
+        line = f.readline()
     return teams
 
 def isSwappable(positionedTeam1, positionedTeam2):
@@ -223,7 +223,8 @@ def justKeepSwapping(teams):
             debates.append(Debate(selectedTeams[:4], selectedTeams[0].points))
             selectedTeams = selectedTeams[4:]
         partialSolution = Solution2(debates)
-        nullSwapAttempts = 100
+        NULL_SWAP_ATTEMPTS = 10
+        nullSwapAttempts = NULL_SWAP_ATTEMPTS
         while True:
             if partialSolution.badness() == 0:
                 break
@@ -246,8 +247,9 @@ def justKeepSwapping(teams):
                     if netEffect > bestEffect:
                         bestSwapper = swapper
                 if bestSwapper:
+                    print "Swapping"
                     swapTwoTeams(bestSwapper, worst)
-                    nullSwapAttempts = 100
+                    nullSwapAttempts = NULL_SWAP_ATTEMPTS
                     break
             else:
                 if nullSwapAttempts > 0 and nullSwappers:
@@ -292,7 +294,7 @@ def score(debates):
     return Solution2(debates).badness()
 
 if __name__ == "__main__":
-    teams = read()
+    teams = read(stdin)
     print "Teams: "
     for team in teams:
         print team

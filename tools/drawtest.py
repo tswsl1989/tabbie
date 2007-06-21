@@ -47,6 +47,16 @@ class DrawTest(unittest.TestCase):
             Team(x, x, [1, 1, 1, 1])])
         self.assertTrue(debate.badness() > 0)
 
+    def testSolutionBadness(self):
+        x = ignored = 0
+        debate = Debate([
+            Team(x, x, [2, 1, 1, 1]),
+            Team(x, x, [1, 1, 1, 1]),
+            Team(x, x, [1, 1, 1, 1]),
+            Team(x, x, [1, 1, 1, 1])])
+        solution = Solution({1: [debate, debate]})
+        self.assertEquals(2 * debate.badness(), solution.badness())
+
     def testGetBrackets(self):
         x = ignored = 0
         team0, team1, team2, team3 = teams = [
@@ -133,15 +143,7 @@ class DrawTest(unittest.TestCase):
         matrix = Matrix(debatesPerLevel)
         self.assertEquals([[5, 4]], matrix.connectedLevels())
         
-        debatesPerLevel = {
-            7: (1, [(7, 4)]),
-            6: (2, [(6, 6), (5, 2)]),
-            5: (2, [(5, 6), (4, 2)]),
-            4: (1, [(4, 4)]),
-            3: (1, [(3, 4)]),
-            2: (1, [(2, 1), (1, 1), (0, 2)])
-            }
-        print Matrix(debatesPerLevel).connectedLevels()
+
         
 
 if __name__ == "__main__":

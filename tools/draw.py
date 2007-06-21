@@ -2,6 +2,12 @@
 from sys import stdin
 from math import ceil
 
+def cmpBadnes(teamA, teamB):
+    return teamA.badness() - teamB.badness()
+
+def cmpPoints(teamA, teamB):
+    return teamA.points() - teamB.points()
+
 def badness(l):
     result = 0
     for e in l:
@@ -31,7 +37,7 @@ class Debate:
         self.positions = positions
     
     def badness(self):
-        matrix = [team.positions for team in self.positions]
+        matrix = [team.positions[:] for team in self.positions]
         for i in range(3):
             matrix[i][i] += 1
         return sum([badness(l) for l in matrix])
@@ -99,6 +105,23 @@ class Matrix:
     def unset(level, position):
         self.data[level][position] += 1
 
+class Solution:
+    
+    def __init__(self, levelsWithDebates):
+        self.levelsWithDebates = levelsWithDebates
+        
+    def debates(self):
+        result = []
+        for debateList in self.levelsWithDebates.values():
+            result.extend(debateList)
+        return result
+        
+    def badness(self):
+        return sum([debate.badness() for debate in self.debates()])
+    
+    def __repr__(self):
+        return "\n" . join([str(debate) for debate in self.debates()])
+
 def read():
     teams = []
     ignored = stdin.readline()
@@ -109,21 +132,31 @@ def read():
         line = stdin.readline()
     return teams
 
+def justKeepSwapping(teams):
+    bla = debatesPerLevel(brackets(teams))
+    matrix = Matrix(bla)
+    levelsWithDebates = {}
+    for bunchOfLevels in matrix.connectedLevels():
+        selectedTeams = [team for team in teams if (team.points in bunchOfLevels)]
+        selectedTeams = list(reversed(sorted(selectedTeams)))
+        for level in bunchOfLevels:
+            debates = []
+            nrOfDebates = bla.get(level, [0])[0]
+            for i in range(nrOfDebates):
+                debate = Debate(selectedTeams[:4])
+                selectedTeams = selectedTeams[4:]
+                debates.append(debate)
+            if not level in levelsWithDebates:
+                levelsWithDebates[level] = []
+            levelsWithDebates[level].append(debate)
+        partialSolution = Solution(levelsWithDebates)
+        
+        debates = sorted(partialSolution.debates(), cmpBadnes)
+        worst = debates.pop()
+        print worst.badness()
+        print "SCORE", partialSolution.badness()
+        
+    
 if __name__ == "__main__":
-    algorithmOne(read())
+    justKeepSwapping(read())
 
-
-#=>
-
-#7 => 1 debate, 4 places @level 7
-#6 => 2 deabte, 6 places @level 6
-#5 => 2 debates, 2 places @level 6, 2 debates, 6 places @level 5
-#4 => 2 debates, 2 places @ level 5, 1 debate, 4 places @ level 4
-#3 => 1 debate, 4 places @ level 3
-#2 => 1 debate, 2 places @ level 2
-#1 => 1 debate, 2 places @ level 2
-
-#=>
-
-#order by badness.
-#take highest badness first. reduce by moving to 

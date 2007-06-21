@@ -2,8 +2,8 @@
 from sys import stdin
 from math import ceil
 
-def cmpBadnes(teamA, teamB):
-    return teamA.badness() - teamB.badness()
+def cmpBadness(something, somethingElse):
+    return something.badness() - somethingElse.badness()
 
 def cmpPoints(teamA, teamB):
     return teamA.points() - teamB.points()
@@ -49,17 +49,22 @@ class Team:
         
 class PositionedTeam:
     
-    def __init__(self, position, team):
-        self.position = position
+    def __init__(self, team, position, debate):
         self.team = team
+        self.position = position
+        self.debate = debate
         
     def badness(self):
         return self.team.relativeBadness()[self.position]
+    
+    def __repr__(self):
+        return "(TiP: %s, %s)" % (self.team, self.position)
         
 class Debate:
     
-    def __init__(self, positions):
+    def __init__(self, positions, level):
         self.positions = positions
+        self.level = level
     
     def badness(self):
         matrix = [team.positions[:] for team in self.positions]
@@ -146,6 +151,31 @@ class Solution:
     
     def __repr__(self):
         return "\n" . join([str(debate) for debate in self.debates()])
+    
+    def teamsInPosition(self):
+        result = []
+        for debate in self.debates():
+            for position, team in enumerate(debate.positions):
+                result.append(PositionedTeam(team, position, debate))
+        return result
+            
+class Solution2:
+    
+    def __init__(self, debates):
+        self.debates = debates
+        
+    def badness(self):
+        return sum([debate.badness() for debate in self.debates])
+    
+    def __repr__(self):
+        return "\n" . join([str(debate) for debate in self.debates])
+    
+    def teamsInPosition(self):
+        result = []
+        for debate in self.debates:
+            for position, team in enumerate(debate.positions):
+                result.append(PositionedTeam(team, position, debate))
+        return result
 
 def read():
     teams = []
@@ -157,31 +187,61 @@ def read():
         line = stdin.readline()
     return teams
 
+def isSwappable(positionedTeam1, positionedTeam2):
+    return positionedTeam1.team.points == positionedTeam2.team.points or \
+        positionedTeam1.debate.level == positionedTeam2.debate.level
+
 def justKeepSwapping(teams):
+    print "Teams: "
+    for team in teams:
+        print team
     bla = debatesPerLevel(brackets(teams))
     matrix = Matrix(bla)
     levelsWithDebates = {}
+    result = []
     for bunchOfLevels in matrix.connectedLevels():
+        #init
         selectedTeams = [team for team in teams if (team.points in bunchOfLevels)]
         selectedTeams = list(reversed(sorted(selectedTeams)))
-        for level in bunchOfLevels:
-            debates = []
-            nrOfDebates = bla.get(level, [0])[0]
-            for i in range(nrOfDebates):
-                debate = Debate(selectedTeams[:4])
-                selectedTeams = selectedTeams[4:]
-                debates.append(debate)
-            if not level in levelsWithDebates:
-                levelsWithDebates[level] = []
-            levelsWithDebates[level].append(debate)
-        partialSolution = Solution(levelsWithDebates)
-        
-        debates = sorted(partialSolution.debates(), cmpBadnes)
-        worst = debates.pop()
-        print worst.badness()
-        print "SCORE", partialSolution.badness()
-        
+        debates = []
+        while selectedTeams:
+            debates.append(Debate(selectedTeams[:4], selectedTeams[0].points))
+            selectedTeams = selectedTeams[4:]
+        partialSolution = Solution2(debates)
+        while True:
+            if partialSolution.badness() == 0:
+                break
+            positionedTeams = sorted(partialSolution.teamsInPosition(), cmpBadness)
+            while positionedTeams:
+                worst = positionedTeams.pop()
+                possibleSwappers = [team for team in positionedTeams if isSwappable(team, worst)]
+                
+                bestEffect = 0
+                bestSwapper = None
+                for swapper in possibleSwappers:
+                    currentBadness = worst.badness() + swapper.badness()
+                    f1 = PositionedTeam(worst.team, swapper.position, swapper.debate)
+                    f2 = PositionedTeam(swapper.team, worst.position, worst.debate)
+                    futureBadness = f1.badness() + f2.badness()
+                    netEffect = currentBadness - futureBadness
+                    if netEffect > bestEffect:
+                        bestSwapper = swapper
+                if bestSwapper:
+                    bestSwapper.debate.positions[bestSwapper.position] = worst.team
+                    worst.debate.positions[worst.position] = bestSwapper.team
+                    break
+            else:
+                break
+        result.extend(partialSolution.debates)
+    return result
     
 if __name__ == "__main__":
-    justKeepSwapping(read())
+    debates = justKeepSwapping(read())
+    print "SCORE", Solution2(debates).badness()
+    for debate in debates:
+        print debate
+        
 
+#TODO:
+# multiple step optimalization
+# checking for errors

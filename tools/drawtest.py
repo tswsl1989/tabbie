@@ -48,21 +48,21 @@ class DrawTest(unittest.TestCase):
             Team(x, x, [0, 1, 1, 1]),
             Team(x, x, [1, 0, 1, 1]),
             Team(x, x, [1, 1, 0, 1]),
-            Team(x, x, [1, 1, 1, 0])])
+            Team(x, x, [1, 1, 1, 0])], x)
         self.assertEquals(0, debate.badness())
         
         debate = Debate([
             Team(x, x, [1, 1, 1, 1]),
             Team(x, x, [1, 1, 1, 1]),
             Team(x, x, [1, 1, 1, 1]),
-            Team(x, x, [1, 1, 1, 1])])
+            Team(x, x, [1, 1, 1, 1])], x)
         self.assertEquals(0, debate.badness())
 
         debate = Debate([
             Team(x, x, [2, 1, 1, 1]),
             Team(x, x, [1, 1, 1, 1]),
             Team(x, x, [1, 1, 1, 1]),
-            Team(x, x, [1, 1, 1, 1])])
+            Team(x, x, [1, 1, 1, 1])], x)
         self.assertTrue(debate.badness() > 0)
 
     def testSolutionBadness(self):
@@ -71,7 +71,7 @@ class DrawTest(unittest.TestCase):
             Team(x, x, [2, 1, 1, 1]),
             Team(x, x, [1, 1, 1, 1]),
             Team(x, x, [1, 1, 1, 1]),
-            Team(x, x, [1, 1, 1, 1])])
+            Team(x, x, [1, 1, 1, 1])], x)
         solution = Solution({1: [debate, debate]})
         self.assertEquals(2 * debate.badness(), solution.badness())
 
@@ -161,20 +161,23 @@ class DrawTest(unittest.TestCase):
         matrix = Matrix(debatesPerLevel)
         self.assertEquals([[5, 4]], matrix.connectedLevels())
         
-    def testSelectTeamsOrderedByBadness(self):
+    def testSelectTeamsInPosition(self):
         x = ignored = 0
-        solution = Solution({1: [Debate([
+        team0, team1, team2, team3 = teams = [
             Team(0, x, [0, 1, 1, 1]),
             Team(1, x, [1, 1, 0, 1]),
             Team(2, x, [0, 0, 2, 1]),
-            Team(3, x, [0, 0, 0, 3])])]})
+            Team(3, x, [0, 0, 0, 3])]
+        solution = Solution({1: [Debate(teams, x)]})
         result = solution.teamsInPosition()
+        self.assertEquals(team3, result[3].team)
+        self.assertEquals(team3, sorted(result, cmpBadness)[3].team)
         
     def testTeamInPosition(self):
         x = ignored = 0
-        positionedTeam = PositionedTeam(0, Team(x, x, [0, 1, 1, 1]))
+        positionedTeam = PositionedTeam(Team(x, x, [0, 1, 1, 1]), 0, x)
         self.assertEquals(0, positionedTeam.badness())
-        positionedTeam = PositionedTeam(0, Team(x, x, [1, 1, 1, 0]))
+        positionedTeam = PositionedTeam(Team(x, x, [1, 1, 1, 0]), 0, x)
         self.assertEquals(Team(x, x, [2, 1, 1, 0]).badness(), positionedTeam.badness())
 
 if __name__ == "__main__":

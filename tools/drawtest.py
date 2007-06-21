@@ -161,14 +161,14 @@ class DrawTest(unittest.TestCase):
         matrix = Matrix(debatesPerLevel)
         self.assertEquals([[5, 4]], matrix.connectedLevels())
         
-    #def testSelectTeamsOrderedByBadness(self):
-        #x = ignored = 0
-        #solution = Solution({1: [Debate([
-            #Team(0, x, [0, 1, 1, 1]),
-            #Team(1, x, [1, 1, 0, 1]),
-            #Team(2, x, [0, 0, 2, 1]),
-            #Team(3, x, [0, 0, 0, 3])])]})
-        #result = solution.teamsInPosition()
+    def testSelectTeamsOrderedByBadness(self):
+        x = ignored = 0
+        solution = Solution({1: [Debate([
+            Team(0, x, [0, 1, 1, 1]),
+            Team(1, x, [1, 1, 0, 1]),
+            Team(2, x, [0, 0, 2, 1]),
+            Team(3, x, [0, 0, 0, 3])])]})
+        result = solution.teamsInPosition()
         
     def testTeamInPosition(self):
         x = ignored = 0

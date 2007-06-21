@@ -1,44 +1,5 @@
 <?php
 require('includes/fpdf/fpdf.php');
-//TODO: Docname...
-
-$data = array(
-            array(
-                "chair" => "The Chair Has A Long Name",
-                "round" => "1",
-                "venue" => "A Room at a location",
-                "motion" => "THWB motions can be extremely long and phrased as to need many many many words  and confuse everyone",
-                "og" => "DGJ - A",
-                "oo" => "UU - B",
-                "cg" => "XYZ - A",
-                "co" => "AA - A",
-                "og1" => "Klaas van Schelven",
-                "og2" => "Avihu Tamir",
-                "oo1" => "Anat Gelber",
-                "oo2" => "Someone with an very long name",
-                "cg1" => "Pietje Puk",
-                "cg2" => "Blaatje Boetleje",
-                "co1" => "John D.",
-                "co2" => "Wu Meng Tan"
-                ),
-            array(
-                "chair" => "Different Chair",
-                "round" => "1",
-                "venue" => "A Room at a location nr2",
-                "motion" => "THWB in a short motion",
-                "og" => "DGJ - A",
-                "oo" => "UU - B",
-                "cg" => "XYZ - A",
-                "co" => "AA - A",
-                "og1" => "Klaas van Schelven",
-                "og2" => "Avihu Tamir",
-                "oo1" => "Anat Gelber",
-                "oo2" => "Someone with an very long name",
-                "cg1" => "Pietje Puk",
-                "cg2" => "Blaatje Boetleje",
-                "co1" => "John D.",
-                "co2" => "Wu Meng Tan"
-                ));
 
 function speaker($pdf, $r, $speaker) {
     $pdf->Cell(95, 10, $r[$speaker], "L");
@@ -63,7 +24,7 @@ function four_speakers($pdf, $r, $team1, $team2) {
 }
 
 function two_teams($pdf, $r, $teams) {
-    $pdf->Cell(85, 10, $teams[0]["name"] . $r[$teams[0]["short"]], "LT");
+    $pdf->Cell(85, 10, $teams[0]["name"] . ": " . $r[$teams[0]["short"]], "LT");
     $pdf->Cell(20, 10, "Rank: ", "T");
     $pdf->Cell(15, 10, "", "LRTB");
     $pdf->Cell(10, 10);
@@ -78,7 +39,7 @@ function two_teams($pdf, $r, $teams) {
     four_speakers($pdf, $r, $teams[0]["short"], $teams[1]["short"]);
 }
 
-function adjudicator_forms_pdf($filename, $data) {
+function adjudicator_sheets_pdf($filename, $data) {
     $pdf = new FPDF("L");
     foreach ($data as $r) {
         $pdf->AddPage();
@@ -100,12 +61,10 @@ function adjudicator_forms_pdf($filename, $data) {
             array("name" => "Closing Opp.", "short" => "co")));
         $pdf->SetFont('Arial','B', 10);
         $pdf->Ln();
-        $pdf->Cell(250, 8, "The best team gets Rank 1. A higher rank has a higher total team score (no equal scores). Don't be stupid.");
+        $pdf->Cell(250, 8, "The best team gets Rank 1. A better rank has a higher total team score (no equal scores). Learn to do math or face the bin.");
     }
     
-    $pdf->Output($filename, "I");
+    $pdf->Output($filename);
 }
-
-adjudicator_forms_pdf("test.pdf", $data);
 
 ?>

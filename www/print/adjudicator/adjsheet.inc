@@ -7,6 +7,7 @@ Author  :   AK
 Purpose :   Display the adjudicator print modules
            
 ******************************************************************************/
+require_once("includes/adjudicator_sheets_pdf.inc");
 
 $action=@$_GET['action'];
 $warning=@$_GET['warning'];
@@ -52,15 +53,6 @@ if ($action == "display")
 {
     $warning="null";
     
-    //Open the text file
-    $filename = "print/outputs/adjudicator_sheets.txt";
-    $fp = fopen($filename, "w");
-    
-    // Display header-line
-//    echo "Round;Motion;Venue;OG;OO;CG;CO;Chair;Panelist1;Panelist2;Panelist3;OGSpkr1;OGSpkr2;OOSpkr1;OOSpkr2;CGSpkr1;CGSpkr2;COSpkr1;COSpkr2<br/>";
-    $text = "Round;Motion;VenueLoc;Venue;OG;OO;CG;CO;Chair;Panelist1;Panelist2;Panelist3;OGSpkr1;OGSpkr2;OOSpkr1;OOSpkr2;CGSpkr1;CGSpkr2;COSpkr1;COSpkr2\n";
-    fputs($fp,$text);
-    
     $roundno = $numdraws;
     
     // Get the motion for the round
@@ -77,6 +69,7 @@ if ($action == "display")
     
     $venue_result = mysql_query($venue_query);
     
+    $data = array();
     while ($venue_row=mysql_fetch_assoc($venue_result))
     {    $venue_location = $venue_row['venue_location'];
         $venue_name = $venue_row['venue_name'];
@@ -164,12 +157,29 @@ if ($action == "display")
             }
             $cospkr_row = mysql_fetch_assoc($cospkr_result);
         }
-
-        $text = "$roundno;$motion;$venue_location;$venue_name;$og;$oo;$cg;$co;$chair;$panelist_1;$panelist_2;$panelist_3;$ogspkr1;$ogspkr2;$oospkr1;$oospkr2;$cgspkr1;$cgspkr2;$cospkr1;$cospkr2\n";
-        fputs($fp,$text);
+        $page = array(
+            "chair" => $chair,
+            "round" => $roundno,
+            "venue" => "$venue_name  at  $venue_location",
+            "motion" => $motion,
+            "og" => $og,
+            "oo" => $oo,
+            "cg" => $cg,
+            "co" => $co,
+            "og1" => $ogspkr1,
+            "og2" => $ogspkr2,
+            "oo1" => $oospkr1,
+            "oo2" => $oospkr2,
+            "cg1" => $cgspkr1,
+            "cg2" => $cgspkr2,
+            "co1" => $cospkr1,
+            "co2" => $cospkr2
+            );
+        $data[] = $page;
     }
+    $filename = "print/outputs/round_$roundno" . "_adjudicator_sheets.pdf";
+    adjudicator_sheets_pdf($filename, $data);
     
-    fclose($fp);
     echo "File created successfully! <br/>";
     echo "<a href=\"$filename\">Download</a> ";
 }

@@ -43,13 +43,13 @@ function get_teams($nr_of_rounds) {
 }
 
 function print_teams_css($teams) {
-    echo "team_id,points,og,oo,cg,co\n";
+    echo "team_id\tpoints\tog\too\tcg\tco\n";
     foreach ($teams as $team) {
-        echo $team["team_id"] . "," .
-            $team["points"] . "," .
-            $team["og"] . "," .
-            $team["oo"] . "," .
-            $team["cg"] . "," .
+        echo $team["team_id"] . "\t" .
+            $team["points"] . "\t" .
+            $team["og"] . "\t" .
+            $team["oo"] . "\t" .
+            $team["cg"] . "\t" .
             $team["co"] . "\n";
     }
 }

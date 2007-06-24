@@ -1,2 +1,2 @@
 #!/bin/bash
-chown www-data:www-data install print/outputs print/display_files
+chown www-data:www-data config print/outputs print/display_files

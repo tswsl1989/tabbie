@@ -40,13 +40,18 @@ $queries = split(';', $queries_text);
 
 ?><p style="font-family: courier; font-size: 10px;"><?php
 
+//TODO these need to be included
+"DROP DATABASE tabbie;
+CREATE DATABASE tabbie;"
+
 $all_is_well = true;
 foreach ($queries as $query) {
     if (trim($query)) {
         $result = mysql_query($query);
         mysql_select_db($database_name);
         if (!$result) {
-            print "<b>$query => FAIL<b/><br>";
+            $error = mysql_error();
+            print "<b>$query => FAIL: $error</b><br>";
             $all_is_well = false;
         } else
             print "$query => SUCCESS<br>";

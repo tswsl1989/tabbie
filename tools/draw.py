@@ -2,9 +2,6 @@
 from sys import stdin
 from math import ceil
 
-def cmpBadness(something, somethingElse):
-    return something.badness() - somethingElse.badness()
-
 def cmpPoints(teamA, teamB):
     return teamA.points - teamB.points
 
@@ -33,21 +30,30 @@ class Team:
         self.id = id
         self.points = points
         self.positions = positions
-        self._relativeBadness = None
+        self._badness = None
+        self._futureBadnesses = None
+        self._relativeBadnesses = None
     
     def __repr__(self):
         return "Team: (%s, %s, %s)" % (self.id, self.points, self.positions)
     
     def badness(self):
-        return badness(self.positions)
+        if not self._badness:
+            self._badness = badness(self.positions)
+        return self._badness
+        
+    def futureBadnesses(self):
+        if not self._futureBadnesses:
+            self._futureBadnesses = [badness(plusPos(self.positions, position)) for position in range(4)]
+        return self._futureBadnesses
     
-    def relativeBadness(self):
-        if not self._relativeBadness:
-            self._relativeBadness = [badness(plusPos(self.positions, position)) for position in range(4)]
-            if min(self._relativeBadness) != 0:
-                lo = min(self._relativeBadness)
-                self._relativeBadness = [x - lo for x in self._relativeBadness]
-        return self._relativeBadness
+    def relativeBadnesses(self):
+        if not self._relativeBadnesses:
+            self._relativeBadnesses = self.futureBadnesses()
+            if min(self._relativeBadnesses) != 0:
+                lo = min(self._relativeBadnesses)
+                self._relativeBadnesses = [x - lo for x in self._relativeBadnesses]
+        return self._relativeBadnesses
         
 class PositionedTeam:
     
@@ -57,7 +63,10 @@ class PositionedTeam:
         self.debate = debate
         
     def badness(self):
-        return self.team.relativeBadness()[self.position]
+        return self.team.futureBadnesses()[self.position]
+    
+    def relativeBadness(self):
+        return self.team.relativeBadnesses()[self.position]
     
     def __repr__(self):
         return "(TiP: %s, %s)" % (self.team, self.position)
@@ -69,10 +78,10 @@ class Debate:
         self.level = level
     
     def badness(self):
-        matrix = [team.positions[:] for team in self.positions]
-        for i in range(3):
-            matrix[i][i] += 1
-        return sum([badness(l) for l in matrix])
+        return sum([team.futureBadnesses()[i] for i, team in enumerate(self.positions)])
+
+    def relativeBadness(self):
+        return sum([team.relativeBadnesses()[i] for i, team in enumerate(self.positions)])
 
     def __repr__(self):
         return "Debate: (%s)" % self.positions
@@ -83,66 +92,6 @@ class Debate:
         if other.positions != self.positions:
             return False
     
-def brackets(teams):
-    result = {}
-    for team in teams:
-        if team.points not in result:
-            result[team.points] = set()
-        result[team.points].add(team)
-    return result
-
-def debatesPerLevel(brackets):
-    missing = 0
-    missingOnLevel = 999
-    result = {}
-    for level, teams in reversed(sorted(brackets.items())):
-        teamsLeftOnThisLevel = len(teams)
-        if missing:
-            teamsFromThisLevel = min(missing, len(teams))
-            missing -= teamsFromThisLevel
-            teamsLeftOnThisLevel = len(teams) - teamsFromThisLevel
-            result[missingOnLevel][1].append((level, teamsFromThisLevel))
-        if teamsLeftOnThisLevel:
-            result[level] = (int(ceil(1.0 * teamsLeftOnThisLevel / 4)), [(level, teamsLeftOnThisLevel)])
-            if teamsLeftOnThisLevel % 4:
-                missing = 4 - (teamsLeftOnThisLevel % 4)
-                missingOnLevel = level
-    return result
-
-class Matrix:
-    
-    def __init__(self, debatesPerLevel):
-        self.debatesPerLevel = debatesPerLevel
-        self.data = {}
-        for level, (debates, l) in debatesPerLevel.items():
-            self.data[level] = [debates for x in range(4)]
-            
-    def freeAtLevel(self, level):
-        if not level in self.data:
-            return [0 for x in range(4)]
-        return self.data[level]
-    
-    def freeAtPosition(self, level, position):
-        return self.freeAtLevel[position]
-    
-    def connectedLevels(self):
-        result = []
-        currentConnection = set([])
-        for level, (nrOfDebates, l) in reversed(sorted(self.debatesPerLevel.items())):
-            if not level in currentConnection and currentConnection:
-                result.append(list(reversed(sorted(currentConnection))))
-                currentConnection = set([])
-            currentConnection.update([level for level, teams in l])
-        if currentConnection:
-            result.append(list(reversed(sorted(currentConnection))))
-        return result
-    
-    def set(level, position):
-        self.data[level][position] -= 1
-        
-    def unset(level, position):
-        self.data[level][position] += 1
-            
 class Solution:
     
     def __init__(self, debates):
@@ -150,6 +99,9 @@ class Solution:
         
     def badness(self):
         return sum([debate.badness() for debate in self.debates])
+    
+    def relativeBadness(self):
+        return sum([debate.relativeBadness() for debate in self.debates])
     
     def __repr__(self):
         return "\n" . join([str(debate) for debate in self.debates])
@@ -176,60 +128,54 @@ def isSwappable(positionedTeam1, positionedTeam2):
         positionedTeam1.debate.level == positionedTeam2.debate.level
 
 def swapTwoTeams(teamInPositionA, teamInPositionB):
-    teamInPositionA.debate.positions[teamInPositionA.position] = teamInPositionB.team
-    teamInPositionB.debate.positions[teamInPositionB.position] = teamInPositionA.team
+    debateA = teamInPositionA.debate
+    debateB = teamInPositionB.debate
+    positionA = teamInPositionA.position
+    positionB = teamInPositionB.position
+    debateA.positions[positionA] = teamInPositionB.team
+    debateB.positions[positionB] = teamInPositionA.team
+    teamInPositionA.position = positionB
+    teamInPositionB.position = positionA
+    teamInPositionA.debate = debateB
+    teamInPositionB.debate = debateA
+
+def debatesFromTeams(teams):
+    teams = list(reversed(sorted(teams, cmp = cmpPoints)))
+    result = []
+    while teams:
+        result.append(Debate(teams[:4], teams[0].points))
+        teams = teams[4:]
+    return result
+    
 
 def justKeepSwapping(teams):
-    bla = debatesPerLevel(brackets(teams))
-    matrix = Matrix(bla)
     levelsWithDebates = {}
-    result = []
-    for bunchOfLevels in matrix.connectedLevels():
-        #init
-        selectedTeams = [team for team in teams if (team.points in bunchOfLevels)]
-        selectedTeams = list(reversed(sorted(selectedTeams, cmp = cmpPoints)))
-        debates = []
-        while selectedTeams:
-            debates.append(Debate(selectedTeams[:4], selectedTeams[0].points))
-            selectedTeams = selectedTeams[4:]
-        partialSolution = Solution(debates)
-        NULL_SWAP_ATTEMPTS = 10
-        nullSwapAttempts = NULL_SWAP_ATTEMPTS
-        while True:
-            if partialSolution.badness() == 0:
-                break
-            positionedTeams = sorted(partialSolution.teamsInPosition(), cmpBadness)
-            nullSwappers = []
-            while positionedTeams:
-                worst = positionedTeams.pop()
-                possibleSwappers = [team for team in positionedTeams if isSwappable(team, worst)]
-                
+    
+    debates = debatesFromTeams(teams)
+    solution = Solution(debates)
+    positionedTeams = solution.teamsInPosition()
+    previousSolution = None
+    while solution.relativeBadness() > 0 and previousSolution != solution.relativeBadness():
+        previousSolution = solution.relativeBadness()
+        for teamA in positionedTeams:
+            if teamA.relativeBadness() > 0:
                 bestEffect = 0
-                bestSwapper = None
-                for swapper in possibleSwappers:
-                    currentBadness = worst.badness() + swapper.badness()
-                    f1 = PositionedTeam(worst.team, swapper.position, swapper.debate)
-                    f2 = PositionedTeam(swapper.team, worst.position, worst.debate)
-                    futureBadness = f1.badness() + f2.badness()
-                    netEffect = currentBadness - futureBadness
-                    if netEffect == 0:
-                        nullSwappers.append((worst, swapper))
-                    if netEffect > bestEffect:
-                        bestSwapper = swapper
-                if bestSwapper:
-                    swapTwoTeams(bestSwapper, worst)
-                    nullSwapAttempts = NULL_SWAP_ATTEMPTS
-                    break
-            else:
-                if nullSwapAttempts > 0 and nullSwappers:
-                    from random import sample
-                    a, b = sample(nullSwappers, 1)[0]
-                    swapTwoTeams(a, b)
-                    nullSwapAttempts -= 1
-                else:
-                    break
-        result.extend(partialSolution.debates)
-    return result
+                bestTeamB = None
+                for teamB in positionedTeams: #this loop especially can be limited
+                    if isSwappable(teamA, teamB):
+                        current = teamA.relativeBadness() + teamB.relativeBadness()
+                        future = teamA.team.relativeBadnesses()[teamB.position] + \
+                                teamB.team.relativeBadnesses()[teamA.position]
+                        if future == 0:
+                            swapTwoTeams(teamA, teamB)
+                            bestTeamB = None
+                            break
+                        netEffect = current - future
+                        if netEffect > bestEffect:
+                            bestTeamB = teamB
+                if bestTeamB:
+                    swapTwoTeams(teamA, bestTeamB)
+    return solution.debates
 
 def pullUpCount(teams):
     levelDicts = {}

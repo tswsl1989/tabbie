@@ -62,6 +62,7 @@ $numadjudactive=$row['num'];
     <p class="msg">* The numbers in brackets indicate how many entries are active</p>
 
 </div>
+<?php include('customize/footer.inc'); ?>
 </body>
 
 </html>

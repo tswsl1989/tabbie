@@ -46,6 +46,7 @@ $numeslspeaker=$row['num'];
     </ul>
     
 </div>
+<?php include('customize/footer.inc'); ?>
 </body>
 
 </html>

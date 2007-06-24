@@ -40,5 +40,7 @@ if (mysql_num_rows($result)!=0)
 
 <h3><a href="">Refresh</a></h3>
 </div>
+
+<?php include('customize/footer.inc'); ?>
 </body>
 </html>

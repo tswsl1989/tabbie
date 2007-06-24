@@ -138,5 +138,6 @@ else //action="edit"
     <?
 }
 
+include('customize/footer.inc');
 echo "</div></body></html>";
 ?>

@@ -103,5 +103,6 @@ displayMessagesP(@$msg);
     echo "</table>\n";
 ?>
 </div>
+<?php include('customize/footer.inc'); ?>
 </body>
 </html>

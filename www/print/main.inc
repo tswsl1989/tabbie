@@ -55,6 +55,7 @@ if (count($msg)>0)
 
 
 </div>
+<?php include('customize/footer.inc'); ?>
 </body>
 
 </html>

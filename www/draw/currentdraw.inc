@@ -307,5 +307,6 @@ if ($validate == 1) {
 
 ?>
 </div>
+<?php include('customize/footer.inc'); ?>
 </body>
 </html>

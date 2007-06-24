@@ -79,5 +79,6 @@ if ($all_is_well) {
 
   </div>
 
+<?php include('customize/footer.inc'); ?>
 </body>
 </html>

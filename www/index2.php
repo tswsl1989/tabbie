@@ -39,5 +39,6 @@ Purpose :   For the TD/CA to set the highlight ranges for draw and results
       <h3>Use the links above to use tab.</h3>
   </div>
 
+<?php include('customize/footer.inc'); ?>
 </body>
 </html>

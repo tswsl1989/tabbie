@@ -72,7 +72,7 @@ class DrawTest(unittest.TestCase):
             Team(x, x, [1, 1, 1, 1]),
             Team(x, x, [1, 1, 1, 1]),
             Team(x, x, [1, 1, 1, 1])], x)
-        solution = Solution({1: [debate, debate]})
+        solution = Solution([debate, debate])
         self.assertEquals(2 * debate.badness(), solution.badness())
 
     def testGetBrackets(self):
@@ -168,7 +168,7 @@ class DrawTest(unittest.TestCase):
             Team(1, x, [1, 1, 0, 1]),
             Team(2, x, [0, 0, 2, 1]),
             Team(3, x, [0, 0, 0, 3])]
-        solution = Solution({1: [Debate(teams, x)]})
+        solution = Solution([Debate(teams, x)])
         result = solution.teamsInPosition()
         self.assertEquals(team3, result[3].team)
         self.assertEquals(team3, sorted(result, cmpBadness)[3].team)

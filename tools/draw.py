@@ -33,6 +33,7 @@ class Team:
         self.id = id
         self.points = points
         self.positions = positions
+        self._relativeBadness = None
     
     def __repr__(self):
         return "Team: (%s, %s, %s)" % (self.id, self.points, self.positions)
@@ -41,19 +42,12 @@ class Team:
         return badness(self.positions)
     
     def relativeBadness(self):
-        result = [badness(plusPos(self.positions, position)) for position in range(4)]
-        if min(result) != 0:
-            lo = min(result)
-            result = [x - lo for x in result]
-        return result
-        
-    #def __eq__(self, other):
-        #if other.__class__ != Team:
-            #return False
-        #if other.id != self.id:
-            #return False
-        #if other.points != self.p
-        #return True
+        if not self._relativeBadness:
+            self._relativeBadness = [badness(plusPos(self.positions, position)) for position in range(4)]
+            if min(self._relativeBadness) != 0:
+                lo = min(self._relativeBadness)
+                self._relativeBadness = [x - lo for x in self._relativeBadness]
+        return self._relativeBadness
         
 class PositionedTeam:
     
@@ -148,32 +142,8 @@ class Matrix:
         
     def unset(level, position):
         self.data[level][position] += 1
-
-class Solution:
-    
-    def __init__(self, levelsWithDebates):
-        self.levelsWithDebates = levelsWithDebates
-        
-    def debates(self):
-        result = []
-        for debateList in self.levelsWithDebates.values():
-            result.extend(debateList)
-        return result
-        
-    def badness(self):
-        return sum([debate.badness() for debate in self.debates()])
-    
-    def __repr__(self):
-        return "\n" . join([str(debate) for debate in self.debates()])
-    
-    def teamsInPosition(self):
-        result = []
-        for debate in self.debates():
-            for position, team in enumerate(debate.positions):
-                result.append(PositionedTeam(team, position, debate))
-        return result
             
-class Solution2:
+class Solution:
     
     def __init__(self, debates):
         self.debates = debates
@@ -222,7 +192,7 @@ def justKeepSwapping(teams):
         while selectedTeams:
             debates.append(Debate(selectedTeams[:4], selectedTeams[0].points))
             selectedTeams = selectedTeams[4:]
-        partialSolution = Solution2(debates)
+        partialSolution = Solution(debates)
         NULL_SWAP_ATTEMPTS = 10
         nullSwapAttempts = NULL_SWAP_ATTEMPTS
         while True:
@@ -247,7 +217,6 @@ def justKeepSwapping(teams):
                     if netEffect > bestEffect:
                         bestSwapper = swapper
                 if bestSwapper:
-                    print "Swapping"
                     swapTwoTeams(bestSwapper, worst)
                     nullSwapAttempts = NULL_SWAP_ATTEMPTS
                     break
@@ -291,7 +260,7 @@ def validate(teams, debates):
     return set(teamsInDebates) == set(teams)
 
 def score(debates):
-    return Solution2(debates).badness()
+    return Solution(debates).badness()
 
 if __name__ == "__main__":
     teams = read(stdin)

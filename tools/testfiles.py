@@ -2,13 +2,14 @@
 
 import os
 import draw
-
+from time import time
 
 if __name__ == "__main__":
     for name in [name for name in sorted(os.listdir('testdata')) if name.endswith(".tsv")]:
         filename = "testdata/" + name
         f = open(filename)
         try:
+            start = time()
             print filename
             teams = draw.read(f)
             result = draw.justKeepSwapping(teams)
@@ -22,6 +23,7 @@ if __name__ == "__main__":
                     print team
                 for debate in result:
                     print debate
+            print "in %s seconds" % (time() - start)
         finally:
             f.close
     print "DONE"

@@ -124,8 +124,9 @@ def read(f):
     return teams
 
 def isSwappable(positionedTeam1, positionedTeam2):
-    return positionedTeam1.team.points == positionedTeam2.team.points or \
-        positionedTeam1.debate.level == positionedTeam2.debate.level
+    return positionedTeam1 != positionedTeam2 and \
+           (positionedTeam1.team.points == positionedTeam2.team.points or \
+           positionedTeam1.debate.level == positionedTeam2.debate.level)
 
 def swapTwoTeams(teamInPositionA, teamInPositionB):
     debateA = teamInPositionA.debate
@@ -147,34 +148,65 @@ def debatesFromTeams(teams):
         teams = teams[4:]
     return result
     
+def findABestSwapFor(positionedTeams, teamA, effectTillNow=0, takePerfection=True):
+    bestEffect = 0
+    bestTeamB = None
+    for teamB in positionedTeams: #this loop especially can be limited
+        if isSwappable(teamA, teamB):
+            current = teamA.relativeBadness() + teamB.relativeBadness()
+            future = teamA.team.relativeBadnesses()[teamB.position] + \
+                    teamB.team.relativeBadnesses()[teamA.position]
+            if takePerfection and future == 0:
+                swapTwoTeams(teamA, teamB)
+                bestTeamB = None
+                return True
+            netEffect = future - current + effectTillNow
+            if netEffect < bestEffect:
+                bestEffect = netEffect
+                bestTeamB = teamB
+    if bestTeamB:
+        swapTwoTeams(teamA, bestTeamB)
+        return True
+
+def allSwapsFor(positionedTeams, teamA, depth, effectTillNow=0):
+    print "allSwapsFor", teamA.team.id, depth, effectTillNow
+    for teamB in positionedTeams: #this loop especially can be limited
+        if isSwappable(teamA, teamB):
+            current = teamA.relativeBadness() + teamB.relativeBadness()
+            future = teamA.team.relativeBadnesses()[teamB.position] + \
+                    teamB.team.relativeBadnesses()[teamA.position]
+            netEffect = future - current + effectTillNow
+            swapTwoTeams(teamA, teamB)
+            if depth == 2:
+                if findABestSwapFor(positionedTeams, teamB, netEffect, False):
+                    print teamA.team.id, teamB.team.id
+                    return True
+            else:
+                if allSwapsFor(positionedTeams, teamB, depth - 1, netEffect):
+                    print teamA.team.id, teamB.team.id
+                    return True
+            swapTwoTeams(teamA, teamB)
 
 def justKeepSwapping(teams):
-    levelsWithDebates = {}
-    
     debates = debatesFromTeams(teams)
     solution = Solution(debates)
     positionedTeams = solution.teamsInPosition()
     previousSolution = None
-    while solution.relativeBadness() > 0 and previousSolution != solution.relativeBadness():
+    maxDepth = 3
+    depth = 2
+    while solution.relativeBadness() > 0:
+        if previousSolution == solution.relativeBadness():
+            if depth == maxDepth:
+                break
+            depth += 1
         previousSolution = solution.relativeBadness()
-        for teamA in positionedTeams:
-            if teamA.relativeBadness() > 0:
-                bestEffect = 0
-                bestTeamB = None
-                for teamB in positionedTeams: #this loop especially can be limited
-                    if isSwappable(teamA, teamB):
-                        current = teamA.relativeBadness() + teamB.relativeBadness()
-                        future = teamA.team.relativeBadnesses()[teamB.position] + \
-                                teamB.team.relativeBadnesses()[teamA.position]
-                        if future == 0:
-                            swapTwoTeams(teamA, teamB)
-                            bestTeamB = None
-                            break
-                        netEffect = current - future
-                        if netEffect > bestEffect:
-                            bestTeamB = teamB
-                if bestTeamB:
-                    swapTwoTeams(teamA, bestTeamB)
+        for teamA in positionedTeams[:]:
+            if depth == 2:
+                if teamA.relativeBadness() > 0:
+                    findABestSwapFor(positionedTeams, teamA)
+            else:
+                if allSwapsFor(positionedTeams, teamA, depth):
+                    depth = 2
     return solution.debates
 
 def pullUpCount(teams):

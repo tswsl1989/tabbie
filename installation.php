@@ -42,7 +42,12 @@ Use your favourite tool to extract the contents of the downloaded Tabbie file to
 On your installed version of Tabbie click on the "Run" option, (if you closed the window: <a href="http://localhost/tabbie/run/" target="_blank">http://localhost/tabbie/run/</a>. You will get a bunch of options - if you don't know what these mean, just click on the install button. By this time, your screen should be Filled with succesful database statements, followed by a big "Installation Succesful" remark.
 </div>
 
-<h3>Step 5: Start inputting data</h3>
+<h3>Step 5: Security</h3>
+<div>
+Tabbie itself does no attempt to restrict certain people from seeing what's going on. This means you'll have to configure your computer and network so that no-one else can edit. If you have no idea how to do this - this is really the moment to get help from an expert/nerd in your personal environment. She will also be able to tell you how you can allow others to access Tabbie on your computer.
+</div>
+
+<h3>Step 6: Start inputting data</h3>
 <div>
 This is really where the install ends....and using Tabbie begins. Should you have any problems, please visit the <a href="http://sourceforge.net/projects/tabbie/">Tabbie Project Page</a> and ask for support there.
 </div>

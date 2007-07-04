@@ -168,45 +168,19 @@ def findABestSwapFor(positionedTeams, teamA, effectTillNow=0, takePerfection=Tru
         swapTwoTeams(teamA, bestTeamB)
         return True
 
-def allSwapsFor(positionedTeams, teamA, depth, effectTillNow=0):
-    print "allSwapsFor", teamA.team.id, depth, effectTillNow
-    for teamB in positionedTeams: #this loop especially can be limited
-        if isSwappable(teamA, teamB):
-            current = teamA.relativeBadness() + teamB.relativeBadness()
-            future = teamA.team.relativeBadnesses()[teamB.position] + \
-                    teamB.team.relativeBadnesses()[teamA.position]
-            netEffect = future - current + effectTillNow
-            swapTwoTeams(teamA, teamB)
-            if depth == 2:
-                if findABestSwapFor(positionedTeams, teamB, netEffect, False):
-                    print teamA.team.id, teamB.team.id
-                    return True
-            else:
-                if allSwapsFor(positionedTeams, teamB, depth - 1, netEffect):
-                    print teamA.team.id, teamB.team.id
-                    return True
-            swapTwoTeams(teamA, teamB)
-
 def justKeepSwapping(teams):
     debates = debatesFromTeams(teams)
     solution = Solution(debates)
     positionedTeams = solution.teamsInPosition()
     previousSolution = None
-    maxDepth = 3
     depth = 2
     while solution.relativeBadness() > 0:
         if previousSolution == solution.relativeBadness():
-            if depth == maxDepth:
-                break
-            depth += 1
+            break
         previousSolution = solution.relativeBadness()
         for teamA in positionedTeams[:]:
-            if depth == 2:
-                if teamA.relativeBadness() > 0:
-                    findABestSwapFor(positionedTeams, teamA)
-            else:
-                if allSwapsFor(positionedTeams, teamA, depth):
-                    depth = 2
+            if teamA.relativeBadness() > 0:
+                findABestSwapFor(positionedTeams, teamA)
     return solution.debates
 
 def pullUpCount(teams):

@@ -6,19 +6,16 @@ body
     font-size: 10pt;
 }
 
-
-div,ul,li
+div
 {
   margin:0;
   padding:0;
 }
 
-
-h1,h2,h3
+h1
 {
   margin:0;
-  padding;0;
-  font-weight:normal;
+  padding:0;
 }
 
 div#mainmenu
@@ -54,8 +51,8 @@ div#content
 
 body h1
 {
-  text-align:center;
-  font-weight:normal;
+  text-align: center;
+  font-weight: normal;
   text-indent: -100em;
 }
 
@@ -116,12 +113,6 @@ label
 {
     float: left;
     width: 10em;
-}
-
-#content h2, #content h3
-{
-  margin: 10pt;
-  font-weight:bold;
 }
 
 p
@@ -255,10 +246,11 @@ div.error
 
 h2.pos
 {
- float:right;;
- margin:0;padding:0;
- width:20pt;
- border:1px solid;
+ float: right;
+ margin: 0;
+ padding:0;
+ width: 20pt;
+ border: 1px solid;
 }
 
 table#manualdraw

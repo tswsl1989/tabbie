@@ -1,33 +1,36 @@
-<?php require("templates/header.inc"); ?>
+<?php require("templates/header.inc");
+$local = ($_SERVER["SERVER_NAME"] != "tabbie.sourceforge.net");
+?>
+
+<?php if ($local) { ?>
+
+<h3><a href="run/">Run Tabbie</a></h3>
+<div>
+Welcome to Tabbie, running on <b><?= $_SERVER["SERVER_NAME"] ?></b>. If you just installed it - congratulations! Good luck <a href="run/">actually running it</a>. This page may look a lot like <a href="http://tabbie.sourceforge.net">Tabbie's website</a> which is accesible for anyone - rest assured because it's not. These sites are just very much integrated to make the online demo run smoothly and provide you with all the documentation on your local version.
+</div>
+
+<?php } ?>
 
 <h3>What is Tabbie?</h3>
 <div>
 Tabbie helps you create the Tab or draw of British Parliamentary Debating Tournaments. It has a number of properties:
 <ul>
-<li>It's stable software: it was used in the NTU Worlds 2004 with great success.</li>
-<li>It uses the official WUDC rules to calculate its draw.</li>
+<li>It's old and tested software: it was originally created for and used in the NTU Worlds 2004 with great success.</li>
+<li>It uses the official <a href="doc/Worlds_Tab_Rules_-_DRAFT.doc">WUDC rules</a> to calculate its draw.</li>
 <li>It is web based. This means you can use multiple computers for inputting the data on large tournaments. In fact - you're looking at an installation right now.</li>
 <li>It is Free Software. Download is free, and its source code is freely inspectable. You can modify or add anything you like.</li>
 </ul>
 </div>
 
 <?php 
-if ($_SERVER["SERVER_NAME"] == "tabbie.sourceforge.net") {
+if (! $local) {
 ?>
 <h3><a href="run/">Online Demo</a></h3>
 <div>Why take our word for it if you can just dive in and <a href="run/">play with the real thing</a>? A full running system is available online (remember, Tabbie is web based).
 
 Two words of caution: because this is a demo, some features have been disabled, specifically those that involve writing to files. Secondly, you are not neceserraly the only person using this demo at any given time, so some data may change mysteriously. Feel free to play around though!</div>
 
-<?php } else { ?>
-
-<h3><a href="run/">Run Tabbie</a></h3>
-<div>
-<a href="http://tabbie.sourceforge.net">Tabbie's website</a> online and the actual product are tighly integrated, which explains the similarities. Right now, however, you're looking at the real thing, running on the server <b><?= $_SERVER["SERVER_NAME"] ?></b>. Congratulations on your installation and have fun <a href="run/">actually running it</a>.
-</div>
-
 <?php } ?>
-
 
 <h3><a href="http://sourceforge.net/project/showfiles.php?group_id=199347">Download</a></h3>
 <div>The latest version of Tabbie can be downloaded at <a href="http://sourceforge.net/project/showfiles.php?group_id=199347">Sourceforge</a>. Please 

@@ -17,8 +17,9 @@ Tabbie helps you create the Tab or draw of British Parliamentary Debating Tourna
 <ul>
 <li>It's old and tested software: it was originally created for and used in the NTU Worlds 2004 with great success.</li>
 <li>It uses the official <a href="doc/Worlds_Tab_Rules_-_DRAFT.doc">WUDC rules</a> to calculate its draw.</li>
-<li>It is web based. This means you can use multiple computers for inputting the data on large tournaments. In fact - you're looking at an installation right now.</li>
+<li>It is web based. You can use multiple computers for inputting data on large tournaments.</li>
 <li>It is Free Software. Download is free, and its source code is freely inspectable. You can modify or add anything you like.</li>
+<li>It is alive. As of July 2007 changes are being made to make it work even better.</li>
 </ul>
 </div>
 
@@ -26,7 +27,7 @@ Tabbie helps you create the Tab or draw of British Parliamentary Debating Tourna
 if (! $local) {
 ?>
 <h3><a href="run/">Online Demo</a></h3>
-<div>Why take our word for it if you can just dive in and <a href="run/">play with the real thing</a>? A full running system is available online (remember, Tabbie is web based).
+<div>Why take our word for it if you can just dive in and <a href="run/">play with the real thing</a>? A full running system is available online. (remember, Tabbie is web based).
 
 Two words of caution: because this is a demo, some features have been disabled, specifically those that involve writing to files. Secondly, you are not neceserraly the only person using this demo at any given time, so some data may change mysteriously. Feel free to play around though!</div>
 

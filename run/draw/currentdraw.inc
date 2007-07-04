@@ -102,7 +102,7 @@ if (($action=="draw") && ($validate == 1)) {
 
     //Store draw in temporary database
     $tablename = "temp_draw_round_$nextround";
-    q("DROP TABLE `$tablename`");
+    mysql_query("DROP TABLE `$tablename`"); //KvS notes that this query apparently fails (but expectedly) in round 0
 
     $query= "CREATE TABLE $tablename (
 debate_id MEDIUMINT(9) NOT NULL ,
@@ -157,7 +157,7 @@ if (($validate==1))
     $query .= "WHERE og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND A1.venue_id=venue.venue_id "; 
     $query .= "ORDER BY venue_name";
 
-    $result=q($query);
+    $result=mysql_query($query); //KvS notes that this query apparently fails (but expectedly) in round 0
     
     if ($result)
     {

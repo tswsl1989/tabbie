@@ -34,10 +34,13 @@ Two words of caution: because this is a demo, some features have been disabled, 
 <?php } ?>
 
 <h3><a href="http://sourceforge.net/project/showfiles.php?group_id=199347">Download</a></h3>
-<div>The latest version of Tabbie can be downloaded at <a href="http://sourceforge.net/project/showfiles.php?group_id=199347">Sourceforge</a>. Please 
-realise that you will also need a webserver (php) and mysql to get this working. You may 
-be interested in <a href="http://www.easyphp.org/">an easy package that combines mysql and 
-apache</a>.</div>
+<div>The latest version of Tabbie can be downloaded at <a href="http://sourceforge.net/project/showfiles.php?group_id=199347">Sourceforge</a>.
+</div>
+
+<h3><a href="installation.php">Install</a></h3>
+<div>
+You will also need a Web Server to run Tabbie since it's based on PHP. Use the <a href="installation.php">Installation Guide</a> to get you started.
+</div>
 
 <h3><a href="http://sourceforge.net/projects/tabbie/">Participate, Support</a></h3>
 <div>

@@ -1,7 +1,11 @@
 <?php require("templates/header.inc");?>
 <h3>Tabbie Installation Guide</h3>
 
-<h3>Operating System</h3>
+<h3>Getting Started</h3>
+<div>
+First of all - don't worry. Even though this page may seem a bit overwhelming, it really shouldn't take you more than 10 minutes to get Tabbie started. It's really been designed to run straight out of the box.
+</div>
+
 <div>
 If you use some kind of Unix/Linux we'll expect you to know what to do on your particular system. You can skip straight to <a href="#requirements">the requirements</a>.
 </div>
@@ -54,6 +58,6 @@ This is really where the install ends....and using Tabbie begins. Should you hav
 
 <h3><a name="requirements"></a>System Requirements</h3>
 <div>
-Tabbie requires PHP 4 and MySql 4. Unix/Linux system administrators may want to run the script run/setpermissions.sh or inspect it to see which file permissions to set.
+Tabbie requires PHP 4 and MySql 4.1. Unix/Linux system administrators may want to run the script run/setpermissions.sh or inspect it to see which file permissions to set.
 </div>
 <?php require("templates/footer.inc"); ?>

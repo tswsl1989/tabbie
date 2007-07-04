@@ -1,6 +1,0 @@
-Heading=WORLDS 2004&comment=Flash 4 (and newer) has a capability to retrieve the content of a text file by using the LoadVariables function.  This is quite powerful, for example, you can create a news engine without manually editing the FLA file every time the news changes.
-The "header" text field will contain the string "Vacation Is Good" once the text file is loaded.  Flash knows what value to put there because the string "Vacation Is Good" is assigned to variable "header"  in the text file. 
-I just want to check if a 	will be recognised properly.
-To display the data, I purposefully created two editable text-fields with the Variable Property set to the same variable names as in the text file.   
-
-Specifically, the first text field has the Variable property set to header (shown below); and the next text field is set to theText.  Remember that Flash will automatically update a text field with the specified variable, so this really is a quick and convenient way to display the content of the text file.    

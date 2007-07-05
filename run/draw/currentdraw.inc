@@ -42,10 +42,13 @@ if ($numrounds != $numresults) {
 
 if (($action=="draw") && ($validate == 1)) {
 
-    //require("draw/ntu_core.inc");
+    //require("draw/ntu_core.inc"); Enabling this (and removing the coming part) restores NTU Tab
 
     $teams = get_teams_positions_points(get_num_rounds());
-    require_once("draw/algorithms/minimal_algorithm.php");
+    
+    //require_once("draw/algorithms/minimal_algorithm.php"); This is the minimal_algorithm that satisfies world rules, but makes no attempt to position correctly
+    require_once("draw/algorithms/silver_line.php");
+
     $debates = calculate_draw($teams);
 
     function funny_conversion_for_ntu_code($debates) {

@@ -1,100 +1,67 @@
 <?
+require_once("includes/draw.php");
+require_once("includes/draw_badness.php");
+
+function team_badness(&$team, $position = -1) {
+    $result = 0;
+    $positions = $team["positions"];
+    if ($position == -1)
+        $position = $team["current_position"];
+    $positions[position_to_s($position)] += 1;
+    return badness($positions);
+}
+
+function debate_badness(&$debates) {
+    $result = 0;
+    $current_position = 0;
+    foreach ($debates as $team) {
+        $result += team_badness($team, $current_position);
+        $current_position++;
+    }
+    return $result;
+}
+
+function debates_badnesses(&$debates) {
+    $result = 0;
+    foreach ($debates as $debate) {
+        $result += debate_badness($debate);
+    }
+    return $result;
+}
+
+function attributed_teams_from_debates(&$debates) {
+    $result = array();
+    foreach ($debates as $debate) {
+        $current_position = 0;
+        $best_team = $debate[0];
+        $debate_level = $best_team["points"];
+        foreach ($debate as $team) {
+            $attributed_team = $team;
+            $attributed_team["current_position"] = $current_position;
+            $attributed_team["debate_level"] = $debate_index;
+            $current_position++;
+            $result[] = $attributed_team;
+        }
+        $debate_index++;
+    }
+    return $result;
+}
 /*
-
-class Team:
-    
-    def __init__(self, id, points, positions):
-        self.id = id
-        self.points = points
-        self.positions = positions
-        self._badness = None
-        self._futureBadnesses = None
-        self._relativeBadnesses = None
-    
-    def __repr__(self):
-        return "Team: (%s, %s, %s)" % (self.id, self.points, self.positions)
-    
-    def badness(self):
-        if not self._badness:
-            self._badness = badness(self.positions)
-        return self._badness
-        
-    def futureBadnesses(self):
-        if not self._futureBadnesses:
-            self._futureBadnesses = [badness(plusPos(self.positions, position)) for position in range(4)]
-        return self._futureBadnesses
-    
-    def relativeBadnesses(self):
-        if not self._relativeBadnesses:
-            self._relativeBadnesses = self.futureBadnesses()
-            if min(self._relativeBadnesses) != 0:
-                lo = min(self._relativeBadnesses)
-                self._relativeBadnesses = [x - lo for x in self._relativeBadnesses]
-        return self._relativeBadnesses
-        
-class PositionedTeam:
-    
-    def __init__(self, team, position, debate):
-        self.team = team
-        self.position = position
-        self.debate = debate
-        
-    def badness(self):
-        return self.team.futureBadnesses()[self.position]
-    
-    def relativeBadness(self):
-        return self.team.relativeBadnesses()[self.position]
-    
-    def __repr__(self):
-        return "(TiP: %s, %s)" % (self.team, self.position)
-        
-class Debate:
-    
-    def __init__(self, positions, level = None):
-        self.positions = positions
-        self.level = level
-    
-    def badness(self):
-        return sum([team.futureBadnesses()[i] for i, team in enumerate(self.positions)])
-
-    def relativeBadness(self):
-        return sum([team.relativeBadnesses()[i] for i, team in enumerate(self.positions)])
-
-    def __repr__(self):
-        return "Debate: (%s)" % self.positions
-    
-    def __eq__(self, other):
-        if other.__class__ != Debate:
-            return False
-        if other.positions != self.positions:
-            return False
-    
-class Solution:
-    
-    def __init__(self, debates):
-        self.debates = debates
-        
-    def badness(self):
-        return sum([debate.badness() for debate in self.debates])
-    
-    def relativeBadness(self):
-        return sum([debate.relativeBadness() for debate in self.debates])
-    
-    def __repr__(self):
-        return "\n" . join([str(debate) for debate in self.debates])
-    
     def teamsInPosition(self):
         result = []
         for debate in self.debates:
             for position, team in enumerate(debate.positions):
                 result.append(PositionedTeam(team, position, debate))
         return result
+*/
+function is_swappable($team_a, $team_b) {
+    return
+        ($team_a["team_id"] != $team_b["team_id"]) &&
+        (($team_a["points"] == $team_b["points"]) ||
+        ($team_a["debate_level"] == $team_b["debate_level"]))
+}
 
-def isSwappable(positionedTeam1, positionedTeam2):
-    return positionedTeam1 != positionedTeam2 and \
-           (positionedTeam1.team.points == positionedTeam2.team.points or \
-           positionedTeam1.debate.level == positionedTeam2.debate.level)
-
+/*
 def swapTwoTeams(teamInPositionA, teamInPositionB):
     debateA = teamInPositionA.debate
     debateB = teamInPositionB.debate
@@ -107,47 +74,51 @@ def swapTwoTeams(teamInPositionA, teamInPositionB):
     teamInPositionA.debate = debateB
     teamInPositionB.debate = debateA
 
-def findABestSwapFor(positionedTeams, teamA, effectTillNow=0, takePerfection=True):
-    bestEffect = 0
-    bestTeamB = None
-    for teamB in positionedTeams: #this loop especially can be limited
-        if isSwappable(teamA, teamB):
-            current = teamA.relativeBadness() + teamB.relativeBadness()
-            future = teamA.team.relativeBadnesses()[teamB.position] + \
-                    teamB.team.relativeBadnesses()[teamA.position]
-            if takePerfection and future == 0:
-                swapTwoTeams(teamA, teamB)
-                bestTeamB = None
-                return True
-            netEffect = future - current + effectTillNow
-            if netEffect < bestEffect:
-                bestEffect = netEffect
-                bestTeamB = teamB
-    if bestTeamB:
-        swapTwoTeams(teamA, bestTeamB)
-        return True
-
-def justKeepSwapping(teams):
-    debates = debatesFromTeams(teams)
-    solution = Solution(debates)
-    positionedTeams = solution.teamsInPosition()
-    previousSolution = None
-    depth = 2
-    while solution.relativeBadness() > 0:
-        if previousSolution == solution.relativeBadness():
-            break
-        previousSolution = solution.relativeBadness()
-        for teamA in positionedTeams[:]:
-            if teamA.relativeBadness() > 0:
-                findABestSwapFor(positionedTeams, teamA)
-    return solution.debates
 */
+function swap_two_teams(&$team_a, &$team_b) {
+    print $team_a['team_id'] . " ". $team_b['team_id'] . "<br>";
+}
+
+function find_best_swap_for(&$teams, &$team_a) {
+    $best_effect = 0;
+    $best_team_b = false;
+    foreach ($teams as $team_b) { //this loop especially can be limited
+        if (is_swappable($team_a, $team_b)) {
+            $current = team_badness($team_a) + team_badness($team_b);
+            $future = team_badness($team_a, $team_b["current_position"]) + team_badness($team_b, $team_a["current_position"]);
+            if ($future == 0) {
+                swap_two_teams($team_a, $team_b);
+                return;
+            }
+            $net_effect = $future - $current;
+            if ($net_effect < $best_effect) {
+                $best_effect = $net_effect;
+                $best_team_b = $team_b;
+            }
+        }
+    }
+    if ($best_team_b) {
+        swap_two_teams($team_a, $team_b);
+    }
+}
+
 function calculate_draw($teams) {
     srand(0);
     shuffle($teams);
     usort($teams, "cmp_teams_on_points");
     $teams = array_reverse($teams);
-    return just_ids_from_debates(debates_from_teams($teams));
+    $solution = debates_from_teams($teams);
+    $teams = attributed_teams_from_debates($solution);
+    $previous_solution = 0;
+    while (debates_badnesses($solution) > 0) {
+        if ($previous_solution == debates_badnesses($solution))
+            break;
+        $previous_solution = debates_badnesses($solution);
+        foreach ($teams as $team)
+            if (team_badness($team) > 0)
+                find_best_swap_for($teams, $team);
+    }
+    return just_ids_from_debates($solution);
 }
 
 /*
@@ -181,7 +152,6 @@ def validate(teams, debates):
 
 def score(debates):
     return Solution(debates).badness()
-
 
 */
 ?>

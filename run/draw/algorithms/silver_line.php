@@ -1,13 +1,6 @@
 <?
 /*
 
-#!/usr/bin/python
-from sys import stdin
-from math import ceil
-
-def cmpPoints(teamA, teamB):
-    return teamA.points - teamB.points
-
 def twoparts(x):
     return x / 2, x / 2 + x % 2
 
@@ -116,16 +109,6 @@ class Solution:
                 result.append(PositionedTeam(team, position, debate))
         return result
 
-def read(f):
-    teams = []
-    ignored = f.readline()
-    line = f.readline()
-    while line:
-        id, points, og, oo, cg, co = map(int, map(str.strip, line.split("\t")))
-        teams.append(Team(id, points, [og, oo, cg, co]))
-        line = f.readline()
-    return teams
-
 def isSwappable(positionedTeam1, positionedTeam2):
     return positionedTeam1 != positionedTeam2 and \
            (positionedTeam1.team.points == positionedTeam2.team.points or \
@@ -143,14 +126,6 @@ def swapTwoTeams(teamInPositionA, teamInPositionB):
     teamInPositionA.debate = debateB
     teamInPositionB.debate = debateA
 
-def debatesFromTeams(teams):
-    teams = list(reversed(sorted(teams, cmp = cmpPoints)))
-    result = []
-    while teams:
-        result.append(Debate(teams[:4], teams[0].points))
-        teams = teams[4:]
-    return result
-    
 def findABestSwapFor(positionedTeams, teamA, effectTillNow=0, takePerfection=True):
     bestEffect = 0
     bestTeamB = None
@@ -185,7 +160,16 @@ def justKeepSwapping(teams):
             if teamA.relativeBadness() > 0:
                 findABestSwapFor(positionedTeams, teamA)
     return solution.debates
+*/
+function calculate_draw($teams) {
+    srand(0);
+    shuffle($teams);
+    usort($teams, "cmp_teams_on_points");
+    $teams = array_reverse($teams);
+    return just_ids_from_debates(debates_from_teams($teams));
+}
 
+/*
 def pullUpCount(teams):
     levelDicts = {}
     result = []
@@ -217,17 +201,6 @@ def validate(teams, debates):
 def score(debates):
     return Solution(debates).badness()
 
-if __name__ == "__main__":
-    teams = read(stdin)
-    print "Teams: "
-    for team in teams:
-        print team
-    debates = justKeepSwapping(teams)
-    print "Score:", score(debates)
-    if not validate(teams, debates):
-        print "ERROR ERROR ERROR"
-    for debate in debates:
-        print debate
 
 */
 ?>

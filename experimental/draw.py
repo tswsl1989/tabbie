@@ -1,6 +1,6 @@
 #!/usr/bin/python
 from sys import stdin
-from math import ceil
+from math import ceil, floor
 
 def cmpPoints(teamA, teamB):
     return teamA.points - teamB.points
@@ -225,3 +225,42 @@ if __name__ == "__main__":
         print "ERROR ERROR ERROR"
     for debate in debates:
         print debate
+        
+def f(list_size, items):
+    if list_size == 1:
+        return str(items)
+    if items == 0:
+        return set([asString(["0"] * list_size)])
+    else:
+        result = set()
+        for rhs in range(max(1, int(floor(items / 4.0))), items + 1):
+            lhs_lists = f(list_size - 1, items - rhs)
+            result = result.union([lhs_list + "," + str(rhs) for lhs_list in lhs_lists])
+        return result
+
+def asString(l):
+    return ",".join(l)
+
+def asList(s):
+    return sorted(s.split(","))
+
+def createPHPCode():
+    result = set()
+    for items in range(10):
+        result = result.union(f(4, items))
+    result = [asString(asList(s)) for s in result]
+    result = [asList(s) for s in sorted(set(result))]
+    print """<?php
+//This file is generated automatically by draw.py. Editing it manually is considered very stupid
+
+$badness_lookup = array(
+%s
+);
+
+function badness($positions) {
+    global $badness_lookup;
+    sort($positions);
+    return $badness_lookup["{$positions[0]}, {$positions[1]}, {$positions[2]}, {$positions[3]}"];
+}
+
+?>""" % ",\n".join(['    "%s, %s, %s, %s" => %s' % (e[0], e[1], e[2], e[3], badness([int(s) for s in e])) for e in result])

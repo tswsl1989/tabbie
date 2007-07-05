@@ -54,11 +54,12 @@ for($x=0;$x<6;$x++)
   
   for($y=intval($low);$y<=$high;$y++)
   {
+      //code generates notifications for no good reason without the @ (i.e. messy code) (KvS)
       $randnum=rand(intval($low),intval($high));
-      $temp0=$adjudicator[$y][0];
-      $temp1=$adjudicator[$y][1];
-      $adjudicator[$y][0]=$adjudicator[$randnum][0];
-      $adjudicator[$y][1]=$adjudicator[$randnum][1];
+      $temp0=@$adjudicator[$y][0];
+      $temp1=@$adjudicator[$y][1];
+      $adjudicator[$y][0]=@$adjudicator[$randnum][0];
+      $adjudicator[$y][1]=@$adjudicator[$randnum][1];
       $adjudicator[$randnum][0]=$temp0;
       $adjudicator[$randnum][1]=$temp1;
   }
@@ -150,7 +151,7 @@ while ($rowdebates=mysql_fetch_assoc($resultdebates))
     $index=intval($low);
     while($index<=min($high,(count($adjudicator)-1)))
     {
-        if ($adjudicator[$index][2]=='N')
+        if (@$adjudicator[$index][2]=='N') //code generates notifications for no good reason without the @ (i.e. messy code) (KvS)
         {
             $conflicts=preg_split("/,/",$adjudicator[$index][1],-1, PREG_SPLIT_NO_EMPTY);
             if (!((in_array($rowdebates['ogcode'],$conflicts))||

@@ -58,47 +58,11 @@ if ($numrounds != $numresults) {
 
 if (($action=="draw") && ($validate == 1)) {
 
-    //Load Teams from Database
-    $query="SELECT team_id, univ_id FROM team WHERE active='Y'";
-    $result=q($query);
-
-    //Do Random Draw for first round
-    if ($nextround==1)
-    {
-        $query="SELECT team_id, univ_id  FROM team WHERE active='Y'";
-        $result=q($query);
-
-        //Load into array
-        $index=0;
-
-       while($row=mysql_fetch_assoc($result))
-       {
-           $teamarray[$index][0]=$row['team_id'];
-           $teamarray[$index][1]=$row['univ_id'];
-           $index++;
-       }
-
-       //Do Random Draw
-       for ($x=0; $x<count($teamarray);$x++)
-       {
-           $randnum=rand(0, count($teamarray)-1); //Calculate Random Number
-
-           //Swap Numbers
-           $temp0= $teamarray[$randnum][0]; 
-           $temp1= $teamarray[$randnum][1];
-
-           $teamarray[$randnum][0]=$teamarray[$x][0];
-           $teamarray[$randnum][1]=$teamarray[$x][1];
-
-           $teamarray[$x][0]=$temp0;
-           $teamarray[$x][1]=$temp1;
-       }
-    }
-
-    else 
-    {    //Do Power Matching Draw for other rounds
-        include("draw2.inc");
-    }
+require("draw/ntu_core.inc");
+//At this point $teamarray looks like this:
+// array(
+//     array("8", "NOT-USED"),
+//     array("4", "NOT-USED"),...
 
     //Store draw in temporary database
     $tablename = "temp_draw_round_$nextround";

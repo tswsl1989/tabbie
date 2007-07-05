@@ -16,7 +16,7 @@ $index=0;
 while($row=mysql_fetch_assoc($result))
 {
     $teamarray[$index][0]=$row['team_id'];
-    $teamarray[$index][1]=$row['univ_id'];
+    $teamarray[$index][1]="NOT-USED";
     $teamcode = $teamarray[$index][0];
     $teams[$index][0] =  $teamarray[$index][0];
     

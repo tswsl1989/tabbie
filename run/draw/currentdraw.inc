@@ -45,7 +45,7 @@ if (($action=="draw") && ($validate == 1)) {
     //require("draw/ntu_core.inc");
 
     $teams = get_teams_positions_points(get_num_rounds());
-    require("draw/algorithms/minimal_algorithm.php");
+    require_once("draw/algorithms/minimal_algorithm.php");
     $debates = calculate_draw($teams);
 
     function funny_conversion_for_ntu_code($debates) {

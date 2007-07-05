@@ -40,10 +40,11 @@ function attributed_teams_from_debates(&$debates) {
 }
 
 function is_swappable($team_a, $team_b) {
-    return
+    $result = 
         ($team_a["team_id"] != $team_b["team_id"]) &&
         (($team_a["points"] == $team_b["points"]) ||
         ($team_a["debate_level"] == $team_b["debate_level"]));
+    return $result;
 }
 
 function swap_two_teams(&$teams, &$team_a, &$team_b) {
@@ -67,7 +68,7 @@ function find_best_swap_for(&$teams, &$team_a) {
     $best_effect = 0;
     $best_team_b = false;
     foreach ($teams as $team_b) { //this loop especially can be limited
-        if (is_swappable(&$team_a, &$team_b)) {
+        if (is_swappable($team_a, $team_b)) {
             $current = team_badness($team_a) + team_badness($team_b);
             $future = team_badness($team_a, $team_b["current_position"]) + team_badness($team_b, $team_a["current_position"]);
 /*            if ($future == 0) {
@@ -77,18 +78,15 @@ function find_best_swap_for(&$teams, &$team_a) {
             $net_effect = $future - $current;
             if ($net_effect < $best_effect) {
                 $best_effect = $net_effect;
-                $best_team_b = &$team_b;
+                $best_team_b = $team_b;
             }
         }
     }
     if ($best_team_b) {
-        print "******************************\n";
-        print $team_a["team_id"]. ", " .$best_team_b["team_id"] ."\n";
-        var_dump($teams);
-        swap_two_teams(&$teams, &$team_a, &$best_team_b);
-        print "after\n";
-        var_dump($teams);
+        swap_two_teams($teams, $team_a, $best_team_b);
+        return true;
     }
+    return false;
 }
 
 function calculate_draw($teams) {
@@ -102,9 +100,10 @@ function calculate_draw($teams) {
         if ($previous_solution == teams_badness($teams))
             break;
         $previous_solution = teams_badness($teams);
-        foreach ($teams as $team)
+        foreach ($teams as $team) //<= maybe here the problem?
             if (team_badness($team) > 0)
-                find_best_swap_for(&$teams, &$team);
+                if (find_best_swap_for($teams, $team))
+                    break;
     }
     //print "FINAL SCORE: " . teams_badness($teams);
     return just_ids_from_debates(debates_from_teams($teams));

@@ -1,16 +1,9 @@
 <?php
 
 //typical input value:
-$teams = array(
-    array("id" => "0", "points" => 0, "positions" => array(1, 1, 1, 0)),
-    array("id" => "1", "points" => 9, "positions" => array(0, 1, 1, 1)),
-    array("id" => "2", "points" => 9, "positions" => array(1, 0, 1, 1)),
-    array("id" => "3", "points" => 9, "positions" => array(1, 1, 0, 1)),
-    array("id" => "4", "points" => 9, "positions" => array(1, 1, 1, 0)),
-    array("id" => "5", "points" => 0, "positions" => array(0, 1, 1, 1)),
-    array("id" => "6", "points" => 0, "positions" => array(1, 0, 1, 1)),
-    array("id" => "7", "points" => 0, "positions" => array(1, 1, 0, 1))
-);
+// $teams = array(
+//     array("team_id" => "0", "points" => 0, "positions" => array("og" => 1, "oo" => 1, "cg" => 1, "co" => 0)),
+// );
 
 function debates_from_teams($teams) {
     //assert that array contains modulo 4 == 0 items
@@ -30,7 +23,7 @@ function just_ids_from_debates($debates) {
     foreach ($debates as $debate) {
         $result_debate = array();
         foreach ($debate as $team) {
-            $result_debate[] = $team["id"];
+            $result_debate[] = $team["team_id"];
         }
         $result_debates[] = $result_debate;
     }
@@ -56,7 +49,5 @@ $debates = array(
     array("1", "2", "3", "4"),
     array("5", "6", "7", "0"));
 */
-
-var_dump(calculate_draw($teams));
 
 ?>

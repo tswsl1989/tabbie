@@ -13,4 +13,11 @@ function q($query) {
     }
     return $result;
 }
+
+function count_rows($table, $where_clause = "1 = 1") {
+    $query = "SELECT COUNT(*) FROM $table WHERE $where_clause";
+    $result = q($query);
+    $row = mysql_fetch_row($result);
+    return $row[0];
+}
 ?>

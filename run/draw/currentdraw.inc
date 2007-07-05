@@ -5,26 +5,10 @@ Purpose :   Calculate the draw for the current round taking into account all
 */
 require_once("includes/display.inc");
 require_once("includes/db_tools.inc");
+require_once("includes/backend.inc");
 
 $action = @$_GET['action'];
 $title="Draw : Round " . $nextround;
-
-function count_rows($table, $where_clause = "1 = 1") {
-    $query = "SELECT COUNT(*) FROM $table WHERE $where_clause";
-    $result = q($query);
-    $row = mysql_fetch_row($result);
-    return $row[0];
-}
-
-function get_num_rounds() {
-    $result = q("SHOW TABLES LIKE 'draw_round%'");
-    $numdraws = mysql_num_rows($result);
-}
-
-function get_num_completed_rounds() {
-    $result = q("SHOW TABLES LIKE 'result_round%'");
-    $numdraws = mysql_num_rows($result);
-}
 
 //Check for number of teams and venues
 $validate = 1;
@@ -58,13 +42,30 @@ if ($numrounds != $numresults) {
 
 if (($action=="draw") && ($validate == 1)) {
 
-require("draw/ntu_core.inc");
-//At this point $teamarray looks like this:
-// array(
-//     array("8", "NOT-USED"),
-//     array("4", "NOT-USED"),...
+    //require("draw/ntu_core.inc");
+
+    $teams = get_teams_positions_points(get_num_rounds());
+    require("draw/algorithms/minimal_algorithm.php");
+    $debates = calculate_draw($teams);
+
+    function funny_conversion_for_ntu_code($debates) {
+        $result = array();
+        foreach ($debates as $debate) {
+            foreach ($debate as $team) {
+                $result[] = array($team, "NOT-USED");
+            }
+        }
+        return $result;
+    }
+    $teamarray = funny_conversion_for_ntu_code($debates); 
+
+    //At this point $teamarray looks like this:
+    // array(
+    //     array("8", "NOT-USED"),
+    //     array("4", "NOT-USED"),...
 
     //Store draw in temporary database
+
     $tablename = "temp_draw_round_$nextround";
     mysql_query("DROP TABLE `$tablename`"); //KvS notes that this query apparently fails (but expectedly) in round 0
 

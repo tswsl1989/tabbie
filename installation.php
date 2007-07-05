@@ -11,7 +11,7 @@ If you use some kind of Unix/Linux we'll expect you to know what to do on your p
 </div>
 
 <div>
-If you use windows and already have a webserver, you can <a href="#step2">skip step 1</a>. If you use Windows, and have no idea what a web server is, read the whole guide. If you run into problems that you cannot solve by yourself and the nerds you have befriended, go to the <a href="http://sourceforge.net/projects/tabbie/">Tabbie Project Page</a> and ask for support there.
+If you use windows and already have a webserver, you can <a href="#step2">skip step 1</a>. If you use Windows, and have no idea what a web server is, read the whole guide. If you run into problems that you cannot solve by yourself and the nerds you have befriended, go to the <a href="http://sourceforge.net/projects/tabbie/">Tabbie Project Page</a> and ask for support there. Since the above page may be a bit intimidating (it is even for us) you can also just send a mail to <i>klaas aat vanschelven doot com</i>
 </div>
 
 <h3>Step 1: Install a Web Server</h3>

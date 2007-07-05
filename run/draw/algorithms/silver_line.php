@@ -1,25 +1,6 @@
 <?
 /*
 
-def twoparts(x):
-    return x / 2, x / 2 + x % 2
-
-def badness(l):
-    def f(L1, L2):
-        return sum([(l1 - l2) ** 2 for l1, l2 in zip(L1, L2)])
-    x, y = twoparts(sum(l))
-    a, b = twoparts(x)
-    c, d = twoparts(y)
-    ideal = sorted([a, b, c, d])
-    lo = sum(l) / 4
-    compare = [lo, lo, lo, lo]
-    return (f(compare, sorted(l)) - f(ideal, compare)) ** 2
-    
-def plusPos(l, i):
-    l2 = l[:]
-    l2[i] += 1
-    return l2
-
 class Team:
     
     def __init__(self, id, points, positions):

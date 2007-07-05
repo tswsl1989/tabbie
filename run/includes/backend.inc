@@ -9,7 +9,7 @@ function get_num_rounds() {
 
 function get_num_completed_rounds() {
     $result = q("SHOW TABLES LIKE 'result_round%'");
-    $numdraws = mysql_num_rows($result);
+    return mysql_num_rows($result);
 }
 
 function __team_on_place($round_nr, $team_id, $place) {

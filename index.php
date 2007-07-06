@@ -2,6 +2,16 @@
 $local = ($_SERVER["SERVER_NAME"] != "tabbie.sourceforge.net");
 ?>
 
+<div id="mainmenu">
+    <h2 class="hide">Main Menu</h2>
+    <ul>
+    <li><a href="index.php" class="activemain">Home</a></li>
+    <li><a href="run/">Run<? if (!$local) echo " Online Demo"; ?></a></li>
+    <li><a href="http://sourceforge.net/project/showfiles.php?group_id=199347">Download</a></li>
+    <li><a href="installation.php">Install</a></li>
+    </ul>
+</div>
+
 <?php if ($local) { ?>
 
 <h3><a href="run/">Run Tabbie</a></h3>
@@ -15,11 +25,21 @@ Welcome to Tabbie, running on <b><?= $_SERVER["SERVER_NAME"] ?></b>. If you just
 <div>
 Tabbie helps you create the Tab or draw of British Parliamentary Debating Tournaments. It has a number of properties:
 <ul>
-<li>It's old and tested software: it was originally created for and used in the NTU Worlds 2004 with great success.</li>
-<li>It uses the official <a href="doc/Worlds_Tab_Rules_-_DRAFT.doc">WUDC rules</a> to calculate its draw.</li>
-<li>It is web based. You can use multiple computers for inputting data on large tournaments.</li>
-<li>It is Free Software. Download is free, and its source code is freely inspectable. You can modify or add anything you like.</li>
-<li>It is alive. As of July 2007 changes are being made to make it work even better.</li>
+<li>Official. It uses the official <a href="doc/Worlds_Tab_Rules_-_DRAFT.doc">WUDC rules</a> to calculate its draw.</li>
+<li>Safe and stable - It's been tried in practice at a tournament as large as NTU Worlds 2004 with great success.</li>
+<li>Scalable for large tournaments: It is web based, you can use multiple computers for inputting data.</li>
+<li>Open and Free. Its source code is freely inspectable. You can modify or add anything you like. Download is free.</li>
+<li>Alive. As of July 2007 changes are being made to make it work even better.</li>
+</ul>
+</div>
+
+<h3>News</h3>
+<div>
+Fri 6th July 2007 - Version 1.0-RC1 is out. If Tabbie runs well in its second tournament coming week we'll take the RC (Release Candidate) off and make the official 1.0 release. New in this version:
+<ul>
+<li>A completely new Draw Algorithm, which fixes a number of issues with the NTU draw. Also - interesting for those out there who think they can do better - the algorithm is fairly easily to plug in or out. All Algorithm's results are automatically verified for correctness against the WUDC rules, and Tabbie displays how well it's doing in getting everyone fairly distributed over debating positions.</li>
+<li>Adjudicator sheets (with names, motions etc.) can now be generated with one click - as a PDF that matches you input screen. No more hassling with mail merge!</li>
+<li>The Installation has been made more robust and a <a href="installation.php">guide</a> is provided.</li>
 </ul>
 </div>
 

@@ -1,0 +1,20 @@
+CHANGELOG:
+
+1.0-RC1:
+* A completely new Draw Algorithm
+* Draw Algorithms are pluggable - they can be added quite easily
+* Draw Scores (i.e. how good/bad is the draw) generated and outputted
+* Draw is auto-validated for errors (does it comply with basic WUDC rules, are all teams present).
+
+* Generates Adjudication Sheets as a PDF
+* Integrated Web Site and actual Tabbie Program
+* Bugfix in the Installation
+* Added Installation Guide
+
+0.2
+* Basic out of the box installment
+* Lots of minor bugfixes
+* Cleaning up unused stuff
+
+0.1
+* As created for NTU Worlds

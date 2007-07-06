@@ -42,16 +42,19 @@ if ($numrounds != $numresults) {
 
 if (($action=="draw") && ($validate == 1)) {
 
-    //require("draw/ntu_core.inc"); Enabling this (and removing the coming part) restores NTU Tab
-
     $teams = get_teams_positions_points(get_num_rounds());
     
-    //require_once("draw/algorithms/minimal_algorithm.php"); This is the minimal_algorithm that satisfies world rules, but makes no attempt to position correctly
     require_once("draw/algorithms/silver_line.php");
+    require_once("draw/algorithms/ntu_core.inc");
 
-    $debates = calculate_draw($teams);
+    //$debates = draw_ntu_core($teams, $nextround);
+    $debates = draw_silver_line($teams);
+
     if (! validate_draw($teams, $debates))
         $msg[] = "The Algortihm has not created a valid draw!!!";
+    
+    $score = debates_badness($debates); //only works for silver_line since others don't attribute enough data
+    $msg[] = "The Algortihm has created a draw with score $score, and 0 is the best possible score.";
 
     function funny_conversion_for_ntu_code($debates) {
         $result = array();
@@ -62,7 +65,7 @@ if (($action=="draw") && ($validate == 1)) {
         }
         return $result;
     }
-    $teamarray = funny_conversion_for_ntu_code($debates); 
+    $teamarray = funny_conversion_for_ntu_code($debates);
 
     //At this point $teamarray looks like this:
     // array(

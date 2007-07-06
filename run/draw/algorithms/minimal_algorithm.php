@@ -2,7 +2,7 @@
 
 require_once("includes/draw.php");
 
-function calculate_draw($teams) {
+function draw_minimal_algorithm($teams) {
     srand(0);
     shuffle($teams);
     usort($teams, "cmp_teams_on_points");

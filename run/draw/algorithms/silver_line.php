@@ -105,41 +105,69 @@ function calculate_draw($teams) {
                 if (find_best_swap_for($teams, $team))
                     break;
     }
-    //print "FINAL SCORE: " . teams_badness($teams);
-    return just_ids_from_debates(debates_from_teams($teams));
+    return debates_from_teams($teams);
 }
 
-/*
-def pullUpCount(teams):
-    levelDicts = {}
-    result = []
-    teams = list(reversed(sorted(teams, cmpPoints)))
-    while teams:
-        level = teams[0].points
-        if not level in levelDicts:
-            levelDicts[level] = {}
-        levelDict = levelDicts[level]
-        for team in teams[:4]:
-            if not team.points in levelDict:
-                levelDict[team.points] = 0
-            levelDict[team.points] += 1
-        result.append(levelDict)
-        teams = teams[4:]
-    return result
+function create_brackets($teams) {
+    $result = array();
+    usort($teams, "cmp_teams_on_points");
+    $teams = array_reverse($teams);
+    $current_max = $teams[0]["points"];
+    $current_bracket = array();
+    for ($i = 0; $i < count($teams) / 4; $i++) {
+        $new_max = $teams[$i * 4]["points"];
+        if ($current_max != $new_max) {
+            $current_max = $new_max;
+            $result[] = $current_bracket;
+            $current_bracket = array();
+        }
+        for ($j = 0; $j < 4; $j++) {
+            @$current_bracket[$teams[$i * 4 + $j]["points"]] += 1;
+        }
+    }
+    $result[] = $current_bracket;
+    return $result;
+}
 
-def validate(teams, debates):
-    teamsInDebates = []
-    pullUpCounts = pullUpCount(teams)
-    for i, debate in enumerate(debates):
-        teamsInDebates.extend(debate.positions)
-        for team in debate.positions:
-            if not team.points in pullUpCounts[i]:
-                return False
-            pullUpCounts[i][team.points] -= 1
-    return set(teamsInDebates) == set(teams)
+function validate_debates_in_brackets($teams, $debates) {
+    $brackets = create_brackets($teams);
+    $brackets = array_reverse($brackets);
+    $current_bracket = array_pop($brackets);
+    foreach ($debates as $debate) {
+        if ($current_bracket == null)
+           return false;
+        foreach ($debate as $team) {
+            @$current_bracket[$team["points"]] -= 1;
+        }
+        if (array_sum($current_bracket) == 0) {
+            foreach ($current_bracket as $points)
+                if ($points != 0) {
+                    print "problemen $points \n";
+                    return false;
+                }
+            $current_bracket = array_pop($brackets);
+        }
+    }
+    return true;
+}
 
-def score(debates):
-    return Solution(debates).badness()
+function validate_all_teams_in_exactly_one_debate($teams, $debates) {
+    $t = array();
+    $d = array();
+    foreach ($debates as $debate)
+        foreach ($debate as $team)
+            $d[] += $team["team_id"];
+    foreach ($teams as $team)
+        $t[] += $team["team_id"];
+    sort($d);
+    sort($t);
+    return $d == $t;
+}
 
-*/
+function validate_draw($teams, $debates) {
+    return 
+        validate_debates_in_brackets($teams, $debates) &&
+        validate_all_teams_in_exactly_one_debate($teams, $debates);
+}
+
 ?>

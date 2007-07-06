@@ -50,12 +50,14 @@ if (($action=="draw") && ($validate == 1)) {
     require_once("draw/algorithms/silver_line.php");
 
     $debates = calculate_draw($teams);
+    if (! validate_draw($teams, $debates))
+        $msg[] = "The Algortihm has not created a valid draw!!!";
 
     function funny_conversion_for_ntu_code($debates) {
         $result = array();
         foreach ($debates as $debate) {
             foreach ($debate as $team) {
-                $result[] = array($team, "NOT-USED");
+                $result[] = array($team["team_id"], "NOT-USED");
             }
         }
         return $result;

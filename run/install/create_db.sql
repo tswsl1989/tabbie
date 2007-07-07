@@ -56,3 +56,5 @@ CREATE TABLE highlight (
   upperlimit char(50),
   type char(50)
 ) TYPE=MyISAM;
+
+INSERT INTO highlight VALUES ('50', '100', 'result');

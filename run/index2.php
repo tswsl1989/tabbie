@@ -1,15 +1,3 @@
-<?
-/******************************************************************************
-File    :   index.php
-
-Author  :   AK
-
-Purpose :   For the TD/CA to set the highlight ranges for draw and results
-
-******************************************************************************/
-
-?>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 

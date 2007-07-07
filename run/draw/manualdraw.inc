@@ -639,7 +639,9 @@ if ($exist)
           }
         
         $totalpoints = $ogpoints + $oopoints + $cgpoints + $copoints;
-
+        //this whole range-query thing seems to be a way to highlight funny results in the draw
+        //but - these should be checked automatically, not like this.
+        //in other words: throw it out
         $rangequery = "SELECT * FROM highlight WHERE type = 'draw' ";
         $rangeresult = mysql_query($rangequery);
         $rangerow = mysql_fetch_assoc($rangeresult);

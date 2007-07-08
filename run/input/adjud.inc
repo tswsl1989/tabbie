@@ -1,12 +1,4 @@
 <?
-/******************************************************************************
- File    :   adjud.inc
-
- Author  :   Deepak Jois
-
- Purpose :   Handle Adjudicator Add/Edit/Delete. Called from Input Main
-           
-******************************************************************************/
 require("includes/display.inc");
 
 //Get POST values and validate/convert them
@@ -201,9 +193,6 @@ switch($action)
   }
 
 
-include("header.inc");
-                
-echo "<div id=\"content\">\n";
 echo "<h2>$title</h2>\n"; //titlek
 
 displayMessagesUL(@$msg);
@@ -318,9 +307,3 @@ if ($action=="display")
             
                   }
 ?>
-
-</div>
-<?php include('customize/footer.inc'); ?>
-</body>
-
-</html>

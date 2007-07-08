@@ -1,13 +1,4 @@
 <?
-/******************************************************************************
- File    :   manualdraw.inc
-
- Author  :   Deepak Jois
-
- Purpose :   Calculate the draw for the current round taking into account all
- the possible rules mentioned in the Tab rules draft.
-           
-******************************************************************************/
 require_once("includes/display.inc");
 
 $action=trim(@$_GET['action']); //Check action
@@ -270,9 +261,6 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
     
    }
 
-include("header.inc");
-
-echo "<div id=\"content\">";
 echo "<h2>$title</h2>";
 
 displayMessagesUL(@$msg);
@@ -804,7 +792,3 @@ if ($exist)
   }
 
 ?>
-</div>
-<?php include('customize/footer.inc'); ?>
-</body>
-</html>

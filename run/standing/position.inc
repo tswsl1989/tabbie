@@ -1,17 +1,4 @@
 <?
-/******************************************************************************
-File    :   position.php
-
-Author  :   AK
-
-Purpose :   This file displays the number of times each team has debated in each position
-
-******************************************************************************/
-
-include("header.inc");
-
-include("includes/dbconnection.php"); //Database Connection
-
 $round=trim(@$_POST['round']);
 
 //Check Database
@@ -33,7 +20,6 @@ switch(@$action)
     default:
                         $action="display";
 }
-
 
 
 //Load respective module

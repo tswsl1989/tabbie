@@ -1,18 +1,4 @@
 <?
-/******************************************************************************
-File    :   roundbreak.inc
-
-Author  :   AK
-
-Purpose :   This file handles the round breakup of points
-
-******************************************************************************/
-
-
-include("includes/dbconnection.php"); //Database Connection
-
-include("header.inc");
-
 //Check Database
 $query="SHOW TABLES LIKE 'draw_round%'";
 $result=mysql_query($query);

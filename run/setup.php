@@ -1,34 +1,9 @@
-<?
+<?php
+require("ntu_bridge.php");
+require("view/header.php");
+require("view/mainmenu.php");
+
 require_once("includes/display.inc");
-
-?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-<head>
-    <title>Input Module - Setup</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-  <h1 id="main">Tabbie - British Parliamentary Debating Tabbing Software</h1>
-  <div id="mainmenu">
-    <h2 class="hide">Main Menu</h2>
-    <ul>
-      <li><a href="input.php">Input</a></li>
-      <li><a href="draw.php">Draw</a></li>
-      <li><a href="result.php">Results</a></li>
-      <li><a href="standing.php">Standings</a></li>
-      <li><a href="print.php">Print</a></li>
-      <li><a href="setup.php" class="activemain">Setup</a></li>
-    </ul>
-  </div>
-
-<?
-include("includes/dbconnection.php"); //Database Connection
 
 $action=trim(@$_GET['action']);
 if (!$action) $action="display"; //set to round if empty
@@ -105,7 +80,6 @@ switch ($action)
                     break;
 }
 
-echo "<div id=\"content\">\n";
 echo "<h2>$title</h2>\n";
 
 displayMessagesUL(@$msg);
@@ -138,6 +112,6 @@ else //action="edit"
     <?
 }
 
-include('customize/footer.inc');
-echo "</div></body></html>";
+require('view/footer.php'); 
 ?>
+

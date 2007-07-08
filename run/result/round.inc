@@ -1,12 +1,4 @@
 <?
-/******************************************************************************
-File    :   round.inc
-
-Author  :   AK
-
-Purpose :   Display the results of the previous rounds in the tournament.
-           
-******************************************************************************/
 require("includes/display.inc");
 
 //Calculate Round Number (should have been already validated)
@@ -36,8 +28,6 @@ switch($action)
 
 }
 
-include("header.inc");
-echo "<div id=\"content\">";
 echo "<h2>$title</h2>\n"; //title
 
 displayMessagesP(@$msg);
@@ -69,7 +59,3 @@ displayMessagesP(@$msg);
 
     echo "</table>\n";
 ?>
-</div>
-<?php include('customize/footer.inc'); ?>
-</body>
-</html>

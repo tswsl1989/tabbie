@@ -27,9 +27,6 @@ switch($action)
                         break;
 }
 
-include("header.inc");
-
-echo "<div id=\"content\">\n";
 echo "<h2>$title</h2>\n"; //title
 
 displayMessagesP(@$msg);
@@ -102,7 +99,3 @@ displayMessagesP(@$msg);
 
     echo "</table>\n";
 ?>
-</div>
-<?php include('customize/footer.inc'); ?>
-</body>
-</html>

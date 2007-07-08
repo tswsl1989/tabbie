@@ -115,8 +115,6 @@ PRIMARY KEY (debate_id))";
 }
 
 
-include("header.inc");
-echo "<div id=\"content\">";
 echo "<h2>$title</h2>\n"; //title
 
 displayMessagesUL(@$msg);
@@ -279,7 +277,3 @@ if ($validate == 1) {
 }
 
 ?>
-</div>
-<?php include('customize/footer.inc'); ?>
-</body>
-</html>

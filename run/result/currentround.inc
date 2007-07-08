@@ -1,12 +1,4 @@
 <?
-/******************************************************************************
-File    :   currentround.inc
-
-Author  :   Deepak Jois
-
-Purpose :   Handles the entry of results of the debates in the current draw.
-           
-******************************************************************************/
 require("includes/display.inc");
 
 $action=trim(@$_GET['action']); //Check action
@@ -457,8 +449,6 @@ switch ($action)
     $title="Results : Round $numrounds : Display";
 }
 
-include("header.inc");
-echo "<div id=\"content\">";
 echo "<h2>$title</h2>\n"; //title
 
 displayMessagesUL(@$msg);
@@ -738,7 +728,3 @@ if ($nextresult==$numrounds)
 }
 
 ?>
-</div>
-<?php include('customize/footer.inc'); ?>
-</body>
-</html>

@@ -1,12 +1,4 @@
 <?
-/******************************************************************************
- File    :   venue.inc
-
- Author  :   Deepak Jois
-
- Purpose :   Handle Venue Add/Edit/Delete. Called from Input Main
-           
-******************************************************************************/
 require("includes/display.inc");
 
 //Get POST values and validate/convert them
@@ -175,11 +167,6 @@ switch($action)
                     
   }
 
-
-
-include("header.inc");
-
-echo "<div id=\"content\">\n";                
 echo "<h2>$title</h2>\n"; //title
 
 displayMessagesUL(@$msg);
@@ -272,8 +259,3 @@ if ($action=="display")
             
                      }
 ?>
-</div>
-<?php include('customize/footer.inc'); ?>
-</body>
-
-</html>

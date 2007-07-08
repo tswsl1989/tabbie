@@ -1,4 +1,6 @@
 <?php
+$ntu_controller = "index";
+
 require("ntu_bridge.php");
 require("view/header.php");
 require("view/mainmenu.php");

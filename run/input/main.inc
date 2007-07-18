@@ -1,14 +1,4 @@
 <?
-/******************************************************************************
-File    :   main.php
-
-Author  :   Deepak Jois
-
-Purpose :   Displays Summary of Input Module. Called from Input Main
-           
-******************************************************************************/
-include("header.inc");
-
 $query="SELECT COUNT(*) AS num FROM venue";
 $result=mysql_query($query);
 $row=mysql_fetch_assoc($result);
@@ -47,22 +37,14 @@ $numadjudactive=$row['num'];
 
 ?>
 
-<div id="content">
+<p>Welcome to the Input Module. Please choose the option above according to what you want to edit.</p>
 
-    <p>Welcome to the Input Module. Please choose the option above according to what you want to edit.</p>
+<h2>Summary</h2>
+<ul class="summary">
+    <li><span class="flt">No. of Venues</span>: <?echo "<b>$numvenue</b> ($numvenueactive)"?></li>
+    <li><span class="flt">No. of Universities</span>: <?echo "<b>$numuniv</b>"?></li>
+    <li><span class="flt">No. of Teams</span>: <?echo "<b>$numteam</b> ($numteamactive)"?></li>
+    <li><span class="flt">No. of Adjudicators</span>: <?echo "<b>$numadjud</b> ($numadjudactive)"?></li>
+</ul>
 
-    <h2>Summary</h2>
-    <ul class="summary">
-     <li><span class="flt">No. of Venues</span>: <?echo "<b>$numvenue</b> ($numvenueactive)"?></li>
-     <li><span class="flt">No. of Universities</span>: <?echo "<b>$numuniv</b>"?></li>
-     <li><span class="flt">No. of Teams</span>: <?echo "<b>$numteam</b> ($numteamactive)"?></li>
-     <li><span class="flt">No. of Adjudicators</span>: <?echo "<b>$numadjud</b> ($numadjudactive)"?></li>
-    </ul>
-
-    <p class="msg">* The numbers in brackets indicate how many entries are active</p>
-
-</div>
-<?php include('customize/footer.inc'); ?>
-</body>
-
-</html>
+<p class="msg">* The numbers in brackets indicate how many entries are active</p>

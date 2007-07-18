@@ -1,15 +1,4 @@
 <?
-/******************************************************************************
-File    :   main.php
-
-Author  :   AK
-
-Purpose :   Displays Summary of Print Modules.
-           
-******************************************************************************/
-
-include("header.inc");
-
 $query="SELECT COUNT(*) AS num FROM team";
 $result=mysql_query($query);
 $row=mysql_fetch_assoc($result);
@@ -42,7 +31,7 @@ $numresults=mysql_num_rows($result);
 
 
 //Display Messages
-if (count($msg)>0)
+if (count(@$msg)>0)
 {
   echo "<ul class=\"err\">\n";
   for($x=0;$x<count($msg);$x++)
@@ -52,10 +41,3 @@ if (count($msg)>0)
 
 }
 ?> 
-
-
-</div>
-<?php include('customize/footer.inc'); ?>
-</body>
-
-</html>

@@ -1,22 +1,6 @@
 <?
-/******************************************************************************
-File    :   result.php
-
-Author  :   Deepak Jois
-
-Purpose :   This file manages all the functions related to the results
-            of the draw, including creation and display of the draw.
-
-******************************************************************************/
-
-include("result/func.php"); //Helper Functions
-include("includes/dbconnection.php"); //Database Connection
-
-$moduletype=trim(@$_GET['moduletype']); //module type : round currentround
-if (!$moduletype) $moduletype="currentround"; //set to round if empty
-
-
-//Check Database
+require("ntu_bridge.php");
+require_once("result/func.php"); //Helper Functions
 
 //Get Number of  Rounds Completed
 $query="SHOW TABLES LIKE 'draw_round%'";
@@ -30,16 +14,17 @@ $numresults=mysql_num_rows($result);
 
 $nextresult=$numresults+1;
 
-switch($moduletype)
-{
-    case "round":
-    case "currentround":
-                 break;
-    default:
-                $moduletype="currentround";
 
-}
 
-//Load respective module
-include("result/$moduletype.inc");
+
+$ntu_controller = "result";
+$ntu_default_module = "currentround";
+$ntu_default_action = "";
+$ntu_titles = array(
+    "floor" => "Floor Managers",
+    "chfadjud" => "Chief Adjudicator/DCAs",
+    "tab" => "Tab Room",);
+
+require("ntu_controller.php");
+
 ?>

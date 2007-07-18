@@ -1,12 +1,4 @@
 <?
-/******************************************************************************
- File    :   univ.inc
-
- Author  :   Deepak Jois
-
- Purpose :   Handle Add/Edit/Delete University
-           
-******************************************************************************/
 require("includes/display.inc");
 
 //Get POST values and validate/convert them
@@ -169,11 +161,6 @@ switch($action)
                     
   }
 
-
-
-include("header.inc");
-
-echo "<div id=\"content\">";
                 
 echo "<h2>$title</h2>\n"; //title
 
@@ -258,8 +245,3 @@ if ($action=="display")
             
                 }
 ?>
-</div>
-<?php include('customize/footer.inc'); ?>
-</body>
-
-</html>

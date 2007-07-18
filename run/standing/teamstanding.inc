@@ -1,18 +1,4 @@
 <?
-/******************************************************************************
-File    :   teamstanding.inc
-
-Author  :   AK
-
-Purpose :   This file handles the display of the teams standings
-
-******************************************************************************/
-
-
-include("includes/dbconnection.php"); //Database Connection
-
-include("header.inc");
-
 $round=trim(@$_POST['round']);
 
 //Check Database

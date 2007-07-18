@@ -1,20 +1,9 @@
 <?php
-require_once("includes/dbconnection.php");
+require("ntu_bridge.php");
+require("view/header.php");
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-    
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-<head>
-    <title>List of Free Adjudicators</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="../style.css">
-</head>
 
-<body>
-<div id="content">
-<h2>List of Free Adjudicators</h2>
-<?php
+<?php 
 $nextround=@$_GET['nextround'];
 $query = "SELECT A.adjud_id, A.adjud_name, A.ranking, A.conflicts ";
 $query .= "FROM adjudicator A ";
@@ -41,6 +30,6 @@ if (mysql_num_rows($result)!=0)
 <h3><a href="">Refresh</a></h3>
 </div>
 
-<?php include('customize/footer.inc'); ?>
-</body>
-</html>
+<?php
+require('view/footer.php'); 
+?>

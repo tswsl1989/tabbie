@@ -1,10 +1,23 @@
-Anything that comes out of the "English Open Tournament" in Herzelia
+* An overview page or wizard - to provide clarity in stressful times.
 
-***** Version 1.0
+* Tournament Overview for after the tournament: HTML/CSS files of the final results, all rounds and relevant other data.
+	All files in one click
+	All rounds including speakerpoints (per speaker)
+	Overview of winning positions (OG, OO, ...) per round to determin motion "goodness"
+
+* Switching Rooms.
+
+* Input Motions
+
+* Integrated Backup (we used phpMyBackupPro)
+
+* Team Overview - in case of doubt you should be able to see all of a teams debates.
+
 
 Ease of manual input
 	Turn of auto-completion (Danger!)
 	Jump to relevant part of the page
+	Complete Rework using AJAX like stuff
 
 Create supergood Pyton Version of Draw
 Port This To PHP
@@ -12,7 +25,6 @@ Port This To PHP
 **** Version ....
 
 Displaying
-	Remove worlds logo's
 	Fix scrolling
 	Introduce pictures for teams
 
@@ -24,7 +36,7 @@ Importing and exporting
 Make something that can run on any machine (packaged, online solution)
 	.htaccess file governs who can see what
 
-Make plug-out points
+REST Architecture
 
 Delete teams
 

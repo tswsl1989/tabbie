@@ -8,9 +8,10 @@ $local = ($_SERVER["SERVER_NAME"] != "tabbie.sourceforge.net");
     <h2 class="hide">Main Menu</h2>
     <ul>
     <li><a href="index.php" class="activemain">Home</a></li>
-    <li><a href="run/">Run<? if (!$local) echo " Online Demo"; ?></a></li>
     <li><a href="http://sourceforge.net/project/showfiles.php?group_id=199347">Download</a></li>
-    <li><a href="installation.php">Install</a></li>
+    <li><a href="installation.php">Installation Guide</a></li>
+    <li><a href="history.php">History</a></li>
+    <li><a href="run/">Run<? if (!$local) echo " Online Demo"; ?></a></li>
     </ul>
 </div>
 
@@ -88,7 +89,7 @@ You will also need a Web Server to run Tabbie since it's based on PHP. Use the <
 <div>
 Participation in the <a href="http://sourceforge.net/projects/tabbie/">Tabbie Project</a> is possible on many levels. Feel free to report any bugs that you may find or request for a feature. 
 
-We would welcome any participation in the <a href="http://sourceforge.net/projects/tabbie/">Tabbie Project</a>. This is also the source for any support questions you may have. Since the above page may be a bit intimidating (it is even for us) you can also just send a mail to <i>klaas aat vanschelven doot com</i>.
+We would welcome any participation in the <a href="http://sourceforge.net/projects/tabbie/">Tabbie Project</a>. This is also the source for any support questions you may have. Since the above page may be a bit intimidating (it is even for us) you can also just send a mail to <i>klaas aat vanschelven doot com</i>. You can also take a look at the current <a href="doc/TODO">To Do List</a> (though sometimes a bit of a mess).
 
 We strive to make Tabbie a platform for the many different diverging efforts that are being put into creating Tabbing Software and welcome help. We also try to reverse the trend of Tabbing Software being created for just one tournament and then being tossed aside. So if you feel you can contribute, do it here.
 </div>

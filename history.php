@@ -1,6 +1,19 @@
 <?php
 $title = "Tabbie History";
-require("run/view/header.php"); ?>
+require("run/view/header.php");
+$local = ($_SERVER["SERVER_NAME"] != "tabbie.sourceforge.net");
+?>
+
+<div id="mainmenu">
+    <h2 class="hide">Main Menu</h2>
+    <ul>
+    <li><a href="index.php">Home</a></li>
+    <li><a href="http://sourceforge.net/project/showfiles.php?group_id=199347">Download</a></li>
+    <li><a href="installation.php">Installation Guide</a></li>
+    <li><a href="history.php" class="activemain">History</a></li>
+    <li><a href="run/">Run<? if (!$local) echo " Online Demo"; ?></a></li>
+    </ul>
+</div>
 
 <h3>History</h3>
 <div>The following message was found on <a href="http://flynn.debating.net/">Colm Flynn's 

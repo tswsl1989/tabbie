@@ -43,7 +43,7 @@ div#content
 #main 
 { 
  width: 100%; height: 120px; 
- background-image: url(/clean/run/images/logo.png); 
+ background-image: url(logo.png); 
  background-repeat: no-repeat; 
  background-color: #000000;
  background-position: top right;

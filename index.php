@@ -36,14 +36,34 @@ Tabbie helps you create the Tab or draw of British Parliamentary Debating Tourna
 </div>
 
 <h3>News</h3>
-<div>
-Fri 6th July 2007 - Version 1.0-RC1 is out. If Tabbie runs well in its second tournament coming week we'll take the RC (Release Candidate) off and make the official 1.0 release. New in this version:
+<p>
+<b>Thu 19th July 2007</b><br>
+The tournament at the The Interdisciplinary Center, Herzliya was a success. Some things we found very easy using Tabbie were:
+<ul>
+<li>Putting in and changing teams, adjudicators and debates.</li>
+<li>Calulating and manipulating the draw.</li>
+<li>Displaying the draw, printing adjudication sheets for the rooms.</li>
+</ul>
+Things that have been promoted to the wish list are:
+<ul>
+<li>Switching Rooms.</li>
+<li>An overview page or wizard - to provide clarity in stressful times.</li>
+<li>Integrated Backup (we used <a href="http://www.phpmybackuppro.net/">phpMyBackupPro</a>)</li>
+<li>Team Overview - in case of doubt you should be able to see all of a teams debates.</li>
+<li>Tournament Overview for after the tournament: HTML/CSS files of the final results, all rounds and relevant other data.</li>
+</ul>
+Because running Tabbie went so smoothly it is now officially version 1.0!
+</p>
+
+<p>
+<b>Fri 6th July 2007</b><br>
+Version 1.0-RC1 is out. If Tabbie runs well in its second tournament coming week we'll take the RC (Release Candidate) off and make the official 1.0 release. New in this version:
 <ul>
 <li>A completely new Draw Algorithm, which fixes a number of issues with the NTU draw. Also - interesting for those out there who think they can do better - the algorithm is fairly easily to plug in or out. All Algorithm's results are automatically verified for correctness against the WUDC rules, and Tabbie displays how well it's doing in getting everyone fairly distributed over debating positions.</li>
 <li>Adjudicator sheets (with names, motions etc.) can now be generated with one click - as a PDF that matches you input screen. No more hassling with mail merge!</li>
 <li>The Installation has been made more robust and a <a href="installation.php">guide</a> is provided.</li>
 </ul>
-</div>
+</p>
 
 <?php 
 if (! $local) {

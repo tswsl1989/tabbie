@@ -1,4 +1,6 @@
-<?php require("templates/header.inc");
+<?php
+$title = "Tabbie Installation Guide";
+require("run/view/header.php");
 $local = ($_SERVER["SERVER_NAME"] != "tabbie.sourceforge.net");
 ?>
 
@@ -73,4 +75,4 @@ This is really where the install ends....and using Tabbie begins. Should you hav
 <div>
 Tabbie requires PHP 4 and MySql 4.1. Unix/Linux system administrators may want to run the script run/setpermissions.sh or inspect it to see which file permissions to set.
 </div>
-<?php require("templates/footer.inc"); ?>
+<?php require("run/view/footer.php"); ?>

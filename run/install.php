@@ -1,19 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-<head>
-    <title>Install Tabbie</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-  <h1 id="main">Tabbie - British Parliamentary Debating Tabbing Software</h1>
-
-  <div id="content">
-    <h2>Tabbie - British Parliamentary Debating Tabbing Software</h2>
-
+<?
+$title = "Install Tabbie";
+require("view/header.php");
+?>
+    <h2>Installation</h2>
 <?php
 $action=@$_POST['action'];
 $filename = "config/settings.php";
@@ -72,6 +61,10 @@ if ($all_is_well) {
         echo "<h3>Warning - Tabbie is already installed. Executing this procedure again will erase all data</h3>";
     }
 ?>
+<p>
+Please fill out the form below. If you have no idea what these options mean - just click on the install button. Users that try to reinstall here: Please be aware of the fact that any existing data in the database indicated below will be overwritten.
+</p>
+
 <form action="install.php" method="POST">
     <input type="hidden" name="action" value="install"/>
     <input type="text" size="30" name="database_host" value="localhost"> Database Host<br/>
@@ -87,6 +80,6 @@ if ($all_is_well) {
 
   </div>
 
-<?php include('customize/footer.inc'); ?>
+<?php require('view/footer.php'); ?>
 </body>
 </html>

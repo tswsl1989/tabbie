@@ -1,4 +1,6 @@
-<?php require("templates/header.inc"); ?>
+<?php
+$title = "Tabbie History";
+require("run/view/header.php"); ?>
 
 <h3>History</h3>
 <div>The following message was found on <a href="http://flynn.debating.net/">Colm Flynn's 
@@ -45,4 +47,4 @@ deepakjois@hotmail.com</a>&nbsp;<br>
 aditya_krishnan@yahoo.com</a>&nbsp;<br>
 </div>
 
-<?php require("templates/footer.inc"); ?>
+<?php require("run/view/footer.php"); ?>

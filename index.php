@@ -1,4 +1,6 @@
-<?php require("templates/header.inc");
+<?php
+$title = "Tabbie";
+require("run/view/header.php");
 $local = ($_SERVER["SERVER_NAME"] != "tabbie.sourceforge.net");
 ?>
 
@@ -75,4 +77,4 @@ We strive to make Tabbie a platform for the many different diverging efforts tha
 <div>Tabbie was created for NTU Worlds 2004. It was subsequently found on the internet in 2007 and restored to working order - great thanks go out to Colm Flynn for preserving it. <a href="history.php">Read more...</a>
 </div>
 
-<?php require("templates/footer.inc"); ?>
+<?php require("run/view/footer.php"); ?>

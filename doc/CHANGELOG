@@ -1,5 +1,16 @@
 CHANGELOG:
 
+...:
+* Added Overview Page / Dashboard / Wizard
+* Added motions input module
+* Minor bugfixes:
+    * Fixed the lower and upperbound for values displayed in red (while inputting results)
+* Technical:
+    * Refactored some of the menus out
+
+1.0:
+* No changes where percieved necessery to release RC1
+
 1.0-RC1:
 * A completely new Draw Algorithm
 * Draw Algorithms are pluggable - they can be added quite easily

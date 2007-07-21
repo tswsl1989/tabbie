@@ -19,7 +19,6 @@ Use the menu above for direct access to all of Tabbie's functionality.
 <li><a href="input.php?moduletype=adjud">Input participating adjudicators</a></li>
 <li><a href="input.php?moduletype=team">Input participating teams</a></li>
 <li><a href="input.php?moduletype=motion">Input motions for the regular rounds</a><li>
-<li>Input motions (not implemented yet)</li>
 <li>Make a backup (and save it on another computer)</li>
 </ul>
 

@@ -3,6 +3,7 @@ CHANGELOG:
 ...:
 * Added Overview Page / Dashboard / Wizard
 * Added motions input module
+* Added an integrated one-click backup module (for linux/unix systems)
 * Minor bugfixes:
     * Fixed the lower and upperbound for values displayed in red (while inputting results)
 * Technical:

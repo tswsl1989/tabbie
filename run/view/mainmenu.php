@@ -7,6 +7,7 @@
     <li><a href="result.php"<?= ($ntu_controller=="result")?" class=\"activemain\"":""?>>Results</a></li>
     <li><a href="standing.php"<?= ($ntu_controller=="standing")?" class=\"activemain\"":""?>>Standings</a></li>
     <li><a href="print.php"<?= ($ntu_controller=="print")?" class=\"activemain\"":""?>>Print</a></li>
+    <li><a href="backup.php">Backup</a></li>
     <li><a href="setup.php"<?= ($ntu_controller=="setup")?" class=\"activemain\"":""?>>Configuration</a></li>
     <li><a href="../">Website and Documentation</a></li>
 </ul>

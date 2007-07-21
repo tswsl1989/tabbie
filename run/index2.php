@@ -19,7 +19,7 @@ Use the menu above for direct access to all of Tabbie's functionality.
 <li><a href="input.php?moduletype=adjud">Input participating adjudicators</a></li>
 <li><a href="input.php?moduletype=team">Input participating teams</a></li>
 <li><a href="input.php?moduletype=motion">Input motions for the regular rounds</a><li>
-<li>Make a backup (and save it on another computer)</li>
+<li><a href="backup.php">Make a backup (and save it on another computer)</a></li>
 </ul>
 
 <h3>Before each regular round</h3>
@@ -33,14 +33,14 @@ Use the menu above for direct access to all of Tabbie's functionality.
 <li><a href="print.php?moduletype=adjudicator&amp;list=adjsheet&amp;action=display&amp;warning=done">Print the adjudicator sheets with room-specific info</a> (and have them distributed)</li>
 <li><a href="draw.php">Display the draw</a></li>
 <li>Display the motion</li>
-<li>Make a backup (and save it on another computer)</li>
+<li><a href="backup.php">Make a backup (and save it on another computer)</a></li>
 </ul>
 
 <h3>After each regular round</h3>
 <ul>
 <li><a href="result.php?moduletype=currentround&amp;action=create">Start Inputting results</a></li>
 <li><a href="result.php?moduletype=currentround&amp;action=finalize">Finalize results</a></li>
-<li>Make a backup (and save it on another computer)</li>
+<li><a href="backup.php">Make a backup (and save it on another computer)</a></li>
 </ul>
 
 <h3>Before the break</h3>

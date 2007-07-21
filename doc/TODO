@@ -1,5 +1,3 @@
-* Integrated Backup (we used phpMyBackupPro)
-
 * Tournament Overview for after the tournament: HTML/CSS files of the final results, all rounds and relevant other data.
 	All files in one click
 	All rounds including speakerpoints (per speaker)
@@ -26,6 +24,11 @@ Port This To PHP
 
 Add explanations:	
 	Ranking for adjudicators 0 - 100
+
+* Integrated Backup
+    for Windows systems
+
+Support for other languages must be verified (for team and speaker names)
 
 *** KNOWN ISSUES **** :
 Some issues with relocation after the new menu architecture - search for "Location:"

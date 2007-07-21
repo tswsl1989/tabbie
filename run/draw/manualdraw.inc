@@ -235,7 +235,8 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
          mysql_query($query);
         
          //Redirect
-         header("Location: draw.php?moduletype=round&action=showdraw&roundno=$nextround");
+         require_once("includes/http.php");
+         redirect("draw.php?moduletype=round&action=showdraw&roundno=$nextround");
             
        }
      $action="display";

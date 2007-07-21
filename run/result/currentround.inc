@@ -418,7 +418,8 @@ else
                 mysql_query($query);
                 
                 //Redirect
-                        header("Location: result.php?moduletype=round&action=showresult&roundno=$nextresult");
+               require_once("includes/http.php");
+               redirect("result.php?moduletype=round&action=showresult&roundno=$nextresult");
                 }
             $result="display";
             }

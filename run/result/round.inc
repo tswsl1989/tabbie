@@ -9,8 +9,10 @@ $validate=1;
 if ((!$roundno)||(!ereg("^[1-9]$",$roundno)) )
 {
     $roundno=$numdraws;
-    if ($numdraws<=0) 
-        header("Location: result.php?moduletype=currentround");
+    if ($numdraws<=0) {
+        require_once("includes/http.php");
+        redirect("result.php?moduletype=currentround");
+    }
     
 }
 

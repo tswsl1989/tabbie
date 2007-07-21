@@ -12,8 +12,10 @@ if (($roundno=='')||(!ereg("^[1-9]$",$roundno)) )
 {
 
   $roundno=$numdraws;
-    if ($numdraws<=0) 
-        header("Location: draw.php?moduletype=currentdraw");
+    if ($numdraws<=0) {
+        require_once("includes/http.php");
+        redirect("draw.php?moduletype=currentdraw");
+    }
 }
                 
 switch($action)

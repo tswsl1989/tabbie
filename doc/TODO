@@ -1,7 +1,8 @@
+	Overview of winning positions (OG, OO, ...) per round to determine motion "goodness"
+
 * Tournament Overview for after the tournament: HTML/CSS files of the final results, all rounds and relevant other data.
 	All files in one click
 	All rounds including speakerpoints (per speaker)
-	Overview of winning positions (OG, OO, ...) per round to determin motion "goodness"
 
 * Team Overview - in case of doubt you should be able to see all of a teams debates.
 
@@ -31,7 +32,9 @@ Support for other languages must be verified (for team and speaker names)
 * Switching Rooms.
     turns out to be possible already - maybe we could add an options for "NONE"
 
-
+All kinds of display issues:
+    Sorting
+    Coloring
 
 *** KNOWN ISSUES **** :
 Some issues with relocation after the new menu architecture - search for "Location:"

@@ -37,7 +37,6 @@ All kinds of display issues:
     Coloring
 
 *** KNOWN ISSUES **** :
-Some issues with relocation after the new menu architecture - search for "Location:"
 
 *** Architecture ***
 Move files that are written to disk to a seperate php file that can also be called directly
@@ -63,6 +62,4 @@ Remove all kind of unused stuff
 Delete teams
 
 *** KNOWN BUGS ***
-@ operator missing in many places
-lack of modularisation / factoring out
 "Results for the last draw have been entered already." (print page)

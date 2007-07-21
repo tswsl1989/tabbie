@@ -291,7 +291,7 @@ if ($action=="display")
        <input type="text" id="conflicts" name="conflicts" value="<?echo $conflicts;?>"></input><br/><br/>
 
        <label for="ranking">Ranking</label>
-                    <input type="text" id="ranking" name="ranking" value="<?echo $ranking;?>"/><br/><br/>
+                    <input type="text" id="ranking" name="ranking" value="<?echo $ranking;?>"/> Value: 0 - 100; Higly ranked adjudicators will be chairs of higly ranked debates.<br/><br/>
 
                     <label for="active">Active</label>
                   <select id="active" name="active">

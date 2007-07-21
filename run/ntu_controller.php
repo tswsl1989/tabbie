@@ -15,7 +15,7 @@ if (!$action) $action=$ntu_default_action;
 if (! isset($title))
     $title = "";
 
-if (in_array($moduletype, $ntu_titles))
+if (array_key_exists($moduletype, $ntu_titles))
     $title .= " " . $ntu_titles[$moduletype] . " ";
 else 
     $title = " " . ucfirst($moduletype) . " ";

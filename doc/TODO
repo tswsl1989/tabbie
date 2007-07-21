@@ -1,4 +1,6 @@
-* An overview page or wizard - to provide clarity in stressful times.
+* Input Motions
+
+* Integrated Backup (we used phpMyBackupPro)
 
 * Tournament Overview for after the tournament: HTML/CSS files of the final results, all rounds and relevant other data.
 	All files in one click
@@ -6,10 +8,6 @@
 	Overview of winning positions (OG, OO, ...) per round to determin motion "goodness"
 
 * Switching Rooms.
-
-* Input Motions
-
-* Integrated Backup (we used phpMyBackupPro)
 
 * Team Overview - in case of doubt you should be able to see all of a teams debates.
 
@@ -24,6 +22,12 @@ Ease of manual input
 
 Create supergood Pyton Version of Draw
 Port This To PHP
+
+* An overview page or wizard - to provide clarity in stressful times.
+	* Add a pointer to the page indicating where you are now
+
+Add explanations:	
+	Ranking for adjudicators 0 - 100
 
 *** KNOWN ISSUES **** :
 Some issues with relocation after the new menu architecture - search for "Location:"
@@ -46,6 +50,8 @@ Make something that can run on any machine (packaged, online solution)
 	.htaccess file governs who can see what
 
 REST Architecture
+
+Remove all kind of unused stuff
 
 Delete teams
 

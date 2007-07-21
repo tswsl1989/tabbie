@@ -39,7 +39,7 @@ Tabbie helps you create the Tab or draw of British Parliamentary Debating Tourna
 <h3>News</h3>
 <p>
 <b>Thu 19th July 2007</b><br>
-The tournament at the The Interdisciplinary Center, Herzliya was a success. Some things we found very easy using Tabbie were:
+Tabbie 1.0 is released. The tournament at the The Interdisciplinary Center, Herzliya was a success. Some things we found very easy using Tabbie were:
 <ul>
 <li>Putting in and changing teams, adjudicators and debates.</li>
 <li>Calulating and manipulating the draw.</li>
@@ -47,7 +47,6 @@ The tournament at the The Interdisciplinary Center, Herzliya was a success. Some
 </ul>
 Things that have been promoted to the wish list are:
 <ul>
-<li>Switching Rooms.</li>
 <li>An overview page or wizard - to provide clarity in stressful times.</li>
 <li>Integrated Backup (we used <a href="http://www.phpmybackuppro.net/">phpMyBackupPro</a>)</li>
 <li>Team Overview - in case of doubt you should be able to see all of a teams debates.</li>

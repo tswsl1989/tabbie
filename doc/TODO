@@ -3,8 +3,6 @@
 	All rounds including speakerpoints (per speaker)
 	Overview of winning positions (OG, OO, ...) per round to determin motion "goodness"
 
-* Switching Rooms.
-
 * Team Overview - in case of doubt you should be able to see all of a teams debates.
 
 * Using Tabbie for the registration process.
@@ -29,6 +27,11 @@ Add explanations:
     for Windows systems
 
 Support for other languages must be verified (for team and speaker names)
+
+* Switching Rooms.
+    turns out to be possible already - maybe we could add an options for "NONE"
+
+
 
 *** KNOWN ISSUES **** :
 Some issues with relocation after the new menu architecture - search for "Location:"

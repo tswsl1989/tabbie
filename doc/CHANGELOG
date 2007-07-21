@@ -1,6 +1,6 @@
 CHANGELOG:
 
-...:
+1.1:
 * Added Overview Page / Dashboard / Wizard
 * Added motions input module
 * Added an integrated one-click backup module (for linux/unix systems)

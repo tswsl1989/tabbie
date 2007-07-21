@@ -38,6 +38,15 @@ Tabbie helps you create the Tab or draw of British Parliamentary Debating Tourna
 
 <h3>News</h3>
 <p>
+<b>Sat 21th July 2007</b><br>
+Tabbie 1.1 is released. This release contains a number of features from the wishlist that followed out of the IDC tournament. This version has not yet been tested on a live tournament, if you want this, take version 1.0. New features are:
+<ul>
+<li>Added Overview Page / Dashboard / Wizard.</li>
+<li>Added motions input module.</li>
+<li>Added an integrated one-click backup module (for linux/unix systems).</li>
+</ul>
+</p>
+<p>
 <b>Thu 19th July 2007</b><br>
 Tabbie 1.0 is released. The tournament at the The Interdisciplinary Center, Herzliya was a success. Some things we found very easy using Tabbie were:
 <ul>

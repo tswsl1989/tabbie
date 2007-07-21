@@ -30,7 +30,7 @@ Add explanations:
 Support for other languages must be verified (for team and speaker names)
 
 * Switching Rooms.
-    turns out to be possible already - maybe we could add an options for "NONE"
+    turns out to be possible already - maybe we could add an options for "NONE", or for auto-switch with the room that you're taking.
 
 All kinds of display issues:
     Sorting

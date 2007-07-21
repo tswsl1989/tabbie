@@ -7,7 +7,6 @@
 * Team Overview - in case of doubt you should be able to see all of a teams debates.
 
 * Using Tabbie for the registration process.
-
 Calculate the break fold
 
 Ease of manual input
@@ -37,6 +36,7 @@ All kinds of display issues:
     Coloring
 
 *** KNOWN ISSUES **** :
+Absolute URL in header.php (use config?)
 
 *** Architecture ***
 Move files that are written to disk to a seperate php file that can also be called directly

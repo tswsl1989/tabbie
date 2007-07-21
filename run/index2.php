@@ -38,15 +38,15 @@ Use the menu above for direct access to all of Tabbie's functionality.
 
 <h3>After each regular round</h3>
 <ul>
-<li>Input results</li>
-<li>Finalize results</li>
+<li><a href="result.php?moduletype=currentround&amp;action=create">Start Inputting results</a></li>
+<li><a href="result.php?moduletype=currentround&amp;action=finalize">Finalize results</a></li>
 <li>Make a backup (and save it on another computer)</li>
 </ul>
 
 <h3>Before the break</h3>
 <ul>
 <li><a href="standing.php?moduletype=teamstanding">Determine the breaking teams</a></li>
-<li>Automatically create the fold (not implemented)</li>
+<li>Automatically create the fold (not implemented yet)</li>
 </ul>
 
 <h3>Before the grand final</h3>
@@ -56,7 +56,7 @@ Use the menu above for direct access to all of Tabbie's functionality.
 
 <h3>After the tournament</h3>
 <ul>
-<li>Present the results as a website (not implemented)</li>
+<li>Present the results as a website (not implemented yet)</li>
 </ul>
 
 

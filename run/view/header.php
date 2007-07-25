@@ -5,7 +5,7 @@
 <head>
     <title><?= $title ?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="/tabbie/run/view/index.css"> <!-- insert absolute url -->
+    <link rel="stylesheet" href="<?= @$dir_hack ?>view/index.css">
 </head>
 
 <body>

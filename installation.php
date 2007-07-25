@@ -1,5 +1,6 @@
 <?php
 $title = "Tabbie Installation Guide";
+$dir_hack = "run/";
 require("run/view/header.php");
 $local = ($_SERVER["SERVER_NAME"] != "tabbie.sourceforge.net");
 ?>

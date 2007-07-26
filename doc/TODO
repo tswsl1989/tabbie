@@ -1,8 +1,10 @@
-	Overview of winning positions (OG, OO, ...) per round to determine motion "goodness"
+
+
+    Overview of winning positions (OG, OO, ...) per round to determine motion "goodness"
 
 * Tournament Overview for after the tournament: HTML/CSS files of the final results, all rounds and relevant other data.
-	All files in one click
-	All rounds including speakerpoints (per speaker)
+    All files in one click
+    All rounds including speakerpoints (per speaker)
 
 * Team Overview - in case of doubt you should be able to see all of a teams debates.
 
@@ -10,18 +12,15 @@
 Calculate the break fold
 
 Ease of manual input
-	Turn of auto-completion (Danger!)
-	Jump to relevant part of the page
-	Complete Rework using AJAX like stuff
+    Turn of auto-completion (Danger!)
+    Jump to relevant part of the page
+    Complete Rework using AJAX like stuff
 
 Create supergood Pyton Version of Draw
 Port This To PHP
 
 * An overview page or wizard - to provide clarity in stressful times.
-	* Add a pointer to the page indicating where you are now
-
-Add explanations:	
-	Ranking for adjudicators 0 - 100
+    * Add a pointer to the page indicating where you are now
 
 * Integrated Backup
     for Windows systems
@@ -44,16 +43,16 @@ Move files that are written to disk to a seperate php file that can also be call
 **** Version ....
 
 Displaying
-	Fix scrolling
-	Introduce pictures for teams
+    Fix scrolling
+    Introduce pictures for teams
 
 Importing and exporting
-	SQL
-	CSS
-	XML
+    SQL
+    CSS
+    XML
 
 Make something that can run on any machine (packaged, online solution)
-	.htaccess file governs who can see what
+    .htaccess file governs who can see what
 
 REST Architecture
 

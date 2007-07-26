@@ -1,5 +1,9 @@
 CHANGELOG:
 
+1.1.1:
+* Minor bugfixes:
+    * Fixed a problem with showing the stylesheet 
+
 1.1:
 * Added Overview Page / Dashboard / Wizard
 * Added motions input module

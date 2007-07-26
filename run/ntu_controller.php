@@ -25,7 +25,7 @@ include("view/mainmenu.php");
 include("view/$ntu_controller/menu.php");
 
 //Load respective module
-include("$ntu_controller/$moduletype.inc");
+include("$ntu_controller/$moduletype.php");
 
 include("view/footer.php");
 ?>

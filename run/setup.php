@@ -5,7 +5,7 @@ require("ntu_bridge.php");
 require("view/header.php");
 require("view/mainmenu.php");
 
-require_once("includes/display.inc");
+require_once("includes/display.php");
 
 $action=trim(@$_GET['action']);
 if (!$action) $action="display"; //set to round if empty

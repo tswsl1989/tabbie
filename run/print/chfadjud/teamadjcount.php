@@ -1,12 +1,5 @@
 <?
-/******************************************************************************
-File    :   teamadjcount.php
-
-Author  :   AK
-
-Purpose :   This file prints the team adjudicator count
-
-******************************************************************************/
+// KVS - not a priority - isn't this way to much data for the DCA's to fully understand?
 
 function present($adjud_id,$adj_array)
 {
@@ -57,7 +50,7 @@ if ($action == "display")
 {
 
     //Open the text file
-    $filename = "print\outputs\TeamAdjList_$roundno.html";
+    $filename = "print/outputs/TeamAdjList_$roundno.html";
     $fp = fopen($filename, "w");
     
     $text="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\"> \n<html> \n <head> ";
@@ -83,7 +76,7 @@ if ($action == "display")
             if ($result)
             {    while ($row=mysql_fetch_assoc($result))
                 {    $adjud_id=$row['adjud_id'];
-                    if ((present($adjud_id,$adj_array))==-1)
+                    if ((present($adjud_id,@$adj_array))==-1)
                     
                     {    $adj_array[$index][0]=$adjud_id;
                         $adj_array[$index][1]=1;
@@ -100,7 +93,7 @@ if ($action == "display")
         }
         $adjud_text="";
         $count_text="";
-        for ($y=0; $y<count($adj_array); $y++)
+        for ($y=0; $y<count(@$adj_array); $y++)
         {    $query="SELECT a.adjud_name AS adjud_name FROM adjudicator AS a WHERE a.adjud_id='{$adj_array[$y][0]}' ";
             $result=mysql_query($query);
             $row=mysql_fetch_assoc($result);

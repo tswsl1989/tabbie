@@ -1,4 +1,12 @@
+BEFORE RELEASE:
+    * restore print modules
 
+
+Stop saving files to disk - return them to the browser instead
+
+Start creating REST framework
+
+Write extensive feature overview
 
     Overview of winning positions (OG, OO, ...) per round to determine motion "goodness"
 

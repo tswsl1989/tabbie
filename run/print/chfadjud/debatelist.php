@@ -1,12 +1,5 @@
 <?
-/******************************************************************************
-File    :   debatelist.php
-
-Author  :   AK
-
-Purpose :   This file prints the debate list for the CA/DCAs for use before manual draw
-
-******************************************************************************/
+//?? KVS: This seems to do exactly the same as the draw - factor out stuff from there?
 
 
 include("includes/dbconnection.php"); //Database Connection
@@ -53,7 +46,7 @@ if ($action == "display")
 {
 
     //Open the text file
-    $filename = "print\outputs\chief_adjudicator_debate_list_$roundno.html";
+    $filename = "print/outputs/chief_adjudicator_debate_list_$roundno.html";
     $fp = fopen($filename, "w");
     
     $text="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\"> \n<html> \n <head> ";

@@ -1,20 +1,22 @@
-<?
-$list=trim(@$_POST['list']);
-if (!$list)
-{    $list=trim(@$_GET['list']);
-    if (!$list) $list="main"; //set to main if empty
-}
-
-
+<?php
 $ntu_controller = "print";
-$ntu_default_module = "main";
-$ntu_default_action = "";
-$ntu_titles = array(
-    "floor" => "Floor Managers",
-    "chfadjud" => "Chief Adjudicator/DCAs",
-    "tab" => "Tab Room",);
+$title = "Print";
 
-require("ntu_bridge.php");
-require("ntu_controller.php");
-
+require("view/header.php");
+require("view/mainmenu.php");
 ?>
+
+<h2>Print</h2>
+
+<h3>Runners and floormanagers</h3>
+<ul>
+<li><a href="....">Personalised adjudicator sheets</a></li>
+<li><a href="input.php?moduletype=venue">Input venue (room) names and locations</a></li>
+<li><a href="input.php?moduletype=univ">Input participating universities or institutions</a></li>
+<li><a href="input.php?moduletype=adjud">Input participating adjudicators</a></li>
+<li><a href="input.php?moduletype=team">Input participating teams</a></li>
+<li><a href="input.php?moduletype=motion">Input motions for the regular rounds</a><li>
+<li><a href="backup.php">Make a backup (and save it on another computer)</a></li>
+</ul>
+<p>
+

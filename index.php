@@ -1,5 +1,5 @@
 <?php
-$title = "Tabbie";
+$title = "Tabbie - BP Debating Tab Software";
 $dir_hack = "run/";
 require("run/view/header.php");
 $local = ($_SERVER["SERVER_NAME"] != "tabbie.sourceforge.net");
@@ -27,7 +27,7 @@ Welcome to Tabbie, running on <b><?= $_SERVER["SERVER_NAME"] ?></b>. If you just
 
 <h3>What is Tabbie?</h3>
 <div>
-Tabbie helps you create the Tab or draw of British Parliamentary Debating Tournaments. It has a number of properties:
+Tabbie is Tab Software for British Parliamentary Debating Tournaments. It has a number of properties:
 <ul>
 <li>Official. It uses the official <a href="doc/Worlds_Tab_Rules_-_DRAFT.doc">WUDC rules</a> to calculate its draw.</li>
 <li>Safe and stable - It's been tried in practice at a tournament as large as NTU Worlds 2004 with great success.</li>

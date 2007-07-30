@@ -20,7 +20,7 @@ if (@$_REQUEST["result_type"] == "txt") {
         print join(",", $row) ."\n";
     }
 } elseif (@$_REQUEST["result_type"] == "pdf") {
-    eval("{$function}_pdf('{$function}_round_$param', " . '$result["data"]' . ");");
+    eval("{$function}_pdf('{$function}_round_$param.pdf', " . '$result["data"]' . ");");
 } elseif (@$_REQUEST["result_type"] == "html") {
     print "<table>";
     print "<tr><th>" . join("</th><th>", $result["header"]) . "</th></tr>\n";

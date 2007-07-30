@@ -31,6 +31,7 @@ Tabbie is Tab Software for British Parliamentary Debating Tournaments. It has a 
 <ul>
 <li>Official. It uses the official <a href="doc/Worlds_Tab_Rules_-_DRAFT.doc">WUDC rules</a> to calculate its draw.</li>
 <li>Safe and stable - It's been tried in practice at a tournament as large as NTU Worlds 2004 with great success.</li>
+<li>Fair. Tabbie currently has the best known implementation worldwide of the draw algorithm, giving the most balanced distribution of positions in the debate to the teams. (<a href="draw_algorithms.php">More info</a>)</li>
 <li>Scalable for large tournaments: It is web based, you can use multiple computers for inputting data.</li>
 <li>Easy. Things like customized adjudication sheets for the tab can be created in <a href="run/rest.php?result_type=pdf&amp;function=adjudicator_sheets&amp;param=1">one click.</a></li>
 <li>Open and Free. Its source code is freely inspectable. You can inspect any file <a href="http://tabbie.svn.sourceforge.net/viewvc/tabbie/trunk/run/draw/algorithms/silver_line.php?view=markup">(like the Draw Algorithm)</a>, and modify or add anything you like. Download is free.</li>
@@ -81,11 +82,17 @@ Contributing to Tabbie BP Debating Software is possible in many ways. Sending a 
 </ul>
 You can also take a look at the current <a href="doc/TODO">To Do List</a> or <a href="doc/CHANGELOG">Change Log</a> (though sometimes a bit of a mess).
 
+</div>
+<div>
 We strive to make Tabbie a platform for the many different diverging efforts that are being put into creating Tabbing Software and welcome help. We also try to reverse the trend of Tabbing Software being created for just one tournament and then being tossed aside.
 </div>
 
+<h3><a href="history.php">Draw Algorithm</a></h3>
+<div>Tabbie currently has the best known implementation worldwide of the draw algorithm, giving the most balanced distribution of positions in the debate to the teams. <br><a href="draw_algorithms.php">Read more...</a>
+</div>
+
 <h3><a href="history.php">History</a></h3>
-<div>Tabbie was created for NTU Worlds 2004. It was subsequently found on the internet in 2007 and restored to working order - great thanks go out to Colm Flynn for preserving it. <a href="history.php">Read more...</a>
+<div>Tabbie was created for NTU Worlds 2004. It was subsequently found on the internet in 2007 and restored to working order - great thanks go out to Colm Flynn for preserving it. <br><a href="history.php">Read more...</a>
 </div>
 
 <?php require("run/view/footer.php"); ?>

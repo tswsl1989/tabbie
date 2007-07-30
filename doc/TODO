@@ -1,65 +1,24 @@
+Support for other languages must be verified (for team and speaker names)
 
-Write extensive feature overview
+Statistics / Fancy Display Module:
+    * Overview of winning positions (OG, OO, ...) per round to determine motion "goodness"
+    * Team Overview - in case of doubt you should be able to see all of a teams debates.
+    * All rounds including speakerpoints (per speaker)
+    * Export to read-only display case for the www
 
-    Overview of winning positions (OG, OO, ...) per round to determine motion "goodness"
-
-* Tournament Overview for after the tournament: HTML/CSS files of the final results, all rounds and relevant other data.
-    All files in one click
-    All rounds including speakerpoints (per speaker)
-
-* Team Overview - in case of doubt you should be able to see all of a teams debates.
-
-* Using Tabbie for the registration process.
 Calculate the break fold
 
 Ease of manual input
-    Turn of auto-completion (Danger!)
-    Jump to relevant part of the page
     Complete Rework using AJAX like stuff
 
-Create supergood Pyton Version of Draw
-Port This To PHP
-
-* An overview page or wizard - to provide clarity in stressful times.
+Overview Page
     * Add a pointer to the page indicating where you are now
 
-* Integrated Backup
+Integrated Backup
     for Windows systems
 
-Support for other languages must be verified (for team and speaker names)
 
-* Switching Rooms.
-    turns out to be possible already - maybe we could add an options for "NONE", or for auto-switch with the room that you're taking.
-
-All kinds of display issues:
-    Sorting
-    Coloring
-
-*** KNOWN ISSUES **** :
-Absolute URL in header.php (use config?)
-
-*** Architecture ***
-Move files that are written to disk to a seperate php file that can also be called directly
-
-**** Version ....
-
-Displaying
-    Fix scrolling
-    Introduce pictures for teams
+Various:
+    Switching Rooms. we could add an options for "NONE", or for auto-switch with the room that you're taking.
 
 Importing and exporting
-    SQL
-    CSS
-    XML
-
-Make something that can run on any machine (packaged, online solution)
-    .htaccess file governs who can see what
-
-REST Architecture
-
-Remove all kind of unused stuff
-
-Delete teams
-
-*** KNOWN BUGS ***
-"Results for the last draw have been entered already." (print page)

@@ -46,6 +46,7 @@ Tabbie 1.2 is released. This version has not yet been tested on a live tournamen
 <ul>
 <li>Reorganisation of the print module</li>
 <li>Print module works in the online demo (<a href="run/rest.php?result_type=pdf&amp;function=adjudicator_sheets&amp;param=1">example</a>)</li>
+<li>Draw is publically defended and claimed to be the world's best (<a href="draw_algorithms.php">more...</a>)</li>
 </ul>
 </p>
 <a href="old_news.php">More News...</a>

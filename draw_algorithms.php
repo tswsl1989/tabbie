@@ -8,7 +8,7 @@ $local = ($_SERVER["SERVER_NAME"] != "tabbie.sourceforge.net");
 <div id="mainmenu">
     <h2 class="hide">Main Menu</h2>
     <ul>
-    <li><a href="index.php" class="activemain">Home</a></li>
+    <li><a href="index.php">Home</a></li>
     <li><a href="http://sourceforge.net/project/showfiles.php?group_id=199347">Download</a></li>
     <li><a href="installation.php">Installation Guide</a></li>
     <li><a href="history.php">History</a></li>

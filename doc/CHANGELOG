@@ -5,6 +5,7 @@ CHANGELOG:
     * Overview is more clear (interface)
     * Files are no longer stored on disk but returned straight to the browser
     * Prettier HTML output
+    * Added an explanation of the Draw
 * Technical:
     * A start has been made for a clear REST interface
 

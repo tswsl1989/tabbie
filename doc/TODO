@@ -1,11 +1,3 @@
-BEFORE RELEASE:
-    * restore print modules
-    * Restore references from guide
-
-
-Stop saving files to disk - return them to the browser instead
-
-Start creating REST framework
 
 Write extensive feature overview
 

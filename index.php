@@ -32,48 +32,22 @@ Tabbie is Tab Software for British Parliamentary Debating Tournaments. It has a 
 <li>Official. It uses the official <a href="doc/Worlds_Tab_Rules_-_DRAFT.doc">WUDC rules</a> to calculate its draw.</li>
 <li>Safe and stable - It's been tried in practice at a tournament as large as NTU Worlds 2004 with great success.</li>
 <li>Scalable for large tournaments: It is web based, you can use multiple computers for inputting data.</li>
-<li>Open and Free. Its source code is freely inspectable. You can modify or add anything you like. Download is free.</li>
+<li>Easy. Things like customized adjudication sheets for the tab can be created in <a href="run/rest.php?result_type=pdf&amp;function=adjudicator_sheets&amp;param=1">one click.</a></li>
+<li>Open and Free. Its source code is freely inspectable. You can inspect any file <a href="http://tabbie.svn.sourceforge.net/viewvc/tabbie/trunk/run/draw/algorithms/silver_line.php?view=markup">(like the Draw Algorithm)</a>, and modify or add anything you like. Download is free.</li>
 <li>Alive. As of July 2007 changes are being made to make it work even better.</li>
 </ul>
 </div>
 
 <h3>News</h3>
 <p>
-<b>Sat 21th July 2007</b><br>
-Tabbie 1.1 is released. This release contains a number of features from the wishlist that followed out of the IDC tournament. This version has not yet been tested on a live tournament, if you want this, take version 1.0. New features are:
+<b>30th July 2007</b><br>
+Tabbie 1.2 is released. This version has not yet been tested on a live tournament, if you want this, use version 1.0. New features are:
 <ul>
-<li>Added Overview Page / Dashboard / Wizard.</li>
-<li>Added motions input module.</li>
-<li>Added an integrated one-click backup module (for linux/unix systems).</li>
+<li>Reorganisation of the print module</li>
+<li>Print module works in the online demo (<a href="run/rest.php?result_type=pdf&amp;function=adjudicator_sheets&amp;param=1">example</a>)</li>
 </ul>
 </p>
-<p>
-<b>Thu 19th July 2007</b><br>
-Tabbie 1.0 is released. The tournament at the The Interdisciplinary Center, Herzliya was a success. Some things we found very easy using Tabbie were:
-<ul>
-<li>Putting in and changing teams, adjudicators and debates.</li>
-<li>Calulating and manipulating the draw.</li>
-<li>Displaying the draw, printing adjudication sheets for the rooms.</li>
-</ul>
-Things that have been promoted to the wish list are:
-<ul>
-<li>An overview page or wizard - to provide clarity in stressful times.</li>
-<li>Integrated Backup (we used <a href="http://www.phpmybackuppro.net/">phpMyBackupPro</a>)</li>
-<li>Team Overview - in case of doubt you should be able to see all of a teams debates.</li>
-<li>Tournament Overview for after the tournament: HTML/CSS files of the final results, all rounds and relevant other data.</li>
-</ul>
-Because running Tabbie went so smoothly it is now officially version 1.0!
-</p>
-
-<p>
-<b>Fri 6th July 2007</b><br>
-Version 1.0-RC1 is out. If Tabbie runs well in its second tournament coming week we'll take the RC (Release Candidate) off and make the official 1.0 release. New in this version:
-<ul>
-<li>A completely new Draw Algorithm, which fixes a number of issues with the NTU draw. Also - interesting for those out there who think they can do better - the algorithm is fairly easily to plug in or out. All Algorithm's results are automatically verified for correctness against the WUDC rules, and Tabbie displays how well it's doing in getting everyone fairly distributed over debating positions.</li>
-<li>Adjudicator sheets (with names, motions etc.) can now be generated with one click - as a PDF that matches you input screen. No more hassling with mail merge!</li>
-<li>The Installation has been made more robust and a <a href="installation.php">guide</a> is provided.</li>
-</ul>
-</p>
+<a href="old_news.php">More News...</a>
 
 <?php 
 if (! $local) {
@@ -94,13 +68,20 @@ Two words of caution: because this is a demo, some features have been disabled, 
 You will also need a Web Server to run Tabbie since it's based on PHP. Use the <a href="installation.php">Installation Guide</a> to get you started.
 </div>
 
-<h3><a href="http://sourceforge.net/projects/tabbie/">Participate, Support</a></h3>
+<h3><a href="http://sourceforge.net/projects/tabbie/">Contribute</a></h3>
 <div>
-Participation in the <a href="http://sourceforge.net/projects/tabbie/">Tabbie Project</a> is possible on many levels. Feel free to report any bugs that you may find or request for a feature. 
+Contributing to Tabbie BP Debating Software is possible in many ways. Sending a mail to <a href="mailto:klaas@vanschelven.com">Klaas</a> is usually a good starting point, but you can also look at the <a href="http://sourceforge.net/projects/tabbie/">Project Page</a>. Things you can do are:
+<ul>
+<li>Tell us that you're using Tabbie for your tournament</li>
+<li>Tell us how easy/hard Tabbie was to install on your system</li>
+<li>Report bugs</li>
+<li>Request a feature</li>
+<li>Add a feature yourself, and upload it</li>
+<li>Become a developer</li>
+</ul>
+You can also take a look at the current <a href="doc/TODO">To Do List</a> or <a href="doc/CHANGELOG">Change Log</a> (though sometimes a bit of a mess).
 
-We would welcome any participation in the <a href="http://sourceforge.net/projects/tabbie/">Tabbie Project</a>. This is also the source for any support questions you may have. Since the above page may be a bit intimidating (it is even for us) you can also just send a mail to <i>klaas aat vanschelven doot com</i>. You can also take a look at the current <a href="doc/TODO">To Do List</a> or <a href="doc/CHANGELOG">Change Log</a> (though sometimes a bit of a mess).
-
-We strive to make Tabbie a platform for the many different diverging efforts that are being put into creating Tabbing Software and welcome help. We also try to reverse the trend of Tabbing Software being created for just one tournament and then being tossed aside. So if you feel you can contribute, do it here.
+We strive to make Tabbie a platform for the many different diverging efforts that are being put into creating Tabbing Software and welcome help. We also try to reverse the trend of Tabbing Software being created for just one tournament and then being tossed aside.
 </div>
 
 <h3><a href="history.php">History</a></h3>

@@ -1,5 +1,13 @@
 CHANGELOG:
 
+1.2:
+* Reorganisation of print module:
+    * Overview is more clear (interface)
+    * Files are no longer stored on disk but returned straight to the browser
+    * Prettier HTML output
+* Technical:
+    * A start has been made for a clear REST interface
+
 1.1.1:
 * Minor bugfixes:
     * Fixed a problem with showing the stylesheet 

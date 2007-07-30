@@ -1,12 +1,12 @@
 <?php
 require('includes/fpdf/fpdf.php');
 
-function speaker($pdf, $r, $speaker) {
+function speaker(&$pdf, $r, $speaker) {
     $pdf->Cell(95, 10, $r[$speaker], "L");
     $pdf->Cell(25, 10, "", "LRTB");
 }
 
-function four_speakers($pdf, $r, $team1, $team2) {
+function four_speakers(&$pdf, $r, $team1, $team2) {
     speaker($pdf, $r, $team1 . "1");
     $pdf->Cell(10, 10);
     speaker($pdf, $r, $team2 . "1");
@@ -23,7 +23,7 @@ function four_speakers($pdf, $r, $team1, $team2) {
     $pdf->Ln();
 }
 
-function two_teams($pdf, $r, $teams) {
+function two_teams(&$pdf, $r, $teams) {
     $pdf->Cell(85, 10, $teams[0]["name"] . ": " . $r[$teams[0]["short"]], "LT");
     $pdf->Cell(20, 10, "Rank: ", "T");
     $pdf->Cell(15, 10, "", "LRTB");

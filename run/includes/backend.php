@@ -110,6 +110,24 @@ function get_adjudicators_venues($round) {
     return $result;
 }
 
+function get_teams_venues($round) {
+    $result["header"] = array("Team Name", "Venue", "Venue Location");
+    
+    $query = "SELECT v.venue_id AS venue_id, v.venue_location AS venue_location, v.venue_name AS venue_name, t.team_id AS team_id, t.team_code AS team_code, u.univ_code AS univ_code ";
+        $query.="FROM team AS t, university AS u, draw_round_$round AS d, venue AS v ";
+        $query.="WHERE d.venue_id=v.venue_id AND (t.team_id=d.og OR t.team_id=d.oo OR t.team_id=d.cg OR t.team_id=d.co) AND t.univ_id=u.univ_id ";
+        $query.="ORDER BY univ_code, team_code ";
+
+    $query_result = mysql_query($query);
+
+    $data = array();
+    while ($row = mysql_fetch_assoc($query_result)) {
+        $data[] = array($row['univ_code'] . " " . $row['team_code'], $row["venue_name"], $row["venue_location"]);
+    }
+    $result["data"] = $data;
+    return $result;
+}
+
 function adjudicator_sheets($round) {
     // Get the motion for the round
     $motion_query = "SELECT motion FROM motions WHERE round_no = $round ";

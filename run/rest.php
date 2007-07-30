@@ -22,12 +22,20 @@ if (@$_REQUEST["result_type"] == "txt") {
 } elseif (@$_REQUEST["result_type"] == "pdf") {
     eval("{$function}_pdf('{$function}_round_$param.pdf', " . '$result["data"]' . ");");
 } elseif (@$_REQUEST["result_type"] == "html") {
+    $ntu_controller = "print"; #selected in menu
+    $title = @$_REQUEST["title"];
+    
+    require("view/header.php");
+    require("view/mainmenu.php");
+
+    print "<h3>$title</h3>";
     print "<table>";
     print "<tr><th>" . join("</th><th>", $result["header"]) . "</th></tr>\n";
     foreach ($result["data"] as $row) {
-        print "<tr><th>" . join("</th><th>", $row) . "</th></tr>\n";
+        print "<tr><td>" . join("</td><td>", $row) . "</td></tr>\n";
     }
     print "</table>";
+    require('view/footer.php'); 
 } else {
     print_r($result);
 }

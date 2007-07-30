@@ -4,6 +4,9 @@ $ntu_controller = "index";
 require("ntu_bridge.php");
 require("view/header.php");
 require("view/mainmenu.php");
+
+require_once("includes/backend.php");
+$round = get_num_rounds();
 ?>
 
 <h2>Overview</h2>
@@ -30,7 +33,7 @@ Use the menu above for direct access to all of Tabbie's functionality.
 <li><a href="draw.php?moduletype=currentdraw&amp;action=draw">Request the automated draw</a></li>
 <li><a href="draw.php?moduletype=manualdraw">Manually adjust adjudicators and rooms</a></li>
 <li><a href="draw.php?moduletype=manualdraw&amp;action=finalise">Finalize the draw</a></li>
-<li><a href="print.php?moduletype=adjudicator&amp;list=adjsheet&amp;action=display&amp;warning=done">Print the adjudicator sheets with room-specific info</a> (and have them distributed)</li>
+<li><a href="rest.php?result_type=pdf&amp;function=adjudicator_sheets&amp;param=<?= $round ?>">Print the adjudicator sheets with room-specific info</a> (and have them distributed)</li>
 <li><a href="draw.php">Display the draw</a></li>
 <li>Display the motion</li>
 <li><a href="backup.php">Make a backup (and save it on another computer)</a></li>

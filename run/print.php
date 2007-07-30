@@ -4,13 +4,18 @@ $title = "Print";
 
 require("view/header.php");
 require("view/mainmenu.php");
+
+require_once("includes/backend.php");
+$round = get_num_rounds();
 ?>
 
 <h2>Print</h2>
-
+<p>
+Print module for round <?= $round ?>.
+</p>
 <h3>Rooms (distribute)</h3>
 <ul>
-<li><a href="adjsheet.php">Personalised adjudicator sheets</a></li>
+<li><a href="rest.php?result_type=pdf&amp;function=adjudicator_sheets&amp;param=<?= $round ?>">Personalised adjudicator sheets</a></li>
 </ul>
 
 <h3>Runners and floormanagers (keep in hand)</h3>

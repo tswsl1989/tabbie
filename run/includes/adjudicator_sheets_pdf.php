@@ -40,7 +40,7 @@ function two_teams($pdf, $r, $teams) {
 }
 
 function adjudicator_sheets_pdf($filename, $data) {
-    $pdf = new FPDF("L");
+    $pdf = new FPDF("L"); #Landscape
     foreach ($data as $r) {
         $pdf->AddPage();
         $pdf->SetLeftMargin(25);
@@ -65,7 +65,7 @@ function adjudicator_sheets_pdf($filename, $data) {
         $pdf->Cell(250, 8, "The best team gets Rank 1. A better rank has a higher total team score (no equal scores). Learn to do math or face the bin.");
     }
     
-    $pdf->Output($filename);
+    $pdf->Output($filename, "I");
 }
 
 ?>

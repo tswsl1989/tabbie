@@ -5,6 +5,7 @@ if ($database_password)
 else
     $password = "";
 $command = "mysqldump -u$database_user $password $database_name";
+$command2 = "mysqldump -u$database_user -p******** $database_name";
 
 $output = array();
 $return_value = "undefined";
@@ -17,8 +18,22 @@ if ($return_value == 0) {
     foreach ($output as $line)
         print "$line\n";
 } else {
+
+$ntu_controller = "backup";
+$title = "Tabbie - Backup Failed";
+
+require("view/header.php");
+require("view/mainmenu.php");
+
+?> <h3>Backup Failed</h3> <?
+
+if ($_SERVER["SERVER_NAME"] == "tabbie.sourceforge.net") {
 ?>
-There was a problem executing the command '<?= $command?>', error code: <?= $return_value?><br>
+The Backup module does not work in the online demo because mysqldump is not installed at
+sourceforge. If you want have the backup functionality integrated into your local system, make sure to install on a Linux system, with enough rights to install mysqldump.
+<? } else { ?>
+There was a problem executing the command '<?= $command2 ?>', error code: <?= $return_value ?><br>
+
 Make sure:
 <ul>
 <li>You are running this script in a Linux/Unix environment. As of yet, the included backup functionality only works on these Operating Systems.</li>
@@ -30,6 +45,8 @@ Windows users can use one of the following systems:
 <li>EasyPHP</li>
 <li>phpMyBackupPro</li>
 </ul>
-<?
+<? } ?>
+<?php
+require('view/footer.php'); 
 }
 ?>

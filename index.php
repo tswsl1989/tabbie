@@ -88,7 +88,7 @@ You can also take a look at the current <a href="doc/TODO">To Do List</a> or <a 
 We strive to make Tabbie a platform for the many different diverging efforts that are being put into creating Tabbing Software and welcome help. We also try to reverse the trend of Tabbing Software being created for just one tournament and then being tossed aside.
 </div>
 
-<h3><a href="history.php">Draw Algorithm</a></h3>
+<h3><a href="draw_algorithms.php">Draw Algorithm</a></h3>
 <div>Tabbie currently has the best known implementation worldwide of the draw algorithm, giving the most balanced distribution of positions in the debate to the teams. <br><a href="draw_algorithms.php">Read more...</a>
 </div>
 

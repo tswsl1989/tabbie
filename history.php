@@ -55,10 +55,8 @@ web browser.<br>
 please make an effort on your part before contacting us (see 
 http://www.catb.org/~esr/faqs/smart-questions.html for some tips)<br>
 <br>
-	Deepak Jois : <a href="mailto:deepakjois@hotmail.com"> 
-deepakjois@hotmail.com</a>&nbsp;<br>
-	Aditya Krishnan (AK) : <a href="mailto:aditya_krishnan@yahoo.com"> 
-aditya_krishnan@yahoo.com</a>&nbsp;<br>
+Deepak Jois<br>
+Aditya Krishnan (AK)<br>
 </div>
 
 <?php require("run/view/footer.php"); ?>

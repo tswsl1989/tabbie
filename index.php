@@ -41,6 +41,10 @@ Tabbie is Tab Software for British Parliamentary Debating Tournaments. It has a 
 
 <h3>News</h3>
 <p>
+<b>1 August 2007</b><br>
+The developer team is growing quickly after recent PR activities. Most noticably, the orginal developers (Deepak Jois and Aditya Krishnan) have joined the team. The current team size is 3 people.
+</p>
+<p>
 <b>30th July 2007</b><br>
 Tabbie 1.2 is released. This version has not yet been tested on a live tournament, if you want this, use version 1.0. New features are:
 <ul>
@@ -91,6 +95,13 @@ We strive to make Tabbie a platform for the many different diverging efforts tha
 <h3><a href="draw_algorithms.php">Draw Algorithm</a></h3>
 <div>Tabbie currently has the best known implementation worldwide of the draw algorithm, giving the most balanced distribution of positions in the debate to the teams. <br><a href="draw_algorithms.php">Read more...</a>
 </div>
+
+<h3>Ran at...</h3>
+<div><ul>
+<li>NTU (Singapore) Worlds 2004</li>
+<li>2 times at LSE Open (adapted version)</li>
+<li>IDC Herzelia English Open 2007 (20 teams, version 1.0)</li>
+</ul></div>
 
 <h3><a href="history.php">History</a></h3>
 <div>Tabbie was created for NTU Worlds 2004. It was subsequently found on the internet in 2007 and restored to working order - great thanks go out to Colm Flynn for preserving it. <br><a href="history.php">Read more...</a>

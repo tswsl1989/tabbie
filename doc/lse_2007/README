@@ -1,3 +1,48 @@
+-------------
+first message
+-------------
+Hi Klaas,
+
+I've used the Tabbie to run 2 tournaments at LSE. It ran with great success
+and speed the first time, but crashed the second time due to an obscure loop
+hole I created while messing around with the code. Installing it was
+exceptionally difficult, esp since it needed to be placed on a webpage, but
+was well worth the trouble in my opinion. The speed the programme gives you
+in entering teams and calculating distributions is amazing.
+
+When I looked at the original tabbie code, I disliked the worlds power
+pairing system and converted it into a 'tough break'. This means that teams
+are arranged by team points and then by total speaker points and the tab
+takes the top four as the 1st room, and so on. While this may not appeal to
+many, it's the sort of thing we like to do for the LSE Open, which always
+sees a high level of debaters. It also only has 5 rounds, maybe 6, so we
+won't see a situation of that many repeats arising, unlike worlds which has
+9 rounds.
+
+As a result of this, I adapted the programme to use the logic of the cragie
+tab instead, which (in my opinion) is simple and elegent whilst very
+effective in ensuring all combinations have been tried out before any of the
+4 teams repeat positions (but I guess only really works if you power pair
+your teams in the manner above).
+
+The only real problem with the tabbie programme is that it does not have a
+good way to present the rooms to debaters. I got around this by using a
+programme which is designed to extract information from MySQL and input it
+into Powerpoint slides. With this programme, time elapsed between entering
+the final ballot and having a great powerpoint ready is less than 1 minute.
+This also allows for quick printing of ballots (from powerpoint). Production
+of a good excel tab can be done easily with another similar programme that
+works with excel.
+
+Anyway, don't know if this helps in any way. I know you're really looking
+for someone who can help improve the code of tabbie rather than someone who
+has changed it drastically. But do let me know if I can help in any way.
+
+Joshua Lo
+
+--------------
+second message
+--------------
 Hi Klaas,
 
 Here's my draw.php files to give you a good idea of my version of tabbie. I

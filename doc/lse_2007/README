@@ -1,0 +1,34 @@
+Hi Klaas,
+
+Here's my draw.php files to give you a good idea of my version of tabbie. I
+chucked all codes relating to adj sorting and sorting by universities, since
+the tab was intended to run an open and our internal tournaments. I also
+changed the way teams were sorted, power pairing everyone from round 2
+according to speaker points and team points. There is no folding till the
+break (which I did manually) so there's no code for that either.
+
+The main file is draw3.php, which may be confusing and may not be entirely
+code efficient due to my limited knowledge of MySQL and Php. If you know any
+way to make the code much shorter I would be much obliged.
+
+The 24 position combination test (built upon Craggie) is basically one
+extended switch statement which tests for the minimum number of times table
+positions are allocated. Since LSE doesn't run any tournaments bigger than 5
+or 6 rounds, I felt stopping at 9 repeats was sufficient (you'll probably
+understand this when you take a look at the code).
+
+The shortcoming of the code as written (and with Craggie) is that since it
+follows the way the 24 combinations are written, cycling through them from
+1-24 when it checks the number of repeats, the code has an inherent bias to
+combinations which are listed first. This bias is what allows it to always
+reproduce the same result, but sometimes I question the need for such a
+requirement (though your manual is clear on the advantages of eliminating
+cheating this way).
+
+I'm not sure how much I can help you on the tab project in the long term
+since next year is my last year and I'm not tab master for the next LSE
+Open, (which you should come down for!). My coding skills are also very
+basic. However, I would not mind being involved and giving useful
+comments/ideas if I have any, since tabbie is well worth improving.
+
+Joshua

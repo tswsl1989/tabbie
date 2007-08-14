@@ -1,4 +1,8 @@
 <?
+//Adjudicators do not automatically conflict their own Uni! This should be changed
+//team-level conflicts should be a possibility
+//but uni-level is a good starting point
+
 require_once("includes/backend.php");
 
 function get_active_adjudicators() {

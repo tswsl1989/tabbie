@@ -1,6 +1,9 @@
 <?
 
+require_once("includes/backend.php");
 
+function allocate_ntu() {
+$nextround = get_num_rounds() + 1;
 //Table of group allocation strategy
 $adjud_strat[1]= array("uc"=>1,"up1"=>3,"up2"=>5,"lc"=>2,"lp1"=>4,"lp2"=>6);
 $adjud_strat[2]= array("uc"=>1,"up1"=>3,"up2"=>5,"lc"=>2,"lp1"=>4,"lp2"=>6);
@@ -171,4 +174,5 @@ while ($rowdebates=mysql_fetch_assoc($resultdebates))
     }
 }
 
+}
 ?>

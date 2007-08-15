@@ -42,7 +42,7 @@ function set_desired_averages(&$debates, $average) {
         $debate['desired_average'] = $average;
 }
 
-function allocate_simulated_annealing(&$msg) {
+function allocate_simulated_annealing(&$msg, &$details) {
     $nextround = get_num_rounds() + 1;
     mt_srand(0);
     $debates = temp_debates_foobar($nextround);
@@ -52,6 +52,7 @@ function allocate_simulated_annealing(&$msg) {
     actual_sa($debates);
     $energy = debates_energy($debates);
     $msg[] = "Adjudicator Allocation (SA) score is: $energy";
+    $details = array_merge($details, debates_energy_details($debates));
     write_to_db($debates, $nextround);
 }
 
@@ -111,10 +112,41 @@ function debate_energy(&$debate) {
     */
 }
 
+function debate_energy_details(&$debate) {
+    $result = array();
+
+    foreach($debate['adjudicators'] as $adjudicator)
+        foreach($adjudicator['univ_conflicts'] as $conflict) 
+            foreach ($debate['universities'] as $university)
+                if ($conflict == $university) {
+                    $result[] = "1000: {$adjudicator['adjud_name']} has a conflict with univ_id '$conflict'";
+                }
+    
+    $adjudicators = $debate['adjudicators'];
+    usort($adjudicators, 'cmp_ranking');
+    $chair = array_pop($adjudicators);
+    $diff = 100 - $chair['ranking'];
+    $penalty = 10 * ($diff);
+    $result[] = "$penalty: Chair {$chair['adjud_name']} has $diff difference from 100.";
+
+    $real = get_average_ranking($debate['adjudicators']);
+    $desired_average = $debate['desired_average'];
+    $penalty = 1 * abs($real - $desired_average);
+    $result[] = "$penalty: Debate '{$debate['debate_id']}' has desired average $desired_average but real average is $real";
+    return $result;
+}
+
 function debates_energy(&$debates) {
     $result = 0;
     foreach ($debates as $debate)
         $result += debate_energy($debate);
+    return $result;
+}
+
+function debates_energy_details(&$debates) {
+    $result = array();
+    foreach ($debates as $debate)
+        $result = array_merge($result, debate_energy_details($debate));
     return $result;
 }
 

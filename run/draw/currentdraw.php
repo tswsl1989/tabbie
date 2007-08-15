@@ -112,7 +112,7 @@ PRIMARY KEY (debate_id))";
 
     }
     require_once("draw/adjudicator/simulated_annealing.php");
-    allocate_simulated_annealing($msg);
+    allocate_simulated_annealing($msg, $msg);
 }
 
 

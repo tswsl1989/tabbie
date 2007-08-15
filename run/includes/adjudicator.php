@@ -5,12 +5,13 @@
 require_once("includes/backend.php");
 
 function get_active_adjudicators() {
-    $query = "SELECT adjud_id, univ_id, conflicts, ranking FROM adjudicator WHERE active='Y' ORDER BY adjud_id";
+    $query = "SELECT adjud_name, adjud_id, univ_id, conflicts, ranking FROM adjudicator WHERE active='Y' ORDER BY adjud_id";
     $db_result = mysql_query($query);
     
     $result = array();
     while ($row = mysql_fetch_assoc($db_result)) {
         $adjudicator = array();
+        $adjudicator['adjud_name'] = $row['adjud_name'];
         $adjudicator['adjud_id'] = $row['adjud_id'];
         $adjudicator['ranking'] = $row['ranking'];
         $adjudicator['univ_conflicts'][] = $row['univ_id'];

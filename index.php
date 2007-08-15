@@ -99,6 +99,7 @@ We strive to make Tabbie a platform for the many different diverging efforts tha
 <h3>Ran at...</h3>
 <div><ul>
 <li>2004 NTU Singapore Worlds - c. 300 teams, version 0.1</li>
+<li>2007 Vancouver Worlds - c. 300 teams, version 0.1 (slightly modified)</li>
 <li>2007 London IV - c. 35 teams, tournament specific version</li>
 <li>2007 LSE Open - 92 teams, tournament specific version</li>
 <li>2007 IDC Herzelia English Open 2007 - 20 teams, version 1.0</li>

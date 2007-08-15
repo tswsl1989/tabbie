@@ -35,14 +35,14 @@ Tabbie is Tab Software for British Parliamentary Debating Tournaments. It has a 
 <li>Scalable for large tournaments: It is web based, you can use multiple computers for inputting data.</li>
 <li>Easy. Things like customized adjudication sheets for the tab can be created in <a href="run/rest.php?result_type=pdf&amp;function=adjudicator_sheets&amp;param=1">one click.</a></li>
 <li>Open and Free. Its source code is freely inspectable. You can inspect any file <a href="http://tabbie.svn.sourceforge.net/viewvc/tabbie/trunk/run/draw/algorithms/silver_line.php?view=markup">(like the Draw Algorithm)</a>, and modify or add anything you like. Download is free.</li>
-<li>Alive. As of July 2007 changes are being made to make it work even better.</li>
+<li>Alive. As of August 2007 changes are being made to make it work even better.</li>
 </ul>
 </div>
 
 <h3>News</h3>
 <p>
-<b>1 August 2007</b><br>
-The developer team is growing quickly after recent PR activities. Most noticably, the orginal developers (Deepak Jois and Aditya Krishnan) have joined the team. The current team size is 3 people.
+<b>xxx August 2007</b><br>
+The developer team is growing quickly after recent PR activities. Most noticably, the orginal developers (Deepak Jois and Aditya Krishnan) have joined the team. The current team size is 4 people. Also - the Bangkok team has chosen Tabbie as its system for Worlds 2008. A <a href="doc/TODO">Roadmap</a> has been prepared for the tournament. We are looking for tournaments that are willing to try Tabbie out before the big one.
 </p>
 <p>
 <b>30th July 2007</b><br>
@@ -98,9 +98,10 @@ We strive to make Tabbie a platform for the many different diverging efforts tha
 
 <h3>Ran at...</h3>
 <div><ul>
-<li>NTU (Singapore) Worlds 2004</li>
-<li>2 times at LSE Open (adapted version)</li>
-<li>IDC Herzelia English Open 2007 (20 teams, version 1.0)</li>
+<li>2004 NTU Singapore Worlds - c. 300 teams, version 0.1</li>
+<li>2007 London IV - c. 35 teams, tournament specific version</li>
+<li>2007 LSE Open - 92 teams, tournament specific version</li>
+<li>2007 IDC Herzelia English Open 2007 - 20 teams, version 1.0</li>
 </ul></div>
 
 <h3><a href="history.php">History</a></h3>

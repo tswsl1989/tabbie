@@ -68,7 +68,12 @@ On your installed version of Tabbie click on the "Run" option, (if you closed th
 Tabbie itself does no attempt to restrict certain people from seeing what's going on. This means you'll have to configure your computer and network so that no-one else can edit. If you have no idea how to do this - this is really the moment to get help from an expert/nerd in your personal environment. She will also be able to tell you how you can allow others to access Tabbie on your computer.
 </div>
 
-<h3>Step 6: Start inputting data</h3>
+<h3>Step 6: Additional tips and options</h3>
+<div>
+Since all versions of Tabbie run on exactly the same database architecture, you can install simulanious versions in different directories for extra reliability. In the very unlikely case that a feature does not work in the newest version, or that you don't like 'improved' functionality, you can then always fall back to an older version. Make sure to either run all installations before starting or to copy the config file - running an installation midway in the tournament will erase all your data.
+</div>
+
+<h3>Step 7: Start inputting data</h3>
 <div>
 This is really where the install ends....and using Tabbie begins. Should you have any problems, please visit the <a href="http://sourceforge.net/projects/tabbie/">Tabbie Project Page</a> and ask for support there.
 </div>

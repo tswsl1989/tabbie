@@ -91,6 +91,12 @@ function debate_energy(&$debate) {
                 if ($conflict == $university) {
                     $result += 1000;
                 }
+    
+    $adjudicators = $debate['adjudicators'];
+    usort($adjudicators, 'cmp_ranking');
+    $chair = array_pop($adjudicators);
+    $result += 10 * (100 - $chair['ranking']);
+
     $result += 1 * abs(get_average_ranking($debate['adjudicators']) - $debate['desired_average']);
     return $result;
     
@@ -139,7 +145,7 @@ function actual_sa(&$debates) {
         do {
             $one = random_select($debates);
             $two = random_select($debates);
-        } while ($one == $two);
+        } while ($one[0] == $two[0]);
         $before = debate_energy($debates[$one[0]]) + debate_energy($debates[$two[0]]);
         swap($debates, $one, $two);
         $after = debate_energy($debates[$one[0]]) + debate_energy($debates[$two[0]]);
@@ -174,7 +180,7 @@ function throw_dice($probability) {
 }
 
 function decrease_temp($temp) {
-    $alpha = 0.0001;
+    $alpha = 0.00001;
     return $temp * (1 - $alpha);
 }
 

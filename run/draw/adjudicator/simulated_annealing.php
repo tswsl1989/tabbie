@@ -42,18 +42,36 @@ function set_desired_averages(&$debates, $average) {
         $debate['desired_average'] = $average;
 }
 
-function allocate_simulated_annealing() {
+function allocate_simulated_annealing(&$msg) {
     $nextround = get_num_rounds() + 1;
-    srand(0);
+    mt_srand(0);
     $debates = temp_debates_foobar($nextround);
     $adjudicators = get_active_adjudicators();
     set_desired_averages($debates, get_average_ranking($adjudicators));
     initial_distribution($debates, $adjudicators);
-    print(debates_energy($debates));
     actual_sa($debates);
-    print_r($debates);
-    print(debates_energy($debates));
-    //write_to_db();
+    $energy = debates_energy($debates);
+    $msg[] = "Adjudicator Allocation (SA) score is: $energy";
+    write_to_db($debates, $nextround);
+}
+
+function cmp_ranking($adjudicator_0, $adjudicator_1) {
+    return $adjudicator_0['ranking'] - $adjudicator_1['ranking'];
+}
+
+function write_to_db($debates, $round) {
+    //some checks here...
+    create_temp_adjudicator_table($round);
+    foreach ($debates as &$debate) {
+        usort($debate['adjudicators'], 'cmp_ranking');
+        $chair = array_pop($debate['adjudicators']);
+        mysql_query("INSERT INTO `temp_adjud_round_$round` " .
+            "VALUES('{$debate['debate_id']}','{$chair['adjud_id']}','chair')");
+        foreach ($debate['adjudicators'] as $adjudicator)
+            mysql_query(
+                "INSERT INTO `temp_adjud_round_$round` " .
+                "VALUES('{$debate['debate_id']}','{$adjudicator['adjud_id']}','panelist')");
+    }
 }
 
 function initial_distribution(&$debates, &$adjudicators) {
@@ -72,7 +90,6 @@ function debate_energy(&$debate) {
             foreach ($debate['universities'] as $university)
                 if ($conflict == $university) {
                     $result += 1000;
-                    print "${adjudicator['adjud_id']} $conflict \n";
                 }
     $result += 1 * abs(get_average_ranking($debate['adjudicators']) - $debate['desired_average']);
     return $result;

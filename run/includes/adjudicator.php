@@ -34,7 +34,7 @@ function create_temp_adjudicator_table($round) {
     $query .= " `adjud_id` MEDIUMINT NOT NULL ,";
     $query .= " `status` ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL );";
     $db_result = mysql_query($query);
-    if (!$result)
+    if (!$db_result)
         return mysql_error();
 }
 
@@ -52,6 +52,7 @@ function temp_debates_foobar($round) {
     $result = array();
     while ($row = mysql_fetch_assoc($db_result)) {
         $new_row = array();
+        $new_row['debate_id'] = $row['debate_id'];
         $new_row['universities'] = array($row['og'], $row['oo'], $row['cg'], $row['co']);
         $result[] = $new_row;
     }

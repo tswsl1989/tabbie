@@ -111,8 +111,8 @@ PRIMARY KEY (debate_id))";
         q("INSERT INTO $tablename (debate_id, og, oo, cg, co, venue_id) VALUES('$debate_id', '$og', '$oo', '$cg', '$co', '$venue_id')");
 
     }
-    require_once("draw/adjudicator/ntu.php");
-    allocate_ntu();
+    require_once("draw/adjudicator/simulated_annealing.php");
+    allocate_simulated_annealing($msg);
 }
 
 

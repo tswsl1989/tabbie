@@ -43,21 +43,35 @@ function set_desired_averages(&$debates, $average) {
 }
 
 function allocate_simulated_annealing() {
-    //should work without params...
     $nextround = get_num_rounds() + 1;
     srand(0);
     $debates = temp_debates_foobar($nextround);
     $adjudicators = get_active_adjudicators();
     set_desired_averages($debates, get_average_ranking($adjudicators));
     initial_distribution($debates, $adjudicators);
-    print_r($debates);
-    //actual_simulated_annealing();
+    actual_sa();
     //write_to_db();
 }
 
-function initial_distribution(
+function initial_distribution(&$debates, &$adjudicators) {
+    $nr_debates = count($debates);
+    $i = 0;
+    while($adjudicator = array_pop($adjudicators)) {
+        $debates[$i % $nr_debates]['adjudicators'][] = $adjudicator;
+        $i++;
+    }
+}
 
 function debate_energy(&$debate) {
+    $result = 0;
+    foreach($debate['adjudicators'] as $adjudicator)
+        foreach($adjudicator['univ_conflicts'] as $conflict) 
+            foreach ($debate['universities'] as $university)
+                if ($conflict == $university)
+                    $result += 1000;
+    $result += 1 * abs(get_average_ranking($debate['adjudicators']) - $debate['desired_average']);
+    return $result;
+    
     /*
     based on:
     conflicts
@@ -76,7 +90,11 @@ function debates_energy(&$debates) {
     return $result;
 }
 
-function random_select() {
+function random_select(&$debates) {
+    $i = mt_rand(0, count($debates) - 1);
+    $debate = $debates[$i];
+    $j = mt_rand(0, count($debate['adjudicators']) - 1);
+    return array(i, j);
     /*
     take any adjudicator
     find neighbouring debate (and team), giving pref. to closer debates (at least dist 1 & 2)
@@ -84,22 +102,36 @@ function random_select() {
     */
 }
 
-function actual_sa() {
+function swap(&$debates, $one, $two) {
+    
+}
+
+function actual_sa(&$debates) {
     $temp = 1.0;
-    $best_energy = infinite;
-    while (something) {
-        random_select();
-        //calculate debate energies pre and post, calc diff.
-        if (throw_dice(probability($diff, $temp)))
-            make_move();
-        $temp = decrease_temp($temp);
+    $best_energy = 10000;
+    $best_debates = $debates;
+    $i = 0;
+    while ($i < 1000) {
+        do {
+            $one = random_select($debates);
+            $two = random_select($debates);
+        } while ($one == $two);
+        $before = debate_energy($debates[$one[0]]) + debate_energy($debates[$two[0]]);
+        swap($debates, $one, $two);
+        $after = debate_energy($debates[$one[0]]) + debate_energy($debates[$two[0]]);
+        $diff = $before - $after;
+        if (!throw_dice(probability($diff, $temp)))
+            swap($debates, $one, $two); //swap back
+
         if ($diff < 0) { //better than prev
-            $energy = debates_energy();
+            $energy = debates_energy($debates);
             if ($energy < $best_energy) {
-                save_state();
+                $best_debates = $debates;
                 $best_energy = $energy;
             }
         }
+        $temp = decrease_temp($temp);
+        $i++;
     }
 }
 

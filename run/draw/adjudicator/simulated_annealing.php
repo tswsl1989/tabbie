@@ -6,17 +6,17 @@ require_once("includes/backend.php");
 
 /*
 TODO for this file:
-adjudicator history (uni's, other adjudicators) as a scoring factor
+serious tuning of the SA algorithm (though it seems fairly ok already)
+serious optimizing (speed) of the SA algorithm
 
 present energy details in a nice matter
+
+adjudicator history (uni's, other adjudicators) as a scoring factor
 
 make a number of variables (for the energy) configurable by the user
     like: tunable different desired adjudicator averages for different debates
 
 everything that is related to probability of making the break / winning
-
-serious tuning of the SA algorithm (though it seems fairly ok already)
-serious optimizing (speed) of the SA algorithm
 
 bin protection
 
@@ -26,6 +26,8 @@ allow for a report on manual changes too (score and messages)
 technical: weave in messaging and scoring mechanisms.
 
 team conflicts (next to already existing university conflicts)
+
+introduce 'geography' (i.e. debates with similar points) into random_select?
 */
 
 function get_average(&$list, $attr) {
@@ -109,16 +111,6 @@ function debate_energy(&$debate) {
 
     $result += pow(get_average($debate['adjudicators'], 'ranking') - $debate['desired_average'], 2);
     return $result;
-    
-    /*
-    based on:
-    conflicts
-    difference desired average - actual average
-    'conflicts' for same people in panel.
-    'conflicts' for adjudicating the same teams again
-    'conflicts' for adjudicating the same uni again
-    [later] this should be made configurable
-    */
 }
 
 function debate_energy_details(&$debate) {
@@ -164,11 +156,6 @@ function random_select(&$debates) {
     $debate = $debates[$i];
     $j = mt_rand(0, count($debate['adjudicators']) - 1);
     return array($i, $j);
-    /*
-    take any adjudicator
-    find neighbouring debate (and team), giving pref. to closer debates (at least dist 1 & 2)
-    either swap (big chance) or move (small chance)
-    */
 }
 
 function swap(&$debates, $one, $two) {

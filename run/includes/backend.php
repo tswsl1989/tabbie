@@ -27,32 +27,41 @@ function points_for_ranking($ranking) {
     if ($ranking == "second") return 2;
     if ($ranking == "third") return 1;
     if ($ranking == "fourth") return 0;
+    print "ERROR - points_for_ranking with ranking $ranking";
     return 999;
 }
 
-function get_teams_positions_points($nr_of_rounds) {
-    $POSITIONS = array('og', 'oo', 'cg', 'co');
+function points_for_team($team_id, $nr_of_rounds) {
     $RANKINGS = array("first", "second", "third", "fourth");
+    $result = 0;
+    for ($i = 1; $i <= $nr_of_rounds; $i++) {
+        foreach ($RANKINGS as $RANKING) {
+            if (__team_on_ranking($i, $team_id, $RANKING))
+                $result += points_for_ranking($RANKING);
+        }
+    }
+    return $result;
+}
+
+function positions_for_team($team_id, $nr_of_rounds) {
+    $POSITIONS = array('og', 'oo', 'cg', 'co');
+    $result = array();
+    foreach ($POSITIONS as $POSITION)
+        $result[$POSITION] = 0;
+    for ($i = 1; $i <= $nr_of_rounds; $i++) {
+        foreach ($POSITIONS as $POSITION) {
+            $result[$POSITION] += __team_on_position($i, $team_id, $POSITION) ? 1 : 0;
+        }
+    }
+    return $result;
+}
+
+function get_teams_positions_points($nr_of_rounds) {
     $db_result = q("SELECT team_id FROM team WHERE active='Y'");
     $teams = array();
-    
     while ($team = mysql_fetch_assoc($db_result)) {
-        $team_id = $team['team_id'];
-        $points = 0;
-        $positions = array();
-        foreach ($POSITIONS as $POSITION)
-            $positions[$POSITION] = 0;
-        for ($i = 1; $i <=  $nr_of_rounds; $i++) {
-            foreach ($RANKINGS as $RANKING) {
-                if (__team_on_ranking($i, $team_id, $RANKING))
-                    $points += points_for_ranking($RANKING);
-            }
-            foreach ($POSITIONS as $POSITION) {
-                $positions[$POSITION] += __team_on_position($i, $team_id, $POSITION) ? 1 : 0;
-            }
-        }
-        $team['points'] = $points;
-        $team['positions'] = $positions;
+        $team['points'] = points_for_team($team['team_id'], $nr_of_rounds);
+        $team['positions'] = positions_for_team($team['team_id'], $nr_of_rounds);
         $teams[] = $team;
     }
     return $teams;

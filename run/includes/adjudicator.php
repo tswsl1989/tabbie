@@ -41,8 +41,8 @@ function create_temp_adjudicator_table($round) {
 
 function temp_debates_foobar($round) {
     $query =
-        "SELECT debate_id, T1.univ_id AS og, T2.univ_id AS oo, " . 
-        "T3.univ_id AS cg, T4.univ_id AS co " .
+        "SELECT debate_id, og, oo, cg, co, T1.univ_id AS univ_1, T2.univ_id AS univ_2, " . 
+        "T3.univ_id AS univ_3, T4.univ_id AS univ_4 " .
         
         "FROM temp_draw_round_$round AS D, team AS T1, team AS T2, team AS T3, team AS T4 " .
         
@@ -54,7 +54,11 @@ function temp_debates_foobar($round) {
     while ($row = mysql_fetch_assoc($db_result)) {
         $new_row = array();
         $new_row['debate_id'] = $row['debate_id'];
-        $new_row['universities'] = array($row['og'], $row['oo'], $row['cg'], $row['co']);
+        $new_row['universities'] = array($row['univ_1'], $row['univ_2'], $row['univ_3'], $row['univ_4']);
+        
+        $new_row['points'] = 0;
+        foreach (array('og', 'oo', 'cg', 'co') as $position)
+            $new_row['points'] += points_for_team($row[$position], $round - 1);
         $result[] = $new_row;
     }
     return $result;

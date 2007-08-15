@@ -6,12 +6,12 @@ require_once("includes/backend.php");
 
 /*
 TODO for this file:
-different desired adjudicator averages for different debates
+adjudicator history (uni's, other adjudicators) as a scoring factor
 
 present energy details in a nice matter
-make a number of variables (for the energy) configurable by the user
 
-adjudicator history (uni's, other adjudicators) as a scoring factor
+make a number of variables (for the energy) configurable by the user
+    like: tunable different desired adjudicator averages for different debates
 
 everything that is related to probability of making the break / winning
 
@@ -28,11 +28,11 @@ technical: weave in messaging and scoring mechanisms.
 team conflicts (next to already existing university conflicts)
 */
 
-function get_average_ranking(&$adjudicators) {
+function get_average(&$list, $attr) {
     $sum = 0;
-    foreach ($adjudicators as $adjudicator)
-        $sum += $adjudicator['ranking'];
-    return $sum / count($adjudicators);
+    foreach ($list as &$item)
+        $sum += $item[$attr];
+    return $sum / count($list);
 }
 
 function set_desired_averages(&$debates, $average) {
@@ -40,12 +40,23 @@ function set_desired_averages(&$debates, $average) {
         $debate['desired_average'] = $average;
 }
 
+function set_unequal_desired_averages(&$debates, &$adjudicators) {
+    $average_adjudicator = get_average($adjudicators, 'ranking');
+    $average_debate = get_average($debates, 'points');
+    if ($average_debate == 0)
+        $average_debate = 999; // irrelevant but cannot be 0
+    foreach ($debates as &$debate) {
+        $debate['desired_average'] = $average_adjudicator * 0.5 +
+            ($average_adjudicator * 0.5 * $debate['points'] / $average_debate);
+    }
+}
+
 function allocate_simulated_annealing(&$msg, &$details) {
     $nextround = get_num_rounds() + 1;
     mt_srand(0);
     $debates = temp_debates_foobar($nextround);
     $adjudicators = get_active_adjudicators();
-    set_desired_averages($debates, get_average_ranking($adjudicators));
+    set_unequal_desired_averages($debates, $adjudicators);
     initial_distribution($debates, $adjudicators);
     actual_sa($debates);
     $energy = debates_energy($debates);
@@ -59,7 +70,7 @@ function cmp_ranking($adjudicator_0, $adjudicator_1) {
 }
 
 function write_to_db($debates, $round) {
-    //some checks here...
+    //add some checks here...
     create_temp_adjudicator_table($round);
     foreach ($debates as &$debate) {
         usort($debate['adjudicators'], 'cmp_ranking');
@@ -94,9 +105,9 @@ function debate_energy(&$debate) {
     $adjudicators = $debate['adjudicators'];
     usort($adjudicators, 'cmp_ranking');
     $chair = array_pop($adjudicators);
-    $result += 10 * (100 - $chair['ranking']);
+    $result += 1 * (100 - $chair['ranking']);
 
-    $result += 1 * abs(get_average_ranking($debate['adjudicators']) - $debate['desired_average']);
+    $result += pow(get_average($debate['adjudicators'], 'ranking') - $debate['desired_average'], 2);
     return $result;
     
     /*
@@ -124,12 +135,12 @@ function debate_energy_details(&$debate) {
     usort($adjudicators, 'cmp_ranking');
     $chair = array_pop($adjudicators);
     $diff = 100 - $chair['ranking'];
-    $penalty = 10 * ($diff);
+    $penalty = 1 * ($diff);
     $result[] = "$penalty: Chair {$chair['adjud_name']} has $diff difference from 100.";
 
-    $real = get_average_ranking($debate['adjudicators']);
+    $real = get_average($debate['adjudicators'], 'ranking');
     $desired_average = $debate['desired_average'];
-    $penalty = 1 * abs($real - $desired_average);
+    $penalty = pow($real - $desired_average, 2);
     $result[] = "$penalty: Debate '{$debate['debate_id']}' has desired average $desired_average but real average is $real";
     return $result;
 }
@@ -171,7 +182,7 @@ function actual_sa(&$debates) {
     $best_energy = debates_energy($debates);
     $best_debates = $debates;
     $i = 0;
-    while ($i < 10000) {
+    while ($i < 50000) {
         do {
             $one = random_select($debates);
             $two = random_select($debates);

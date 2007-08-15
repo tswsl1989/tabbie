@@ -5,29 +5,27 @@ require_once("includes/backend.php");
 //for information on what simulated annealing is, see: http://en.wikipedia.org/wiki/Simulated_annealing
 
 /*
-debate data structure:
+TODO for this file:
+different desired adjudicator averages for different debates
 
-universities in the debate
-[later] teams in the debate
+present energy details in a nice matter
+make a number of variables (for the energy) configurable by the user
 
-desired average
-desired amount of adjudicators
+adjudicator history (uni's, other adjudicators) as a scoring factor
 
-actual adjudicators, ordered by score. First is chair
-(computable: actual average)
+everything that is related to probability of making the break / winning
 
-probably: cached score
-*/
+serious tuning of the SA algorithm (though it seems fairly ok already)
+serious optimizing (speed) of the SA algorithm
 
-/*
-adjudicator data structure:
-'ranking'
-conflicting teams
-previous co-adjudicators
-previous teams
-previous universities?
-...
+bin protection
 
+number of adjudicators per debate could vary
+
+allow for a report on manual changes too (score and messages)
+technical: weave in messaging and scoring mechanisms.
+
+team conflicts (next to already existing university conflicts)
 */
 
 function get_average_ranking(&$adjudicators) {

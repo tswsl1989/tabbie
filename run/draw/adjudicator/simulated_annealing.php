@@ -49,7 +49,10 @@ function allocate_simulated_annealing() {
     $adjudicators = get_active_adjudicators();
     set_desired_averages($debates, get_average_ranking($adjudicators));
     initial_distribution($debates, $adjudicators);
-    actual_sa();
+    print(debates_energy($debates));
+    actual_sa($debates);
+    print_r($debates);
+    print(debates_energy($debates));
     //write_to_db();
 }
 
@@ -67,8 +70,10 @@ function debate_energy(&$debate) {
     foreach($debate['adjudicators'] as $adjudicator)
         foreach($adjudicator['univ_conflicts'] as $conflict) 
             foreach ($debate['universities'] as $university)
-                if ($conflict == $university)
+                if ($conflict == $university) {
                     $result += 1000;
+                    print "${adjudicator['adjud_id']} $conflict \n";
+                }
     $result += 1 * abs(get_average_ranking($debate['adjudicators']) - $debate['desired_average']);
     return $result;
     
@@ -94,7 +99,7 @@ function random_select(&$debates) {
     $i = mt_rand(0, count($debates) - 1);
     $debate = $debates[$i];
     $j = mt_rand(0, count($debate['adjudicators']) - 1);
-    return array(i, j);
+    return array($i, $j);
     /*
     take any adjudicator
     find neighbouring debate (and team), giving pref. to closer debates (at least dist 1 & 2)
@@ -103,15 +108,17 @@ function random_select(&$debates) {
 }
 
 function swap(&$debates, $one, $two) {
-    
+    $buffer = $debates[$one[0]]['adjudicators'][$one[1]];
+    $debates[$one[0]]['adjudicators'][$one[1]] = $debates[$two[0]]['adjudicators'][$two[1]];
+    $debates[$two[0]]['adjudicators'][$two[1]] = $buffer;
 }
 
 function actual_sa(&$debates) {
     $temp = 1.0;
-    $best_energy = 10000;
+    $best_energy = debates_energy($debates);
     $best_debates = $debates;
     $i = 0;
-    while ($i < 1000) {
+    while ($i < 10000) {
         do {
             $one = random_select($debates);
             $two = random_select($debates);
@@ -119,10 +126,10 @@ function actual_sa(&$debates) {
         $before = debate_energy($debates[$one[0]]) + debate_energy($debates[$two[0]]);
         swap($debates, $one, $two);
         $after = debate_energy($debates[$one[0]]) + debate_energy($debates[$two[0]]);
-        $diff = $before - $after;
-        if (!throw_dice(probability($diff, $temp)))
+        $diff = $after - $before;
+        if (!throw_dice(probability($diff, $temp))) {
             swap($debates, $one, $two); //swap back
-
+        }
         if ($diff < 0) { //better than prev
             $energy = debates_energy($debates);
             if ($energy < $best_energy) {
@@ -133,6 +140,7 @@ function actual_sa(&$debates) {
         $temp = decrease_temp($temp);
         $i++;
     }
+    $debates = $best_debates;
 }
 
 function probability($diff, $temp) {
@@ -149,7 +157,7 @@ function throw_dice($probability) {
 }
 
 function decrease_temp($temp) {
-    $alpha = 0.01;
+    $alpha = 0.0001;
     return $temp * (1 - $alpha);
 }
 

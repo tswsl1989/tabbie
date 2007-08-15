@@ -45,7 +45,8 @@ function temp_debates_foobar($round) {
         
         "FROM temp_draw_round_$round AS D, team AS T1, team AS T2, team AS T3, team AS T4 " .
         
-        "WHERE D.og = T1.team_id AND D.oo = T2.team_id AND D.cg = T3.team_id AND D.co = T4.team_id ";
+        "WHERE D.og = T1.team_id AND D.oo = T2.team_id AND D.cg = T3.team_id AND D.co = T4.team_id " .
+        "ORDER BY debate_id";
     $db_result = mysql_query($query);
     print mysql_error();
     $result = array();

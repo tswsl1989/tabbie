@@ -6,8 +6,6 @@ require_once("includes/backend.php");
 
 /*
 TODO for this file:
-serious tuning of the SA algorithm (though it seems fairly ok already)
-serious optimizing (speed) of the SA algorithm
 
 present energy details in a nice matter
 
@@ -28,7 +26,18 @@ technical: weave in messaging and scoring mechanisms.
 team conflicts (next to already existing university conflicts)
 
 introduce 'geography' (i.e. debates with similar points) into random_select?
+
+further tuning of the SA algorithm
+further optimizing (speed) of the SA algorithm
 */
+
+//Energy calculation:
+
+//SA:
+$RUNS = 10000;
+$UPHILL_PROBABILITY = 0.5;
+$ALPHA = 0.0005;
+$DETERMINATION = 500; // amount of times the algorithm searches for a better solution, before restarting at the best solution so far.
 
 function get_average(&$list, $attr) {
     $sum = 0;
@@ -60,6 +69,7 @@ function allocate_simulated_annealing(&$msg, &$details) {
     $adjudicators = get_active_adjudicators();
     set_unequal_desired_averages($debates, $adjudicators);
     initial_distribution($debates, $adjudicators);
+    debates_energy($debates); // sets caches
     actual_sa($debates);
     $energy = debates_energy($debates);
     $msg[] = "Adjudicator Allocation (SA) score is: $energy";
@@ -139,8 +149,12 @@ function debate_energy_details(&$debate) {
 
 function debates_energy(&$debates) {
     $result = 0;
-    foreach ($debates as $debate)
-        $result += debate_energy($debate);
+    foreach ($debates as &$debate) {
+        if (! isset($debate['energy'])) {
+            $debate['energy'] = debate_energy($debate);
+        }
+        $result += $debate['energy'];
+    }
     return $result;
 }
 
@@ -165,28 +179,37 @@ function swap(&$debates, $one, $two) {
 }
 
 function actual_sa(&$debates) {
+    global $RUNS, $DETERMINATION;
     $temp = 1.0;
     $best_energy = debates_energy($debates);
     $best_debates = $debates;
+    $best_moment = 0;
     $i = 0;
-    while ($i < 50000) {
+    while ($i < $RUNS) {
         do {
             $one = random_select($debates);
             $two = random_select($debates);
         } while ($one[0] == $two[0]);
-        $before = debate_energy($debates[$one[0]]) + debate_energy($debates[$two[0]]);
+        $before = $debates[$one[0]]['energy'] + $debates[$two[0]]['energy'];
         swap($debates, $one, $two);
         $after = debate_energy($debates[$one[0]]) + debate_energy($debates[$two[0]]);
         $diff = $after - $before;
         if (!throw_dice(probability($diff, $temp))) {
             swap($debates, $one, $two); //swap back
+        } else {
+            $debates[$one[0]]['energy'] = debate_energy($debates[$one[0]]);
+            $debates[$two[0]]['energy'] = debate_energy($debates[$two[0]]);
         }
         if ($diff < 0) { //better than prev
             $energy = debates_energy($debates);
             if ($energy < $best_energy) {
                 $best_debates = $debates;
                 $best_energy = $energy;
+                $best_moment = $i;
             }
+        } elseif ($i - $best_moment > $DETERMINATION) {
+            $best_moment = $i;
+            $debates = $best_debates;
         }
         $temp = decrease_temp($temp);
         $i++;
@@ -195,10 +218,11 @@ function actual_sa(&$debates) {
 }
 
 function probability($diff, $temp) {
-    if ($diff < 0)
+    global $UPHILL_PROBABILITY;
+    if ($diff <= 0)
         return 1;
-    if ($diff >= 0)
-        return 0.5 * $temp;
+    if ($diff > 0)
+        return $temp * $UPHILL_PROBABILITY;
 }
 
 function throw_dice($probability) {
@@ -208,8 +232,8 @@ function throw_dice($probability) {
 }
 
 function decrease_temp($temp) {
-    $alpha = 0.00001;
-    return $temp * (1 - $alpha);
+    global $ALPHA;
+    return $temp * (1 - $ALPHA);
 }
 
 ?>

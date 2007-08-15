@@ -1,20 +1,29 @@
 <?
-//Adjudicators do not automatically conflict their own Uni! This should be changed
 //team-level conflicts should be a possibility
 //but uni-level is a good starting point
 
 require_once("includes/backend.php");
 
 function get_active_adjudicators() {
-    $query = "SELECT adjud_id, conflicts FROM adjudicator WHERE active='Y' ORDER BY ranking DESC";
+    $query = "SELECT adjud_id, univ_id, conflicts, ranking FROM adjudicator WHERE active='Y' ORDER BY adjud_id";
     $db_result = mysql_query($query);
     
     $result = array();
-    while ($row = mysql_fetch_assoc($result)) {
-        $newrow = array();
-        $newrow['adjud_id'] = $row['adjud_id'];
-        $newrow['conflicts'] = preg_split("/,/", $row['conflicts'], -1, PREG_SPLIT_NO_EMPTY);
+    while ($row = mysql_fetch_assoc($db_result)) {
+        $adjudicator = array();
+        $adjudicator['adjud_id'] = $row['adjud_id'];
+        $adjudicator['ranking'] = $row['ranking'];
+        $adjudicator['univ_conflicts'][] = $row['univ_id'];
+        $conflicts = preg_split("/,/", $row['conflicts'], -1, PREG_SPLIT_NO_EMPTY);
+        foreach ($conflicts as $conflict) {
+            $univ_result = mysql_query("SELECT univ_id FROM university WHERE univ_code = '$conflict'");
+            $univ = mysql_fetch_assoc($univ_result);
+            //insert checks here...
+            $adjudicator['univ_conflicts'][] = $univ['univ_id'];
+        }
+        $result[] = $adjudicator;
     }
+    return $result;
 }
 
 function create_temp_adjudicator_table($round) {
@@ -29,9 +38,24 @@ function create_temp_adjudicator_table($round) {
         return mysql_error();
 }
 
-//Open Debates Table
-$query = "SELECT debate_id, U1.univ_code AS ogcode, U2.univ_code AS oocode, U3.univ_code AS cgcode, U4.univ_code AS cocode ";
-$query .= "FROM temp_draw_round_$nextround AS D, university AS U1, university AS U2, university AS U3, university AS U4, team AS T1, team AS T2, team AS T3, team AS T4 ";
-$query .= "WHERE D.og = T1.team_id AND D.oo = T2.team_id AND D.cg = T3.team_id AND D.co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id "; 
+function temp_debates_foobar($round) {
+    $query =
+        "SELECT debate_id, T1.univ_id AS og, T2.univ_id AS oo, " . 
+        "T3.univ_id AS cg, T4.univ_id AS co " .
+        
+        "FROM temp_draw_round_$round AS D, team AS T1, team AS T2, team AS T3, team AS T4 " .
+        
+        "WHERE D.og = T1.team_id AND D.oo = T2.team_id AND D.cg = T3.team_id AND D.co = T4.team_id ";
+    $db_result = mysql_query($query);
+    print mysql_error();
+    $result = array();
+    while ($row = mysql_fetch_assoc($db_result)) {
+        $new_row = array();
+        $new_row['universities'] = array($row['og'], $row['oo'], $row['cg'], $row['co']);
+        $result[] = $new_row;
+    }
+    return $result;
+}
+
 
 ?>

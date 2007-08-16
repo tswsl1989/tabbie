@@ -41,9 +41,12 @@ Tabbie is Tab Software for British Parliamentary Debating Tournaments. It has a 
 
 <h3>News</h3>
 <p>
-<b>xxx August 2007</b><br>
-The developer team is growing quickly after recent PR activities. Most noticably, the orginal developers (Deepak Jois and Aditya Krishnan) have joined the team. The current team size is 4 people. Also - the Bangkok team has chosen Tabbie as its system for Worlds 2008. A <a href="doc/TODO">Roadmap</a> has been prepared for the tournament. We are looking for tournaments that are willing to try Tabbie out before the big one.
+<b>15 August 2007</b><br>
+The Bangkok Worlds 2008 team has chosen Tabbie as its Tab system. A roadmap of features is to be prepared for the tournament in the coming weeks. We are looking for tournaments that are willing to try Tabbie out before the big one.
 </p>
+<p>
+<b>1 August 2007</b><br>
+The developer team is growing quickly after recent PR activities. Most noticably, the orginal developers (Deepak Jois and Aditya Krishnan) have joined the team. The current team size is 4 people. </p>
 <p>
 <b>30th July 2007</b><br>
 Tabbie 1.2 is released. This version has not yet been tested on a live tournament, if you want this, use version 1.0. New features are:

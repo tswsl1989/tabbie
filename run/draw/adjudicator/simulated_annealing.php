@@ -53,8 +53,14 @@ further optimizing (speed) of the SA algorithm
 */
 
 //Energy calculation:
+$scoring_factors = array(
+    "university_conflict" => 1000,
+    "chair_not_perfect" => 1,
+    "panel_strength_not_perfect" => 1,
+    "panel_steepness" => 1
+);
 
-//SA:
+//Simulated Annealing:
 $RUNS = 10000;
 $UPHILL_PROBABILITY = 0.5;
 $ALPHA = 0.0005;
@@ -77,13 +83,14 @@ function set_desired_averages(&$debates, $average) {
 }
 
 function set_unequal_desired_averages(&$debates, &$adjudicators) {
+    global $scoring_factors;
     $average_adjudicator = get_average($adjudicators, 'ranking');
     $average_debate = get_average($debates, 'points');
     if ($average_debate == 0)
         $average_debate = 999; // irrelevant but cannot be 0
     foreach ($debates as &$debate) {
-        $debate['desired_average'] = $average_adjudicator * 0.5 +
-            ($average_adjudicator * 0.5 * $debate['points'] / $average_debate);
+        $debate['desired_average'] = $average_adjudicator * (1 - $scoring_factors['panel_steepness']) +
+            ($average_adjudicator * $scoring_factors['panel_steepness'] * $debate['points'] / $average_debate);
     }
 }
 
@@ -131,44 +138,46 @@ function initial_distribution(&$debates, &$adjudicators) {
 }
 
 function debate_energy(&$debate) {
+    global $scoring_factors;
     $result = 0;
     foreach($debate['adjudicators'] as $adjudicator)
         foreach($adjudicator['univ_conflicts'] as $conflict) 
             foreach ($debate['universities'] as $university)
                 if ($conflict == $university) {
-                    $result += 1000;
+                    $result += $scoring_factors['university_conflict'];
                 }
     
     $adjudicators = $debate['adjudicators'];
     usort($adjudicators, 'cmp_ranking');
     $chair = array_pop($adjudicators);
-    $result += 1 * (100 - $chair['ranking']);
+    $result += $scoring_factors['chair_not_perfect'] * (100 - $chair['ranking']);
 
-    $result += pow(get_average($debate['adjudicators'], 'ranking') - $debate['desired_average'], 2);
+    $result += $scoring_factors['panel_strength_not_perfect'] * pow(get_average($debate['adjudicators'], 'ranking') - $debate['desired_average'], 2);
     return $result;
 }
 
 function debate_energy_details(&$debate) {
+    global $scoring_factors;
     $result = array();
 
     foreach($debate['adjudicators'] as $adjudicator)
         foreach($adjudicator['univ_conflicts'] as $conflict) 
             foreach ($debate['universities'] as $university)
                 if ($conflict == $university) {
-                    $result[] = "1000.0: {$adjudicator['adjud_name']} has a conflict with univ_id '$conflict'";
+                    $result[] = format_dec($scoring_factors['university_conflict']) . ": {$adjudicator['adjud_name']} has a conflict with univ_id '$conflict'";
                 }
     
     $adjudicators = $debate['adjudicators'];
     usort($adjudicators, 'cmp_ranking');
     $chair = array_pop($adjudicators);
     $diff = 100 - $chair['ranking'];
-    $penalty = format_dec(1 * ($diff));
+    $penalty = format_dec($scoring_factors['chair_not_perfect'] * ($diff));
     $diff = format_dec($diff);
     $result[] = "$penalty: Chair {$chair['adjud_name']} has $diff difference from 100.0.";
 
     $real = get_average($debate['adjudicators'], 'ranking');
     $desired_average = $debate['desired_average'];
-    $penalty = format_dec(pow($real - $desired_average, 2));
+    $penalty = format_dec($scoring_factors['panel_strength_not_perfect'] * pow($real - $desired_average, 2));
     $desired_average = format_dec($desired_average);
     $real = format_dec($real);
     $result[] = "$penalty: Desired average is $desired_average but real average is $real";

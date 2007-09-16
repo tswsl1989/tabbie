@@ -101,7 +101,8 @@ You will also need a Web Server to run Tabbie since it's based on PHP. Use the <
 
 <h3><a href="http://sourceforge.net/projects/tabbie/">Contribute</a></h3>
 <div>
-Contributing to Tabbie BP Debating Software is possible in many ways. Sending a mail to <a href="mailto:klaas@vanschelven.com">Klaas</a> is usually a good starting point, but you can also look at the <a href="http://sourceforge.net/projects/tabbie/">Project Page</a>. Things you can do are:
+Contributing to Tabbie BP Debating Software is possible in many ways. The developers use a <a href="http://groups.google.com/group/tabbie-devel">group / email list</a> to communicate. Reading through these mails will give you an idea where the project is going, and this is also a good place to report bugs and request features.
+Sending a mail to <a href="mailto:klaas@vanschelven.com">Klaas</a> is another good starting point. The <a href="http://sourceforge.net/projects/tabbie/">Sourceforge Project Page</a> contains access to Subversion code history. Things you can do are:
 <ul>
 <li>Tell us that you're using Tabbie for your tournament</li>
 <li>Tell us how easy/hard Tabbie was to install on your system</li>
@@ -110,7 +111,7 @@ Contributing to Tabbie BP Debating Software is possible in many ways. Sending a 
 <li>Add a feature yourself, and upload it</li>
 <li>Become a developer</li>
 </ul>
-You can also take a look at the current <a href="doc/TODO">To Do List</a> or <a href="doc/CHANGELOG">Change Log</a> (though sometimes a bit of a mess).
+You can also take a look at the <a href="doc/CHANGELOG">Change Log</a>.
 
 </div>
 <div>

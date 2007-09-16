@@ -33,7 +33,7 @@ $local = ($_SERVER["SERVER_NAME"] != "tabbie.sourceforge.net");
     <li><a href="index.php" class="activemain">Home</a></li>
     <li><a href="http://sourceforge.net/project/showfiles.php?group_id=199347">Download</a></li>
     <li><a href="installation.php">Installation Guide</a></li>
-    <li><a href="history.php">History</a></li>
+    <li><a href="contributors.php">Contributors</a></li>
     <li><a href="run/">Run<? if (!$local) echo " Online Demo"; ?></a></li>
     </ul>
 </div>
@@ -129,9 +129,5 @@ We strive to make Tabbie a platform for the many different diverging efforts tha
 <li>2007 LSE Open - 92 teams, tournament specific version</li>
 <li>2007 IDC Herzelia English Open 2007 - 20 teams, version 1.0</li>
 </ul></div>
-
-<h3><a href="history.php">History</a></h3>
-<div>Tabbie was created for NTU Worlds 2004. It was subsequently found on the internet in 2007 and restored to working order - great thanks go out to Colm Flynn for preserving it. <br><a href="history.php">Read more...</a>
-</div>
 
 <?php require("run/view/footer.php"); ?>

@@ -33,7 +33,7 @@ $local = ($_SERVER["SERVER_NAME"] != "tabbie.sourceforge.net");
     <li><a href="index.php">Home</a></li>
     <li><a href="http://sourceforge.net/project/showfiles.php?group_id=199347">Download</a></li>
     <li><a href="installation.php" class="activemain">Installation Guide</a></li>
-    <li><a href="history.php">History</a></li>
+    <li><a href="contributors.php">Contributors</a></li>
     <li><a href="run/">Run<? if (!$local) echo " Online Demo"; ?></a></li>
     </ul>
 </div>

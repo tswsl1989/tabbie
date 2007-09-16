@@ -23,6 +23,7 @@
 
 require_once("includes/adjudicator.php");
 require_once("includes/backend.php");
+require_once("draw/adjudicator/simulated_annealing_config.php");
 
 //for information on what simulated annealing is, see: http://en.wikipedia.org/wiki/Simulated_annealing
 
@@ -51,14 +52,6 @@ introduce 'geography' (i.e. debates with similar points) into random_select?
 further tuning of the SA algorithm
 further optimizing (speed) of the SA algorithm
 */
-
-//Energy calculation:
-$scoring_factors = array(
-    "university_conflict" => 1000,
-    "chair_not_perfect" => 1,
-    "panel_strength_not_perfect" => 1,
-    "panel_steepness" => 1
-);
 
 //Simulated Annealing:
 $RUNS = 10000;

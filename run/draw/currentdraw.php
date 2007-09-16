@@ -134,7 +134,8 @@ PRIMARY KEY (debate_id))";
 
     }
     require_once("draw/adjudicator/simulated_annealing.php");
-    allocate_simulated_annealing($msg, $msg);
+    $details = array();
+    allocate_simulated_annealing($msg, $details);
 }
 
 
@@ -156,7 +157,7 @@ if (($validate==1))
     if ($result)
     {
         echo "<table>\n";
-            echo "<tr><th>Venue Name</th><th>Opening Govt</th><th>Opening Opp</th><th>Closing Govt</th><th>Closing Opp</th><th>Total Points</th><th>Chair</th><th>Panelists</th></tr>\n";
+            echo "<tr><th>Venue Name</th><th>Opening Govt</th><th>Opening Opp</th><th>Closing Govt</th><th>Closing Opp</th><th>Total Points</th><th>Chair</th><th>Panelists</th><th>Adj. Allocation Score</th></tr>\n";
 
         while($row=mysql_fetch_assoc($result))
         {
@@ -277,9 +278,12 @@ if (($validate==1))
                     }
                     echo "</ul></td>\n";
                 }
+                echo "<td><ul>";
+                if (@$details[$row['debate_id']])
+                    foreach ($details[$row['debate_id']] as $detail)
+                        echo "<li>$detail</li>\n";
+                echo "</ul></td>";
 
-                
-                
            echo "</tr>\n";
         
         }

@@ -28,13 +28,14 @@ require_once("includes/backend.php");
 
 /*
 TODO for this file:
+make a number of variables (for the energy) configurable by the user
+    like: tunable different desired adjudicator averages for different debates
 
-present energy details in a nice matter
+team conflicts (next to already existing university conflicts)
 
 adjudicator history (uni's, other adjudicators) as a scoring factor
 
-make a number of variables (for the energy) configurable by the user
-    like: tunable different desired adjudicator averages for different debates
+**** version 1.3 breaking point *****
 
 everything that is related to probability of making the break / winning
 
@@ -44,8 +45,6 @@ number of adjudicators per debate could vary
 
 allow for a report on manual changes too (score and messages)
 technical: weave in messaging and scoring mechanisms.
-
-team conflicts (next to already existing university conflicts)
 
 introduce 'geography' (i.e. debates with similar points) into random_select?
 
@@ -60,6 +59,10 @@ $RUNS = 10000;
 $UPHILL_PROBABILITY = 0.5;
 $ALPHA = 0.0005;
 $DETERMINATION = 500; // amount of times the algorithm searches for a better solution, before restarting at the best solution so far.
+
+function format_dec($nr) {
+    return sprintf("%01.1f", $nr);
+}
 
 function get_average(&$list, $attr) {
     $sum = 0;
@@ -93,9 +96,9 @@ function allocate_simulated_annealing(&$msg, &$details) {
     initial_distribution($debates, $adjudicators);
     debates_energy($debates); // sets caches
     actual_sa($debates);
-    $energy = debates_energy($debates);
-    $msg[] = "Adjudicator Allocation (SA) score is: $energy";
-    $details = array_merge($details, debates_energy_details($debates));
+    $energy = format_dec(debates_energy($debates));
+    $msg[] = "Adjudicator Allocation (SA) score is: $energy (the closer to zero, the better)";
+    $details = debates_energy_details($debates);
     write_to_db($debates, $nextround);
 }
 
@@ -152,20 +155,23 @@ function debate_energy_details(&$debate) {
         foreach($adjudicator['univ_conflicts'] as $conflict) 
             foreach ($debate['universities'] as $university)
                 if ($conflict == $university) {
-                    $result[] = "1000: {$adjudicator['adjud_name']} has a conflict with univ_id '$conflict'";
+                    $result[] = "1000.0: {$adjudicator['adjud_name']} has a conflict with univ_id '$conflict'";
                 }
     
     $adjudicators = $debate['adjudicators'];
     usort($adjudicators, 'cmp_ranking');
     $chair = array_pop($adjudicators);
     $diff = 100 - $chair['ranking'];
-    $penalty = 1 * ($diff);
-    $result[] = "$penalty: Chair {$chair['adjud_name']} has $diff difference from 100.";
+    $penalty = format_dec(1 * ($diff));
+    $diff = format_dec($diff);
+    $result[] = "$penalty: Chair {$chair['adjud_name']} has $diff difference from 100.0.";
 
     $real = get_average($debate['adjudicators'], 'ranking');
     $desired_average = $debate['desired_average'];
-    $penalty = pow($real - $desired_average, 2);
-    $result[] = "$penalty: Debate '{$debate['debate_id']}' has desired average $desired_average but real average is $real";
+    $penalty = format_dec(pow($real - $desired_average, 2));
+    $desired_average = format_dec($desired_average);
+    $real = format_dec($real);
+    $result[] = "$penalty: Desired average is $desired_average but real average is $real";
     return $result;
 }
 
@@ -183,7 +189,7 @@ function debates_energy(&$debates) {
 function debates_energy_details(&$debates) {
     $result = array();
     foreach ($debates as $debate)
-        $result = array_merge($result, debate_energy_details($debate));
+        $result[$debate['debate_id']] = debate_energy_details($debate);
     return $result;
 }
 

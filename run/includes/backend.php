@@ -288,4 +288,26 @@ function adjudicator_sheets($round) {
     return $result;
 }
 
+
+function get_co_adjudicators_for_round($adjud_id, $round) {
+    $result = array();
+    $db_result = q("SELECT b.adjud_id FROM adjud_round_$round AS a, adjud_round_$round AS b WHERE a.adjud_id = '$adjud_id' AND a.debate_id = b.debate_id AND NOT b.adjud_id = '$adjud_id'");
+    while ($row = mysql_fetch_array($db_result))
+        $result[] = $row[0];
+    return $result;
+}
+
+function get_co_adjudicators($adjud_id) {
+    $result = array();
+    for ($i = 1; $i <= get_num_rounds(); $i++)
+        $result = array_merge($result, get_co_adjudicators_for_round($adjud_id, $i));
+    return $result;
+}
+
+function adjudicator_name($adjud_id) {
+    $db_result = q("SELECT adjud_name FROM adjudicator WHERE a.adjud_id = '$adjud_id'");
+    $row = mysql_fetch_array($db_result);
+    return $row[0];
+}
+
 ?>

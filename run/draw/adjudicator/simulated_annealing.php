@@ -29,9 +29,6 @@ require_once("draw/adjudicator/simulated_annealing_config.php");
 
 /*
 TODO for this file:
-make a number of variables (for the energy) configurable by the user
-    like: tunable different desired adjudicator averages for different debates
-
 team conflicts (next to already existing university conflicts)
 
 adjudicator history (uni's, other adjudicators) as a scoring factor
@@ -130,15 +127,29 @@ function initial_distribution(&$debates, &$adjudicators) {
     }
 }
 
+function occurrences_of($value, $array) {
+    $result = 0;
+    foreach ($array as $e)
+        if ($e == $value)
+            $result += 1;
+    return $result;
+}
+
 function debate_energy(&$debate) {
     global $scoring_factors;
     $result = 0;
-    foreach($debate['adjudicators'] as $adjudicator)
-        foreach($adjudicator['univ_conflicts'] as $conflict) 
+    $other_adjudicators = array_reverse($debate['adjudicators']);
+    foreach ($debate['adjudicators'] as $adjudicator) {
+        foreach ($adjudicator['univ_conflicts'] as $conflict) 
             foreach ($debate['universities'] as $university)
                 if ($conflict == $university) {
                     $result += $scoring_factors['university_conflict'];
                 }
+        array_pop($other_adjudicators);
+        $history = get_co_adjudicators($adjudicator['adjud_id']);
+        foreach ($other_adjudicators as $other_adjudicator)
+            $result += occurrences_of($other_adjudicator['adjud_id'], $history) *  $scoring_factors['adjudicator_met_adjudicator'];
+    }
     
     $adjudicators = $debate['adjudicators'];
     usort($adjudicators, 'cmp_ranking');
@@ -146,6 +157,7 @@ function debate_energy(&$debate) {
     $result += $scoring_factors['chair_not_perfect'] * (100 - $chair['ranking']);
 
     $result += $scoring_factors['panel_strength_not_perfect'] * pow(get_average($debate['adjudicators'], 'ranking') - $debate['desired_average'], 2);
+
     return $result;
 }
 
@@ -153,12 +165,22 @@ function debate_energy_details(&$debate) {
     global $scoring_factors;
     $result = array();
 
-    foreach($debate['adjudicators'] as $adjudicator)
+    $other_adjudicators = array_reverse($debate['adjudicators']);
+    foreach($debate['adjudicators'] as $adjudicator) {
         foreach($adjudicator['univ_conflicts'] as $conflict) 
             foreach ($debate['universities'] as $university)
                 if ($conflict == $university) {
                     $result[] = format_dec($scoring_factors['university_conflict']) . ": {$adjudicator['adjud_name']} has a conflict with univ_id '$conflict'";
                 }
+        array_pop($other_adjudicators);
+        $history = get_co_adjudicators($adjudicator['adjud_id']);
+        foreach ($other_adjudicators as $other_adjudicator) {
+            $occurrences = occurrences_of($other_adjudicator['adjud_id'], $history);
+            $penalty = $occurrences * $scoring_factors['adjudicator_met_adjudicator'];
+            if ($occurrences)
+                $result[] = format_dec($penalty) . ": {$adjudicator['adjud_name']} met {$other_adjudicator['adjud_name']} $occurrences time(s) before.";
+        }
+    }
     
     $adjudicators = $debate['adjudicators'];
     usort($adjudicators, 'cmp_ranking');
@@ -265,5 +287,6 @@ function decrease_temp($temp) {
     global $ALPHA;
     return $temp * (1 - $ALPHA);
 }
+
 
 ?>

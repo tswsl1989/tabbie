@@ -27,7 +27,7 @@ $scoring_factors = array(
     "chair_not_perfect" => 1,
     "panel_steepness" => 0.5,
     "panel_strength_not_perfect" => 1,
-    "adjudicator_met_adjudicator" => 10
+    "adjudicator_met_adjudicator" => 50
 );
 
 /*
@@ -47,5 +47,9 @@ Further remarks: Slowly increasing this value during the tournament is expected 
 panel_strength_not_perfect: Penalty for distance to this 'ideal average'.
 High values: Emphasis on getting panels on the 'right strenght'
 Low values: Not so much emphasis on getting panels on the 'right strenght'
+
+adjudicator_met_adjudicator: Penalty for adjudicator meeting each other again. This penalty is multiplied by the 
+times these two already were in one panel together.
+High values: Adjudicators are not put in panels with previous co-panellists
 */
 ?>

@@ -56,6 +56,25 @@ $UPHILL_PROBABILITY = 0.5;
 $ALPHA = 0.0005;
 $DETERMINATION = 500; // amount of times the algorithm searches for a better solution, before restarting at the best solution so far.
 
+//cache:
+
+function occurrences_of($value, $array) {
+    $result = 0;
+    foreach ($array as $e)
+        if ($e == $value)
+            $result += 1;
+    return $result;
+}
+
+$adjudicator_history = array();
+
+function adjudicators_met($one, $two) {
+    global $adjudicator_history;
+    if (!isset($adjudicator_history[$one]))
+        $adjudicator_history[$one] = array_count_values(get_co_adjudicators($one));
+    return @$adjudicator_history[$one][$two];
+}
+
 function format_dec($nr) {
     return sprintf("%01.1f", $nr);
 }
@@ -127,14 +146,6 @@ function initial_distribution(&$debates, &$adjudicators) {
     }
 }
 
-function occurrences_of($value, $array) {
-    $result = 0;
-    foreach ($array as $e)
-        if ($e == $value)
-            $result += 1;
-    return $result;
-}
-
 function debate_energy(&$debate) {
     global $scoring_factors;
     $result = 0;
@@ -146,9 +157,8 @@ function debate_energy(&$debate) {
                     $result += $scoring_factors['university_conflict'];
                 }
         array_pop($other_adjudicators);
-        $history = get_co_adjudicators($adjudicator['adjud_id']);
         foreach ($other_adjudicators as $other_adjudicator)
-            $result += occurrences_of($other_adjudicator['adjud_id'], $history) *  $scoring_factors['adjudicator_met_adjudicator'];
+            $result += adjudicators_met($adjudicator['adjud_id'], $other_adjudicator['adjud_id']) *  $scoring_factors['adjudicator_met_adjudicator'];
     }
     
     $adjudicators = $debate['adjudicators'];
@@ -173,9 +183,8 @@ function debate_energy_details(&$debate) {
                     $result[] = format_dec($scoring_factors['university_conflict']) . ": {$adjudicator['adjud_name']} has a conflict with univ_id '$conflict'";
                 }
         array_pop($other_adjudicators);
-        $history = get_co_adjudicators($adjudicator['adjud_id']);
         foreach ($other_adjudicators as $other_adjudicator) {
-            $occurrences = occurrences_of($other_adjudicator['adjud_id'], $history);
+            $occurrences = adjudicators_met($adjudicator['adjud_id'], $other_adjudicator['adjud_id']);
             $penalty = $occurrences * $scoring_factors['adjudicator_met_adjudicator'];
             if ($occurrences)
                 $result[] = format_dec($penalty) . ": {$adjudicator['adjud_name']} met {$other_adjudicator['adjud_name']} $occurrences time(s) before.";

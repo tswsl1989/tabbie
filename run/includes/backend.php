@@ -304,10 +304,4 @@ function get_co_adjudicators($adjud_id) {
     return $result;
 }
 
-function adjudicator_name($adjud_id) {
-    $db_result = q("SELECT adjud_name FROM adjudicator WHERE a.adjud_id = '$adjud_id'");
-    $row = mysql_fetch_array($db_result);
-    return $row[0];
-}
-
 ?>

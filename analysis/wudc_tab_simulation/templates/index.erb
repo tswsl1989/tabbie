@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Tab Algorithm Simulation : Main Page</title>        
+    <link rel="stylesheet" href="styles.css" type="text/css" charset="utf-8">
+</head>
+<body>
+    <h1>Tab Algorithm Simulation &ndash; Main Page</h1>
+    <h2>Simulation Parameters</h2>
+    <dl>
+        <dt>Conducted on</dt>
+        <dd><h3><%= Time.now.strftime("%d %B %Y %H:%M") %></h3></dd>
+        <dt>Draw Algorithm</dt>
+        <dd><h3><%= @draw_algorithm %></h3></dd>
+        <dt>Simulation Algorithm</dt>
+        <dd><h3><%= @simulation_algorithm %></h3></dd>
+        
+    </dl>
+    
+    <h2>Breakdown by Rounds</h2>
+    <ul>
+        <h4>
+    <% (1..@num_rounds).to_a.each do |round| %>
+        <li><a href="round-<%= round %>.html">Round <%= round %></li>
+    <% end %>
+    </h4>
+    </ul>
+</body>
+</html>                

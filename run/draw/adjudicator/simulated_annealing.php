@@ -31,7 +31,7 @@ require_once("draw/adjudicator/simulated_annealing_config.php");
 TODO for this file:
 team conflicts (next to already existing university conflicts)
 
-adjudicator history (uni's, other adjudicators) as a scoring factor
+adjudicator history of uni's as a scoring factor
 
 **** version 1.3 breaking point *****
 

@@ -39,6 +39,21 @@ $local = ($_SERVER["SERVER_NAME"] != "tabbie.sourceforge.net");
 </div>
 
 <h3>All News</h3>
+<b>15 August 2007</b><br>
+The Bangkok Worlds 2008 team has chosen Tabbie as its Tab system. A roadmap of features is to be prepared for the tournament in the coming weeks. We are looking for tournaments that are willing to try Tabbie out before the big one.
+</p>
+<p>
+<b>1 August 2007</b><br>
+The developer team is growing quickly after recent PR activities. Most noticably, the orginal developers (Deepak Jois and Aditya Krishnan) have joined the team. The current team size is 4 people. </p>
+<p>
+<b>30th July 2007</b><br>
+Tabbie 1.2 is released. This version has not yet been tested on a live tournament, if you want this, use version 1.0. New features are:
+<ul>
+<li>Reorganisation of the print module</li>
+<li>Print module works in the online demo (<a href="run/rest.php?result_type=pdf&amp;function=adjudicator_sheets&amp;param=1">example</a>)</li>
+<li>Draw is publically defended and claimed to be the world's best (<a href="draw_algorithms.php">more...</a>)</li>
+</ul>
+</p>
 <p>
 <b>Sat 21th July 2007</b><br>
 Tabbie 1.1 is released. This release contains a number of features from the wishlist that followed out of the IDC tournament. This version has not yet been tested on a live tournament, if you want this, take version 1.0. New features are:

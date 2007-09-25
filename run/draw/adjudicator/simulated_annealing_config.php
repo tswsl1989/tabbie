@@ -27,7 +27,8 @@ $scoring_factors = array(
     "chair_not_perfect" => 1,
     "panel_steepness" => 0.5,
     "panel_strength_not_perfect" => 1,
-    "adjudicator_met_adjudicator" => 50
+    "adjudicator_met_adjudicator" => 50,
+    "adjudicator_met_team" => 50
 );
 
 /*

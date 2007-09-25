@@ -79,8 +79,11 @@ function temp_debates_foobar($round) {
         $new_row['universities'] = array($row['univ_1'], $row['univ_2'], $row['univ_3'], $row['univ_4']);
         
         $new_row['points'] = 0;
-        foreach (array('og', 'oo', 'cg', 'co') as $position)
+        $new_row['teams'] = array();
+        foreach (array('og', 'oo', 'cg', 'co') as $position) {
+            $new_row['teams'][] = $row[$position];
             $new_row['points'] += points_for_team($row[$position], $round - 1);
+        }
         $result[] = $new_row;
     }
     return $result;

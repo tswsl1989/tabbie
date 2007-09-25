@@ -304,4 +304,29 @@ function get_co_adjudicators($adjud_id) {
     return $result;
 }
 
+function get_adjudicator_met_teams_for_round($adjud_id, $round) {
+    $result = array();
+    $db_result = q("SELECT draw.og, draw.oo, draw.cg, draw.co FROM adjud_round_$round AS a, draw_round_$round AS draw WHERE a.adjud_id = '$adjud_id' AND a.debate_id = draw.debate_id");
+    while ($row = mysql_fetch_array($db_result)) {
+        $result[] = $row[0];
+        $result[] = $row[1];
+        $result[] = $row[2];
+        $result[] = $row[3];
+    }
+    return $result;
+}
+
+function get_adjudicator_met_teams($adjud_id) {
+    $result = array();
+    for ($i = 1; $i <= get_num_rounds(); $i++)
+        $result = array_merge($result, get_adjudicator_met_teams_for_round($adjud_id, $i));
+    return $result;
+}
+
+function team_name($team_id) {
+    $db_result = q("SELECT university.univ_code, team.team_code FROM university, team WHERE team.team_id = '$team_id' AND team.univ_id = university.univ_id");
+    $row = mysql_fetch_assoc($db_result);
+    return $row['univ_code'] . " " . $row['team_code'];
+}
+
 ?>

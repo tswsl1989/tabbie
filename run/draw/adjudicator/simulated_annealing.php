@@ -31,8 +31,6 @@ require_once("draw/adjudicator/simulated_annealing_config.php");
 TODO for this file:
 team conflicts (next to already existing university conflicts)
 
-adjudicator history of uni's as a scoring factor
-
 **** version 1.3 breaking point *****
 
 everything that is related to probability of making the break / winning
@@ -67,12 +65,19 @@ function occurrences_of($value, $array) {
 }
 
 $adjudicator_history = array();
-
 function adjudicators_met($one, $two) {
     global $adjudicator_history;
     if (!isset($adjudicator_history[$one]))
         $adjudicator_history[$one] = array_count_values(get_co_adjudicators($one));
     return @$adjudicator_history[$one][$two];
+}
+
+$adjudicator_team_history = array();
+function adjudicator_met_team($adjudicator, $team) {
+    global $adjudicator_team_history;
+    if (!isset($adjudicator_team_history[$adjudicator]))
+        $adjudicator_team_history[$adjudicator] = array_count_values(get_adjudicator_met_teams($adjudicator));
+    return @$adjudicator_team_history[$adjudicator][$team];
 }
 
 function format_dec($nr) {
@@ -159,6 +164,9 @@ function debate_energy(&$debate) {
         array_pop($other_adjudicators);
         foreach ($other_adjudicators as $other_adjudicator)
             $result += adjudicators_met($adjudicator['adjud_id'], $other_adjudicator['adjud_id']) *  $scoring_factors['adjudicator_met_adjudicator'];
+        foreach ($debate['teams'] as $team_id) {
+            $result += adjudicator_met_team($adjudicator['adjud_id'], $team_id) * $scoring_factors['adjudicator_met_team'];
+        }
     }
     
     $adjudicators = $debate['adjudicators'];
@@ -189,6 +197,14 @@ function debate_energy_details(&$debate) {
             if ($occurrences)
                 $result[] = format_dec($penalty) . ": {$adjudicator['adjud_name']} met {$other_adjudicator['adjud_name']} $occurrences time(s) before.";
         }
+        foreach ($debate['teams'] as $team_id) {
+            $occurrences = adjudicator_met_team($adjudicator['adjud_id'], $team_id);
+            $penalty = $occurrences * $scoring_factors['adjudicator_met_team'];
+            $team_name = team_name($team_id);
+            if ($occurrences)
+                $result[] = format_dec($penalty) . ": {$adjudicator['adjud_name']} met '$team_name' $occurrences time(s) before.";
+        }
+
     }
     
     $adjudicators = $debate['adjudicators'];

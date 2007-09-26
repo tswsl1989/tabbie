@@ -38,7 +38,6 @@ Use the menu above for direct access to all of Tabbie's functionality.
 
 <h3>Before the tournament &amp; during registration</h3>
 <ul>
-<li><a href="setup.php">Configure Tabbie</a></li>
 <li><a href="input.php?moduletype=venue">Input venue (room) names and locations</a></li>
 <li><a href="input.php?moduletype=univ">Input participating universities or institutions</a></li>
 <li><a href="input.php?moduletype=adjud">Input participating adjudicators</a></li>

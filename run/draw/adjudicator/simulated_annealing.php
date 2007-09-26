@@ -100,11 +100,12 @@ function set_unequal_desired_averages(&$debates, &$adjudicators) {
     global $scoring_factors;
     $average_adjudicator = get_average($adjudicators, 'ranking');
     $average_debate = get_average($debates, 'points');
-    if ($average_debate == 0)
-        $average_debate = 999; // irrelevant but cannot be 0
     foreach ($debates as &$debate) {
-        $debate['desired_average'] = $average_adjudicator * (1 - $scoring_factors['panel_steepness']) +
-            ($average_adjudicator * $scoring_factors['panel_steepness'] * $debate['points'] / $average_debate);
+        if ($average_debate == 0)
+            $debate['desired_average'] = $average_adjudicator;
+        else
+            $debate['desired_average'] = $average_adjudicator * (1 - $scoring_factors['panel_steepness']) +
+                ($average_adjudicator * $scoring_factors['panel_steepness'] * $debate['points'] / $average_debate);
     }
 }
 

@@ -156,6 +156,10 @@ if (($validate==1))
     
     if ($result)
     {
+        echo "<p>From here you can either:</p>";
+        echo '<h3><a href="draw.php?moduletype=manualdraw">Manually adjust adjudicators and rooms</a></h3>';
+        echo '<p>or</p>';
+        echo '<h3><a href="draw.php?moduletype=manualdraw&amp;action=finalise">Finalize the draw</a></h3>';
         echo "<table>\n";
             echo "<tr><th>Venue Name</th><th>Opening Govt</th><th>Opening Opp</th><th>Closing Govt</th><th>Closing Opp</th><th>Total Points</th><th>Chair</th><th>Panelists</th><th>Adj. Allocation Score</th></tr>\n";
 
@@ -300,7 +304,7 @@ if (($validate==1))
 }
 
 if ($validate == 1) {
-    echo "<h3><a href=\"draw.php?moduletype=currentdraw&amp;action=draw\">Calculate Draw</a></h3>";
+    echo "<h3><a href=\"draw.php?moduletype=currentdraw&amp;action=draw\">Automatically (Re-)Calculate Draw</a></h3>";
 }
 
 ?>

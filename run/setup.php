@@ -117,7 +117,7 @@ if ($action=="display")
     {    echo "<tr><td>{$row['type']}</td><td>{$row['lowerlimit']}</td><td>{$row['upperlimit']}</td> ";
         echo "<td><a href=\"setup.php?type={$row['type']}&amp;action=edit\">Edit</a></td></tr> ";
     }
-    echo "</table>";
+    echo "</table><p>Upper and lower limit values are used to determine which input results should be displayed in red.";
 }
 else //action="edit"
 {    ?>

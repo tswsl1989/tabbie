@@ -54,7 +54,9 @@ $UPHILL_PROBABILITY = 0.5;
 $ALPHA = 0.0005;
 $DETERMINATION = 500; // amount of times the algorithm searches for a better solution, before restarting at the best solution so far.
 
-//cache:
+//Display Setting:
+$MESSAGE_TRESHHOLD = 35;
+
 
 function occurrences_of($value, $array) {
     $result = 0;
@@ -189,21 +191,21 @@ function debate_energy_details(&$debate) {
         foreach($adjudicator['univ_conflicts'] as $conflict) 
             foreach ($debate['universities'] as $university)
                 if ($conflict == $university) {
-                    $result[] = format_dec($scoring_factors['university_conflict']) . ": {$adjudicator['adjud_name']} has a conflict with univ_id '$conflict'";
+                    $result[] = array($scoring_factors['university_conflict'], "{$adjudicator['adjud_name']} has a conflict with univ_id '$conflict'");
                 }
         array_pop($other_adjudicators);
         foreach ($other_adjudicators as $other_adjudicator) {
             $occurrences = adjudicators_met($adjudicator['adjud_id'], $other_adjudicator['adjud_id']);
             $penalty = $occurrences * $scoring_factors['adjudicator_met_adjudicator'];
             if ($occurrences)
-                $result[] = format_dec($penalty) . ": {$adjudicator['adjud_name']} met {$other_adjudicator['adjud_name']} $occurrences time(s) before.";
+                $result[] = array($penalty, "{$adjudicator['adjud_name']} met {$other_adjudicator['adjud_name']} $occurrences time(s) before.");
         }
         foreach ($debate['teams'] as $team_id) {
             $occurrences = adjudicator_met_team($adjudicator['adjud_id'], $team_id);
             $penalty = $occurrences * $scoring_factors['adjudicator_met_team'];
             $team_name = team_name($team_id);
             if ($occurrences)
-                $result[] = format_dec($penalty) . ": {$adjudicator['adjud_name']} met '$team_name' $occurrences time(s) before.";
+                $result[] = array($penalty, "{$adjudicator['adjud_name']} met '$team_name' $occurrences time(s) before.");
         }
 
     }
@@ -212,16 +214,16 @@ function debate_energy_details(&$debate) {
     usort($adjudicators, 'cmp_ranking');
     $chair = array_pop($adjudicators);
     $diff = 100 - $chair['ranking'];
-    $penalty = format_dec($scoring_factors['chair_not_perfect'] * ($diff));
+    $penalty = $scoring_factors['chair_not_perfect'] * ($diff);
     $diff = format_dec($diff);
-    $result[] = "$penalty: Chair {$chair['adjud_name']} has $diff difference from 100.0.";
+    $result[] = array($penalty, "Chair {$chair['adjud_name']} has $diff difference from 100.0.");
 
     $real = get_average($debate['adjudicators'], 'ranking');
     $desired_average = $debate['desired_average'];
     $penalty = format_dec($scoring_factors['panel_strength_not_perfect'] * pow($real - $desired_average, 2));
     $desired_average = format_dec($desired_average);
     $real = format_dec($real);
-    $result[] = "$penalty: Desired average is $desired_average but real average is $real";
+    $result[] = array("$penalty", "Desired average is $desired_average but real average is $real");
     return $result;
 }
 
@@ -237,9 +239,12 @@ function debates_energy(&$debates) {
 }
 
 function debates_energy_details(&$debates) {
+    global $MESSAGE_TRESHHOLD;
     $result = array();
     foreach ($debates as $debate)
-        $result[$debate['debate_id']] = debate_energy_details($debate);
+        foreach (debate_energy_details($debate) as $detail)
+            if ($detail[0] >= $MESSAGE_TRESHHOLD)
+                $result[$debate['debate_id']][] = format_dec($detail[0]) . ": " . $detail[1];
     return $result;
 }
 

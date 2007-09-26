@@ -164,6 +164,12 @@ function debate_energy(&$debate) {
                 if ($conflict == $university) {
                     $result += $scoring_factors['university_conflict'];
                 }
+        foreach ($adjudicator['team_conflicts'] as $conflict) 
+            foreach ($debate['teams'] as $team)
+                if ($conflict == $team) {
+                    $result += $scoring_factors['team_conflict'];
+                }
+        
         array_pop($other_adjudicators);
         foreach ($other_adjudicators as $other_adjudicator)
             $result += adjudicators_met($adjudicator['adjud_id'], $other_adjudicator['adjud_id']) *  $scoring_factors['adjudicator_met_adjudicator'];
@@ -192,6 +198,11 @@ function debate_energy_details(&$debate) {
             foreach ($debate['universities'] as $university)
                 if ($conflict == $university) {
                     $result[] = array($scoring_factors['university_conflict'], "{$adjudicator['adjud_name']} has a conflict with univ_id '$conflict'");
+                }
+        foreach($adjudicator['team_conflicts'] as $conflict) 
+            foreach ($debate['teams'] as $team)
+                if ($conflict == $team) {
+                    $result[] = array($scoring_factors['team_conflict'], "{$adjudicator['adjud_name']} has a conflict with team_id '$conflict'");
                 }
         array_pop($other_adjudicators);
         foreach ($other_adjudicators as $other_adjudicator) {

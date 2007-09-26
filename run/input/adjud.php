@@ -55,7 +55,7 @@ if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
     $conflictarray=preg_split("/,/",$conflicts, -1, PREG_SPLIT_NO_EMPTY);
 
     while($temp=(trim(array_shift($conflictarray))))
-      {
+      { if (strstr($temp, '.')) continue; // temp. skip this check
         $query="SELECT * FROM university WHERE univ_code='$temp'";
         $result=mysql_query($query);
         if (mysql_num_rows($result)==0)

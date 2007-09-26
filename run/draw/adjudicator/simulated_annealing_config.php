@@ -24,6 +24,7 @@
 //Energy calculation:
 $scoring_factors = array(
     "university_conflict" => 1000,
+    "team_conflict" => 1000,
     "chair_not_perfect" => 1,
     "panel_steepness" => 0.5,
     "panel_strength_not_perfect" => 1,

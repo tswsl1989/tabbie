@@ -26,6 +26,19 @@
 
 require_once("includes/backend.php");
 
+function __get_university_id_by_code($univ_code) {
+    $db_result = mysql_query("SELECT univ_id FROM university WHERE univ_code = '$univ_code'");
+    $row = mysql_fetch_assoc($db_result);
+    return $row['univ_id'];
+}
+
+function __get_team_id_by_codes($univ_code, $team_code) {
+    $univ_id = __get_university_id_by_code($univ_code);
+    $db_result = mysql_query("SELECT team_id FROM team WHERE univ_id = '$univ_id' AND team_code = '$team_code'");
+    $row = mysql_fetch_assoc($db_result);
+    return $row['team_id'];
+}
+
 function get_active_adjudicators() {
     $query = "SELECT adjud_name, adjud_id, univ_id, conflicts, ranking FROM adjudicator WHERE active='Y' ORDER BY adjud_id";
     $db_result = mysql_query($query);
@@ -37,12 +50,15 @@ function get_active_adjudicators() {
         $adjudicator['adjud_id'] = $row['adjud_id'];
         $adjudicator['ranking'] = $row['ranking'];
         $adjudicator['univ_conflicts'][] = $row['univ_id'];
+        $adjudicator['team_conflicts'] = array();
         $conflicts = preg_split("/,/", $row['conflicts'], -1, PREG_SPLIT_NO_EMPTY);
         foreach ($conflicts as $conflict) {
-            $univ_result = mysql_query("SELECT univ_id FROM university WHERE univ_code = '$conflict'");
-            $univ = mysql_fetch_assoc($univ_result);
-            //insert checks here...
-            $adjudicator['univ_conflicts'][] = $univ['univ_id'];
+            $parts = split("[.]", $conflict);
+            if (sizeof($parts) == 1)
+                $adjudicator['univ_conflicts'][] = __get_university_id_by_code($conflict);
+            elseif (sizeof($parts == 2)) {
+                 $adjudicator['team_conflicts'][] = __get_team_id_by_codes($parts[0], $parts[1]);
+            }
         }
         $result[] = $adjudicator;
     }

@@ -67,7 +67,7 @@ function adjudicator_sheets_pdf($filename, $data) {
         $pdf->AddPage();
         $pdf->SetLeftMargin(25);
         $pdf->SetLineWidth(1.0);
-        $pdf->SetFont('Arial','B', 16);
+        $pdf->SetFont('Arial','B', 11);
         $pdf->Cell(220, 10, "Venue: " . $r['venue']);
         $pdf->Cell(20, 10, "Round: " . $r['round']);
         $pdf->Ln();

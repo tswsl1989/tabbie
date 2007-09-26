@@ -265,7 +265,7 @@ function adjudicator_sheets($round) {
         $page = array(
             "chair" => $chair,
             "round" => $round,
-            "venue" => "$venue_name  at  $venue_location",
+            "venue" => "$venue_name" . ($venue_location ? " at $venue_location" : ""),
             "motion" => $motion,
             "og" => $og,
             "oo" => $oo,

@@ -29,23 +29,29 @@ require("view/mainmenu.php");
 
 require_once("includes/backend.php");
 $round = get_num_rounds();
+$next_round = $round + 1;
 
 if (get_num_rounds() == 0 && !has_temp_draw()) {
     $state = "before_tournament";
+    $p_state = "The tournament has not started yet - i.e., there has not been a draw for the first round yet.";
 } elseif (get_num_rounds() == get_num_completed_rounds() && !has_temp_draw() && !has_temp_result()) {
     $state = "before_draw";
+    $p_state = "All results for round $round have been inputted and finalized, and the draw for round $next_round has not been made.";
 } elseif (get_num_rounds() == get_num_completed_rounds() && has_temp_draw() && !has_temp_result()) {
     $state = "during_draw";
+    $p_state = "The automated draw for round $next_round has been requested and the adjudication team can allocate adjudicators to the debates";
 } elseif (get_num_rounds() > get_num_completed_rounds() && !has_temp_draw() && !has_temp_result()) {
     $state = "during_round";
+    $p_state = "The draw for round $round has been created, but inputting results for this round has not started yet.";
 } elseif (get_num_rounds() > get_num_completed_rounds() && !has_temp_draw() && has_temp_result()) {
     $state = "during_results";
+    $p_state = "You are inputting the results for round $round.";
 }
 ?>
 
 <h2>Overview</h2>
 <p>
-Use the menu above for direct access to all of Tabbie's functionality. 
+<?= $p_state ?> 
 </p>
 
 <? if ($state == "before_tournament") { ?>

@@ -40,15 +40,6 @@ div#content
   margin:10px;
 }
 
-#main 
-{ 
- width: 100%; height: 120px; 
- background-image: url(logo.png); 
- background-repeat: no-repeat; 
- background-color: #000000;
- background-position: top right;
-} 
-
 body h1
 {
   text-align: center;

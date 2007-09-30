@@ -31,5 +31,4 @@
 </head>
 
 <body>
-<h1 id="main">Tabbie - British Parliamentary Debating Tabbing Software</h1>
 <div id="content">

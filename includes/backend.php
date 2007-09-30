@@ -29,8 +29,18 @@ function get_num_rounds() {
     return mysql_num_rows($result);
 }
 
+function has_temp_draw() {
+    $result = q("SHOW TABLES LIKE 'temp_draw_round%'");
+    return mysql_num_rows($result);
+}
+
 function get_num_completed_rounds() {
     $result = q("SHOW TABLES LIKE 'result_round%'");
+    return mysql_num_rows($result);
+}
+
+function has_temp_result() {
+    $result = q("SHOW TABLES LIKE 'temp_result_round%'");
     return mysql_num_rows($result);
 }
 

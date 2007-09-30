@@ -29,6 +29,18 @@ require("view/mainmenu.php");
 
 require_once("includes/backend.php");
 $round = get_num_rounds();
+
+if (get_num_rounds() == 0 && !has_temp_draw()) {
+    $state = "before_tournament";
+} elseif (get_num_rounds() == get_num_completed_rounds() && !has_temp_draw() && !has_temp_result()) {
+    $state = "before_draw";
+} elseif (get_num_rounds() == get_num_completed_rounds() && has_temp_draw() && !has_temp_result()) {
+    $state = "during_draw";
+} elseif (get_num_rounds() > get_num_completed_rounds() && !has_temp_draw() && !has_temp_result()) {
+    $state = "during_round";
+} elseif (get_num_rounds() > get_num_completed_rounds() && !has_temp_draw() && has_temp_result()) {
+    $state = "during_results";
+}
 ?>
 
 <h2>Overview</h2>
@@ -36,6 +48,7 @@ $round = get_num_rounds();
 Use the menu above for direct access to all of Tabbie's functionality. 
 </p>
 
+<? if ($state == "before_tournament") { ?>
 <h3>Before the tournament &amp; during registration</h3>
 <ul>
 <li><a href="input.php?moduletype=venue">Input venue (room) names and locations</a></li>
@@ -45,27 +58,40 @@ Use the menu above for direct access to all of Tabbie's functionality.
 <li><a href="input.php?moduletype=motion">Input motions for the regular rounds</a></li>
 <li><a href="backup.php">Make a backup (and save it on another computer)</a></li>
 </ul>
-
+<h3>Before the first regular round</h3>
+<ul>
+<? } if (in_array($state, array("before_draw", "during_draw", "during_round"))) { ?>
 <h3>Before each regular round</h3>
 <ul>
+<? } if ($state == "before_draw") { ?>
 <li><a href="input.php?moduletype=venue">Update venues according to availability</a></li>
 <li><a href="input.php?moduletype=team">Update team status according to presence</a></li>
 <li><a href="input.php?moduletype=adjud">Update adjudicator status according to presence</a></li>
+<? } if ($state == "before_tournament" || $state == "before_draw") { ?>
 <li><a href="draw.php?moduletype=currentdraw&amp;action=draw">Request the automated draw</a></li>
+<? } if ($state == "during_draw") { ?>
 <li><a href="draw.php?moduletype=manualdraw">Manually adjust adjudicators and rooms</a></li>
 <li><a href="draw.php?moduletype=manualdraw&amp;action=finalise">Finalize the draw</a></li>
+<? } if ($state == "during_round") { ?>
 <li><a href="rest.php?result_type=pdf&amp;function=adjudicator_sheets&amp;param=<?= $round ?>">Print the adjudicator sheets with room-specific info</a> (and have them distributed)</li>
 <li><a href="draw.php">Display the draw</a></li>
 <li>Display the motion</li>
 <li><a href="backup.php">Make a backup (and save it on another computer)</a></li>
+<? } if (in_array($state, array("before_draw", "before_tournament", "during_draw", "during_round"))) { ?>
 </ul>
-
+<? } if (in_array($state, array("during_round", "during_results", "before_draw"))) { ?>
 <h3>After each regular round</h3>
 <ul>
+<? } if ($state == "during_round") { ?>
 <li><a href="result.php?moduletype=currentround&amp;action=create">Start Inputting results</a></li>
+<? } if ($state == "during_results") { ?>
+<li><a href="result.php?moduletype=currentround">Continue Inputting results</a></li>
 <li><a href="result.php?moduletype=currentround&amp;action=finalize">Finalize results</a></li>
+<? } if ($state == "before_draw") { ?>
 <li><a href="backup.php">Make a backup (and save it on another computer)</a></li>
+<? } if (in_array($state, array("during_round", "during_results", "before_draw"))) { ?>
 </ul>
+<? } if ($state == "before_draw") { ?>
 
 <h3>Before the break</h3>
 <ul>
@@ -83,6 +109,7 @@ Use the menu above for direct access to all of Tabbie's functionality.
 <li>Present the results as a website (not implemented yet)</li>
 </ul>
 
+<? } ?>
 
 </p>
 <?php

@@ -39,7 +39,7 @@ if (get_num_rounds() == 0 && !has_temp_draw()) {
     $p_state = "All results for round $round have been inputted and finalized, and the draw for round $next_round has not been made.";
 } elseif (get_num_rounds() == get_num_completed_rounds() && has_temp_draw() && !has_temp_result()) {
     $state = "during_draw";
-    $p_state = "The automated draw for round $next_round has been requested and the adjudication team can allocate adjudicators to the debates";
+    $p_state = "You are manually adjusting the adjudicators for round $next_round.";
 } elseif (get_num_rounds() > get_num_completed_rounds() && !has_temp_draw() && !has_temp_result()) {
     $state = "during_round";
     $p_state = "The draw for round $round has been created, but inputting results for this round has not started yet.";

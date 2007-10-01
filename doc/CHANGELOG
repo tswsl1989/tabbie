@@ -1,4 +1,27 @@
 CHANGELOG:
+1.3:
+* Adjudicator Allocation has been completely redone. It takes into account the following:
+    * University - Adjudicator conflicts,
+    * Team - Adjudicator conflicts,
+    * Better adjudicators should be chairs
+    * Better debates get better panels
+    * Adjudicators should avoid previous co-panellists
+    * Adjudicators should avoid previous adjudicated teams
+
+* Overview page made more clear - only currently possible options are shown
+
+* Layout:
+    * Removed big "Tabbie" header to clear up some space
+    * Personalized Adjudicator Sheets in smaller font for longer names
+    * Removed confusing "settings" option
+
+* Technical:
+    * Removed the website from the codebase to separate host
+    * GPL Licence header added to all code files
+
+1.2.1:
+* Bugfixes
+    * Manual draw adaption for round 1 was not possible - now it is.
 
 1.2:
 * Reorganisation of print module:

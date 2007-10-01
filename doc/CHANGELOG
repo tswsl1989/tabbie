@@ -1,8 +1,8 @@
 CHANGELOG:
 1.3:
 * Adjudicator Allocation has been completely redone. It takes into account the following:
-    * University - Adjudicator conflicts,
-    * Team - Adjudicator conflicts,
+    * University - Adjudicator conflicts ('scratches'),
+    * Team - Adjudicator conflicts ('scratches'),
     * Better adjudicators should be chairs
     * Better debates get better panels
     * Adjudicators should avoid previous co-panellists
@@ -28,9 +28,13 @@ CHANGELOG:
     * Overview is more clear (interface)
     * Files are no longer stored on disk but returned straight to the browser
     * Prettier HTML output
-    * Added an explanation of the Draw
+* Added an explanation of the Draw
 * Technical:
     * A start has been made for a clear REST interface
+
+1.1.2:
+* Bugfixes
+    * Manual draw adaption for round 1 was not possible - now it is.
 
 1.1.1:
 * Minor bugfixes:

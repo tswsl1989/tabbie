@@ -28,7 +28,7 @@ require("view/header.php");
 require("view/mainmenu.php");
 
 $POSITIONS = array('og' => "Opening Government", 'oo' => "Opening Opposition", 'cg' => "Closing Government", 'co' => "Closing Opposition");
-$RANKINGS = array('first', 'second', 'third', 'fourth', 'normalized');
+$INFOS = array('first', 'second', 'third', 'fourth', 'normalized');
 
 for ($round = 1; $round <= get_num_completed_rounds(); $round++) {
     $motion = get_motion_for_round($round);
@@ -38,13 +38,26 @@ for ($round = 1; $round <= get_num_completed_rounds(); $round++) {
     foreach ($POSITIONS as $short => $long) {
         print "<td>";
         print "<h3>$long</h3>";
-        foreach ($RANKINGS as $ranking) {
-            print ucwords($ranking) . ": " . $results[$short][$ranking] . "<br>";
+        @$totals[$short] += $results[$short]["total"];
+        @$total += $results[$short]["total"];
+        foreach ($INFOS as $info) {
+            print ucwords($info) . ": " . $results[$short][$info] . "<br>";
         } 
         print "</td>";
     }
     print "</tr></table>";
 }
+
+print "<h2>Entire Tournament</h2>";
+print "<table><tr>";
+foreach ($POSITIONS as $short => $long) {
+    print "<td>";
+    print "<h3>$long</h3>";
+    print "Normalized: " . sprintf("%001d", $totals[$short] / $total * 400) . "%<br>";
+    print "</td>";
+}
+print "</tr></table>";
+
 
 require("view/footer.php");
 

@@ -118,6 +118,14 @@ function results_by_position($round) {
             }
         }
     }
+    $total = 0;
+    foreach ($POSITIONS as $POSITION) {
+        $total += $result[$POSITION]["total"];
+    }
+    foreach ($POSITIONS as $POSITION) {
+        $result[$POSITION]["percentage"] = sprintf("%001d", $result[$POSITION]["total"] / $total * 100) . "%";
+        $result[$POSITION]["normalized"] = sprintf("%001d", $result[$POSITION]["total"] / $total * 400) . "%";
+    }
     return $result;
 }
 
@@ -167,6 +175,13 @@ function get_teams_venues($round) {
     }
     $result["data"] = $data;
     return $result;
+}
+
+function get_motion_for_round($round) {
+    $motion_query = "SELECT motion FROM motions WHERE round_no = $round ";
+    $motion_result = mysql_query($motion_query);
+    $motion_row = mysql_fetch_assoc($motion_result);
+    return $motion_row['motion'];
 }
 
 function adjudicator_sheets($round) {

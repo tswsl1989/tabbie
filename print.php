@@ -60,6 +60,11 @@ List of teams, and their venues</a>
 */ ?>
 <p>
 
+<h3>Analysis (Use for own pleasure or distribute)</h3>
+<ul>
+<li><a href="results_by_position.php">Motion Fairness</li>
+</ul>
+
 <?php
 require('view/footer.php'); 
 ?>

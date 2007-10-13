@@ -32,20 +32,11 @@ $query="SHOW TABLES LIKE 'result_round%'";
 $result=mysql_query($query);
 $numresults=mysql_num_rows($result);
 
-if ($round && ($round<$numresults))
-    $action="showround";
+$action = "display";
+if (!$round)
+    $roundno = $numresults;
 else
-    $action="display";
-
-switch($action)
-{
-    case "display":
-                        break;
-    case "showround":
-                break;
-    default:
-                        $action="display";
-}
+    $roundno = $round;
 
 //Load respective module
 include("teamstanding/$action.php");

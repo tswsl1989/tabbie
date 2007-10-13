@@ -69,12 +69,6 @@ if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
         $validate=0;
       }
 
-    if (!ereg("^[A-Z]$",$team_code)) //Not a single alphabetic value
-      {
-        $msg[]="Team Code should be a single letter.";
-        $validate=0;
-      }
-
     if ((!$univ_id) || (!$team_code) || (!$speaker1) ||(!$speaker2)) $validate=0;
   }
 

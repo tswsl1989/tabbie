@@ -26,7 +26,7 @@ CREATE TABLE speaker (
 CREATE TABLE team (
   team_id mediumint(9) NOT NULL auto_increment,
   univ_id mediumint(9) NOT NULL default '0',
-  team_code char(2) NOT NULL default '',
+  team_code varchar(20) NOT NULL default '',
   esl enum('N','Y') NOT NULL default 'N',
   active enum('N','Y') NOT NULL default 'N',
   composite enum('N','Y') NOT NULL default 'Y',

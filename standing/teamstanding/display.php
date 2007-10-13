@@ -56,12 +56,12 @@ switch($list)
                 
 switch($action)
 {
-    case "display":     $title.=" - Round $numresults";
+    case "display":     $title.=" - Round $roundno";
                         break;
     case "warning":     $title.=" - Confirm";
                         break;
     default:
-                        $title.=" - Round $numresults";
+                        $title.=" - Round $roundno";
                         $action="display";
                         break;
 }
@@ -139,29 +139,33 @@ if ($action == "display")
         $team_id = $cc["teamid"];
         $score = 0;
         $speaker = 0;
-        for ($x=1;$x<=$numresults;$x++)
+        for ($x=1;$x<=$roundno;$x++)
         {
+            $team_array[$index]["round_$x"] = 0; //default;
             // Check for first
             $score_query = "SELECT first FROM result_round_$x WHERE first = '$team_id' ";
             $score_result = mysql_query($score_query);
             $score_count = mysql_num_rows($score_result);
-            if ($score_count > 0)
-                $score = $score + 3;
+            if ($score_count > 0) {
+                $team_array[$index]["round_$x"] = 3;
+            }
     
             // Check for second
             $score_query = "SELECT second FROM result_round_$x WHERE second = '$team_id' ";
             $score_result = mysql_query($score_query);
             $score_count = mysql_num_rows($score_result);
             if ($score_count > 0)
-                $score = $score + 2;
+                $team_array[$index]["round_$x"] = 2;
     
             // Check for third
             $score_query = "SELECT third FROM result_round_$x WHERE third = '$team_id' ";
             $score_result = mysql_query($score_query);
             $score_count = mysql_num_rows($score_result);
             if ($score_count > 0)
-                $score = $score + 1;
-                
+                $team_array[$index]["round_$x"] = 1;
+            
+
+            $score +=  $team_array[$index]["round_$x"];
             // Speaker points
             $score_query = "SELECT points FROM speaker_round_$x AS round, speaker AS speaker ";
             $score_query .= "WHERE speaker.team_id = '$team_id' AND speaker.speaker_id = round.speaker_id ";
@@ -193,7 +197,10 @@ if ($action == "display")
     
     // Displaying the standings
     echo "<table>\n";
-    echo "<tr><th>Position</th><th>Team Name</th><th>Score</th><th>Points</th></tr>\n";
+    echo "<tr><th>Position</th><th>Team Name</th>";
+    for ($y=1;$y<=$roundno;$y++)
+        echo "<th>Round $y</th>";
+    echo "<th>Total Score</th><th>Speaker Points</th></tr>\n";
     $x = 0;
     foreach ($team_array as $cc)
     {
@@ -201,6 +208,8 @@ if ($action == "display")
         echo "<tr>\n";
             echo "<td>".($x)."</td>\n";
             echo "<td>".$cc["teamname"]."</td>\n";
+            for ($y=1;$y<=$roundno;$y++)
+                echo "<td>" . $cc["round_$y"] . "</td>";
             echo "<td>".$cc["score"]."</td>\n";
             echo "<td>".$cc["speaker"]."</td>\n";
         echo "</tr>\n";

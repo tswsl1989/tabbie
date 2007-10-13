@@ -197,7 +197,9 @@ function debate_energy_details(&$debate) {
         foreach($adjudicator['univ_conflicts'] as $conflict) 
             foreach ($debate['universities'] as $university)
                 if ($conflict == $university) {
-                    $result[] = array($scoring_factors['university_conflict'], "{$adjudicator['adjud_name']} has a conflict with univ_id '$conflict'");
+                    $x = get_university($university);
+                    $university_code = $x['univ_code'];
+                    $result[] = array($scoring_factors['university_conflict'], "{$adjudicator['adjud_name']} has a conflict with university '$university_code'");
                 }
         foreach($adjudicator['team_conflicts'] as $conflict) 
             foreach ($debate['teams'] as $team)

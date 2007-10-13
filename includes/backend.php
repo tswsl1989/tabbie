@@ -354,4 +354,8 @@ function team_name($team_id) {
     return $row['univ_code'] . " " . $row['team_code'];
 }
 
+function get_university($univ_id) {
+    return mysql_fetch_assoc(q("SELECT * FROM university WHERE univ_id = '$univ_id'"));
+}
+
 ?>

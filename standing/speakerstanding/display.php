@@ -52,12 +52,12 @@ switch($list)
                 
 switch($action)
 {
-    case "display":     $title.=" - Round $numresults";
+    case "display":     $title.=" - Round $roundno";
                         break;
     case "warning":     $title.=" - Confirm";
                         break;
     default:
-                        $title.=" - Round $numresults";
+                        $title.=" - Round $roundno";
                         $action="display";
                         break;
 }
@@ -129,13 +129,14 @@ if ($action == "display")
         $index = $cc["index"];
         $speaker_id = $cc["speakerid"];
         $points = 0;
-        for ($x=1;$x<=$numresults;$x++)
+        for ($x=1;$x<=$roundno;$x++)
         {
             $score_query = "SELECT points FROM speaker_round_$x ";
             $score_query .= "WHERE speaker_id = '$speaker_id' ";
             $score_result = mysql_query($score_query);
             $score_row = mysql_fetch_assoc($score_result);
-                  $points += $score_row['points'];
+            $points += $score_row['points'];
+            $speaker_array[$index]["round_$x"] = $score_row['points'];
         }
         $speaker_array[$index]["points"] = $points;
     }
@@ -150,13 +151,18 @@ if ($action == "display")
     
     // Displaying the standings
     echo "<table>\n";
-    echo "<tr><th>Position</th><th>Speaker Name</th><th>Team Name</th><th>Points</th></tr>\n";
+    echo "<tr><th>Position</th><th>Speaker Name</th><th>Team Name</th>";
+    for ($x=1;$x<=$roundno;$x++)
+        echo "<th>Round $x</th>";
+    echo "<th>Total Points</th></tr>\n";
     for ($x=0;$x<count($speaker_array);$x++)
     {
         echo "<tr>\n";
             echo "<td>".($x+1)."</td>\n";
             echo "<td>".$speaker_array[$x]["speakername"]."</td>\n";
             echo "<td>".$speaker_array[$x]["teamname"]."</td>\n";
+            for ($y=1;$y<=$roundno;$y++)
+                echo "<td>" . $speaker_array[$x]["round_$y"] . "</td>";
             echo "<td>".$speaker_array[$x]["points"]."</td>\n";
         echo "</tr>\n";
         

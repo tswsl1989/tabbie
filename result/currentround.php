@@ -517,10 +517,10 @@ if ($nextresult==$numrounds)
                     echo "<tr>\n";
                     echo "<td class=\"editdel\"><a href=\"result.php?moduletype=currentround&amp;action=edit&amp;debate_id=$results_debate_id\">Edit</a></td>";
             echo "<td>$venue</td>\n";
-                    echo "<td>$team_og_name (".returnposition($first,$second,$third,$fourth,$og).")</td>\n";
-                    echo "<td>$team_oo_name (".returnposition($first,$second,$third,$fourth,$oo).")</td>\n";
-                    echo "<td>$team_cg_name (".returnposition($first,$second,$third,$fourth,$cg).")</td>\n";
-                    echo "<td>$team_co_name (".returnposition($first,$second,$third,$fourth,$co).")</td>\n";
+                    echo "<td>$team_og_name (".returnPositionString(returnposition($first,$second,$third,$fourth,$og)).")</td>\n";
+                    echo "<td>$team_oo_name (".returnPositionString(returnposition($first,$second,$third,$fourth,$oo)).")</td>\n";
+                    echo "<td>$team_cg_name (".returnPositionString(returnposition($first,$second,$third,$fourth,$cg)).")</td>\n";
+                    echo "<td>$team_co_name (".returnPositionString(returnposition($first,$second,$third,$fourth,$co)).")</td>\n";
 
 
                     echo"</tr>\n";
@@ -654,7 +654,7 @@ if ($nextresult==$numrounds)
 
       
       echo "<div id=\"og\">\n";
-      echo "<h2 class=\"pos\">".(array_search('og',array_keys($scores_arr))+1)."</h2>\n";
+      echo "<h2 class=\"pos\">".returnPositionString(array_search('og',array_keys($scores_arr))+1)."</h2>\n";
       echo "<h3>OG: $team_og_name</h3>\n";
       echo "<h3>($team_og_score)</h3>\n";
       if (($speaker1_og_score < $lower_limit) OR ($speaker1_og_score > $upper_limit))
@@ -669,7 +669,7 @@ if ($nextresult==$numrounds)
       echo "</div>\n";
       
       echo "<div id=\"oo\">\n";      
-      echo "<h2 class=\"pos\">".(array_search('oo',array_keys($scores_arr))+1)."</h2>\n";
+      echo "<h2 class=\"pos\">".returnPositionString(array_search('oo',array_keys($scores_arr))+1)."</h2>\n";
       echo "<h3>OO: $team_oo_name</h3>\n";
       echo "<h3>($team_oo_score)</h3>\n";
       if (($speaker1_oo_score < $lower_limit) OR ($speaker1_oo_score > $upper_limit))
@@ -684,7 +684,7 @@ if ($nextresult==$numrounds)
       echo "</div>\n";
 
       echo "<div id=\"cg\">\n";
-      echo "<h2 class=\"pos\">".(array_search('cg',array_keys($scores_arr))+1)."</h2>\n";
+      echo "<h2 class=\"pos\">".returnPositionString(array_search('cg',array_keys($scores_arr))+1)."</h2>\n";
       echo "<h3>CG: $team_cg_name</h3>\n";
       echo "<h3> ($team_cg_score)</h3>";
       if (($speaker1_cg_score < $lower_limit) OR ($speaker1_cg_score > $upper_limit))
@@ -699,7 +699,7 @@ if ($nextresult==$numrounds)
       echo "</div>\n";
       
       echo "<div id=\"co\">\n";
-      echo "<h2 class=\"pos\">".(array_search('co',array_keys($scores_arr))+1)."</h2>\n";
+      echo "<h2 class=\"pos\">".returnPositionString(array_search('co',array_keys($scores_arr))+1)."</h2>\n";
       echo "<h3>CO: $team_co_name</h3>\n";
       echo "<h3>($team_co_score)</h3>";
       if (($speaker1_co_score < $lower_limit) OR ($speaker1_co_score > $upper_limit))

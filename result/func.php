@@ -32,7 +32,27 @@ function returnposition($first, $second,$third,$fourth,$team_id)
     elseif ($team_id==$fourth) 
         return 4;
     else
-    return "<b>none</b>";    
+    return 0;    
 
 }
+
+function returnPositionString($pos) {
+    switch($pos) {
+        case 0 :
+            return "<b>none</b>";
+        case 1 :
+            return "1st";
+            break;
+        case 2 :
+            return "2nd";
+            break;
+        case 3 :
+            return "3rd";
+            break;            
+        case 4 :
+            return "4th";
+            break;
+    }
+}
+
 ?>

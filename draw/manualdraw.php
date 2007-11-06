@@ -462,7 +462,7 @@ if ($exist)
             $endtag="";
           }
                    
-        echo "<td>$starttag{$row['adjud_name']}$endtag</td>";
+        echo "<td>$starttag{$row['adjud_name']} ({$row['ranking']})$endtag</td>";
                     
         echo "<td>{$row['status']}</td>";
         echo "<td>{$row['ranking']}</td>";
@@ -522,7 +522,7 @@ if ($exist)
           }
                            
 
-        echo "<td>$starttag{$row['adjud_name']}$endtag</td>\n";
+        echo "<td>$starttag{$row['adjud_name']} ({$row['ranking']})$endtag</td>\n";
                         
         echo "<td>{$row['ranking']}</td>\n";
         echo ($row['conflicts'])?"<td>{$row['conflicts']}</td>":"<td><b>NONE</b></td>";
@@ -685,7 +685,7 @@ if ($exist)
                 $couc=$row['cotc'];
 
                 //Find Chief Adjudicatmr
-                $query="SELECT A.adjud_name AS adjud_name, A.conflicts AS conflicts FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='chair' AND T.debate_id='{$row['debate_id']}'";
+                $query="SELECT A.adjud_name AS adjud_name, A.ranking, A.conflicts AS conflicts FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='chair' AND T.debate_id='{$row['debate_id']}'";
                 $resultadjud=mysql_query($query);
 
                 if (mysql_num_rows($resultadjud)==0)
@@ -715,11 +715,11 @@ if ($exist)
             $starttag="";
             $endtag="";
               }
-                    echo "$text"."$starttag{$rowadjud['adjud_name']}$endtag</td>";
+                    echo "$text"."$starttag{$rowadjud['adjud_name']} ({$rowadjud['ranking']})$endtag</td>";
           }
 
                 //Find Panelists
-                $query="SELECT A.adjud_name AS adjud_name, A.conflicts AS conflicts FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='panelist' AND T.debate_id='{$row['debate_id']}'";
+                $query="SELECT A.adjud_name AS adjud_name, A.conflicts AS conflicts, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='panelist' AND T.debate_id='{$row['debate_id']}'";
                 $resultadjud=mysql_query($query);
 
                 if (mysql_num_rows($resultadjud)==0)
@@ -751,13 +751,13 @@ if ($exist)
                 $endtag="";
               }
                        
-                        echo "<li>$starttag{$rowadjud['adjud_name']}$endtag</li>\n";
+                        echo "<li>$starttag{$rowadjud['adjud_name']} ({$rowadjud['ranking']})$endtag</li>\n";
               }
                     echo "</ul></td>\n";
           }
 
                 //Find Trainees
-                $query="SELECT A.adjud_name AS adjud_name, A.conflicts AS conflicts FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='trainee' AND T.debate_id='{$row['debate_id']}'";
+                $query="SELECT A.adjud_name AS adjud_name, A.conflicts AS conflicts, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='trainee' AND T.debate_id='{$row['debate_id']}'";
                 $resultadjud=mysql_query($query);
 
                 if (mysql_num_rows($resultadjud)==0)
@@ -792,7 +792,7 @@ if ($exist)
                 $endtag="";
               }
 
-                        echo "<li>$starttag{$rowadjud['adjud_name']}$endtag</li>\n";
+                        echo "<li>$starttag{$rowadjud['adjud_name']} ({$rowadjud['ranking']})$endtag</li>\n";
 
               }
                     echo "</ul></td>\n";

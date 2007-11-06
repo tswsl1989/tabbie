@@ -256,7 +256,7 @@ if (($validate==1))
                 echo "<td>$totalpoints </td>\n";                
 
                 //Find Chief Adjudicator
-                $query="SELECT A.adjud_name AS adjud_name FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='chair' AND T.debate_id='{$row['debate_id']}'";
+                $query="SELECT A.adjud_name AS adjud_name, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='chair' AND T.debate_id='{$row['debate_id']}'";
                 $resultadjud=q($query);
 
                 if (mysql_num_rows($resultadjud)==0)
@@ -264,11 +264,11 @@ if (($validate==1))
                 else
                 {
                     $rowadjud=mysql_fetch_assoc($resultadjud);
-                    echo "<td>{$rowadjud['adjud_name']}</td>";
+                    echo "<td>{$rowadjud['adjud_name']}  ({$rowadjud['ranking']})</td>";
                 }
 
                 //Find Panelists
-                $query="SELECT A.adjud_name AS adjud_name FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='panelist' AND T.debate_id='{$row['debate_id']}'";
+                $query="SELECT A.adjud_name AS adjud_name, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='panelist' AND T.debate_id='{$row['debate_id']}'";
                 $resultadjud=q($query);
 
                 if (mysql_num_rows($resultadjud)==0)
@@ -278,7 +278,7 @@ if (($validate==1))
                     echo "<td><ul>\n";
                     while($rowadjud=mysql_fetch_assoc($resultadjud))
                     {
-                        echo "<li>{$rowadjud['adjud_name']}</li>\n";
+                        echo "<li>{$rowadjud['adjud_name']} ({$rowadjud['ranking']})</li>\n";
                     }
                     echo "</ul></td>\n";
                 }

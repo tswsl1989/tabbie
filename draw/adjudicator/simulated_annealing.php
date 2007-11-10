@@ -49,7 +49,7 @@ further optimizing (speed) of the SA algorithm
 */
 
 //Simulated Annealing:
-$RUNS = 20000;
+$RUNS = 6;
 $UPHILL_PROBABILITY = 0.5;
 $ALPHA = 0.0005;
 $DETERMINATION = 500; // amount of times the algorithm searches for a better solution, before restarting at the best solution so far.
@@ -120,9 +120,11 @@ function allocate_simulated_annealing(&$msg, &$details) {
     initial_distribution($debates, $adjudicators);
     debates_energy($debates); // sets caches
     actual_sa($debates);
+
     $energy = format_dec(debates_energy($debates));
     $msg[] = "Adjudicator Allocation (SA) score is: $energy (the closer to zero, the better)";
     $details = debates_energy_details($debates);
+
     write_to_db($debates, $nextround);
 }
 
@@ -272,9 +274,9 @@ function random_select(&$debates) {
 }
 
 function swap(&$debates, $one, $two) {
-    $buffer = $debates[$one[0]]['adjudicators'][$one[1]];
+    $buffer = $debates[$one[0]]['adjudicators'][$one[1]];    
     $debates[$one[0]]['adjudicators'][$one[1]] = $debates[$two[0]]['adjudicators'][$two[1]];
-    $debates[$two[0]]['adjudicators'][$two[1]] = $buffer;
+    $debates[$two[0]]['adjudicators'][$two[1]] = $buffer;    
 }
 
 function actual_sa(&$debates) {
@@ -284,21 +286,26 @@ function actual_sa(&$debates) {
     $best_debates = $debates;
     $best_moment = 0;
     $i = 0;
-    while ($i < $RUNS) {
+    if (count($debates)>=2) {//for completeness, make sure we have more then one room
+      while ($i < $RUNS) {
         do {
             $one = random_select($debates);
             $two = random_select($debates);
-        } while ($one[0] == $two[0]);
+        } while ($one[0] == $two[0]);	
+
         $before = $debates[$one[0]]['energy'] + $debates[$two[0]]['energy'];
         swap($debates, $one, $two);
+
         $after = debate_energy($debates[$one[0]]) + debate_energy($debates[$two[0]]);
         $diff = $after - $before;
+
         if (!throw_dice(probability($diff, $temp))) {
             swap($debates, $one, $two); //swap back
         } else {
             $debates[$one[0]]['energy'] = debate_energy($debates[$one[0]]);
             $debates[$two[0]]['energy'] = debate_energy($debates[$two[0]]);
         }
+
         if ($diff < 0) { //better than prev
             $energy = debates_energy($debates);
             if ($energy < $best_energy) {
@@ -311,7 +318,8 @@ function actual_sa(&$debates) {
             $debates = $best_debates;
         }
         $temp = decrease_temp($temp);
-        $i++;
+        $i++;	      
+    }
     }
     $debates = $best_debates;
 }

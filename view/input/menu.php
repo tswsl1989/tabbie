@@ -29,6 +29,6 @@
     <li><a href="input.php?moduletype=adjud" <?echo ($moduletype=="adjud")?"class=\"activemain\"":""?>>adjudicator</a></li>
     <li><a href="input.php?moduletype=team" <?echo ($moduletype=="team")?"class=\"activemain\"":""?>>team</a></li>
     <li><a href="input.php?moduletype=motion" <?echo ($moduletype=="motion")?"class=\"activemain\"":""?>>motion</a></li>
-    <li><a href="input.php?moduletype=adjud_params" <?echo ($moduletype=="adjud_params")?"class=\"activemain\"":""?>>Adjudication parameters</a></li>
+    <li><a href="input.php?moduletype=adjud_params" <?echo ($moduletype=="adjud_params")?"class=\"activemain\"":""?>>adjudication parameters</a></li>
     </ul>
 </div>

@@ -41,28 +41,4 @@ function store_scoring_factors_to_db($params) {
 $scoring_factors = get_scoring_factors_from_db();
 //store_scoring_factors_to_db($scoring_factors);
 
-/*
-university_conflict: Penalty for each team-adjudicator from that team's uni.
-High values: Uni- conflicts will occur less
-2Low values: (Down to 0): Uni conflicts matter less
-
-chair_not_perfect: Penalty for each chair of less quality than 100. Total penalty = penalty * (100 - real value)
-High values: The best adjudicators will all be chairs
-Low values: Having the best people in chair is not as important
-
-"panel_steepness": Value between 0 and 1. Reflecting the relation between panel strength and debate strength.
-High values: Up to 1: Debate strength strictly relates to panel strength.
-Low values: All debates are considered equal.
-Further remarks: Slowly increasing this value during the tournament is expected to have a positive effect on the tournament.
-
-panel_strength_not_perfect: Penalty for distance to this 'ideal average'.
-High values: Emphasis on getting panels on the 'right strenght'
-Low values: Not so much emphasis on getting panels on the 'right strenght'
-
-adjudicator_met_adjudicator: Penalty for adjudicator meeting each other again. This penalty is multiplied by the 
-times these two already were in one panel together.
-High values: Adjudicators are not put in panels with previous co-panellists
-*/
-
-
 ?>

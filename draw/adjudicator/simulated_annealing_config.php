@@ -22,20 +22,29 @@
  * end license */
 
 //Energy calculation:
-$scoring_factors = array(
-    "university_conflict" => 1000,
-    "team_conflict" => 1000,
-    "chair_not_perfect" => 1,
-    "panel_steepness" => 0.5,
-    "panel_strength_not_perfect" => 1,
-    "adjudicator_met_adjudicator" => 50,
-    "adjudicator_met_team" => 50
-);
+
+function get_scoring_factors_from_db() {
+  $params = array();
+  $db_res = mysql_query("select param_name,param_value from configure_adjud_draw");
+  while ($row = mysql_fetch_assoc($db_res)) {
+    $params[$row['param_name']]=$row['param_value'];
+  }
+  return $params;
+}
+
+function store_scoring_factors_to_db($params) {
+    foreach ($params as $param => $pvalue) {
+      mysql_query("update configure_adjud_draw set param_value='$pvalue' where param_name='$param'");
+  }
+}
+
+$scoring_factors = get_scoring_factors_from_db();
+//store_scoring_factors_to_db($scoring_factors);
 
 /*
 university_conflict: Penalty for each team-adjudicator from that team's uni.
 High values: Uni- conflicts will occur less
-Low values: (Down to 0): Uni conflicts matter less
+2Low values: (Down to 0): Uni conflicts matter less
 
 chair_not_perfect: Penalty for each chair of less quality than 100. Total penalty = penalty * (100 - real value)
 High values: The best adjudicators will all be chairs
@@ -54,4 +63,6 @@ adjudicator_met_adjudicator: Penalty for adjudicator meeting each other again. T
 times these two already were in one panel together.
 High values: Adjudicators are not put in panels with previous co-panellists
 */
+
+
 ?>

@@ -20,34 +20,25 @@
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  * end license */
+require_once("draw/adjudicator/simulated_annealing_config.php");
+require("includes/display.php");
 
-//Determine action and moduletype and branch accordingly
-
-if (isset ($ntu_override_module)) {
-    $moduletype = $ntu_override_module;
-} else {
-    $moduletype=trim(@$_GET['moduletype']); 
-    if (!$moduletype)
-        $moduletype=$ntu_default_module;
+$submited=trim(@$_POST['save']);
+if ($submited=="submitted") {
+  foreach ($scoring_factors as $pname=>$pvalue) {
+    $scoring_factors[$pname]=trim(@$_POST["param_".$pname]);
+  }
+  store_scoring_factors_to_db($scoring_factors);
 }
 
-$action=trim(@$_GET['action']);
-if (!$action) $action=$ntu_default_action;
+echo "<h2>Adjust adjudicator allocation parameters</h2>\n"; //title
+echo "<form action=\"input.php?moduletype=adjud_params\" method=POST><table border=1><tr><th>Parameter name</th><th>parameter value</th></tr>";
+//iterate over params:
+foreach ($scoring_factors as $pname => $pvalue) {
+  printf("<tr><td>%s</td><td><input name=\"param_%s\" value=\"%d\"></td></tr>\n",$pname,$pname,$pvalue);
+}
+printf("</table>");
+//echo "<input type=\"hiddedn\" value=\"adjud_params\">";
+echo "<button name=\"save\" type=\"submit\" value=\"submitted\">save</button>";
 
-if (! isset($title))
-    $title = "";
-
-if (array_key_exists($moduletype, $ntu_titles))
-    $title .= " " . $ntu_titles[$moduletype] . " ";
-else 
-    $title = " " . ucfirst($moduletype) . " ";
-
-include("view/header.php");
-include("view/mainmenu.php");
-include("view/$ntu_controller/menu.php");
-
-//Load respective module
-include("$ntu_controller/$moduletype.php");
-
-include("view/footer.php");
 ?>

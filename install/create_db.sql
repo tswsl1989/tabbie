@@ -58,3 +58,18 @@ CREATE TABLE highlight (
 ) TYPE=MyISAM;
 
 INSERT INTO highlight VALUES ('50', '100', 'result');
+
+create table configure_adjud_draw ( 
+  param_name varchar(100), 
+  param_value double, 
+  PRIMARY KEY (param_name) 
+);
+
+INSERT INTO configure_adjud_draw values("university_conflict",1000);
+INSERT INTO configure_adjud_draw values('team_conflict',1000);
+INSERT INTO configure_adjud_draw values('chair_not_perfect',1);
+INSERT INTO configure_adjud_draw values('panel_steepness',0.5);
+INSERT INTO configure_adjud_draw values('panel_strength_not_perfect',1);
+INSERT INTO configure_adjud_draw values('adjudicator_met_adjudicator',50);
+INSERT INTO configure_adjud_draw values('adjudicator_met_team',5);
+ 

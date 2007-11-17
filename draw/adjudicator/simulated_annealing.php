@@ -29,15 +29,21 @@ require_once("draw/adjudicator/simulated_annealing_config.php");
 
 /*
 TODO for this file:
-team conflicts (next to already existing university conflicts)
 
-**** version 1.3 breaking point *****
+create a lock, to prevent problems with people hitting reload
+
+conventional best-chair-best-debate
+
+swap someone for no-one
+
+**************beginning of december breaking point****************
+
+focus on high number problems first
+
 
 everything that is related to probability of making the break / winning
 
 bin protection
-
-number of adjudicators per debate could vary
 
 allow for a report on manual changes too (score and messages)
 technical: weave in messaging and scoring mechanisms.

@@ -28,6 +28,12 @@ Purpose :   Calculate the draw for the current round taking into account all
 require_once("includes/display.php");
 require_once("includes/db_tools.php");
 require_once("includes/backend.php");
+require_once("draw/adjudicator/simulated_annealing.php");
+
+function cmp_debate_detail($one, $two) {
+    $result = floatval($two[0]) - floatval($one[0]);
+    return $result;
+}
 
 $action = @$_GET['action'];
 $title="Draw : Round " . $nextround;
@@ -62,6 +68,16 @@ if ($numrounds != $numresults) {
     $msg[] = "The results for the last round have not been entered. Please enter the results and then try again.";
 }
 
+$scoring_factors = get_scoring_factors_from_db();
+if ($scoring_factors['lock']) {
+    $validate=0;
+    $msg[] = 'The automated draw has been locked - it seems that someone else is running the automated draw at the same time or you have hit reload too quickly. Try again by <a href="draw.php?moduletype=currentdraw">returning to the current draw page in a few seconds</a>. If you keep getting this message, <a href="input.php?moduletype=adjud_params">unset the lock parameter</a>.';
+}
+
+if ($validate) {
+    store_scoring_factors_to_db(array("lock" => 1));
+}
+
 if (($action=="draw") && ($validate == 1)) {
 
     $teams = get_teams_positions_points(get_num_rounds());
@@ -76,7 +92,7 @@ if (($action=="draw") && ($validate == 1)) {
         $msg[] = "The Algortihm has not created a valid draw!!!";
     
     $score = debates_badness($debates); //only works for silver_line since others don't attribute enough data
-    $msg[] = "The Algortihm has created a draw with score $score, and 0 is the best possible score.";
+    $msg[] = "The Debater Allocation Algortihm has created a draw with score $score, and 0 is the best possible score.";
 
     function funny_conversion_for_ntu_code($debates) {
         $result = array();
@@ -133,11 +149,18 @@ PRIMARY KEY (debate_id))";
         q("INSERT INTO $tablename (debate_id, og, oo, cg, co, venue_id) VALUES('$debate_id', '$og', '$oo', '$cg', '$co', '$venue_id')");
 
     }
-    require_once("draw/adjudicator/simulated_annealing.php");
     $details = array();
-    allocate_simulated_annealing($msg, $details);
+    reallocate_simulated_annealing();
 }
 
+if (($action=="draw_adjudicators_again") && ($validate == 1)) {
+    refine_simulated_annealing($msg);
+}
+
+if ($validate) {
+    store_scoring_factors_to_db(array("lock" => 0));
+    display_sa_energy($msg, $details);
+}
 
 echo "<h2>$title</h2>\n"; //title
 
@@ -157,6 +180,8 @@ if (($validate==1))
     if ($result)
     {
         echo "<p>From here you can either:</p>";
+        echo "<h3><a href=\"draw.php?moduletype=currentdraw&amp;action=draw_adjudicators_again\">Give the computer another shot at allocating the adjudicators (Using the current state to generate a better result).</a></h3>";
+        echo '<p>or</p>';
         echo '<h3><a href="draw.php?moduletype=manualdraw">Manually adjust adjudicators and rooms</a></h3>';
         echo '<p>or</p>';
         echo '<h3><a href="draw.php?moduletype=manualdraw&amp;action=finalise">Finalize the draw</a></h3>';
@@ -282,11 +307,17 @@ if (($validate==1))
                     }
                     echo "</ul></td>\n";
                 }
-                echo "<td><ul>";
-                if (@$details[$row['debate_id']])
-                    foreach ($details[$row['debate_id']] as $detail)
-                        echo "<li>$detail</li>\n";
-                echo "</ul></td>";
+                echo "<td>";
+                if (@$details[$row['debate_id']]) {
+                    echo "<table>";
+                    usort ($details[$row['debate_id']], "cmp_debate_detail");
+                    foreach ($details[$row['debate_id']] as $detail) {
+                        $penalty = format_dec($detail[0]);
+                        echo "<tr><td width=\"10\">$penalty</td><td width=\"300\">$detail[1]</td></tr>";
+                    }
+                    echo "</table>";
+                }
+                echo "</td>";
 
            echo "</tr>\n";
         
@@ -304,7 +335,8 @@ if (($validate==1))
 }
 
 if ($validate == 1) {
-    echo "<h3><a href=\"draw.php?moduletype=currentdraw&amp;action=draw\">Automatically (Re-)Calculate Draw</a></h3>";
+    echo "<h3><a href=\"draw.php?moduletype=currentdraw&amp;action=draw\">Automatically Calculate Draw (Starting from nothing)</a></h3>";
+    echo "<h3><a href=\"draw.php?moduletype=currentdraw&amp;action=draw_adjudicators_again\">Give the computer another shot at allocating the adjudicators (Using the current state to generate a better result).</a></h3>";
 }
 
 ?>

@@ -75,4 +75,6 @@ High values: Adjudicators are not put in panels with previous co-panellists<br/>
 </p><p>
 adjudicator_met_team: Penalty for adjudicator meeting a team they have adjudcicated before again. This penalty is multiplied by the times this has occurred before.<br/>
 High values: Adjudicators are not to adjudicate the same teams again and again<br/>
+</p><p>
+lock: (Maybe a bit misplaced in this table, but anyway) If this lock is on a non-zero value the algorithms can not be run. This is to prevent two different computers from hitting the draw buttons at the same time and messing things up big time. If for some reason the lock is set to one, it can be removed here.<br/>
 </p>

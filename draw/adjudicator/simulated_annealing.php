@@ -129,9 +129,23 @@ function set_ciaran_desired_chairs(&$debates) {
     }
 }
 
+function set_desired_panel_sizes(&$debates, $adjudicator_count) {
+    $i = 0;
+    $base = floor($adjudicator_count / count($debates));
+    $break_point = $adjudicator_count % count($debates); 
+    foreach ($debates as &$debate) {
+        $extra = $i < $break_point ? 1 : 0;
+        $debate['desired_panel_size'] = $base + $extra;
+        $i++;
+    }
+}
+
 function set_target_values(&$debates) {
-    set_unequal_desired_averages($debates, get_active_adjudicators());
+    sort_debates($debates);
+    $adjudicators = get_active_adjudicators();
+    set_unequal_desired_averages($debates, $adjudicators);
     set_ciaran_desired_chairs($debates);
+    set_desired_panel_sizes($debates, count($adjudicators));
 }
 
 function reallocate_simulated_annealing() {
@@ -237,6 +251,8 @@ function debate_energy(&$debate) {
 
     $result += $scoring_factors['panel_strength_not_perfect'] * pow(get_average($debate['adjudicators'], 'ranking') - $debate['desired_average'], 2);
 
+    $result += pow($debate['desired_panel_size'] - count($debate['adjudicators']), 2) * $scoring_factors['panel_size_not_perfect'];
+
     return $result;
 }
 
@@ -272,7 +288,6 @@ function debate_energy_details(&$debate) {
             if ($occurrences)
                 $result[] = array($penalty, "{$adjudicator['adjud_name']} met '$team_name' $occurrences time(s) before.");
         }
-
     }
     
     $adjudicators = $debate['adjudicators'];
@@ -293,7 +308,13 @@ function debate_energy_details(&$debate) {
     $penalty = format_dec($scoring_factors['panel_strength_not_perfect'] * pow($real - $desired_average, 2));
     $desired_average = format_dec($desired_average);
     $real = format_dec($real);
-    $result[] = array("$penalty", "Desired average is $desired_average but real average is $real");
+    $result[] = array("$penalty", "Desired average is $desired_average and real average is $real");
+
+    $panel_size = count($debate['adjudicators']);
+    $diff = abs($debate['desired_panel_size'] - $panel_size);
+    $penalty = pow($diff, 2) * $scoring_factors['panel_size_not_perfect'];
+    $result[] = array("$penalty", "Desired panel size is {$debate['desired_panel_size']} and real panel size is $panel_size");
+
     return $result;
 }
 

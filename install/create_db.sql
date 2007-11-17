@@ -73,4 +73,5 @@ INSERT INTO configure_adjud_draw values('panel_steepness', 0.2);
 INSERT INTO configure_adjud_draw values('panel_strength_not_perfect', 1);
 INSERT INTO configure_adjud_draw values('adjudicator_met_adjudicator', 50);
 INSERT INTO configure_adjud_draw values('adjudicator_met_team', 50);
+INSERT INTO configure_adjud_draw values('panel_size_not_perfect', 50);
 INSERT INTO configure_adjud_draw values('lock', 0);

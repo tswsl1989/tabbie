@@ -48,37 +48,37 @@ This way of adjudicator allocation (simulated annealing) is a rather new feature
 
 
 <p>
-university_conflict: Penalty for each meeting of a team and an adjudicator from that team's uni.<br/>
+<b>university_conflict</b>: Penalty for each meeting of a team and an adjudicator from that team's uni.<br/>
 High values: Uni- conflicts will occur less<br/>
 Low values: (Down to 0): Uni conflicts matter less
 </p><p>
-team_conflict: Penalty for each meeting of a team and an adjudicator that has a specificcally entered conflict with that team.<br/>
+<b>team_conflict</b>: Penalty for each meeting of a team and an adjudicator that has a specificcally entered conflict with that team.<br/>
 High values: Conflicts will occur less<br/>
 Low values: (Down to 0): These onflicts matter less
 </p><p>
-chair_not_perfect: Penalty for each chair of less quality than 100. Total penalty = penalty * (100 - real value)<br/>
+<b>chair_not_perfect</b>: Penalty for each chair of less quality than 100. Total penalty = penalty * (100 - real value)<br/>
 High values: The best adjudicators will all be chairs<br/>
 Low values: Having the best people in chair is not as important
 </p><p>
-chair_not_ciaran_perfect: Total penalty = penalty * abs(100 - ciaran_desired_value)<br/>
+<b>chair_not_ciaran_perfect</b>: Quadratical difference with 'ciaran desired value'<br/>
 High values: The best adjudicator will be chair in the best debate, the second best will be chair in the second best debate etc.<br/>
 Low values: Having the best chairs in the best debates is not as important
 </p><p>
-"panel_steepness": Value between 0 and 1. Reflecting the relation between panel strength and debate strength.<br/>
+<b>"panel_steepness"</b>: Value between 0 and 1. Reflecting the relation between panel strength and debate strength.<br/>
 High values: Up to 1: Debate strength strictly relates to panel strength.<br/>
 Low values: All debates are considered equal.<br/>
 Further remarks: Slowly increasing this value during the tournament is expected to have a positive effect on the tournament.
 </p><p>
-panel_strength_not_perfect: Penalty for distance to this 'ideal average'.<br/>
+<b>panel_strength_not_perfect</b>: Penalty for distance to this 'ideal average'.<br/>
 High values: Emphasis on getting panels on the 'right strenght'<br/>
 Low values: Not so much emphasis on getting panels on the 'right strenght'<br/>
 </p><p>
-adjudicator_met_adjudicator: Penalty for adjudicator meeting each other again. This penalty is multiplied by the 
+<b>adjudicator_met_adjudicator</b>: Penalty for adjudicator meeting each other again. This penalty is multiplied by the 
 times these two already were in one panel together.<br/>
 High values: Adjudicators are not put in panels with previous co-panellists<br/>
 </p><p>
-adjudicator_met_team: Penalty for adjudicator meeting a team they have adjudcicated before again. This penalty is multiplied by the times this has occurred before.<br/>
+<b>adjudicator_met_team</b>: Penalty for adjudicator meeting a team they have adjudcicated before again. This penalty is multiplied by the times this has occurred before.<br/>
 High values: Adjudicators are not to adjudicate the same teams again and again<br/>
 </p><p>
-lock: (Maybe a bit misplaced in this table, but anyway) If this lock is on a non-zero value the algorithms can not be run. This is to prevent two different computers from hitting the draw buttons at the same time and messing things up big time. If for some reason the lock is set to one, it can be removed here.<br/>
+<b>lock</b>: (Maybe a bit misplaced in this table, but anyway) If this lock is on a non-zero value the algorithms can not be run. This is to prevent two different computers from hitting the draw buttons at the same time and messing things up big time. If for some reason the lock is set to one, it can be removed here.<br/>
 </p>

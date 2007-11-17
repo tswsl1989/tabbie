@@ -234,7 +234,7 @@ function debate_energy(&$debate) {
     usort($adjudicators, 'cmp_ranking');
     $chair = array_pop($adjudicators);
     $result += $scoring_factors['chair_not_perfect'] * (100 - $chair['ranking']);
-    $result += $scoring_factors['chair_not_ciaran_perfect'] * abs($debate['ciaran_chair'] - $chair['ranking']);
+    $result += $scoring_factors['chair_not_ciaran_perfect'] * pow($chair['ranking'], 2);
 
     $result += $scoring_factors['panel_strength_not_perfect'] * pow(get_average($debate['adjudicators'], 'ranking') - $debate['desired_average'], 2);
 
@@ -285,7 +285,7 @@ function debate_energy_details(&$debate) {
     $result[] = array($penalty, "Chair {$chair['adjud_name']} has $diff difference from 100.0.");
 
     $diff = abs($debate['ciaran_chair'] - $chair['ranking']);
-    $penalty = $scoring_factors['chair_not_ciaran_perfect'] * ($diff);
+    $penalty = pow($diff, 2) * $scoring_factors['chair_not_ciaran_perfect'];
     $diff = format_dec($diff);
     $result[] = array($penalty, "Chair {$chair['adjud_name']} has $diff difference from 'Ciaran Ideal' of " . format_dec($debate['ciaran_chair']));
 

@@ -62,8 +62,8 @@ function get_adjudicator_by_id($adjud_id) {
     return $adjudicator;
 }
 
-function get_active_adjudicators() {
-    $db_result = mysql_query("SELECT adjud_id FROM adjudicator WHERE active='Y' ORDER BY adjud_id");
+function get_active_adjudicators($order_by='adjud_id') {
+    $db_result = mysql_query("SELECT adjud_id FROM adjudicator WHERE active='Y' ORDER BY $order_by");
     $result = array();
     while ($row = mysql_fetch_assoc($db_result)) {
         $result[] = get_adjudicator_by_id($row['adjud_id']);

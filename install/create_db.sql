@@ -67,7 +67,8 @@ CREATE TABLE configure_adjud_draw (
 
 INSERT INTO configure_adjud_draw values('university_conflict', 10000);
 INSERT INTO configure_adjud_draw values('team_conflict', 10000);
-INSERT INTO configure_adjud_draw values('chair_not_perfect', 1);
+INSERT INTO configure_adjud_draw values('chair_not_perfect', 3);
+INSERT INTO configure_adjud_draw values('chair_not_ciaran_perfect', 10);
 INSERT INTO configure_adjud_draw values('panel_steepness', 0.2);
 INSERT INTO configure_adjud_draw values('panel_strength_not_perfect', 1);
 INSERT INTO configure_adjud_draw values('adjudicator_met_adjudicator', 50);

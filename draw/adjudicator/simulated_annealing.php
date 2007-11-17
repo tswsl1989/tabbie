@@ -28,12 +28,9 @@ require_once("draw/adjudicator/simulated_annealing_config.php");
 //for information on what simulated annealing is, see: http://en.wikipedia.org/wiki/Simulated_annealing
 
 /*
-TODO for this file:
-
-create a lock, to prevent problems with people hitting reload
+TODO
 
 conventional best-chair-best-debate
-
 swap someone for no-one
 
 **************beginning of december breaking point****************
@@ -117,13 +114,35 @@ function set_unequal_desired_averages(&$debates, &$adjudicators) {
     }
 }
 
+function cmp_debate_desc($one, $two) {
+    return $two['points'] - $one['points'];
+}
+
+function sort_debates(&$debates) {
+    usort($debates, "cmp_debate_desc");
+}
+
+function set_ciaran_desired_chairs(&$debates) {
+    $chairs = get_active_adjudicators('ranking');
+    foreach ($debates as &$debate) {
+        $chair = array_pop($chairs);
+        $debate['ciaran_chair'] = $chair['ranking'];
+    }
+}
+
+function set_target_values(&$debates) {
+    set_unequal_desired_averages($debates, get_active_adjudicators());
+    set_ciaran_desired_chairs($debates);
+}
+
 function reallocate_simulated_annealing() {
     mt_srand(0);
     $nextround = get_num_rounds() + 1;
     $debates = debates_from_temp_draw_no_adjudicators($nextround);
-
-    $adjudicators = get_active_adjudicators();
-    initial_distribution($debates, $adjudicators);
+    
+    sort_debates($debates);
+    initial_distribution($debates, get_active_adjudicators($order_by="ranking"));
+    set_target_values($debates);
 
     __do_a_run($debates, $nextround);
 }
@@ -131,8 +150,9 @@ function reallocate_simulated_annealing() {
 function refine_simulated_annealing(&$msg) {
     $nextround = get_num_rounds() + 1;
     $debates = debates_from_temp_draw_with_adjudicators($nextround);
+    sort_debates($debates);
 
-    set_unequal_desired_averages($debates, get_active_adjudicators());
+    set_target_values($debates);
     $energy = format_dec(debates_energy($debates));
     $msg[] = "Adjudicator Allocation (SA) score was: $energy (the closer to zero, the better)";
 
@@ -140,7 +160,7 @@ function refine_simulated_annealing(&$msg) {
 }
 
 function __do_a_run(&$debates, $nextround) {
-    set_unequal_desired_averages($debates, get_active_adjudicators());
+    set_target_values($debates);
     debates_energy($debates); // sets caches
     actual_sa($debates);
     write_to_db($debates, $nextround);
@@ -149,9 +169,10 @@ function __do_a_run(&$debates, $nextround) {
 function display_sa_energy(&$msg, &$details) {
     $nextround = get_num_rounds() + 1;
     $debates = debates_from_temp_draw_with_adjudicators($nextround);
+    sort_debates($debates);
     $adjudicators = get_active_adjudicators();
-    set_unequal_desired_averages($debates, $adjudicators);
 
+    set_target_values($debates);
     $energy = format_dec(debates_energy($debates));
     $msg[] = "Adjudicator Allocation (SA) score is: $energy (the closer to zero, the better)";
     $details = debates_energy_details($debates);
@@ -213,6 +234,7 @@ function debate_energy(&$debate) {
     usort($adjudicators, 'cmp_ranking');
     $chair = array_pop($adjudicators);
     $result += $scoring_factors['chair_not_perfect'] * (100 - $chair['ranking']);
+    $result += $scoring_factors['chair_not_ciaran_perfect'] * abs($debate['ciaran_chair'] - $chair['ranking']);
 
     $result += $scoring_factors['panel_strength_not_perfect'] * pow(get_average($debate['adjudicators'], 'ranking') - $debate['desired_average'], 2);
 
@@ -261,6 +283,11 @@ function debate_energy_details(&$debate) {
     $penalty = $scoring_factors['chair_not_perfect'] * ($diff);
     $diff = format_dec($diff);
     $result[] = array($penalty, "Chair {$chair['adjud_name']} has $diff difference from 100.0.");
+
+    $diff = abs($debate['ciaran_chair'] - $chair['ranking']);
+    $penalty = $scoring_factors['chair_not_ciaran_perfect'] * ($diff);
+    $diff = format_dec($diff);
+    $result[] = array($penalty, "Chair {$chair['adjud_name']} has $diff difference from 'Ciaran Ideal' of " . format_dec($debate['ciaran_chair']));
 
     $real = get_average($debate['adjudicators'], 'ranking');
     $desired_average = $debate['desired_average'];

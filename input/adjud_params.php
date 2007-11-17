@@ -60,6 +60,10 @@ chair_not_perfect: Penalty for each chair of less quality than 100. Total penalt
 High values: The best adjudicators will all be chairs<br/>
 Low values: Having the best people in chair is not as important
 </p><p>
+chair_not_ciaran_perfect: Total penalty = penalty * abs(100 - ciaran_desired_value)<br/>
+High values: The best adjudicator will be chair in the best debate, the second best will be chair in the second best debate etc.<br/>
+Low values: Having the best chairs in the best debates is not as important
+</p><p>
 "panel_steepness": Value between 0 and 1. Reflecting the relation between panel strength and debate strength.<br/>
 High values: Up to 1: Debate strength strictly relates to panel strength.<br/>
 Low values: All debates are considered equal.<br/>

@@ -132,14 +132,25 @@ function set_ciaran_desired_chairs(&$debates) {
 }
 
 function set_desired_panel_sizes(&$debates, $adjudicator_count) {
+    global $min_panel_size, $max_panel_size;
+    $min_panel_size = 999;
+    $max_panel_size = 0;
     $i = 0;
     $base = floor($adjudicator_count / count($debates));
     $break_point = $adjudicator_count % count($debates); 
     foreach ($debates as &$debate) {
         $extra = $i < $break_point ? 1 : 0;
         $debate['desired_panel_size'] = $base + $extra;
+        $min_panel_size = min($min_panel_size, $debate['desired_panel_size']);
+        $max_panel_size = max($max_panel_size, $debate['desired_panel_size']);
         $i++;
     }
+}
+
+function diff_to_bounds($n, $lo, $hi) {
+    if ($n >= $lo && $n <= $hi) return 0;
+    if ($n < $lo) return $lo - $n;
+    if ($n > $hi) return $n - $hi;
 }
 
 function set_target_values(&$debates) {
@@ -222,7 +233,7 @@ function initial_distribution(&$debates, &$adjudicators) {
 }
 
 function debate_energy(&$debate) {
-    global $scoring_factors;
+    global $scoring_factors, $min_panel_size, $max_panel_size;
     $result = 0;
     $other_adjudicators = array_reverse($debate['adjudicators']);
     foreach ($debate['adjudicators'] as $adjudicator) {
@@ -253,13 +264,16 @@ function debate_energy(&$debate) {
 
     $result += $scoring_factors['panel_strength_not_perfect'] * pow(get_average($debate['adjudicators'], 'ranking') - $debate['desired_average'], 2);
 
-    $result += $scoring_factors['panel_size_not_perfect'] * pow($debate['desired_panel_size'] - count($debate['adjudicators']), 2);
+    $panel_size = count($debate['adjudicators']);
+    $result += $scoring_factors['panel_size_not_perfect'] * pow($debate['desired_panel_size'] - $panel_size, 2);
+
+    $result += $scoring_factors['panel_size_out_of_bounds'] * pow(diff_to_bounds($panel_size, $min_panel_size, $max_panel_size), 2);
 
     return $result;
 }
 
 function debate_energy_details(&$debate) {
-    global $scoring_factors;
+    global $scoring_factors, $min_panel_size, $max_panel_size;
     $result = array();
 
     $other_adjudicators = array_reverse($debate['adjudicators']);
@@ -317,6 +331,10 @@ function debate_energy_details(&$debate) {
     $penalty = pow($diff, 2) * $scoring_factors['panel_size_not_perfect'];
     $result[] = array("$penalty", "Desired panel size is {$debate['desired_panel_size']} and real panel size is $panel_size");
 
+    $diff = diff_to_bounds($panel_size, $min_panel_size, $max_panel_size);
+    $penalty = pow($diff, 2) * $scoring_factors['panel_size_out_of_bounds'];
+    $result[] = array("$penalty", "Desired panel bounds are [$min_panel_size, $max_panel_size] and real panel size is $panel_size");
+
     return $result;
 }
 
@@ -341,7 +359,7 @@ function debates_energy_details(&$debates) {
             $total += $detail[0];
         }
         $energy = debate_energy($debate);
-        if ($total != $energy) {
+        if ($total - $energy > 0.5) {
             $result[$debate['debate_id']][] = array(66666, "There seems to be a problem with the algorithm: $total != $energy");
         }
     }

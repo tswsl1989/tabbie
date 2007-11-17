@@ -73,6 +73,12 @@ Further remarks: Slowly increasing this value during the tournament is expected 
 High values: Emphasis on getting panels on the 'right strenght'<br/>
 Low values: Not so much emphasis on getting panels on the 'right strenght'<br/>
 </p><p>
+<b>panel_size_not_perfect</b>: Penalty for distance to the "perfect panel size".<br/>
+The "perfect panel size" emphasizes that better debates deserve the bigger panels. Thus, say you're having two debates and five adjudicators, the best debates has a "perfect panel size" of 3, the other one of 2<br/>
+</p><p>
+<b>panel_size_out_of_bounds</b>: Penalty for distance the "acceptable panel size bounds".<br/>
+These bounds do not emphasize that better debates deserve the bigger panels. Thus, say you're having two debates and five adjudicators, the bounds for both debates are panel sizes from 2 to 3.<br/>
+</p><p>
 <b>adjudicator_met_adjudicator</b>: Penalty for adjudicator meeting each other again. This penalty is multiplied by the 
 times these two already were in one panel together.<br/>
 High values: Adjudicators are not put in panels with previous co-panellists<br/>

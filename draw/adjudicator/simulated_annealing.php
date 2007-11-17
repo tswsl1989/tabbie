@@ -30,9 +30,11 @@ require_once("draw/adjudicator/simulated_annealing_config.php");
 /*
 TODO
 
-swap someone for no-one
+add check at the end for common problems (double adjudicators for exemple)
 
 **************beginning of december breaking point****************
+
+out of panel-size-bounds as an extra panel size option
 
 focus on high number problems first
 
@@ -346,17 +348,27 @@ function debates_energy_details(&$debates) {
     return $result;
 }
 
-function random_select(&$debates) {
-    $i = mt_rand(0, count($debates) - 1);
-    $debate = $debates[$i];
-    $j = mt_rand(0, count($debate['adjudicators']) - 1);
-    return array($i, $j);
+function random_select(&$debates, $long_scope=0) {
+    $debate_index = mt_rand(0, count($debates) - 1);
+    $debate = $debates[$debate_index];
+    $adjudicator_index = mt_rand(0, count($debate['adjudicators']) - 1 + $long_scope);
+    return array($debate_index, $adjudicator_index);
 }
 
-function swap(&$debates, $one, $two) {
-    $buffer = $debates[$one[0]]['adjudicators'][$one[1]];
-    $debates[$one[0]]['adjudicators'][$one[1]] = $debates[$two[0]]['adjudicators'][$two[1]];
-    $debates[$two[0]]['adjudicators'][$two[1]] = $buffer;
+function swap(&$debates, &$one, &$two) {
+    if ($two[1] >= count($debates[$two[0]]['adjudicators'])) {
+        $debates[$two[0]]['adjudicators'][$two[1]] = $debates[$one[0]]['adjudicators'][$one[1]];
+
+        $last_adjudicator_index = count($debates[$one[0]]['adjudicators']) - 1;
+        $debates[$one[0]]['adjudicators'][$one[1]] = $debates[$one[0]]['adjudicators'][$last_adjudicator_index];
+        unset($debates[$one[0]]['adjudicators'][$last_adjudicator_index]);
+        //one is adapted to be able to undo the swap...:
+        $one[1] = $last_adjudicator_index;
+    } else {
+        $buffer = $debates[$one[0]]['adjudicators'][$one[1]];
+        $debates[$one[0]]['adjudicators'][$one[1]] = $debates[$two[0]]['adjudicators'][$two[1]];
+        $debates[$two[0]]['adjudicators'][$two[1]] = $buffer;
+    }
 }
 
 function actual_sa(&$debates) {
@@ -370,7 +382,8 @@ function actual_sa(&$debates) {
         while ($i < $RUNS) {
             do {
                 $one = random_select($debates);
-                $two = random_select($debates);
+                $move_possible = count($debates[$one[0]]['adjudicators']) > 1 ? 1 : 0;
+                $two = random_select($debates, $move_possible);
             } while ($one[0] == $two[0]);	
     
             $before = $debates[$one[0]]['energy'] + $debates[$two[0]]['energy'];
@@ -379,7 +392,7 @@ function actual_sa(&$debates) {
             $diff = $after - $before;
     
             if (!throw_dice(probability($diff, $temp))) {
-                swap($debates, $one, $two); //swap back
+                swap($debates, $two, $one); //swap back
             } else {
                 $debates[$one[0]]['energy'] = debate_energy($debates[$one[0]]);
                 $debates[$two[0]]['energy'] = debate_energy($debates[$two[0]]);

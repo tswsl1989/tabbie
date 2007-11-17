@@ -55,7 +55,7 @@ $ALPHA = 0.0005;
 $DETERMINATION = 500; // amount of times the algorithm searches for a better solution, before restarting at the best solution so far.
 
 //Display Setting:
-$MESSAGE_TRESHHOLD = 35;
+$MESSAGE_TRESHHOLD = 0;
 
 
 function occurrences_of($value, $array) {
@@ -199,7 +199,6 @@ function debate_energy(&$debate) {
 function debate_energy_details(&$debate) {
     global $scoring_factors;
     $result = array();
-    $result[] = array("msg", "The desired average panel strength for this debate is ". format_dec($debate['desired_average']) . ", actual average is " . format_dec(get_average($debate['adjudicators'], 'ranking')). ".");
 
     $other_adjudicators = array_reverse($debate['adjudicators']);
     foreach($debate['adjudicators'] as $adjudicator) {
@@ -265,10 +264,7 @@ function debates_energy_details(&$debates) {
     $result = array();
     foreach ($debates as $debate)
         foreach (debate_energy_details($debate) as $detail)
-            if ($detail[0] == "msg") { 
-                $result[$debate['debate_id']][] = $detail[1];
-            } elseif ($detail[0] >= $MESSAGE_TRESHHOLD)
-                $result[$debate['debate_id']][] = format_dec($detail[0]) . ": " . $detail[1];
+            $result[$debate['debate_id']][] = $detail;
     return $result;
 }
 

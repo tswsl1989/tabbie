@@ -313,9 +313,11 @@ if (($validate==1))
                     usort ($details[$row['debate_id']], "cmp_debate_detail");
                     $total = 0;
                     foreach ($details[$row['debate_id']] as $detail) {
-                        $penalty = format_dec($detail[0]);
-                        echo "<tr><td width=\"10\">$penalty</td><td width=\"300\">$detail[1]</td></tr>";
-                        $total += $detail[0];
+                        if ($detail[0] > 0) {
+                            $penalty = format_dec($detail[0]);
+                            echo "<tr><td width=\"10\">$penalty</td><td width=\"300\">$detail[1]</td></tr>";
+                            $total += $detail[0];
+                        }
                     }
                     $total = format_dec($total);
                     echo "<tr><td width=\"10\">$total</td><td width=\"300\">Total</td></tr>";

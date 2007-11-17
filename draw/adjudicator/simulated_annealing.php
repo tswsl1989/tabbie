@@ -247,11 +247,11 @@ function debate_energy(&$debate) {
     usort($adjudicators, 'cmp_ranking');
     $chair = array_pop($adjudicators);
     $result += $scoring_factors['chair_not_perfect'] * (100 - $chair['ranking']);
-    $result += $scoring_factors['chair_not_ciaran_perfect'] * pow($chair['ranking'], 2);
+    $result += $scoring_factors['chair_not_ciaran_perfect'] * pow($chair['ranking'] - $debate['ciaran_chair'], 2);
 
     $result += $scoring_factors['panel_strength_not_perfect'] * pow(get_average($debate['adjudicators'], 'ranking') - $debate['desired_average'], 2);
 
-    $result += pow($debate['desired_panel_size'] - count($debate['adjudicators']), 2) * $scoring_factors['panel_size_not_perfect'];
+    $result += $scoring_factors['panel_size_not_perfect'] * pow($debate['desired_panel_size'] - count($debate['adjudicators']), 2);
 
     return $result;
 }
@@ -332,9 +332,17 @@ function debates_energy(&$debates) {
 function debates_energy_details(&$debates) {
     global $MESSAGE_TRESHHOLD;
     $result = array();
-    foreach ($debates as $debate)
-        foreach (debate_energy_details($debate) as $detail)
+    foreach ($debates as $debate) {
+        $total = 0;
+        foreach (debate_energy_details($debate) as $detail) {
             $result[$debate['debate_id']][] = $detail;
+            $total += $detail[0];
+        }
+        $energy = debate_energy($debate);
+        if ($total != $energy) {
+            $result[$debate['debate_id']][] = array(66666, "There seems to be a problem with the algorithm: $total != $energy");
+        }
+    }
     return $result;
 }
 

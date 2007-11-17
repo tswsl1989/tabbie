@@ -30,7 +30,6 @@ require_once("draw/adjudicator/simulated_annealing_config.php");
 /*
 TODO
 
-conventional best-chair-best-debate
 swap someone for no-one
 
 **************beginning of december breaking point****************

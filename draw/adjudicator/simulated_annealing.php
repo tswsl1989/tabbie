@@ -111,13 +111,30 @@ function set_unequal_desired_averages(&$debates, &$adjudicators) {
     }
 }
 
-function allocate_simulated_annealing() {
-    $nextround = get_num_rounds() + 1;
+function reallocate_simulated_annealing() {
     mt_srand(0);
+    $nextround = get_num_rounds() + 1;
     $debates = debates_from_temp_draw_no_adjudicators($nextround);
+
     $adjudicators = get_active_adjudicators();
-    set_unequal_desired_averages($debates, $adjudicators);
     initial_distribution($debates, $adjudicators);
+
+    __do_a_run($debates, $nextround);
+}
+
+function refine_simulated_annealing(&$msg) {
+    $nextround = get_num_rounds() + 1;
+    $debates = debates_from_temp_draw_with_adjudicators($nextround);
+
+    set_unequal_desired_averages($debates, get_active_adjudicators());
+    $energy = format_dec(debates_energy($debates));
+    $msg[] = "Adjudicator Allocation (SA) score was: $energy (the closer to zero, the better)";
+
+    __do_a_run($debates, $nextround);
+}
+
+function __do_a_run(&$debates, $nextround) {
+    set_unequal_desired_averages($debates, get_active_adjudicators());
     debates_energy($debates); // sets caches
     actual_sa($debates);
     write_to_db($debates, $nextround);

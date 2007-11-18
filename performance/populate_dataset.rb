@@ -31,20 +31,28 @@ begin
   
   # Populate Universities
   alphabets = ('A'..'Z').to_a
+  f = File.open("university_code.txt")
+  codes = f.readlines.collect { |c| c.strip }
   univs = []
-  
   puts "Generating Universties"
+  
   30.times do |i|
       # Generate Code
-      code = (1..3).to_a.inject("") { |sum,d| sum+= alphabets[rand(26)] } until code and !univs.member?(code)
+      # code = (1..3).to_a.inject("") { |sum,d| sum+= alphabets[rand(26)] } until code and !univs.member?(code)
+      
+      # Read code
+      code = codes[i]
       univs << code
       dbh.query(<<-SQL
-        INSERT INTO university(univ_name, univ_code) VALUES('#{code}', '#{code}')
+        INSERT INTO university(univ_name, univ_code) VALUES('#{code.capitalize}', '#{code}')
       SQL
       )
   end
   
-  # Populate Teams and Speakers
+  # Open names file
+  f = File.open("names_random.txt")
+  names = f.readlines.collect { |c| c.strip }
+  # Populate Teams and Speakers  
   puts "Generating Teams and Speakers"
   400.times do |i|
      # Create Team
@@ -53,11 +61,13 @@ begin
      SQL
      )
      # Create 2 Speakers 
-     2.times do
-         first_name = (1..10).to_a.inject("") { |sum,d| sum+= alphabets[rand(26)] } 
-         last_name =  (1..10).to_a.inject("") { |sum,d| sum+= alphabets[rand(26)] } 
+     2.times do |j|
+         #first_name = (1..10).to_a.inject("") { |sum,d| sum+= alphabets[rand(26)] } 
+         #last_name =  (1..10).to_a.inject("") { |sum,d| sum+= alphabets[rand(26)] } 
+         #name = '#{first_name} #{last_name}'
+         name = names[j*400 + i]
          dbh.query(<<-SQL
-            INSERT INTO speaker(team_id, speaker_name) VALUES(#{i+1}, '#{first_name} #{last_name}')
+            INSERT INTO speaker(team_id, speaker_name) VALUES(#{i+1}, '#{name}')
          SQL
          )
      end
@@ -66,10 +76,12 @@ begin
   # Populate Adjudicators
   puts "Generating Adudicators"
   300.times do |i|
-      first_name = (1..10).to_a.inject("") { |sum,d| sum+= alphabets[rand(26)] } 
-      last_name =  (1..10).to_a.inject("") { |sum,d| sum+= alphabets[rand(26)] } 
+      #first_name = (1..10).to_a.inject("") { |sum,d| sum+= alphabets[rand(26)] } 
+      #last_name =  (1..10).to_a.inject("") { |sum,d| sum+= alphabets[rand(26)] } 
+      #name = '#{first_name} #{last_name}'
+      name = names[800 + i]
       dbh.query(<<-SQL
-            INSERT INTO adjudicator(univ_id, adjud_name, ranking, active) VALUES(#{(i % 30) + 1}, '#{first_name} #{last_name}', 50, 'Y')
+            INSERT INTO adjudicator(univ_id, adjud_name, ranking, active) VALUES(#{(i % 30) + 1}, '#{name}', 50, 'Y')
       SQL
       )
   end

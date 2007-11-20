@@ -76,10 +76,7 @@ function find_best_swap_for(&$teams, &$team_a) {
         if (is_swappable($team_a, $team_b)) {
             $current = team_badness($team_a) + team_badness($team_b);
             $future = team_badness($team_a, $team_b["current_position"]) + team_badness($team_b, $team_a["current_position"]);
-/*            if ($future == 0) {
-                swap_two_teams($teams, $team_a, $team_b);
-                return;
-            }*/
+
             $net_effect = $future - $current;
             if ($net_effect < $best_effect) {
                 $best_effect = $net_effect;
@@ -105,7 +102,7 @@ function draw_silver_line($teams) {
         if ($previous_solution == teams_badness($teams))
             break;
         $previous_solution = teams_badness($teams);
-        foreach ($teams as $team) //<= maybe here the problem?
+        foreach ($teams as $team) 
             if (team_badness($team) > 0)
                 if (find_best_swap_for($teams, $team))
                     break;

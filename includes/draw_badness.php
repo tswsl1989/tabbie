@@ -100,6 +100,13 @@ $badness_lookup = array(
 function badness($positions) {
     global $badness_lookup;
     sort($positions);
+    
+    //temp. hack - assuming that 10+ round tournaments with 0-round distributions are *very* rare and 
+    //that this table will be replaced by the actual code before...
+    while ($positions[0] + $positions[1] + $positions[2] + $positions[3] >= 10) {
+        for ($i = 0; $i++; $i < 4)
+            $positions[$i] = max(0, $positions[$i] - 1);
+    } 
     return $badness_lookup["{$positions[0]}, {$positions[1]}, {$positions[2]}, {$positions[3]}"];
 }
 

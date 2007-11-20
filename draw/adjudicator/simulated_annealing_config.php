@@ -24,7 +24,7 @@
 //Energy calculation:
 
 function ensure_scoring_factors_in_db() {
-    //for backwards compatability with Tabbie versions < 1.3.1
+    //for backwards compatability with Tabbie versions <= 1.3.1
     $result = mysql_query("SHOW TABLES LIKE 'configure_adjud_draw'");
     if (!mysql_num_rows($result))
         mysql_query("CREATE TABLE configure_adjud_draw ( 

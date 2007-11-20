@@ -159,6 +159,9 @@ if (($action=="draw_adjudicators_again") && ($validate == 1)) {
 
 if ($validate) {
     store_scoring_factors_to_db(array("lock" => 0));
+}
+
+if (has_temp_draw()) {
     display_sa_energy($msg, $details);
 }
 
@@ -342,7 +345,9 @@ if (($validate==1))
 
 if ($validate == 1) {
     echo "<h3><a href=\"draw.php?moduletype=currentdraw&amp;action=draw\">Automatically Calculate Draw (Starting from nothing)</a></h3>";
-    echo "<h3><a href=\"draw.php?moduletype=currentdraw&amp;action=draw_adjudicators_again\">Give the computer another shot at allocating the adjudicators (Using the current state to generate a better result).</a></h3>";
+    
+    if (has_temp_draw()) {
+        echo "<h3><a href=\"draw.php?moduletype=currentdraw&amp;action=draw_adjudicators_again\">Give the computer another shot at allocating the adjudicators (Using the current state to generate a better result).</a></h3>";
+    }
 }
-
 ?>

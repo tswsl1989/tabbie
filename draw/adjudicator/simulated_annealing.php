@@ -116,7 +116,10 @@ function set_unequal_desired_averages(&$debates, &$adjudicators) {
 }
 
 function cmp_debate_desc($one, $two) {
-    return $two['points'] - $one['points'];
+    $result = $two['points'] - $one['points'];
+    if ($result == 0)
+        $result = $two['debate_id'] - $one['debate_id'];
+    return $result;
 }
 
 function sort_debates(&$debates) {
@@ -127,7 +130,8 @@ function set_ciaran_desired_chairs(&$debates) {
     $chairs = get_active_adjudicators('ranking');
     foreach ($debates as &$debate) {
         $chair = array_pop($chairs);
-        $debate['ciaran_chair'] = $chair['ranking'];
+        if (!isset( $debate['ciaran_chair']))
+            $debate['ciaran_chair'] = $chair['ranking'];
     }
 }
 

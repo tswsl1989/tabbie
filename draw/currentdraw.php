@@ -71,7 +71,7 @@ if ($numrounds != $numresults) {
 $scoring_factors = get_scoring_factors_from_db();
 if ($scoring_factors['lock']) {
     $validate=0;
-    $msg[] = 'The automated draw has been locked - it seems that someone else is running the automated draw at the same time or you have hit reload too quickly. Try again by <a href="draw.php?moduletype=currentdraw">returning to the current draw page in a few seconds</a>. If you keep getting this message, <a href="input.php?moduletype=adjud_params">unset the lock parameter</a>.';
+    $msg[] = 'The automated draw has been locked - it seems that someone else is running the automated draw at the same time or you have hit reload too quickly. Try again by <a href="draw.php?moduletype=currentdraw">returning to the current draw page in a minute or so</a>. (Please realize that creating the draw for a tournament like worlds, with 400 teams and 300 adjudicators may take a while.) If you keep getting this message, <a href="input.php?moduletype=adjud_params">unset the lock parameter</a>.';
 }
 
 if ($validate) {

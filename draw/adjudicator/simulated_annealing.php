@@ -126,12 +126,37 @@ function sort_debates(&$debates) {
     usort($debates, "cmp_debate_desc");
 }
 
+function __set_debate(&$debates, $id, $field, $value) {
+    foreach ($debates as &$debate)
+        if ($debate['debate_id'] == $id)
+            $debate[$field] = $value;
+}
+
 function set_ciaran_desired_chairs(&$debates) {
     $chairs = get_active_adjudicators('ranking');
+    $prev_points = "init-value";
+    $lo = 9999;
+    $hi = 0;
+    $todo = array();
+
     foreach ($debates as &$debate) {
+        $points = $debate['points'];
+        if ($points != $prev_points) {
+            foreach ($todo as $debate_id) {
+                __set_debate($debates, $debate_id, 'ciaran_chair_hi', $hi);
+                __set_debate($debates, $debate_id, 'ciaran_chair_lo', $lo);
+            }
+            $prev_points = $points;
+            $lo = 9999;
+            $hi = 0;
+            $todo = array();
+        }
+
         $chair = array_pop($chairs);
-        if (!isset( $debate['ciaran_chair']))
-            $debate['ciaran_chair'] = $chair['ranking'];
+        $ranking = $chair['ranking'];
+        $lo = min($ranking, $lo);
+        $hi = max($ranking, $hi);
+        $todo[] = $debate['debate_id'];
     }
 }
 
@@ -264,7 +289,7 @@ function debate_energy(&$debate) {
     usort($adjudicators, 'cmp_ranking');
     $chair = array_pop($adjudicators);
     $result += $scoring_factors['chair_not_perfect'] * (100 - $chair['ranking']);
-    $result += $scoring_factors['chair_not_ciaran_perfect'] * pow($chair['ranking'] - $debate['ciaran_chair'], 2);
+    $result += $scoring_factors['chair_not_ciaran_perfect'] * pow(diff_to_bounds($chair['ranking'], $debate['ciaran_chair_lo'], $debate['ciaran_chair_hi']), 2);
 
     $result += $scoring_factors['panel_strength_not_perfect'] * pow(get_average($debate['adjudicators'], 'ranking') - $debate['desired_average'], 2);
 
@@ -318,10 +343,12 @@ function debate_energy_details(&$debate) {
     $diff = format_dec($diff);
     $result[] = array($penalty, "Chair {$chair['adjud_name']} has $diff difference from 100.0.");
 
-    $diff = abs($debate['ciaran_chair'] - $chair['ranking']);
+    $diff = diff_to_bounds($chair['ranking'], $debate['ciaran_chair_lo'], $debate['ciaran_chair_hi']);
     $penalty = pow($diff, 2) * $scoring_factors['chair_not_ciaran_perfect'];
     $diff = format_dec($diff);
-    $result[] = array($penalty, "Chair {$chair['adjud_name']} has $diff difference from 'Ciaran Ideal' of " . format_dec($debate['ciaran_chair']));
+    $lo = format_dec($debate['ciaran_chair_lo']);
+    $hi = format_dec($debate['ciaran_chair_hi']);
+    $result[] = array($penalty, "Desired 'Ciaran Ideal Bounds' are [$lo, $hi], actual chair strength is $diff out of bounds.");
 
     $real = get_average($debate['adjudicators'], 'ranking');
     $desired_average = $debate['desired_average'];

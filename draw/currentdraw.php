@@ -223,7 +223,7 @@ if (($validate==1)) {
         usort($table_data, "cmp_debate_desc");
 
         echo "<table>\n";
-            echo "<tr><th>Venue Name</th><th>Opening Govt</th><th>Opening Opp</th><th>Closing Govt</th><th>Closing Opp</th><th>Total Points</th><th>Chair</th><th>Panelists</th><th>Adj. Allocation Score</th></tr>\n";
+            echo "<tr><th>Venue Name</th><th>Opening Govt</th><th>Opening Opp</th><th>Closing Govt</th><th>Closing Opp</th><th>Avg. Points</th><th>Chair</th><th>Panelists</th><th>Adj. Allocation Score</th></tr>\n";
 
         foreach ($table_data as $row) {
             echo "<tr>\n";
@@ -233,7 +233,9 @@ if (($validate==1)) {
             echo "<td>{$row['ootc']} {$row['oot']} <br/> ({$row['oopoints']}) </td>\n";
             echo "<td>{$row['cgtc']} {$row['cgt']} <br/> ({$row['cgpoints']}) </td>\n";
             echo "<td>{$row['cotc']} {$row['cot']} <br/> ({$row['copoints']}) </td>\n";
-            echo "<td>{$row['points']}</td>\n";                
+            
+            $avg_points = sprintf("%01.2f", $row['points'] / 4);
+            echo "<td>$avg_points</td>\n";
 
             if (! @$row['chair'])
                 echo "<td><b>None Assigned</b></td>";

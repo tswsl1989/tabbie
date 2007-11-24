@@ -62,12 +62,43 @@ Low values: Having the best people in chair is not as important
 </p><p>
 <b>chair_not_ciaran_perfect</b>: Quadratical difference with 'ciaran desired value'<br/>
 High values: The best adjudicator will be chair in the best debate, the second best will be chair in the second best debate etc.<br/>
-Low values: Having the best chairs in the best debates is not as important
+Low values: Having the best chairs in the best debates is not as important<br/>
+
+"Ciaran Ideals" are implemented as brackets. This means that if you have a number of equally strong debates the "perfect chair" for that debate may be any of many values, like so:<br/>
+<br/>
+Debate points averages: 19, 19, 19, 18, 18, 17......<br/>
+Adjudicators: 100, 95, 92, 90, 88, 84, 70<br/>
+<br/>
+A: (19) 92 - 100 ideal strength for chair<br/>
+B: (19) 92 - 100 ideal strength for chair<br/>
+C: (19) 92 - 100 ideal strength for chair<br/>
+D: (18) 88 - 90 ideal strength for chair<br/>
+
 </p><p>
 <b>"panel_steepness"</b>: Value between 0 and 1. Reflecting the relation between panel strength and debate strength.<br/>
 High values: Up to 1: Debate strength strictly relates to panel strength.<br/>
-Low values: All debates are considered equal.<br/>
-Further remarks: Slowly increasing this value during the tournament is expected to have a positive effect on the tournament.
+Low values: Down to 0: All debates are considered equal. (Note that with better chairs in the good debates this will actually give you worse pannellists in these debates to balance the chairs out)<br/>
+<br/>
+Panels are allocated a desired strength. This strength is based on the "panel steepness". With a steepness of 1, the desired strength is directly correlated to the strength of the debate, if it's 0 all debates are desired to be of equal strength.<br/>
+<br/>
+Say you have three debates:<br/>
+2, 3, 5 points avg. total is 10<br/>
+average nr. of points is 3.33<br/>
+<br/>
+the avg. of the adjudicator strength is 56.<br/>
+now,
+with steepness of 1, the desired averages are:<br/>
+<br/>
+2/3.33 * 56 = 33.6<br/>
+3/3.33 * 56 = 50.4<br/>
+5/3.33 * 56 = 84.0<br/>
+<br/>
+with a steepness of 0, the desired averages are<br/>
+56, 56, 56<br/>
+<br/>
+How bad it is that a panel isn't on its desired strength is regulated with the parameter panel_strength_not_perfect<br/>
+<br/>
+Further remarks: Slowly increasing this value during the tournament is expected to have a positive effect on the tournament. I.e. you slowly move the best adjudicators to the best debates.
 </p><p>
 <b>panel_strength_not_perfect</b>: Penalty for distance to this 'ideal average'.<br/>
 High values: Emphasis on getting panels on the 'right strenght'<br/>

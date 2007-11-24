@@ -170,8 +170,8 @@ echo "<h2>$title</h2>\n"; //title
 displayMessagesUL(@$msg);
          
 //Display Draw if required
-if (($validate==1))
-{
+if (($validate==1)) {
+
     //Display the table of calculated draw
     $query = 'SELECT A1.debate_id AS debate_id, T1.team_code AS ogt, T2.team_code AS oot, T3.team_code AS cgt, T4.team_code AS cot, U1.univ_code AS ogtc, U2.univ_code AS ootc, U3.univ_code AS cgtc, U4.univ_code AS cotc, venue_name, venue_location, T1.team_id AS ogid, T2.team_id AS ooid, T3.team_id AS cgid, T4.team_id AS coid ';
     $query .= "FROM temp_draw_round_$nextround AS A1, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4,venue ";
@@ -180,155 +180,95 @@ if (($validate==1))
 
     $result=mysql_query($query); //KvS notes that this query apparently fails (but expectedly) in round 0
     
-    if ($result)
-    {
+    if ($result) {
         echo "<p>From here you can either:</p>";
         echo "<h3><a href=\"draw.php?moduletype=currentdraw&amp;action=draw_adjudicators_again\">Give the computer another shot at allocating the adjudicators (Using the current state to generate a better result).</a></h3>";
         echo '<p>or</p>';
         echo '<h3><a href="draw.php?moduletype=manualdraw">Manually adjust adjudicators and rooms</a></h3>';
         echo '<p>or</p>';
         echo '<h3><a href="draw.php?moduletype=manualdraw&amp;action=finalise">Finalize the draw</a></h3>';
+
+        $table_data = array();
+        while($row = mysql_fetch_assoc($result)) {
+            foreach (array("venue_name", "ogtc", "ogt", "ootc", "oot", "cgtc", "cgt", "cotc", "cot", "debate_id") as $copy)
+                $row2[$copy] = $row[$copy];
+            $row2['ogpoints'] = points_for_team($row['ogid'], $numdraws);
+            $row2['oopoints'] = points_for_team($row['ooid'], $numdraws);
+            $row2['cgpoints'] = points_for_team($row['cgid'], $numdraws);
+            $row2['copoints'] = points_for_team($row['coid'], $numdraws);
+            $row2['points'] = $row2['ogpoints'] + $row2['oopoints'] + $row2['cgpoints'] + $row2['copoints'];
+
+            //Find Chief Adjudicator
+            $query="SELECT A.adjud_name AS adjud_name, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='chair' AND T.debate_id='{$row['debate_id']}'";
+            $resultadjud=q($query);
+
+            if (mysql_num_rows($resultadjud) > 0) {
+                $rowadjud = mysql_fetch_assoc($resultadjud);
+                $row2['chair'] = "{$rowadjud['adjud_name']} ({$rowadjud['ranking']})";
+            }
+
+            //Find Panelists
+            $query="SELECT A.adjud_name AS adjud_name, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='panelist' AND T.debate_id='{$row['debate_id']}'";
+            $resultadjud=q($query);
+
+            if (mysql_num_rows($resultadjud) > 0) {
+                $row2['panel'] = array();
+                while($rowadjud=mysql_fetch_assoc($resultadjud)) {
+                    $row2['panel'][] = "{$rowadjud['adjud_name']} ({$rowadjud['ranking']})";
+                }
+             }
+            $table_data[] = $row2;
+        }
+
+        usort($table_data, "cmp_debate_desc");
+
         echo "<table>\n";
             echo "<tr><th>Venue Name</th><th>Opening Govt</th><th>Opening Opp</th><th>Closing Govt</th><th>Closing Opp</th><th>Total Points</th><th>Chair</th><th>Panelists</th><th>Adj. Allocation Score</th></tr>\n";
 
-        while($row=mysql_fetch_assoc($result))
-        {
+        foreach ($table_data as $row) {
             echo "<tr>\n";
-                   $ogpoints=0;
-                   for ($i=1; $i<$nextround; $i++)
-        {    $pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['ogid']}' ";
-            $pointsresult=q($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-                $ogpoints = $ogpoints + 3;
-                
-            $pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['ogid']}' ";
-            $pointsresult=q($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-                $ogpoints = $ogpoints + 2;
-                
-            $pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['ogid']}' ";
-            $pointsresult=q($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-                $ogpoints = $ogpoints + 1;
-        }
-                  $oopoints=0;
-                   for ($i=1; $i<$nextround; $i++)
-        {    $pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['ooid']}' ";
-            $pointsresult=q($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-                $oopoints = $oopoints + 3;
-                
-            $pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['ooid']}' ";
-            $pointsresult=q($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-                $oopoints = $oopoints + 2;
-                
-            $pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['ooid']}' ";
-            $pointsresult=q($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-                $oopoints = $oopoints + 1;
-        }
-                $cgpoints=0;
-                for ($i=1; $i<$nextround; $i++)
-        {    $pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['cgid']}' ";
-            $pointsresult=q($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-                $cgpoints = $cgpoints + 3;
-                
-            $pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['cgid']}' ";
-            $pointsresult=q($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-                $cgpoints = $cgpoints + 2;
-                
-            $pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['cgid']}' ";
-            $pointsresult=q($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-                $cgpoints = $cgpoints + 1;
-        }
-                   $copoints=0;
-                   for ($i=1; $i<$nextround; $i++)
-        {    $pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['coid']}' ";
-            $pointsresult=q($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-                $copoints = $copoints + 3;
-                
-            $pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['coid']}' ";
-            $pointsresult=q($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-                $copoints = $copoints + 2;
-                
-            $pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['coid']}' ";
-            $pointsresult=q($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-                $copoints = $copoints + 1;
-        }
-        
-        $totalpoints = $ogpoints + $oopoints + $cgpoints + $copoints;
-                echo "<td>{$row['venue_name']}</td>\n";
-        echo "<td>{$row['ogtc']} {$row['ogt']} <br/> ($ogpoints) </td>\n";
-        echo "<td>{$row['ootc']} {$row['oot']} <br/> ($oopoints) </td>\n";
-        echo "<td>{$row['cgtc']} {$row['cgt']} <br/> ($cgpoints) </td>\n";
-                echo "<td>{$row['cotc']} {$row['cot']} <br/> ($copoints) </td>\n";
-                echo "<td>$totalpoints </td>\n";                
 
-                //Find Chief Adjudicator
-                $query="SELECT A.adjud_name AS adjud_name, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='chair' AND T.debate_id='{$row['debate_id']}'";
-                $resultadjud=q($query);
+            echo "<td>{$row['venue_name']}</td>\n";
+            echo "<td>{$row['ogtc']} {$row['ogt']} <br/> ({$row['ogpoints']}) </td>\n";
+            echo "<td>{$row['ootc']} {$row['oot']} <br/> ({$row['oopoints']}) </td>\n";
+            echo "<td>{$row['cgtc']} {$row['cgt']} <br/> ({$row['cgpoints']}) </td>\n";
+            echo "<td>{$row['cotc']} {$row['cot']} <br/> ({$row['copoints']}) </td>\n";
+            echo "<td>{$row['points']}</td>\n";                
 
-                if (mysql_num_rows($resultadjud)==0)
-                    echo "<td><b>None Assigned</b></td>";
-                else
+            if (! @$row['chair'])
+                echo "<td><b>None Assigned</b></td>";
+            else
+                echo "<td>{$row['chair']}</td>";
+
+            if (! @$row['panel'])
+                echo "<td><b>None Assigned</b></td>";
+            else {
+                echo "<td><ul>\n";
+                foreach ($row['panel'] as $panellist)
                 {
-                    $rowadjud=mysql_fetch_assoc($resultadjud);
-                    echo "<td>{$rowadjud['adjud_name']}  ({$rowadjud['ranking']})</td>";
+                    echo "<li>$panellist</li>\n";
                 }
-
-                //Find Panelists
-                $query="SELECT A.adjud_name AS adjud_name, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='panelist' AND T.debate_id='{$row['debate_id']}'";
-                $resultadjud=q($query);
-
-                if (mysql_num_rows($resultadjud)==0)
-                    echo "<td><b>None Assigned</b></td>";
-                else
-                {
-                    echo "<td><ul>\n";
-                    while($rowadjud=mysql_fetch_assoc($resultadjud))
-                    {
-                        echo "<li>{$rowadjud['adjud_name']} ({$rowadjud['ranking']})</li>\n";
+                echo "</ul></td>\n";
+            }
+            echo "<td>";
+            if (@$details[$row['debate_id']]) {
+                echo "<table>";
+                usort ($details[$row['debate_id']], "cmp_debate_detail");
+                $total = 0;
+                foreach ($details[$row['debate_id']] as $detail) {
+                    if ($detail[0] > 0) {
+                        $penalty = format_dec($detail[0]);
+                        echo "<tr><td width=\"10\">$penalty</td><td width=\"300\">$detail[1]</td></tr>";
+                        $total += $detail[0];
                     }
-                    echo "</ul></td>\n";
                 }
-                echo "<td>";
-                if (@$details[$row['debate_id']]) {
-                    echo "<table>";
-                    usort ($details[$row['debate_id']], "cmp_debate_detail");
-                    $total = 0;
-                    foreach ($details[$row['debate_id']] as $detail) {
-                        if ($detail[0] > 0) {
-                            $penalty = format_dec($detail[0]);
-                            echo "<tr><td width=\"10\">$penalty</td><td width=\"300\">$detail[1]</td></tr>";
-                            $total += $detail[0];
-                        }
-                    }
-                    $total = format_dec($total);
-                    echo "<tr><td width=\"10\">$total</td><td width=\"300\">Total</td></tr>";
-                    echo "</table>";
-                }
-                echo "</td>";
+                $total = format_dec($total);
+                echo "<tr><td width=\"10\">$total</td><td width=\"300\">Total</td></tr>";
+                echo "</table>";
+            }
+            echo "</td>";
 
-           echo "</tr>\n";
+        echo "</tr>\n";
         
         }
 

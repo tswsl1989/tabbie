@@ -69,10 +69,10 @@ Low values: Having the best chairs in the best debates is not as important<br/>
 Debate points averages: 19, 19, 19, 18, 18, 17......<br/>
 Adjudicators: 100, 95, 92, 90, 88, 84, 70<br/>
 <br/>
-A: (19) 92 - 100 ideal strength for chair<br/>
-B: (19) 92 - 100 ideal strength for chair<br/>
-C: (19) 92 - 100 ideal strength for chair<br/>
-D: (18) 88 - 90 ideal strength for chair<br/>
+A: (19) values between: 92 and 100 are ideal strength for chair<br/>
+B: (19) values between: 92 and 100 are ideal strength for chair<br/>
+C: (19) values between: 92 and 100 are ideal strength for chair<br/>
+D: (18) values between: 88 and 90 are ideal strength for chair<br/>
 
 </p><p>
 <b>"panel_steepness"</b>: Value between 0 and 1. Reflecting the relation between panel strength and debate strength.<br/>

@@ -158,6 +158,10 @@ function set_ciaran_desired_chairs(&$debates) {
         $hi = max($ranking, $hi);
         $todo[] = $debate['debate_id'];
     }
+    foreach ($todo as $debate_id) {
+        __set_debate($debates, $debate_id, 'ciaran_chair_hi', $hi);
+        __set_debate($debates, $debate_id, 'ciaran_chair_lo', $lo);
+    }
 }
 
 function set_desired_panel_sizes(&$debates, $adjudicator_count) {

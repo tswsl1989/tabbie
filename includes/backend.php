@@ -63,15 +63,19 @@ function points_for_ranking($ranking) {
     return 999;
 }
 
-function points_for_team($team_id, $nr_of_rounds) {
+function ranking_for_team_in_round($team_id, $round) {
     $RANKINGS = array("first", "second", "third", "fourth");
-    $result = 0;
-    for ($i = 1; $i <= $nr_of_rounds; $i++) {
-        foreach ($RANKINGS as $RANKING) {
-            if (__team_on_ranking($i, $team_id, $RANKING))
-                $result += points_for_ranking($RANKING);
-        }
+    foreach ($RANKINGS as $RANKING) {
+        if (__team_on_ranking($round, $team_id, $RANKING))
+            return $RANKING;
     }
+    return $result;
+}
+
+function points_for_team($team_id, $nr_of_rounds) {
+    $result = 0;
+    for ($i = 1; $i <= $nr_of_rounds; $i++)
+        $result += points_for_ranking(ranking_for_team_in_round($team_id, $i));
     return $result;
 }
 
@@ -352,6 +356,12 @@ function team_name($team_id) {
     $db_result = q("SELECT university.univ_code, team.team_code FROM university, team WHERE team.team_id = '$team_id' AND team.univ_id = university.univ_id");
     $row = mysql_fetch_assoc($db_result);
     return $row['univ_code'] . " " . $row['team_code'];
+}
+
+function team_name_long($team_id) {
+    $db_result = q("SELECT university.univ_code, team.team_code, university.univ_name FROM university, team WHERE team.team_id = '$team_id' AND team.univ_id = university.univ_id");
+    $row = mysql_fetch_assoc($db_result);
+    return "{$row['univ_code']} {$row['team_code']} ({$row['univ_name']})";
 }
 
 function get_university($univ_id) {

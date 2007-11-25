@@ -68,52 +68,56 @@ if (!$team_id) {
 
         $db_result = mysql_query(
             "SELECT debate_id AS debate_id, T1.team_id AS ogid, T2.team_id AS ooid, T3.team_id AS cgid, T4.team_id AS coid, T1.team_code AS ogt, T2.team_code AS oot, T3.team_code AS cgt, T4.team_code AS cot, U1.univ_code AS ogtc, U2.univ_code AS ootc, U3.univ_code AS cgtc, U4.univ_code AS cotc, venue_name, venue_location FROM draw_round_$round, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4,venue WHERE og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND draw_round_$round.venue_id=venue.venue_id AND (og = '$team_id' OR oo = '$team_id' OR cg = '$team_id' OR co = '$team_id')");
-        $row = mysql_fetch_assoc($db_result);
-        $debate_id = $row['debate_id'];
-        print "<h3>Venue: {$row['venue_name']} ({$row['venue_location']})</h3>";
+        if (mysql_num_rows($db_result) == 0) {
+            print "<h3>Team did not participate in this round</h3>";
+        } else {
 
-        print "<h3>Teams:</h3>";
-        print "<table><tr><th>Role</th><th>Team</th><th>Ranking</th><th>Points</th><th>Before Round $round</th><th>After Round $round</th><th>After Round $completed_rounds</th></tr>";
-        
-        foreach (array('og' => 'Opening Government', 'oo' => 'Opening Opposition', 'cg' => 'Closing Government', 'co' => 'Closing Opposition') as $short => $long) {
-            $id = $row["{$short}id"];
-            $name = $row["{$short}tc"] . " " . $row["{$short}t"];
-            $ranking = ranking_for_team_in_round($id, $round);
-            $points = points_for_ranking($ranking);
-            $ranking = ucwords($ranking);
-            if ($round == 1)
-                $before = "1st (0 points, 0 speaks)";
-            else 
-                $before = team_standing_for_team($prev_round_standing, $id);
-            $after = team_standing_for_team($round_standing, $id);
-            $final = team_standing_for_team($final_standing, $id);
-
-            print "<tr><td>$long</td><td><a href=\"team_overview?team_id=$id\">$name</a></td><td>$ranking</td><td>$points</td><td>$before</td><td>$after</td><td>$final</td></tr>";
-        }
-
-        print "</table>";
+            $row = mysql_fetch_assoc($db_result);
+            $debate_id = $row['debate_id'];
+            print "<h3>Venue: {$row['venue_name']} ({$row['venue_location']})</h3>";
     
-        print "<h3>Speakers:</h3>";
-
-        $db_result = mysql_query("SELECT speaker_round_$round.points, speaker.speaker_name, university.univ_code, team.team_code FROM speaker_round_$round, speaker, team, university WHERE debate_id='$debate_id' AND speaker_round_$round.speaker_id = speaker.speaker_id AND speaker.team_id = team.team_id AND team.univ_id = university.univ_id ORDER BY speaker_name");
+            print "<h3>Teams:</h3>";
+            print "<table><tr><th>Role</th><th>Team</th><th>Ranking</th><th>Points</th><th>Before Round $round</th><th>After Round $round</th><th>After Round $completed_rounds</th></tr>";
+            
+            foreach (array('og' => 'Opening Government', 'oo' => 'Opening Opposition', 'cg' => 'Closing Government', 'co' => 'Closing Opposition') as $short => $long) {
+                $id = $row["{$short}id"];
+                $name = $row["{$short}tc"] . " " . $row["{$short}t"];
+                $ranking = ranking_for_team_in_round($id, $round);
+                $points = points_for_ranking($ranking);
+                $ranking = ucwords($ranking);
+                if ($round == 1)
+                    $before = "1st (0 points, 0 speaks)";
+                else 
+                    $before = team_standing_for_team($prev_round_standing, $id);
+                $after = team_standing_for_team($round_standing, $id);
+                $final = team_standing_for_team($final_standing, $id);
+    
+                print "<tr><td>$long</td><td><a href=\"team_overview?team_id=$id\">$name</a></td><td>$ranking</td><td>$points</td><td>$before</td><td>$after</td><td>$final</td></tr>";
+            }
+    
+            print "</table>";
         
-        print "<table><tr><th>Name</th><th>Team</th><th>Points</th></tr>";
-        while ($row = mysql_fetch_assoc($db_result))
-            print "<tr><td>{$row['speaker_name']}</td><td>{$row['univ_code']} {$row['team_code']}</td><td>{$row['points']}</td></tr>";
-        print "</table>";
-
-        print "<h3>Adjudicators:</h3>";
-
-        $db_result = mysql_query("SELECT status, adjudicator.adjud_name, university.univ_name, university.univ_code FROM adjud_round_$round, adjudicator, university WHERE debate_id='$debate_id' AND adjud_round_$round.adjud_id = adjudicator.adjud_id AND adjudicator.univ_id = university.univ_id ORDER BY status");
-        print mysql_error();
-        
-        print "<table><tr><th>Role</th><th>Name</th><th>University</th></tr>";
-        while ($row = mysql_fetch_assoc($db_result)) {
-            $role = ucwords($row['status']);
-            print "<tr><td>$role</td><td>{$row['adjud_name']}</td><td>{$row['univ_name']} ({$row['univ_code']})</td></tr>";
+            print "<h3>Speakers:</h3>";
+    
+            $db_result = mysql_query("SELECT speaker_round_$round.points, speaker.speaker_name, university.univ_code, team.team_code FROM speaker_round_$round, speaker, team, university WHERE debate_id='$debate_id' AND speaker_round_$round.speaker_id = speaker.speaker_id AND speaker.team_id = team.team_id AND team.univ_id = university.univ_id ORDER BY speaker_name");
+            
+            print "<table><tr><th>Name</th><th>Team</th><th>Points</th></tr>";
+            while ($row = mysql_fetch_assoc($db_result))
+                print "<tr><td>{$row['speaker_name']}</td><td>{$row['univ_code']} {$row['team_code']}</td><td>{$row['points']}</td></tr>";
+            print "</table>";
+    
+            print "<h3>Adjudicators:</h3>";
+    
+            $db_result = mysql_query("SELECT status, adjudicator.adjud_name, university.univ_name, university.univ_code FROM adjud_round_$round, adjudicator, university WHERE debate_id='$debate_id' AND adjud_round_$round.adjud_id = adjudicator.adjud_id AND adjudicator.univ_id = university.univ_id ORDER BY status");
+            print mysql_error();
+            
+            print "<table><tr><th>Role</th><th>Name</th><th>University</th></tr>";
+            while ($row = mysql_fetch_assoc($db_result)) {
+                $role = ucwords($row['status']);
+                print "<tr><td>$role</td><td>{$row['adjud_name']}</td><td>{$row['univ_name']} ({$row['univ_code']})</td></tr>";
+            }
+            print "</table>";
         }
-        print "</table>";
-
     }
 
 }

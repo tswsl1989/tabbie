@@ -58,13 +58,12 @@ function points_for_ranking($ranking) {
     if ($ranking == "first") return 3;
     if ($ranking == "second") return 2;
     if ($ranking == "third") return 1;
-    if ($ranking == "fourth") return 0;
-    print "ERROR - points_for_ranking with ranking $ranking";
-    return 999;
+    return 0;
 }
 
 function ranking_for_team_in_round($team_id, $round) {
     $RANKINGS = array("first", "second", "third", "fourth");
+    $result = "undefined";
     foreach ($RANKINGS as $RANKING) {
         if (__team_on_ranking($round, $team_id, $RANKING))
             return $RANKING;

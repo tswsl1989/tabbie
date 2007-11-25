@@ -66,11 +66,13 @@ if (!$team_id) {
         print "<h2>Round $round</h2>";
         print "<h3>Motion: $motion</h3>";
 
-        print "<h3>Teams:</h3>";
         $db_result = mysql_query(
             "SELECT debate_id AS debate_id, T1.team_id AS ogid, T2.team_id AS ooid, T3.team_id AS cgid, T4.team_id AS coid, T1.team_code AS ogt, T2.team_code AS oot, T3.team_code AS cgt, T4.team_code AS cot, U1.univ_code AS ogtc, U2.univ_code AS ootc, U3.univ_code AS cgtc, U4.univ_code AS cotc, venue_name, venue_location FROM draw_round_$round, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4,venue WHERE og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND draw_round_$round.venue_id=venue.venue_id AND (og = '$team_id' OR oo = '$team_id' OR cg = '$team_id' OR co = '$team_id')");
         $row = mysql_fetch_assoc($db_result);
         $debate_id = $row['debate_id'];
+        print "<h3>Venue: {$row['venue_name']} ({$row['venue_location']})</h3>";
+
+        print "<h3>Teams:</h3>";
         print "<table><tr><th>Role</th><th>Team</th><th>Ranking</th><th>Points</th><th>Before Round $round</th><th>After Round $round</th><th>After Round $completed_rounds</th></tr>";
         
         foreach (array('og' => 'Opening Government', 'oo' => 'Opening Opposition', 'cg' => 'Closing Government', 'co' => 'Closing Opposition') as $short => $long) {

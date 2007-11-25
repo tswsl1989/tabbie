@@ -156,10 +156,19 @@ if ($action == "display")
     for ($x=1;$x<=$roundno;$x++)
         echo "<th>Round $x</th>";
     echo "<th>Total Points</th></tr>\n";
+
+    $prev_points = "something";
+
     for ($x=0;$x<count($speaker_array);$x++)
-    {
+    {   
+        $ranking = ($x+1);
+        if ($speaker_array[$x]["points"] != $prev_points) {
+            $prev_points = $speaker_array[$x]["points"];
+            $display_ranking = ($x+1);
+        } else
+            $display_ranking = "-";
         echo "<tr>\n";
-            echo "<td>".($x+1)."</td>\n";
+            echo "<td>$display_ranking</td>\n";
             echo "<td>".$speaker_array[$x]["speakername"]."</td>\n";
             echo "<td>"."<a href=\"team_overview?team_id={$speaker_array[$x]['team_id']}\">".$speaker_array[$x]["teamname"]."</td>\n";
             for ($y=1;$y<=$roundno;$y++)

@@ -110,13 +110,14 @@ if ($action == "display")
         $result = array();
         foreach ($speaker_array as $speaker) {
             $teamid = $speaker["teamid"];
-            $name_query = "SELECT univ.univ_code AS univ_code, team.team_code AS team_code ";
+            $name_query = "SELECT team.team_id, univ.univ_code AS univ_code, team.team_code AS team_code ";
             $name_query .= "FROM university AS univ, team AS team ";
             $name_query .= "WHERE team.team_id=$teamid AND team.univ_id = univ.univ_id ";
             $name_result = mysql_query($name_query);
             $name_row = mysql_fetch_assoc($name_result);
             $teamname = $name_row['univ_code'].' '.$name_row['team_code'];
             $speaker["teamname"] = $teamname;
+            $speaker["team_id"] = $name_row['team_id'];
             $result[] = $speaker;
         }
         return $result;
@@ -160,7 +161,7 @@ if ($action == "display")
         echo "<tr>\n";
             echo "<td>".($x+1)."</td>\n";
             echo "<td>".$speaker_array[$x]["speakername"]."</td>\n";
-            echo "<td>".$speaker_array[$x]["teamname"]."</td>\n";
+            echo "<td>"."<a href=\"team_overview?team_id={$speaker_array[$x]['team_id']}\">".$speaker_array[$x]["teamname"]."</td>\n";
             for ($y=1;$y<=$roundno;$y++)
                 echo "<td>" . $speaker_array[$x]["round_$y"] . "</td>";
             echo "<td>".$speaker_array[$x]["points"]."</td>\n";

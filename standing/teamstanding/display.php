@@ -100,7 +100,7 @@ if ($action == "display")
         $x++;
         echo "<tr>\n";
             echo "<td>".($x)."</td>\n";
-            echo "<td>".$cc["teamname"]."</td>\n";
+            echo "<td>"."<a href=\"team_overview?team_id={$cc['team_id']}\">".$cc["teamname"]."</a></td>\n";
             for ($y=1;$y<=$roundno;$y++)
                 echo "<td>" . $cc["round_$y"] . "</td>";
             echo "<td>".$cc["score"]."</td>\n";

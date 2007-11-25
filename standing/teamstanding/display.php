@@ -90,21 +90,26 @@ if ($action == "display")
     
     // Displaying the standings
     echo "<table>\n";
-    echo "<tr><th>Position</th><th>Team Name</th>";
+    echo "<tr><th>Ranking</th><th>Team Name</th>";
     for ($y=1;$y<=$roundno;$y++)
         echo "<th>Round $y</th>";
-    echo "<th>Total Score</th><th>Speaker Points</th></tr>\n";
-    $x = 0;
+    echo "<th>Total Score</th><th>Speaker Points</th><th>WUDC art. 4.a.iii</th></tr>\n";
+    $prev_ranking = "something";
     foreach ($team_array as $cc)
     {
-        $x++;
+        if ($cc['ranking'] != $prev_ranking) {
+            $prev_ranking = $cc['ranking'];
+            $display_ranking = $cc['ranking'];
+        } else
+            $display_ranking = "-";
         echo "<tr>\n";
-            echo "<td>".($x)."</td>\n";
+            echo "<td>". $display_ranking ."</td>\n";
             echo "<td>"."<a href=\"team_overview?team_id={$cc['team_id']}\">".$cc["teamname"]."</a></td>\n";
             for ($y=1;$y<=$roundno;$y++)
                 echo "<td>" . $cc["round_$y"] . "</td>";
             echo "<td>".$cc["score"]."</td>\n";
             echo "<td>".$cc["speaker"]."</td>\n";
+            echo "<td>".$cc["rankings"]."</td>\n";
         echo "</tr>\n";
         
     }

@@ -21,12 +21,23 @@
  * 
  * end license */
 
-function cmp_teams_on_points_asdf ($a, $b) {
-    if ($a["score"] == $b["score"]) 
-    {
-        if ($a["speaker"] == $b["speaker"]) 
-        {
-            return 0;
+require_once("includes/backend.php");
+
+function rankings_for_team_wudc_2004_article_4_a_iii($team_id, $round) {
+    $rankings = array(0, 0, 0, 0);
+    for ($roundno = 1; $roundno <= $round; $roundno++) {
+        $ranking = 3 - (points_for_ranking(ranking_for_team_in_round($team_id, $roundno)));
+        $rankings[$ranking] += 1;
+    }
+    return "{$rankings[0]}, {$rankings[1]}, {$rankings[2]}, {$rankings[3]}";
+}
+
+function cmp_teams_on_points_asdf (&$a, &$b) {
+    if ($a["score"] == $b["score"]) {
+        if ($a["speaker"] == $b["speaker"]) {
+            if ($a["rankings"] == $b["rankings"])
+                return 0;
+            return ($a["rankings"] > $b["rankings"]) ? -1 : 1;
         }
         return ($a["speaker"] > $b["speaker"]) ? -1 : 1;
     }
@@ -81,6 +92,9 @@ function team_standing_array($roundno, $list="all") {
     
     $team_array = __fillUpTeamnames($team_array);
     
+    foreach($team_array as &$team)
+        $team['rankings'] = rankings_for_team_wudc_2004_article_4_a_iii($team['teamid'], $roundno);
+
     // Run through the array and add the points
     foreach($team_array as $cc) 
     {
@@ -130,9 +144,21 @@ function team_standing_array($roundno, $list="all") {
     
     
     // Sorting the array
-
     usort($team_array, "cmp_teams_on_points_asdf");
     
+    $ranking = 1;
+    $prev_ranking = 1;
+    $prev_concat = "something";
+    foreach ($team_array as &$team) {
+        $concat = "{$team['score']}; {$team['speaker']}; {$team['rankings']}";
+        if ($concat != $prev_concat) {
+            $prev_concat = $concat;
+            $prev_ranking = $ranking;
+        }
+        $team['ranking'] = $prev_ranking;
+        $ranking++;
+    }
+
     
     return $team_array;
 
@@ -149,11 +175,9 @@ function st_nd_rd_th($nr) {
 }
 
 function team_standing_for_team(&$team_standing_array, $team_id) {
-    $i = 0;
     foreach ($team_standing_array as &$team) {
-        $i++;
         if ($team['team_id'] == $team_id) {
-            $st_nd_rd_th = st_nd_rd_th($i);
+            $st_nd_rd_th = st_nd_rd_th($team['ranking']);
             return "$st_nd_rd_th ({$team['score']} points, {$team['speaker']} speaks)";
         }
     }

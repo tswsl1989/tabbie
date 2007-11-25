@@ -68,10 +68,12 @@ function adjudicator_sheets_pdf($filename, $data) {
         $pdf->SetLeftMargin(25);
         $pdf->SetLineWidth(1.0);
         $pdf->SetFont('Arial','B', 11);
-        $pdf->Cell(220, 10, "Venue: " . $r['venue']);
-        $pdf->Cell(20, 10, "Round: " . $r['round']);
+        $pdf->Cell(220, 8, "Venue: " . $r['venue']);
+        $pdf->Cell(20, 8, "Round: " . $r['round']);
         $pdf->Ln();
-        $pdf->Cell(200, 10, "Chair: " . $r['chair']);
+        $pdf->Cell(200, 8, "Chair: " . $r['chair']);
+        $pdf->Ln();
+        $pdf->Cell(200, 8, "Panel: " . $r['panel']);
         $pdf->Ln();
         $pdf->MultiCell(250, 10, "Motion: " . $r['motion']);
         $pdf->Ln();
@@ -83,8 +85,9 @@ function adjudicator_sheets_pdf($filename, $data) {
             array("name" => "Closing Gov.", "short" => "cg"),
             array("name" => "Closing Opp.", "short" => "co")));
         $pdf->SetFont('Arial','B', 10);
-        $pdf->Ln();
         $pdf->Cell(250, 8, "The best team gets Rank 1. A better rank has a higher total team score (no equal scores). Learn to do math or face the bin.");
+        $pdf->Ln();
+        $pdf->Cell(250, 8, "Created with Tabbie. See http://www.smoothtournament.com and http://tabbie.wikidot.com");
     }
     
     $pdf->Output($filename, "I");

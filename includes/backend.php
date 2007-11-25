@@ -290,8 +290,11 @@ function adjudicator_sheets($round) {
             }
             $cospkr_row = mysql_fetch_assoc($cospkr_result);
         }
+        @$panelist_2 = @$panelist_2 ? (", " . @$panelist_2) : "";
+        @$panelist_3 = @$panelist_3 ? (", " . @$panelist_3) : "";
         $page = array(
             "chair" => $chair,
+            "panel" => @$panelist_1 . " $panelist_2 $panelist_3",
             "round" => $round,
             "venue" => "$venue_name" . ($venue_location ? " at $venue_location" : ""),
             "motion" => $motion,

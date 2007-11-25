@@ -22,7 +22,7 @@
  * end license */
 
 $ntu_controller = "standing";
-$ntu_default_module = "main";
+$ntu_default_module = "teamstanding";
 $ntu_default_action = "display";
 $ntu_titles = array(
     "teamstanding" => "Team Standings",

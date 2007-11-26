@@ -32,6 +32,10 @@ body h2 {
 	background:#FFCCCC;
 }
 
+.hide {
+    display:none;
+}
+
 table thead {
 	background:#930;
 	color:#fff;

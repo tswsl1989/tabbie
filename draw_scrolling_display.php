@@ -39,6 +39,13 @@ $roundno=@$_GET['roundno'];
 
 <body>
     <h2>Draw : Round <?= $roundno ?></h2>
+    <p><a href="#" id="toggle_config">Show Config Panel &raquo;</a></p>
+    <div id="config" class="hide">
+        <button id="slower">Slower</button>
+        <button id="faster">Faster</button>
+        <button id="start">Start</button>
+
+    </div>
 	<table>
 		<thead>
 			<th class="team">Team Name</th>

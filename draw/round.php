@@ -93,12 +93,12 @@ displayMessagesP(@$msg);
         echo mysql_error();
 
         $num_panelists=mysql_num_rows($pan_result);
-        if (@$numpanelists > 0) echo "<ul>\n";
+        if (@$num_panelists > 0) echo "<ul>\n";
         while($pan_row=mysql_fetch_assoc($pan_result))
         {    
           echo "<li>{$pan_row['adjud_name']}</li>";
         }
-        if (@$numpanelists > 0) echo "</ul>\n";
+        if (@$num_panelists > 0) echo "</ul>\n";
         echo "</td>\n";
 
             echo "<td>";

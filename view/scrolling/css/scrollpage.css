@@ -1,0 +1,7 @@
+body {
+    font-size : 1.5em;
+}
+#scrolldisplay {
+    height : 600px;
+    border: 1px solid;
+}

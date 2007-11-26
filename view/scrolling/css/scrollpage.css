@@ -1,7 +1,73 @@
+html {
+	margin:0;
+	padding:0;
+}
+
 body {
-    font-size : 1.5em;
+	font:1em/1.5 "lucida grande", "lucida sans unicode", sans-serif;	
+}
+
+body h2 {
+	margin:0;
+	padding:1.2em 0;
+	color:#fff;
+	text-align:center;
+	font-weight:bold;
+	text-transform:uppercase;
+	background:#000;
 }
 #scrolldisplay {
-    height : 600px;
-    border: 1px solid;
+    height : 480px;
+}
+
+#scrolldisplay table {
+		width:100%;
+}
+#scrolldisplay table td {
+	border-bottom:1px solid #ff5050;
+	text-align:center;
+}
+
+#scrolldisplay table tr.odd td{
+	background:#FFCCCC;
+}
+
+table thead {
+	background:#930;
+	color:#fff;
+	text-align:center;
+	text-transform:uppercase;
+}
+
+table {
+	width:98.5%;
+	border-collapse:collapse;
+}
+
+table .open_gov, table .open_odd, table .close_gov, table .close_opp, table .team {
+	width:12%;
+}
+table .venue {
+	width:7%;
+}
+
+table .panelists, table .trainee, table .chair {
+	width:11%;
+}
+
+
+table .panelists li {
+	list-style:none;
+}
+
+div.footer {
+	background:#000;
+	color:#fff;
+	padding:1em 0;
+	text-align:center;
+}
+
+div.footer a {
+	color:#fcc;
+	font-weight:bold;
 }

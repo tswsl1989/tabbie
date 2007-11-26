@@ -7,7 +7,7 @@ $(document).ready( function () {
                $('#scrolldisplay')[0].scrollBy(parseInt($('#scrolldisplay').attr('rel')));
         });
         
-        
+		$("tr:nth-child(odd)").addClass("odd");        
 });
 
 

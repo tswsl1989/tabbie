@@ -9,7 +9,7 @@ body {
 
 body h2 {
 	margin:0;
-	padding:1.2em 0;
+	padding:1.2em 0 0 0;
 	color:#fff;
 	text-align:center;
 	font-weight:bold;
@@ -49,19 +49,21 @@ table {
 }
 
 table .open_gov, table .open_odd, table .close_gov, table .close_opp, table .team {
-	width:12%;
+	width:11%;
 }
 table .venue {
-	width:7%;
+	width:7.5%;
 }
 
 table .panelists, table .trainee, table .chair {
-	width:11%;
+	width:12.5%;
+	font-size:0.9em;
 }
 
 
 table .panelists li {
 	list-style:none;
+	margin:0 0 1em 0;
 }
 
 div.footer {
@@ -74,4 +76,42 @@ div.footer {
 div.footer a {
 	color:#fcc;
 	font-weight:bold;
+}
+
+
+div.tabconfig {
+	background:#000;
+	position:relative;
+	height:30px;
+	font-size:0.7em;
+}
+
+div.tabconfig p {
+	position:absolute;
+	left:20px;
+	bottom:10px;
+	margin:0;
+}
+
+div.tabconfig a {
+	color:#eee;
+}
+
+div.tabconfig div#config {
+	position:absolute;
+	left:5em;
+	bottom:10px;
+	margin:0;
+}
+
+div.tabconfig button {
+	background:#aaa;
+	color:#000;
+	border:1px solid #ccc;
+	padding:1px 3px;
+	margin:0 5px;
+}
+
+button {
+    cursor: pointer;
 }

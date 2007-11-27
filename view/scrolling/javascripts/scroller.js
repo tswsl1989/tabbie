@@ -14,11 +14,11 @@ $(document).ready( function () {
         $('#toggle_config').toggle(         
             function () {
                 $('#config').removeClass("hide");
-                $('#toggle_config').html("&laquo; Hide Config Panel");
+                $('#toggle_config').html("&laquo; Hide");
             },            
             function () {
                 $('#config').addClass("hide");
-                $('#toggle_config').html("Show Config Panel &raquo;");                
+                $('#toggle_config').html("Settings &raquo;");                
             }
         );
         
@@ -40,9 +40,9 @@ $(document).ready( function () {
                });
         });
         
-        //Configure 'start' event handler
-        $('#start').bind('click', function(e) {
-            $('#scrolldisplay')[0].scrollTo(0)
+        //Configure 'top' event handler
+        $('#top').bind('click', function(e) {
+            $('#scrolldisplay')[0].scrollTo(0);
         });
         
 });

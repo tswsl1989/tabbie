@@ -39,13 +39,17 @@ $roundno=@$_GET['roundno'];
 
 <body>
     <h2>Draw : Round <?= $roundno ?></h2>
-    <p><a href="#" id="toggle_config">Show Config Panel &raquo;</a></p>
-    <div id="config" class="hide">
-        <button id="slower">Slower</button>
-        <button id="faster">Faster</button>
-        <button id="start">Start</button>
+    <div class="tabconfig"><!--Start section config -->
+        <p><a href="#" id="toggle_config">Settings &raquo;</a></p>
+        <div id="config" class="hide">
+            <button id="slower">Slower</button>
+            <button id="faster">Faster</button>
+            <!--
+            <button id="top">Top</button>
+            -->
 
-    </div>
+        </div>        
+    </div><!--End section config-->
 	<table>
 		<thead>
 			<th class="team">Team Name</th>
@@ -59,7 +63,7 @@ $roundno=@$_GET['roundno'];
 			<th class="trainee">Trainee</th>
 		</thead>
 	</table>
-    <div id="scrolldisplay" rel="10"> <!-- Start of scrolldisplay -->
+    <div id="scrolldisplay" rel="0"> <!-- Start of scrolldisplay -->
         <table>
             <tbody>
 <?php

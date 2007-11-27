@@ -1,4 +1,33 @@
 CHANGELOG:
+1.4
+* Adjudicator Allocation
+    * The paramters are editable from the application
+    * Added parameter "Ciaran Ideal"
+    * Panel Sizes may vary - a parameter is added to regulate this behaviour
+    * Tuning according to experience in live tournaments
+    * Results of Adjud. Allocation can be inspected after manual changes too
+    * Possibility for refining Ajdudicators incrementally added 
+
+* Standings
+    * WUDC art. 4.a.iii is used to distinguish between teams on equal points and speaks
+
+* Displaying:
+    * Nice display of the Tab:
+        * Autoscrolling
+        * Speed adjustable
+    * Added a "Team Overview" module
+    * Minor changes to the Adjudicator Sheets
+    * Adjudicator Allocation:
+        * Current draw display averages instead of total points
+        * Current draw is sorted on order of debate strength
+        * Added total to adjud allocation representation
+    * Result positions with a suffix, for e.g 1st instead of 1, 2nd instead of 2 etc
+
+* Technical / Bugfixes
+    * Draws for rounds >= 10 are supported
+    * Locking of the Automated Draw Algorithms
+    * Fixed bug with single room. If there's only one room it still works.
+
 1.3.1
 * Overviews:
     * Results by position / Motion Fairness added

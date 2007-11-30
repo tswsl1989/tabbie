@@ -241,8 +241,29 @@ function cmp_ranking($adjudicator_0, $adjudicator_1) {
     return $adjudicator_0['ranking'] - $adjudicator_1['ranking'];
 }
 
+function validate_adjudicators($debates) {
+  $valid=true;
+  $allocated_judges= array();
+  foreach ($debates as $debate) {
+    foreach ($debate['adjudicators'] as $adjud) {
+      $allocated_judges[] = $adjud['adjud_id'];
+    }
+  }
+  sort($allocated_judges);
+  $prev_id=-1;
+  foreach ($allocated_judges as $judge_id) {
+    if ($judge_id==$prev_id) {
+      $valid=false;
+      break;
+    }
+    $prev_id=$judge_id;
+  }
+  return $valid;
+}
+
 function write_to_db($debates, $round) {
     //add some checks here...
+  if (validate_adjudicators($debates)) {
     create_temp_adjudicator_table($round);
     foreach ($debates as &$debate) {
         usort($debate['adjudicators'], 'cmp_ranking');
@@ -254,6 +275,10 @@ function write_to_db($debates, $round) {
                 "INSERT INTO `temp_adjud_round_$round` " .
                 "VALUES('{$debate['debate_id']}','{$adjudicator['adjud_id']}','panelist')");
     }
+  }
+      else {
+	echo "<b>Error in Simulated annealing, adjudication failed validity test!</b><br>";
+      }
 }
 
 function initial_distribution(&$debates, &$adjudicators) {

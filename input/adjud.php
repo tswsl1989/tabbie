@@ -309,8 +309,8 @@ if ($action=="display")
      ?>
        </select><br/><br/>
 
-       <label for="conflicts">Conflicts (separate by comma)</label>
-       <input type="text" id="conflicts" name="conflicts" value="<?echo $conflicts;?>"></input><br/><br/>
+       <label for="conflicts">Conflicts</label>
+       <input type="text" id="conflicts" name="conflicts" value="<?echo $conflicts;?>"></input> Separate multiple conflicts by comma; Specific teams may be specified by putting a dot right between the university and team codes, like so: CAM,OXF,UTR.A<br/><br/>
 
        <label for="ranking">Ranking</label>
                     <input type="text" id="ranking" name="ranking" value="<?echo $ranking;?>"/> Value: 0 - 100; Higly ranked adjudicators will be chairs of higly ranked debates.<br/><br/>

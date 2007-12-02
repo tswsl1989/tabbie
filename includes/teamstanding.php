@@ -80,6 +80,7 @@ function team_standing_array($roundno, $list="all") {
             
     // Create array with all the team ids
     $index=0;
+    $team_array = array();
     while ($row = mysql_fetch_assoc($result))
     {
         $team_array[$index] = array("index" => $index++,

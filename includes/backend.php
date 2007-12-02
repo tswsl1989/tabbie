@@ -146,7 +146,10 @@ function print_teams_css($teams) {
 
 function get_adjudicators_venues($round) {
     $result["header"] = array("Adjudicator Name", "Venue", "Venue Location");
-    
+    if (!$round) {
+        $result["data"] = array();
+        return $result;
+    }
     $query = "SELECT v.*, a.* FROM adjudicator AS a, draw_round_$round AS d, " .
                 "venue AS v, adjud_round_$round AS adjud  " .
                 "WHERE d.venue_id=v.venue_id AND adjud.debate_id = d.debate_id AND " .
@@ -164,7 +167,11 @@ function get_adjudicators_venues($round) {
 
 function get_teams_venues($round) {
     $result["header"] = array("Team Name", "Venue", "Venue Location");
-    
+    if (!$round) {
+        $result["data"] = array();
+        return $result;
+    }
+
     $query = "SELECT v.venue_id AS venue_id, v.venue_location AS venue_location, v.venue_name AS venue_name, t.team_id AS team_id, t.team_code AS team_code, u.univ_code AS univ_code ";
         $query.="FROM team AS t, university AS u, draw_round_$round AS d, venue AS v ";
         $query.="WHERE d.venue_id=v.venue_id AND (t.team_id=d.og OR t.team_id=d.oo OR t.team_id=d.cg OR t.team_id=d.co) AND t.univ_id=u.univ_id ";

@@ -1,4 +1,14 @@
 $(document).ready( function () {
+        
+       // Calculate height of components other than scrolldisplay div
+       var totalHeight = $('#header').outerHeight() +
+                         $('.tabconfig').outerHeight() +
+                         $('#theader').outerHeight() +
+                         $('.footer').outerHeight();
+       
+        // Adjust height of scrolldisplay to maximise height
+        $('#scrolldisplay').height($(window).outerHeight() - totalHeight - 50);
+        
         // Attach scrollpane
         $('#scrolldisplay').jScrollPane({animateTo:true, animateInterval:10, animateStep:2});
 
@@ -44,6 +54,8 @@ $(document).ready( function () {
         $('#top').bind('click', function(e) {
             $('#scrolldisplay')[0].scrollTo(0);
         });
+        
+
         
 });
 

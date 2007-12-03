@@ -38,7 +38,7 @@ $roundno=@$_GET['roundno'];
 </head>
 
 <body>
-    <h2>Draw : Round <?= $roundno ?></h2>
+    <h2 id="header">Draw : Round <?= $roundno ?></h2>
     <div class="tabconfig"><!--Start section config -->
         <p><a href="#" id="toggle_config">Settings &raquo;</a></p>
         <div id="config" class="hide">
@@ -50,7 +50,7 @@ $roundno=@$_GET['roundno'];
 
         </div>        
     </div><!--End section config-->
-	<table>
+	<table id="theader">
 		<thead>
 			<th class="team">Team Name</th>
 			<th class="venue">Venue</th>

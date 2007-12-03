@@ -166,7 +166,7 @@ function get_adjudicators_venues($round) {
 }
 
 function get_teams_venues($round) {
-    $result["header"] = array("Team Name", "Venue", "Venue Location");
+    $result["header"] = array("Team Name", "Venue", "Venue Location", "Position");
     if (!$round) {
         $result["data"] = array();
         return $result;
@@ -181,7 +181,17 @@ function get_teams_venues($round) {
 
     $data = array();
     while ($row = mysql_fetch_assoc($query_result)) {
-        $data[] = array($row['univ_code'] . " " . $row['team_code'], $row["venue_name"], $row["venue_location"]);
+        // Find the Position
+        $positions = array("og", "oo", "cg", "co");
+        $pos_string = "";
+        foreach($positions as $position) {
+            $pos_string = $position;
+            $pos_query = "SELECT $position FROM draw_round_$round WHERE $position={$row['team_id']}";
+            $pos_query_result = mysql_query($pos_query);
+            if (mysql_num_rows($pos_query_result) > 0)
+                break;
+        }
+        $data[] = array($row['univ_code'] . " " . $row['team_code'], $row["venue_name"], $row["venue_location"], strtoupper($pos_string));
     }
     $result["data"] = $data;
     return $result;

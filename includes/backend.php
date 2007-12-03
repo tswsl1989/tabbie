@@ -92,7 +92,7 @@ function positions_for_team($team_id, $nr_of_rounds) {
 }
 
 function get_teams_positions_points($nr_of_rounds) {
-    $db_result = q("SELECT team_id FROM team WHERE active='Y'");
+    $db_result = q("SELECT team_id FROM team WHERE active='Y' ORDER BY team_id");
     $teams = array();
     while ($team = mysql_fetch_assoc($db_result)) {
         $team['points'] = points_for_team($team['team_id'], $nr_of_rounds);

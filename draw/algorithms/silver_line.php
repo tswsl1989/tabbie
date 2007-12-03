@@ -91,12 +91,25 @@ function find_best_swap_for(&$teams, &$team_a) {
     return false;
 }
 
+function ciaran_bob_shuffle(&$teams) {
+    //there are probably nicer ways to achieve this, but they would take more time to program :-)
+    for ($i = 0; $i < 5000; $i++) {
+        $team_a = $teams[array_rand($teams)];
+        $team_b = $teams[array_rand($teams)];
+        if (is_swappable($team_a, $team_b)) {
+            swap_two_teams($teams, $team_a, $team_b);
+        }
+    }
+}
+
 function draw_silver_line($teams) {
     srand(0);
     shuffle($teams);
     usort($teams, "cmp_teams_on_points");
     $teams = array_reverse($teams);
     $teams = attributed_teams_from_debates(debates_from_teams($teams));
+    ciaran_bob_shuffle($teams);
+
     $previous_solution = 0;
     while (teams_badness($teams) > 0) {
         if ($previous_solution == teams_badness($teams))

@@ -48,7 +48,7 @@ function debates_badness(&$debates) {
 }
 
 function debates_from_teams($teams) {
-    //assert that array contains modulo 4 == 0 items
+    //TODO: assert that array contains modulo 4 == 0 items
     $debates = array();
     for ($i = 0; $i < count($teams) / 4; $i++) {
         $debate = array();

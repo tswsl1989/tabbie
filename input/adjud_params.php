@@ -40,6 +40,7 @@ foreach ($scoring_factors as $pname => $pvalue) {
 printf("</table>");
 //echo "<input type=\"hiddedn\" value=\"adjud_params\">";
 echo "<button name=\"save\" type=\"submit\" value=\"submitted\">save</button>";
+echo "</form>";
 
 ?>
 <h3>What does this mean?</h3>

@@ -102,8 +102,8 @@ function ciaran_bob_shuffle(&$teams) {
     }
 }
 
-function draw_silver_line($teams) {
-    srand(0);
+function draw_silver_line($teams, $seed=0) {
+    srand($seed);
     shuffle($teams);
     usort($teams, "cmp_teams_on_points");
     $teams = array_reverse($teams);

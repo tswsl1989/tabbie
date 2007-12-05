@@ -86,7 +86,7 @@ if (($action=="draw") && ($validate == 1)) {
     require_once("draw/algorithms/ntu_core.php");
 
     //$debates = draw_ntu_core($teams, $nextround);
-    $debates = draw_silver_line($teams);
+    $debates = draw_silver_line($teams, $nextround);
 
     if (! validate_draw($teams, $debates))
         $msg[] = "The Algortihm has not created a valid draw!!!";

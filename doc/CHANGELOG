@@ -1,4 +1,19 @@
 CHANGELOG:
+1.4.1
+* Draw Calculation
+    * Seed for draw is based on round number now
+    * Added extra shuffeling to prevent 'best teams grouped together' / 'pull down' behavior from happening more than could be randomly expected
+
+* Adjudicator Parameters
+    * Fixed bug in which the Adjudicator Allocation params were not getting updated
+    * Added check that no adjudicator is allocated twice.
+
+* Display changes
+    * Adding team position data to Print module, Team locations display
+    * Added auto-adjusting of height in scrolling display of draw
+    * Added comment about team-specific conflicts
+    * Added not-0 check on some places (unstarted tournaments created some garbage)
+
 1.4
 * Adjudicator Allocation
     * The paramters are editable from the application

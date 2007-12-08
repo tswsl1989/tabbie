@@ -44,9 +44,9 @@ if ($return_value == 0) {
 } else { // attempt 2 (assuming windows/ WOS):
 
 $strip_diskname = 2; // "C:"
-$script_directory = substr($_SERVER['SCRIPT_FILENAME'], $strip_diskname, strrpos($_SERVER['SCRIPT_FILENAME'] - $strip_diskname, '/'));
+$script_directory = substr($_SERVER['SCRIPT_FILENAME'], $strip_diskname, strrpos($_SERVER['SCRIPT_FILENAME'], '/') - $strip_diskname);
 
-$command = "cd \"$script_directory/../../mysql/bin/\" && $command";
+$command = "cd \"\\$script_directory/../../mysql/bin/\" && $command";
 
 $output = array();
 $return_value = "undefined";
@@ -71,7 +71,7 @@ require("view/mainmenu.php");
 
 ?> <h3>Backup Failed</h3> 
 <p>
-There was a problem executing the command '<?= $command2 ?>', error code: <?= $return_value ?><br>
+There was a problem executing the command '<?= $command ?>', error code: <?= $return_value ?><br>
 <?
     foreach ($output as $line)
         print "$line <br>";

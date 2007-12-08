@@ -32,7 +32,7 @@ if ($submited=="submitted") {
 }
 
 echo "<h2>Adjust adjudicator allocation parameters</h2>\n"; //title
-echo "<form action=\"input.php?moduletype=adjud_params\" method=POST><table border=1><tr><th>Parameter name</th><th>parameter value</th></tr>";
+echo "<form action=\"input.php?moduletype=adjud_params\" method=POST><table><tr><th>Parameter name</th><th>parameter value</th></tr>";
 //iterate over params:
 foreach ($scoring_factors as $pname => $pvalue) {
   printf("<tr><td>%s</td><td><input name=\"param_%s\" value=\"%01.1f\"></td></tr>\n",$pname,$pname,$pvalue);

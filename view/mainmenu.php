@@ -30,5 +30,6 @@
     <li><a href="standing.php"<?= ($ntu_controller=="standing")?" class=\"activemain\"":""?>>Standings</a></li>
     <li><a href="print.php"<?= ($ntu_controller=="print")?" class=\"activemain\"":""?>>Print</a></li>
     <li><a href="backup.php">Backup</a></li>
+    <li><a href="import.php"<?= ($ntu_controller=="import")?" class=\"activemain\"":""?>>Import</a></li>
 </ul>
 </div>

@@ -21,8 +21,6 @@
  * 
  * end license */
 
-die();
-
 $ntu_controller = "import";
 
 require("ntu_bridge.php");

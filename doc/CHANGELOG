@@ -1,4 +1,10 @@
 CHANGELOG:
+1.4.2
+  * Bug fix. Missing php extension which was causing 404 on Windows
+  * Import 'should work' now
+  * Layout minor change
+  * Backup works for windows (using Webserver on a stick) too now
+
 1.4.1
 * Draw Calculation
     * Seed for draw is based on round number now

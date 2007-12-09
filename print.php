@@ -52,7 +52,7 @@ List of teams, and their venues</a>
 
 <h3>Scrolling Display (for overhead projection)</h3>
 <ul>
-    <li><a href="draw_scrolling_display?roundno=<?= $round ?>">Draw Display with teams, positions and venues</a></li>
+    <li><a href="draw_scrolling_display.php?roundno=<?= $round ?>">Draw Display with teams, positions and venues</a></li>
 </ul>
 
 

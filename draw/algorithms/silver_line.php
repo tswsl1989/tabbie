@@ -93,7 +93,7 @@ function find_best_swap_for(&$teams, &$team_a) {
 
 function ciaran_bob_shuffle(&$teams) {
     //there are probably nicer ways to achieve this, but they would take more time to program :-)
-    for ($i = 0; $i < 5000; $i++) {
+    for ($i = 0; $i < 20000; $i++) {
         $team_a = $teams[array_rand($teams)];
         $team_b = $teams[array_rand($teams)];
         if (is_swappable($team_a, $team_b)) {

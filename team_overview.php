@@ -23,14 +23,28 @@
 require_once("includes/backend.php");
 
 $ntu_controller = "print"; #selected in menu
-$title = "Team Overview";
+
+$team_id = @$_REQUEST['team_id'];
+
+if ($team_id) {
+    $team_name =  team_name_long($team_id);
+    
+    $db_result = mysql_query("SELECT S1.speaker_name AS speaker1, S2.speaker_name AS speaker2 FROM team AS T, speaker AS S1, speaker AS S2 WHERE T.team_id = '$team_id' AND S1.team_id=T.team_id AND S2.team_id=T.team_id AND S1.speaker_id<S2.speaker_id");
+    $row = mysql_fetch_assoc($db_result);
+    $speakers = "{$row['speaker1']} and {$row['speaker2']}";
+    $title = "Team Overview for $team_name ($speakers)";
+}
+
+else 
+    $title = "Team Overview - Select Team";
+
+
 require("view/header.php");
 require("view/mainmenu.php");
 
 require_once("includes/backend.php");
 require_once("includes/teamstanding.php");
 
-$team_id = @$_REQUEST['team_id'];
 
 if (!$team_id) {
 
@@ -50,10 +64,9 @@ if (!$team_id) {
     print "</ul>";
 
 } else {
-    print "<h2>Team Overview for team " . team_name_long($team_id) . "</h2>";
-    $db_result = mysql_query("SELECT S1.speaker_name AS speaker1, S2.speaker_name AS speaker2 FROM team AS T, speaker AS S1, speaker AS S2 WHERE T.team_id = '$team_id' AND S1.team_id=T.team_id AND S2.team_id=T.team_id AND S1.speaker_id<S2.speaker_id");
-    $row = mysql_fetch_assoc($db_result);
-    print "Speakers: {$row['speaker1']} and {$row['speaker2']}";
+    print "<h2>Team Overview for team " . $team_name . "</h2>";
+    print "Speakers: $speakers";
+
     $completed_rounds = get_num_completed_rounds();
 
     $final_standing = team_standing_array($completed_rounds);

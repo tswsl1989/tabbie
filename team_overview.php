@@ -59,7 +59,7 @@ if (!$team_id) {
         "ORDER BY univ_code, team_code ");
 
     while ($row = mysql_fetch_assoc($db_result)) {
-        print "<li><a href=\"team_overview?team_id={$row['team_id']}\">{$row['univ_code']} {$row['team_code']} ({$row['speaker1']} and {$row['speaker2']})</a></li>";
+        print "<li><a href=\"team_overview.php?team_id={$row['team_id']}\">{$row['univ_code']} {$row['team_code']} ({$row['speaker1']} and {$row['speaker2']})</a></li>";
     }
     print "</ul>";
 

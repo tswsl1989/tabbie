@@ -102,30 +102,29 @@ function ciaran_bob_shuffle(&$teams) {
     }
 }
 
-function shuffle_bracket(&$bracket,&$teams) {
-  $team_cnt=count($bracket);
-  for ($i= 0; $i < $team_cnt*2;$i++ ) {
-    $team_a = array_rand($bracket);
-    $team_b = $bracket[$i%$team_cnt];
-    if (is_swappable($teams,$team_a,$team_b)) {
-      swap_two_teams($teams,$team_a,$team_b);
+function shuffle_bracket(&$bracket, &$teams) {
+    $team_cnt = count($bracket);
+    for ($i= 0; $i < $team_cnt * 2; $i++) {
+        $team_a = array_rand($bracket);
+        $team_b = $bracket[$i % $team_cnt];
+        if (is_swappable($teams, $team_a, $team_b)) {
+            swap_two_teams($teams, $team_a, $team_b);
+        }
     }
-  }
 }
 
 function shuffle_in_brackets(&$teams) {
-  $current_bracket = array();
-  $prev_bracket = -1;
-  foreach ($teams as $team) {
-    if ($team['debate_level']!=$prev_bracket) {
-      shuffle_bracket($current_bracket,$teams);
-      $current_bracket= array();
-      $prev_bracket = $team['debate_level'];
-    } 
-    else {
-      $current_bracket[]=$team;
+    $current_bracket = array();
+    $prev_level = -1;
+    foreach ($teams as $team) {
+        if ($team['debate_level'] != $prev_level) {
+            shuffle_bracket($current_bracket, $teams);
+            $current_bracket = array();
+            $prev_bracket = $team['debate_level'];
+        } else {
+            $current_bracket[] = $team;
+        }
     }
-  }
 
 }
 
@@ -135,8 +134,7 @@ function draw_silver_line($teams, $seed=0) {
     usort($teams, "cmp_teams_on_points");
     $teams = array_reverse($teams);
     $teams = attributed_teams_from_debates(debates_from_teams($teams));
-    //ciaran_bob_shuffle($teams);
-    shuffle_in_brackets($teams);
+    ciaran_bob_shuffle($teams);
 
     $previous_solution = 0;
     while (teams_badness($teams) > 0) {

@@ -10,5 +10,7 @@
 
 <p><a href="<?= site_url("register") ?>">Register</a> or <a href="<?= site_url("login") ?>">Log in</a></p>
 
+<p>Logged in as [<?= $this->session->userdata('username') ?>] <a href="<?= site_url("logout") ?>">Log Out</a></p>
+
 </body>
 </html>

@@ -11,7 +11,8 @@ class Login extends Controller {
     }
 
     function go() {
-        if ($this->input->post("username") == "klaas") {
+        if ($this->input->post('username') == 'admin') {
+            $this->session->set_userdata('username', 'admin');
             $this->load->view('home/home');
         } else {
             $this->load->view('login/login');

@@ -8,5 +8,7 @@
 
 <p>The page you are looking at is being generated dynamically by CodeIgniter.</p>
 
+<p><a href="<?= site_url("register") ?>">Register</a> or <a href="<?= site_url("login") ?>">Log in</a></p>
+
 </body>
 </html>

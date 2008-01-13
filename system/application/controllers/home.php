@@ -2,13 +2,12 @@
 
 class Home extends Controller {
 
-    function Home()
-    {
+    function Home() {
         parent::Controller();	
+        $this->load->helper('url');
     }
     
-    function index()
-    {
+    function index() {
         $this->load->view('home/home');
     }
 }

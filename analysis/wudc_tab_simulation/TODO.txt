@@ -1,3 +1,0 @@
-- implementation of one more simulation model
-- implementation of an alternate draw algorithms
-- benchmarking

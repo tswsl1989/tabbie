@@ -196,3 +196,11 @@ INSERT INTO configuration VALUES ('panel_size_out_of_bounds', 1000);
 INSERT INTO configuration VALUES ('adjudicator_met_adjudicator', 0);
 INSERT INTO configuration VALUES ('adjudicator_met_team', 0);
 INSERT INTO configuration VALUES ('lock', 0);
+
+CREATE TABLE IF NOT EXISTS  `ci_sessions` (
+    session_id varchar(40) DEFAULT '0' NOT NULL,
+    ip_address varchar(16) DEFAULT '0' NOT NULL,
+    user_agent varchar(50) NOT NULL,
+    last_activity int(10) unsigned DEFAULT 0 NOT NULL,
+    PRIMARY KEY (session_id)
+);

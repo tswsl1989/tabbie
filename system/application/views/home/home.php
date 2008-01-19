@@ -1,8 +1,6 @@
-<html>
-<head>
-<title>Welcome to Tabbie 2.0</title>
-</head>
-<body>
+<? $page_title = "Home" ?>
+
+<?php require APPPATH . "views/header.php"; ?>
 
 <h1>Welcome to Tabbie 2.0</h1>
 
@@ -16,5 +14,4 @@
 
 <?php endif; ?> 
 
-</body>
-</html>
+<?php require APPPATH . "views/footer.php"; ?>

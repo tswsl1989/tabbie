@@ -1,8 +1,6 @@
-<html>
-<head>
-<title>Login</title>
-</head>
-<body>
+<? $page_title = "Login" ?>
+
+<?php require APPPATH . "views/header.php"; ?>
 
 <h1>Login to Tabbie 2.0</h1>
 
@@ -13,5 +11,4 @@
 <input type="submit"/><br/>
 </form>
 
-</body>
-</html>
+<?php require APPPATH . "views/footer.php"; ?>

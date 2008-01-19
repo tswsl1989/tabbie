@@ -1,5 +1,6 @@
-<? $page_title = "Create Tournament" ?>
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
 
+<? $page_title = "Create Tournament" ?>
 <?php require APPPATH . "views/header.php"; ?>
 
 <h1>Create Tournament</h1>

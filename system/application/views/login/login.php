@@ -1,5 +1,6 @@
-<? $page_title = "Login" ?>
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
 
+<? $page_title = "Login" ?>
 <?php require APPPATH . "views/header.php"; ?>
 
 <h1>Login to Tabbie 2.0</h1>

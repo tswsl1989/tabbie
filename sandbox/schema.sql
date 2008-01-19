@@ -19,7 +19,10 @@
 
 CREATE TABLE tournaments (
     id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    short_name VARCHAR(20) NOT NULL,
+    name VARCHAR(100) NOT NULL,
     PRIMARY KEY (id)
+    UNIQUE KEY (short_name)
 )   TYPE=MyISAM;
 
 CREATE TABLE phases (
@@ -40,9 +43,10 @@ CREATE TABLE rounds (
 
 CREATE TABLE persons (
     id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    tournament_id MEDIUMINT UNSIGNED NOT NULL,
     name VARCHAR(100) NOT NULL,
+    UNIQUE KEY (tournament_id, name),
     PRIMARY KEY (id),
-    UNIQUE KEY (name)
 ) TYPE=MyISAM;
 
 CREATE TABLE speakers (
@@ -196,6 +200,8 @@ INSERT INTO configuration VALUES ('panel_size_out_of_bounds', 1000);
 INSERT INTO configuration VALUES ('adjudicator_met_adjudicator', 0);
 INSERT INTO configuration VALUES ('adjudicator_met_team', 0);
 INSERT INTO configuration VALUES ('lock', 0);
+
+--- not for data, but for appliction:
 
 CREATE TABLE IF NOT EXISTS  `ci_sessions` (
     session_id varchar(40) DEFAULT '0' NOT NULL,

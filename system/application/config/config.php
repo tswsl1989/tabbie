@@ -11,7 +11,7 @@
 |	http://www.your-site.com/
 |
 */
-$config['base_url']	= "http://localhost/tabbie_2.0/";
+$config['base_url']	= "http://localhost/tabbie/";
 
 /*
 |--------------------------------------------------------------------------

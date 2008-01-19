@@ -9,8 +9,8 @@
 
 <?= form_open('tournament/create') ?>
 
-<input type="text" name="short_name" value="" size="16" /> Identifier (used in addresses)<br/>
-<input type="text" name="name" value="" size="16" /> Name (for display purposes)<br/>
+<input type="text" name="short_name" value="<?= $this->validation->short_name ?>" size="16" /> Identifier (used in addresses)<br/>
+<input type="text" name="name" value="<?= $this->validation->name ?>" size="16" /> Name (for display purposes)<br/>
 
 <div><input type="submit" value="Create" /></div>
 

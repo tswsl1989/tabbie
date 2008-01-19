@@ -1,9 +1,9 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
 
-<? $page_title = "..... Tournament" ?>
+<? $page_title = "{$tournament->name} - Admin" ?>
 <?php require APPPATH . "views/header.php"; ?>
 
-<h1>Tournament Details</h1>
+<h1>Tournament Admin</h1>
 
 ...
 

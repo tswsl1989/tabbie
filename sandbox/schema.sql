@@ -21,7 +21,7 @@ CREATE TABLE tournaments (
     id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
     short_name VARCHAR(20) NOT NULL,
     name VARCHAR(100) NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
     UNIQUE KEY (short_name)
 )   TYPE=MyISAM;
 
@@ -43,7 +43,6 @@ CREATE TABLE rounds (
 
 CREATE TABLE persons (
     id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    tournament_id MEDIUMINT UNSIGNED NOT NULL,
     name VARCHAR(100) NOT NULL,
     UNIQUE KEY (tournament_id, name),
     PRIMARY KEY (id),
@@ -59,16 +58,17 @@ CREATE TABLE speakers (
 
 CREATE TABLE teams (
     id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    university_id MEDIUMINT UNSIGNED NOT NULL,
+    tournament_id MEDIUMINT UNSIGNED NOT NULL,
+    club_id MEDIUMINT UNSIGNED NOT NULL,
     short_name VARCHAR(20) NOT NULL,
     active BOOLEAN NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE KEY (university_id, short_name)
+    UNIQUE KEY (club_id, short_name)
 ) TYPE=MyISAM;
 
 CREATE TABLE adjudicators (
     id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    university_id MEDIUMINT UNSIGNED NOT NULL,
+    club_id MEDIUMINT UNSIGNED NOT NULL,
     person_id MEDIUMINT UNSIGNED NOT NULL,
     points MEDIUMINT NOT NULL,
     active BOOLEAN NOT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE team_scratches (
     UNIQUE KEY (adjudicator_id, team_id)
 ) TYPE=MyISAM;
 
-CREATE TABLE university_scratches (
+CREATE TABLE club_scratches (
     id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
     adjudicator_id MEDIUMINT UNSIGNED NOT NULL,
     team_id MEDIUMINT UNSIGNED NOT NULL,
@@ -132,15 +132,15 @@ CREATE TABLE speaker_points (
 
 CREATE TABLE team_roles (
     id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
     short_name VARCHAR(20) NOT NULL,
+    name VARCHAR(100) NOT NULL,
     PRIMARY KEY (id)
 ) TYPE=MyISAM;
 
 CREATE TABLE judge_roles (
     id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
     short_name VARCHAR(20) NOT NULL,
+    name VARCHAR(100) NOT NULL,
     PRIMARY KEY (id)
 ) TYPE=MyISAM;
 
@@ -154,33 +154,35 @@ CREATE TABLE team_properties (
 
 CREATE TABLE team_property_types (
     id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
     short_name VARCHAR(20) NOT NULL,
+    name VARCHAR(100) NOT NULL,
     PRIMARY KEY (id)
 ) TYPE=MyISAM;
 
-CREATE TABLE universities (
+CREATE TABLE clubs (
     id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
     short_name VARCHAR(20) NOT NULL,
+    name VARCHAR(100) NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE KEY (short_name)
+    UNIQUE KEY (short_name),
+    UNIQUE KEY (name)
 ) TYPE=MyISAM;
 
 CREATE TABLE rooms (
-  id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  building_id MEDIUMINT UNSIGNED NOT NULL,
-  name VARCHAR(100) NOT NULL,
-  active BOOLEAN NOT NULL,
-  PRIMARY KEY (id),
-  UNIQUE KEY (name)
+    id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    building_id MEDIUMINT UNSIGNED NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    active BOOLEAN NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY (building_id, name)
 ) TYPE=MyISAM;
 
 CREATE TABLE buildings (
-  id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name VARCHAR(100) NOT NULL,
-  PRIMARY KEY (id),
-  UNIQUE KEY (name)
+    id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    tournament_id MEDIUMINT UNSIGNED NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY (name)
 ) TYPE=MyISAM;
 
 CREATE TABLE configuration (

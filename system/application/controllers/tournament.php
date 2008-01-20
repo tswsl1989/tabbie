@@ -14,7 +14,7 @@ class Tournament extends Controller {
         $this->load->helper('form');
         $this->load->library('validation');
 
-        $rules['short_name'] = "required|alpha_dash|maximum_length[20]|short_name|callback__shortname_check";
+        $rules['short_name'] = "required|alpha_dash|maximum_length[20]|callback__shortname_check";
         $rules['name'] = "required|maximum_length[100]";
         $this->validation->set_rules($rules);
 

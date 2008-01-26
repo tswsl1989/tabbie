@@ -1,8 +1,10 @@
 <?php
 
-class Building extends Controller {
+class Team extends Controller {
 
-    function Building() {
+    //TODO: lot's of S&R with building => team
+
+    function Team() {
         parent::Controller();	
     }
 
@@ -13,8 +15,8 @@ class Building extends Controller {
             return;
         }
         $data["tournament"] = $tournament;
-        $data["buildings"] = $this->_get_all_buildings($tournament->id);
-        $this->load->view('building/overview', $data);
+        $data["teams"] = $this->_get_all_teams($tournament->id);
+        $this->load->view('team/overview', $data);
     }
 
     function add($tournament_short_name) {
@@ -38,9 +40,25 @@ class Building extends Controller {
         }
     }
 
-    function _get_all_buildings($tournament_id) {
-        $this->db->from('buildings')->where('tournament_id', $tournament_id);
-        return $this->db->get()->result(); 
+    function _get_all_teams($tournament_id) {
+        $sql = "SELECT  clubs.short_name as club_short_name,
+                        teams.short_name as team_short_name,
+                        teams.id
+                FROM clubs, teams
+                WHERE teams.tournament_id = ? AND
+                teams.club_id = clubs.id";
+        $teams = $this->db->query($sql, $tournament_id)->result();
+        $result = array();
+        foreach ($teams as $team) {
+             $sql = "SELECT  persons.name,
+                            speakers.id
+                    FROM speakers, persons
+                    WHERE speakers.team_id = ? AND
+                    speakers.person_id = persons.id";
+            $team->speakers = $this->db->query($sql, $team->id)->result();
+            $result[] = $team;
+        }
+        return $result;
     }
 
     function _get_tournament($short_name) {

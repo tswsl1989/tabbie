@@ -6,7 +6,7 @@
 <h1><?= $page_title?></h1>
 
 <? foreach($tournaments as $tournament): ?>
-<?= $tournament->short_name ?> <?= $tournament->name ?><br/>
+<a href="<?= site_url("tournament/admin/{$tournament->short_name}") ?>"> <?= $tournament->name ?></a><br/>
 <? endforeach; ?>
 
 <div><a href="<?= site_url("tournament/add/") ?>">Add Tournament</div>

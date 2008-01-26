@@ -5,7 +5,8 @@
 
 <h1>Tournament Admin - <?= $tournament->name ?></h1>
 
+<a href="<?= site_url("team/overview/{$tournament->short_name}") ?>"> Team Overview</a><br/>
 <a href="<?= site_url("building/overview/{$tournament->short_name}") ?>"> Building overview</a><br/>
-<a href="<?= site_url("room/overview/{$tournament->short_name}") ?>"> Room overview</a><br/>
+<a href="<?= site_url("room/overview/{$tournament->short_name}") ?>"> Room Overview</a><br/>
 
 <?php require APPPATH . "views/footer.php"; ?>

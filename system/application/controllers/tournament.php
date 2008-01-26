@@ -7,10 +7,11 @@ class Tournament extends Controller {
     }
     
     function index() {
-        //$this->load->view('home/home');
+        $data['tournaments'] = $this->_get_all_tournaments();
+        $this->load->view('tournament/index', $data);
     }
 
-    function create() {
+    function add() {
         $this->load->helper('form');
         $this->load->library('validation');
 
@@ -23,10 +24,10 @@ class Tournament extends Controller {
         $this->validation->set_fields($fields);
 
         if ($this->validation->run() == FALSE) {
-            $this->load->view('tournament/create');
+            $this->load->view('tournament/add');
         } else {
-            $short_name = $this->input->post('short_name');
-            $this->_create($short_name);
+            $short_name = strtolower($this->input->post('short_name'));
+            $this->_add($short_name);
             redirect("tournament/admin/$short_name");
         }
     }
@@ -41,7 +42,7 @@ class Tournament extends Controller {
             redirect('home/home');
     }
 
-    function _create($short_name) {
+    function _add($short_name) {
         $data = array(
             'short_name' => $short_name,
             'name' => $this->input->post('name'),
@@ -54,6 +55,13 @@ class Tournament extends Controller {
         $this->db->from('tournaments')->where('short_name', $short_name);
         return $this->db->get()->num_rows() == 0;
     }
+
+    function _get_all_tournaments() {
+        $this->db->from('tournaments')->orderby("short_name");
+        return $this->db->get()->result(); 
+    }
+
+
 
 }
 ?>

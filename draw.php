@@ -21,11 +21,17 @@
  * 
  * end license */
 
+require("ntu_bridge.php");
 
-if (file_exists("config/settings.php")) {
-    require("index2.php");
-} else {
-    require("install.php");
-}
+$query = "SHOW TABLES LIKE 'draw_round%'";
+$result = mysql_query($query);
+$numdraws = mysql_num_rows($result);
+$nextround = $numdraws + 1;
 
+$ntu_controller = "draw";
+$ntu_default_module = "round";
+$ntu_default_action = "";
+$ntu_titles = array();
+
+require("ntu_controller.php");
 ?>

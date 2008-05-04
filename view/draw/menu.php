@@ -19,13 +19,23 @@
  *     along with Tabbie; if not, write to the Free Software
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
- * end license */
+ * end license */ ?>
+<div id="submenu">
+    <h2 class="hide">Results Submenu</h2>
+    <ul>
+    <?
+    for($x=0;$x<$numdraws;$x++) 
+    {
+        if (@$roundno==($x+1))
+        $tag="class=\"activemain\"";
+        else
+        $tag="";
 
+        echo "<li><a href=\"draw.php?moduletype=round&amp;action=showdraw&amp;roundno=".($x+1)."\" $tag>Round ".($x+1) ."</a></li>\n";
+    }
 
-if (file_exists("config/settings.php")) {
-    require("index2.php");
-} else {
-    require("install.php");
-}
-
-?>
+        ?>
+        <li><a href="draw.php?moduletype=currentdraw"<?echo ($moduletype=='currentdraw')?"class=\"activemain\"":""?>>Current Draw</a></li>
+        <li><a href="draw.php?moduletype=manualdraw" <?echo ($moduletype=='manualdraw')?"class=\"activemain\"":""?>>Manual Draw</a></li>
+    </ul>
+</div>

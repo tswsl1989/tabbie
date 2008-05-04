@@ -21,11 +21,15 @@
  * 
  * end license */
 
+$ntu_controller = "standing";
+$ntu_default_module = "teamstanding";
+$ntu_default_action = "display";
+$ntu_titles = array(
+    "teamstanding" => "Team Standings",
+    "speakerstanding" => "Speaker Standings",
+    "position" => "Position Count",
+    "roundbreak" => "Round Points Breakup");
 
-if (file_exists("config/settings.php")) {
-    require("index2.php");
-} else {
-    require("install.php");
-}
-
+require("ntu_bridge.php");
+require("ntu_controller.php");
 ?>

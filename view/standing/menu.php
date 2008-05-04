@@ -19,13 +19,12 @@
  *     along with Tabbie; if not, write to the Free Software
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
- * end license */
-
-
-if (file_exists("config/settings.php")) {
-    require("index2.php");
-} else {
-    require("install.php");
-}
-
-?>
+ * end license */ ?>
+<div id="submenu">
+<h2 class="hide">Standings Submenu</h2>
+<ul>
+    <li><a href="standing.php?moduletype=teamstanding" <?echo ($moduletype=="teamstanding")?"class=\"activemain\"":""?>>teamstanding</a></li>
+    <li><a href="standing.php?moduletype=speakerstanding" <?echo ($moduletype=="speakerstanding")?"class=\"activemain\"":""?>>speakerstanding</a></li>
+    <li><a href="standing.php?moduletype=position" <?echo ($moduletype=="position")?"class=\"activemain\"":""?>>position</a></li>
+</ul>
+</div>

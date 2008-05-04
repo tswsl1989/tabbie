@@ -19,13 +19,8 @@
  *     along with Tabbie; if not, write to the Free Software
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
- * end license */
+ * end license */ ?>
+</div>
 
-
-if (file_exists("config/settings.php")) {
-    require("index2.php");
-} else {
-    require("install.php");
-}
-
-?>
+</body>
+</html>

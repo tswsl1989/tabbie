@@ -21,11 +21,38 @@
  * 
  * end license */
 
+function returnposition($first, $second,$third,$fourth,$team_id)
+{
+    if ($team_id==$first) 
+        return 1;
+    elseif ($team_id==$second) 
+        return 2;
+    elseif ($team_id==$third) 
+        return 3;
+    elseif ($team_id==$fourth) 
+        return 4;
+    else
+    return 0;    
 
-if (file_exists("config/settings.php")) {
-    require("index2.php");
-} else {
-    require("install.php");
+}
+
+function returnPositionString($pos) {
+    switch($pos) {
+        case 0 :
+            return "<b>none</b>";
+        case 1 :
+            return "1st";
+            break;
+        case 2 :
+            return "2nd";
+            break;
+        case 3 :
+            return "3rd";
+            break;            
+        case 4 :
+            return "4th";
+            break;
+    }
 }
 
 ?>

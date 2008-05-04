@@ -19,13 +19,21 @@
  *     along with Tabbie; if not, write to the Free Software
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
- * end license */
-
-
-if (file_exists("config/settings.php")) {
-    require("index2.php");
-} else {
-    require("install.php");
-}
-
-?>
+ * end license */ ?>
+<div id="submenu">
+    <h2 class="hide">Results Submenu</h2>
+    <ul>
+    <?
+        $roundno=@$_GET['roundno'];
+    for($x=0;$x<$numresults;$x++) 
+    {
+        if ($roundno==($x+1))
+        $tag="class=\"activemain\"";
+        else
+        $tag="";
+        echo "<li><a href=\"result.php?moduletype=round&amp;action=display&amp;roundno=".($x+1)."\" $tag>Round ".($x+1)." </a></li>\n";
+    }
+    ?>
+        <li><a href="result.php?moduletype=currentround&amp;action=display" <?echo ($roundno=="")?"class=\"activemain\"":""?>>Current Round</a></li>
+    </ul>
+</div>

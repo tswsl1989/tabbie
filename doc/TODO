@@ -1,0 +1,24 @@
+Support for other languages must be verified (for team and speaker names)
+
+Statistics / Fancy Display Module:
+    * Overview of winning positions (OG, OO, ...) per round to determine motion "goodness"
+    * Team Overview - in case of doubt you should be able to see all of a teams debates.
+    * All rounds including speakerpoints (per speaker)
+    * Export to read-only display case for the www
+
+Calculate the break fold
+
+Ease of manual input
+    Complete Rework using AJAX like stuff
+
+Overview Page
+    * Add a pointer to the page indicating where you are now
+
+Integrated Backup
+    for Windows systems
+
+
+Various:
+    Switching Rooms. we could add an options for "NONE", or for auto-switch with the room that you're taking.
+
+Importing and exporting

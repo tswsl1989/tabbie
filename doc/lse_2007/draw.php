@@ -21,11 +21,32 @@
  * 
  * end license */
 
+include("./lse_dev/config/dbconnection.php"); //Database Connection
 
-if (file_exists("config/settings.php")) {
-    require("index2.php");
-} else {
-    require("install.php");
+$moduletype=trim($_GET['moduletype']); //module type : round currentdraw
+if (!$moduletype) $moduletype="round"; //set to round if empty
+
+
+//Check Database
+$query="SHOW TABLES LIKE 'draw_round%'";
+$result=mysql_query($query);
+$numdraws=mysql_num_rows($result);
+
+//Calculate Next Round
+$nextround=$numdraws+1;
+
+
+switch($moduletype)
+{
+    case "round":
+    case "currentdraw":
+    case "manualdraw":
+                        break;
+
+    default:
+                        $moduletype="round"; 
 }
 
-?>
+//Load respective module
+include("./lse_dev/draw/$moduletype.php");
+?>          

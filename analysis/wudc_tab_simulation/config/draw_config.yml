@@ -1,0 +1,14 @@
+# number of teams to use
+num_teams: 40
+
+# number of rounds to simulate in each iteration
+num_rounds: 5
+
+# can be one of :
+# - deterministic_outcome : Models a completely deterministic tournament in which a higher ranked teams always wins over a lower ranked team
+# - random_probability_outcome : Models a completely random tournament in which wins are calculated randomly
+simulation_algorithm: deterministic_outcome
+
+# can be one of :
+# - silver_line : SilverLine algorithm developed by Klaas Van Schelven
+draw_algorithm: silver_line

@@ -19,13 +19,17 @@
  *     along with Tabbie; if not, write to the Free Software
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
- * end license */
-
-
-if (file_exists("config/settings.php")) {
-    require("index2.php");
-} else {
-    require("install.php");
-}
-
-?>
+ * end license */ ?>
+<div id="mainmenu">
+<h2 class="hide">Main Menu</h2>
+<ul>
+    <li><a href="index.php"<?= ($ntu_controller=="index")?" class=\"activemain\"":""?>>Overview</a></li>
+    <li><a href="input.php"<?= ($ntu_controller=="input")?" class=\"activemain\"":""?>>Input</a></li>
+    <li><a href="draw.php"<?= ($ntu_controller=="draw")?" class=\"activemain\"":""?>>Draw</a></li>
+    <li><a href="result.php"<?= ($ntu_controller=="result")?" class=\"activemain\"":""?>>Results</a></li>
+    <li><a href="standing.php"<?= ($ntu_controller=="standing")?" class=\"activemain\"":""?>>Standings</a></li>
+    <li><a href="print.php"<?= ($ntu_controller=="print")?" class=\"activemain\"":""?>>Print</a></li>
+    <li><a href="backup.php">Backup</a></li>
+    <li><a href="import.php"<?= ($ntu_controller=="import")?" class=\"activemain\"":""?>>Import</a></li>
+</ul>
+</div>

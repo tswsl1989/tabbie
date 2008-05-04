@@ -22,10 +22,11 @@
  * end license */
 
 
-if (file_exists("config/settings.php")) {
-    require("index2.php");
-} else {
-    require("install.php");
+function redirect($address) { ?>
+    <script type="text/javascript">
+    <!--
+    window.location = "<?= $address ?>"
+    //-->
+    </script> <?
 }
-
 ?>

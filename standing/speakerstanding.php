@@ -21,11 +21,23 @@
  * 
  * end license */
 
+$round=trim(@$_POST['round']);
 
-if (file_exists("config/settings.php")) {
-    require("index2.php");
-} else {
-    require("install.php");
-}
+//Check Database
+$query="SHOW TABLES LIKE 'draw_round%'";
+$result=mysql_query($query);
+$numdraws=mysql_num_rows($result);
 
+$query="SHOW TABLES LIKE 'result_round%'";
+$result=mysql_query($query);
+$numresults=mysql_num_rows($result);
+
+$action="display";
+if (!$round)
+    $roundno = $numresults;
+else
+    $roundno = $round;
+
+//Load respective module
+include("speakerstanding/$action.php");
 ?>

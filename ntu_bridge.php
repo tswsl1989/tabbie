@@ -21,11 +21,6 @@
  * 
  * end license */
 
-
-if (file_exists("config/settings.php")) {
-    require("index2.php");
-} else {
-    require("install.php");
-}
-
+$title = "Tabbie";
+require_once("includes/dbconnection.php");
 ?>

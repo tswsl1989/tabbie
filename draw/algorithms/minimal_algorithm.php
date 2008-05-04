@@ -22,10 +22,14 @@
  * end license */
 
 
-if (file_exists("config/settings.php")) {
-    require("index2.php");
-} else {
-    require("install.php");
+require_once("includes/draw.php");
+
+function draw_minimal_algorithm($teams) {
+    srand(0);
+    shuffle($teams);
+    usort($teams, "cmp_teams_on_points");
+    $teams = array_reverse($teams);
+    return debates_from_teams($teams);
 }
 
 ?>

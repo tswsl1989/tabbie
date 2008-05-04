@@ -21,11 +21,11 @@
  * 
  * end license */
 
+$ntu_controller = "input";
+$ntu_default_module = "main";
+$ntu_default_action = "display";
+$ntu_titles = array("adjud" => "Adjudicator", "univ" => "University");
 
-if (file_exists("config/settings.php")) {
-    require("index2.php");
-} else {
-    require("install.php");
-}
-
+require("ntu_bridge.php");
+require("ntu_controller.php");
 ?>

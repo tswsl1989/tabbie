@@ -21,11 +21,9 @@
  * 
  * end license */
 
+require_once("config/settings.php");
 
-if (file_exists("config/settings.php")) {
-    require("index2.php");
-} else {
-    require("install.php");
-}
+mysql_connect($database_host, $database_user, $database_password);
+mysql_select_db($database_name);
 
 ?>

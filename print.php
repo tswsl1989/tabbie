@@ -50,9 +50,10 @@ List of teams, and their venues</a>
 
 <p/>
 
-<h3>Scrolling Display (for overhead projection)</h3>
+<h3>Overhead projection</h3>
 <ul>
-    <li><a href="draw_scrolling_display.php?roundno=<?= $round ?>">Draw Display with teams, positions and venues</a></li>
+    <li><a href="draw_scrolling_display.php?roundno=<?= $round ?>">Draw Display with teams, positions and venues</a> or</li>
+    <li><a href="rest.php?result_type=csv&amp;function=adjudicator_sheets&amp;param=<?= $round ?>">Export teams, positions and venues as ".csv" document</a></li>
 </ul>
 
 

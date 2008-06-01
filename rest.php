@@ -35,8 +35,9 @@ if (@$_REQUEST["result_type"] == "txt") {
     foreach ($result["data"] as $row) {
         print join(" ", $row) ."\n";
     }
-} elseif (@$_REQUEST["result_type"] == "css") {
-    header('Content-Type: text/css');
+} elseif (@$_REQUEST["result_type"] == "csv") {
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename="'. $function . '_round_'. $param. '.csv"');
     print join(",", $result["header"]) . "\n";
     foreach ($result["data"] as $row) {
         print join(",", $row) ."\n";

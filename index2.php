@@ -92,7 +92,12 @@ if (get_num_rounds() == 0 && !has_temp_draw()) {
 <? } if ($state == "during_round") { ?>
 
 <li><a href="rest.php?result_type=pdf&amp;function=adjudicator_sheets&amp;param=<?= $round ?>">Print the adjudicator sheets with room-specific info</a> (and have them distributed)</li>
-<li><a href="draw.php">Display the draw</a></li>
+<li>Display the draw</li>
+<ul>
+<li><a href="draw.php">In the browser (static)</a></li>
+<li><a href="draw_scrolling_display.php?roundno=<?= $round ?>">In the browser (scrolling)</a></li>
+<li><a href="rest.php?result_type=csv&amp;function=adjudicator_sheets&amp;param=<?= $round ?>">Export .csv</a></li>
+</ul>
 <li>Display the motion</li>
 <li><a href="backup.php">Make a backup (and save it on another computer)</a></li>
 

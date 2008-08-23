@@ -24,7 +24,7 @@
 require('includes/fpdf/fpdf.php');
 
 function speaker(&$pdf, $r, $speaker) {
-    $pdf->Cell(95, 10, $r[$speaker], "L");
+    $pdf->Cell(95, 10, utf8_decode($r[$speaker]), "L");
     $pdf->Cell(25, 10, "", "LRTB");
 }
 
@@ -46,11 +46,11 @@ function four_speakers(&$pdf, $r, $team1, $team2) {
 }
 
 function two_teams(&$pdf, $r, $teams) {
-    $pdf->Cell(85, 10, $teams[0]["name"] . ": " . $r[$teams[0]["short"]], "LT");
+    $pdf->Cell(85, 10, utf8_decode($teams[0]["name"]) . ": " . utf8_decode($r[$teams[0]["short"]]), "LT");
     $pdf->Cell(20, 10, "Rank: ", "T");
     $pdf->Cell(15, 10, "", "LRTB");
     $pdf->Cell(10, 10);
-    $pdf->Cell(85, 10, $teams[1]["name"] . ": " .  $r[$teams[1]["short"]], "LT");
+    $pdf->Cell(85, 10, utf8_decode($teams[1]["name"]) . ": " .  utf8_decode($r[$teams[1]["short"]]), "LT");
     $pdf->Cell(20, 10, "Rank: ", "T");
     $pdf->Cell(15, 10, "", "LRTB");
     $pdf->Ln();
@@ -58,7 +58,7 @@ function two_teams(&$pdf, $r, $teams) {
     $pdf->Cell(10, 10);
     $pdf->Cell(120, 10, "", "LR");
     $pdf->Ln();
-    four_speakers($pdf, $r, $teams[0]["short"], $teams[1]["short"]);
+    four_speakers($pdf, $r, utf8_decode($teams[0]["short"]), utf8_decode($teams[1]["short"]));
 }
 
 function adjudicator_sheets_pdf($filename, $data) {
@@ -68,14 +68,14 @@ function adjudicator_sheets_pdf($filename, $data) {
         $pdf->SetLeftMargin(25);
         $pdf->SetLineWidth(1.0);
         $pdf->SetFont('Arial','B', 11);
-        $pdf->Cell(220, 8, "Venue: " . $r['venue']);
-        $pdf->Cell(20, 8, "Round: " . $r['round']);
+        $pdf->Cell(220, 8, "Venue: " . utf8_decode($r['venue']));
+        $pdf->Cell(20, 8, "Round: " . utf8_decode($r['round']));
         $pdf->Ln();
-        $pdf->Cell(200, 8, "Chair: " . $r['chair']);
+        $pdf->Cell(200, 8, "Chair: " . utf8_decode($r['chair']));
         $pdf->Ln();
-        $pdf->Cell(200, 8, "Panel: " . $r['panel']);
+        $pdf->Cell(200, 8, "Panel: " . utf8_decode($r['panel']));
         $pdf->Ln();
-        $pdf->MultiCell(250, 10, "Motion: " . $r['motion']);
+        $pdf->MultiCell(250, 10, "Motion: " . utf8_decode($r['motion']));
         $pdf->Ln();
         two_teams($pdf, $r, array(
             array("name" => "Opening Gov.", "short" => "og"),

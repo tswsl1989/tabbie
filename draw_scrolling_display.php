@@ -73,7 +73,7 @@ $db_result = mysql_query(
     "AS speaker1, S2.speaker_name AS speaker2, esl, active, composite " .
     "FROM university AS U, team AS T, speaker AS S1, speaker AS S2 " .
     "WHERE T.univ_id=U.univ_id AND S1.team_id=T.team_id AND " . 
-    "S2.team_id=T.team_id AND S1.speaker_id<S2.speaker_id  " .
+    "S2.team_id=T.team_id AND S1.speaker_id<S2.speaker_id AND T.active='Y' " .
     "ORDER BY univ_code, team_code ");
 
     
@@ -88,7 +88,7 @@ $db_result = mysql_query(
                  $adj_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
                  $adj_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
                  $adj_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND status = 'chair' ";
-                 $adj_result=mysql_query($adj_query);
+				$adj_result=mysql_query($adj_query);
 
                  $adj_row=mysql_fetch_assoc($adj_result);
 

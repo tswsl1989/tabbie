@@ -493,87 +493,12 @@ if ($exist)
                 
         echo "<tr>\n";
         $highlightlastmodified=((@$lastmodified)&&($row['debate_id']==$lastmodified));
-                   $ogpoints=0;
-                   for ($i=1; $i<$nextround; $i++)
-          {    $pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['ogid']}' ";
-            $pointsresult=mysql_query($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-              $ogpoints = $ogpoints + 3;
-                
-            $pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['ogid']}' ";
-            $pointsresult=mysql_query($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-              $ogpoints = $ogpoints + 2;
-                
-            $pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['ogid']}' ";
-            $pointsresult=mysql_query($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-              $ogpoints = $ogpoints + 1;
-          }
-                  $oopoints=0;
-                   for ($i=1; $i<$nextround; $i++)
-          {    $pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['ooid']}' ";
-            $pointsresult=mysql_query($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-              $oopoints = $oopoints + 3;
-                
-            $pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['ooid']}' ";
-            $pointsresult=mysql_query($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-              $oopoints = $oopoints + 2;
-                
-            $pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['ooid']}' ";
-            $pointsresult=mysql_query($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-              $oopoints = $oopoints + 1;
-          }
-                $cgpoints=0;
-                for ($i=1; $i<$nextround; $i++)
-          {    $pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['cgid']}' ";
-            $pointsresult=mysql_query($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-              $cgpoints = $cgpoints + 3;
-                
-            $pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['cgid']}' ";
-            $pointsresult=mysql_query($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-              $cgpoints = $cgpoints + 2;
-                
-            $pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['cgid']}' ";
-            $pointsresult=mysql_query($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-              $cgpoints = $cgpoints + 1;
-          }
-                   $copoints=0;
-                   for ($i=1; $i<$nextround; $i++)
-          {    $pointsquery = "SELECT first FROM result_round_$i WHERE first = '{$row['coid']}' ";
-            $pointsresult=mysql_query($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-              $copoints = $copoints + 3;
-                
-            $pointsquery = "SELECT second FROM result_round_$i WHERE second = '{$row['coid']}' ";
-            $pointsresult=mysql_query($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-              $copoints = $copoints + 2;
-                
-            $pointsquery = "SELECT third FROM result_round_$i WHERE third = '{$row['coid']}' ";
-            $pointsresult=mysql_query($pointsquery);
-            $pointsrow=mysql_fetch_assoc($pointsresult);
-            if ($pointsrow)
-              $copoints = $copoints + 1;
-          }
-        
+
+ 		$ogpoints = points_for_team($row['ogid'], $numdraws);
+	    $oopoints = points_for_team($row['ooid'], $numdraws);
+	    $cgpoints = points_for_team($row['cgid'], $numdraws);
+	    $copoints = points_for_team($row['coid'], $numdraws);
+	
         $totalpoints = $ogpoints + $oopoints + $cgpoints + $copoints;
         //this whole range-query thing seems to be a way to highlight funny results in the draw
         //but - these should be checked automatically, not like this.

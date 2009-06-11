@@ -1,0 +1,125 @@
+* {
+	margin:0;
+}
+
+html {
+	height: 100%;
+	margin:0;
+	padding:0;
+}
+
+body {
+	height: 100%;	
+}
+
+
+.push {
+     height: 2em;
+}
+
+div {
+	border: 1px solid #000000;
+}
+
+div.footer {
+	background:#000;
+	color:#fff;
+	height: 2em;
+	text-align:center;
+	float:bottom;
+}
+
+
+div.notice {
+	padding-top:5em;
+	padding-bottom:5em;
+	text-align: center;
+	border: 1px solid #000000;
+}
+
+div.header {
+	text-align: center;
+}
+
+
+
+
+div.venue {
+	text-align: center;
+}
+
+div.chair{
+	min-width:100%;
+	text-align: center;
+	float: clear;
+}
+
+div.panelist{
+	min-width:100%;
+	text-align: center;
+}
+
+div.prop{
+	float:left;
+	min-width: 49%;
+	min-height:5%;
+	text-align: center;
+	min-height: 300%;
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+div.opp{
+	float:right;
+	min-width: 49%;
+	min-height:30%;
+	text-align: center;
+	min-height: 300%;
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+div.og{
+	float:left;
+	min-width: 49%;
+	min-height:30%;
+	text-align: center;
+	min-height: 300%;
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+div.oo{
+	float:right;
+	min-width:49%;
+	min-height:30%;
+	text-align: center;
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+div.cg{
+	float:left;
+	min-width:49%;
+	min-height:30%;
+	text-align: center;
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+div.co{
+	float:right;
+	min-width:49%;
+	min-height:30%;
+	text-align: center;
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+
+div.canvas{
+	min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -2em;
+}

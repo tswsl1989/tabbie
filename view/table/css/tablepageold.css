@@ -1,0 +1,113 @@
+* {
+	margin: 0;
+}
+html, body {
+	height: 100%;
+		font:1em/1.5 "lucida grande", "lucida sans unicode", sans-serif;
+}
+.canvas {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -3em; /* the bottom margin is the negative value of the footer's height */
+	font:2em/1.5 "lucida grande", "lucida sans unicode", sans-serif;
+	font-weight: bold;
+}
+
+.container {
+	padding-top:1em;
+	font-size:120%;
+}
+.footer, .push {
+	height: 1em; /* .push must be the same height as .footer */
+	padding: 1em;
+}
+
+div.notice, div.chair, div.venue, div.panelist, div.trainee {
+	text-align:center;
+}
+
+div.header {
+	padding :.5em;
+}
+
+
+div {
+	border: 0px solid #000000;
+}
+
+div.footer, div.header{
+	background:#000;
+	color:#fff;
+	text-align: center;
+}
+
+div.prop{
+	float:left;
+	min-width: 49%;
+	min-height:5%;
+	text-align: center;
+	font-size:50%;
+	padding:0em;
+}
+
+div.opp{
+	float:right;
+	min-width: 49%;
+	min-height:5%;
+	text-align: center;
+	font-size:50%;
+	padding:0em;
+}
+
+div.og{
+	float:left;
+	min-width: 49%;
+	min-height:30%;
+	text-align: center;
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+
+div.oo{
+	float:right;
+	min-width:49%;
+	min-height:30%;
+	text-align: center;
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+div.cg{
+	float:left;
+	min-width:49%;
+	min-height:30%;
+	text-align: center;
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+div.co{
+	float:right;
+	min-width:49%;
+	min-height:30%;
+	text-align: center;
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+div.notice {
+	padding-top:1em;
+	padding-bottom:1em;
+	font-size:200%;
+	text-align: center;
+}
+
+table.roomtable {
+	border:1px solid;
+}
+
+table.roomtable tr td {
+	text-align: center;
+}

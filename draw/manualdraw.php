@@ -478,7 +478,6 @@ if ($exist)
         $query = 'SELECT A1.debate_id AS debate_id, T1.team_code AS ogt, T2.team_code AS oot, T3.team_code AS cgt, T4.team_code AS cot, U1.univ_code AS ogtc, U2.univ_code AS ootc, U3.univ_code AS cgtc, U4.univ_code AS cotc, venue_name, venue_location, T1.team_id AS ogid, T2.team_id AS ooid, T3.team_id AS cgid, T4.team_id AS coid ';
         $query .= "FROM temp_draw_round_$nextround AS A1, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4,venue ";
         $query .= "WHERE og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND A1.venue_id=venue.venue_id "; 
-        $query .= "ORDER BY venue_name";
         
 
         $result=mysql_query($query);
@@ -486,47 +485,35 @@ if ($exist)
         if ($result)
       {
             echo "<table id=\"manualdraw\">\n";
-        echo "<tr><th>Venue Name</th><th>Opening Govt</th><th>Opening Opp</th><th>Closing Govt</th><th>Closing Opp</th><th>Total Points</th><th>Chair</th><th>Panelists</th><th>Trainee</th></tr>\n";
-
-            while($row=mysql_fetch_assoc($result))
+        echo "<tr><th>Venue Name</th><th>Opening Govt</th><th>Opening Opp</th><th>Closing Govt</th><th>Closing Opp</th><th>Average Points</th><th>Chair</th><th>Panelists</th><th>Trainee</th></tr>\n";
+			//Nasty hack to make it display in tab order with average points; fix! - GWJR
+			while($row=mysql_fetch_array($result)){
+				$row['ogpoints'] = points_for_team($row['ogid'], $numdraws);
+			    $row['oopoints'] = points_for_team($row['ooid'], $numdraws);
+			    $row['cgpoints'] = points_for_team($row['cgid'], $numdraws);
+			    $row['copoints'] = points_for_team($row['coid'], $numdraws);
+				$totalpoints = (int)$row['ogpoints'] + (int)$row['oopoints'] + (int)$row['cgpoints'] + (int)$row['copoints'];
+				$averagepoints = $totalpoints/4.0;
+				$row['averagepoints']=$averagepoints;
+				$rowarray[]=$row;
+			}
+			
+			//Assume it's in tab order (!)
+			
+            foreach($rowarray as $row)
           {
                 
         echo "<tr>\n";
         $highlightlastmodified=((@$lastmodified)&&($row['debate_id']==$lastmodified));
 
- 		$ogpoints = points_for_team($row['ogid'], $numdraws);
-	    $oopoints = points_for_team($row['ooid'], $numdraws);
-	    $cgpoints = points_for_team($row['cgid'], $numdraws);
-	    $copoints = points_for_team($row['coid'], $numdraws);
-	
-        $totalpoints = $ogpoints + $oopoints + $cgpoints + $copoints;
-        //this whole range-query thing seems to be a way to highlight funny results in the draw
-        //but - these should be checked automatically, not like this.
-        //in other words: throw it out
-        $rangequery = "SELECT * FROM highlight WHERE type = 'draw' ";
-        $rangeresult = mysql_query($rangequery);
-        $rangerow = mysql_fetch_assoc($rangeresult);
-        if ($rangerow)
-        {    $lowerlimit = $rangerow['lowerlimit'];
-            $upperlimit = $rangerow['upperlimit'];
-        }
-        else
-        {    $lowerlimit = '0';
-            $upperlimit = '100';
-        }
-        if (($totalpoints >= $lowerlimit) AND ($totalpoints <= $upperlimit))
-            $highlight = 1;
-        else
-            $highlight = 0;
-
         $text = ($highlight==1 ? "<td style=\"color:blue\">" : "<td>");
         $text = (($highlightlastmodified) ? "<td style=\"color:green\">" : "<td>");
         echo "$text"."{$row['venue_name']}</td>\n";
-        echo "$text"."{$row['ogtc']} {$row['ogt']} <br/> ($ogpoints) </td>\n";
-        echo "$text"."{$row['ootc']} {$row['oot']} <br/> ($oopoints) </td>\n";
-        echo "$text"."{$row['cgtc']} {$row['cgt']} <br/> ($cgpoints) </td>\n";
-                echo "$text"."{$row['cotc']} {$row['cot']} <br/> ($copoints) </td>\n";
-                echo "$text"."$totalpoints </td>\n";                
+        echo "$text"."{$row['ogtc']} {$row['ogt']} <br/> ("."{$row['ogpoints']}".") </td>\n";
+        echo "$text"."{$row['ootc']} {$row['oot']} <br/> ("."{$row['oopoints']}".") </td>\n";
+        echo "$text"."{$row['cgtc']} {$row['cgt']} <br/> ("."{$row['cgpoints']}".") </td>\n";
+        echo "$text"."{$row['cotc']} {$row['cot']} <br/> ("."{$row['copoints']}".") </td>\n";
+        echo "$text"."{$row['averagepoints']} </td>\n";                
                 
                 //For the purpose of finding conflicts
                 $oguc=$row['ogtc'];

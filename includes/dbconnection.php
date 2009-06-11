@@ -25,5 +25,5 @@ require_once("config/settings.php");
 
 mysql_connect($database_host, $database_user, $database_password);
 mysql_select_db($database_name);
-
+mysql_query("SET NAMES 'utf8' COLLATE 'utf8_unicode_ci'");
 ?>

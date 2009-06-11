@@ -33,7 +33,7 @@ function ensure_scoring_factors_in_db() {
   PRIMARY KEY (param_name) 
 )");
 
-    $values = array('university_conflict', 'team_conflict', 'chair_not_perfect', 'chair_not_ciaran_perfect', 'panel_steepness', 'panel_strength_not_perfect', 'panel_size_not_perfect', 'panel_size_out_of_bounds', 'adjudicator_met_adjudicator', 'adjudicator_met_team', 'lock');
+    $values = array('university_conflict', 'team_conflict', 'chair_not_perfect', 'chair_not_ciaran_perfect', 'panel_steepness', 'panel_strength_not_perfect', 'panel_size_not_perfect', 'panel_size_out_of_bounds', 'adjudicator_met_adjudicator', 'adjudicator_met_team', 'lock', 'draw_table_speed');
     foreach ($values as $value) {
         $db_res = mysql_query("SELECT * FROM configure_adjud_draw WHERE param_name='$value'");
         if (!(mysql_fetch_assoc($db_res)))

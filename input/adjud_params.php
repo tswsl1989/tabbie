@@ -120,3 +120,6 @@ High values: Adjudicators are not to adjudicate the same teams again and again<b
 </p><p>
 <b>lock</b>: (Maybe a bit misplaced in this table, but anyway) If this lock is on a non-zero value the algorithms can not be run. This is to prevent two different computers from hitting the draw buttons at the same time and messing things up big time. If for some reason the lock is set to one, it can be removed here.<br/>
 </p>
+<p>
+<b>draw_table_speed</b>: (Certainly misplaced in this table, but anyway) The time in seconds between slides advancing on the table display.<br/>
+</p>

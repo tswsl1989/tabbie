@@ -2,6 +2,7 @@
  * 
  *     Tabbie, Debating Tabbing Software
  *     Copyright Contributors
+ *	   Portions of this code copyright Huang Kai 2006 GPL v2 only where marked.
  * 
  *     This file is part of Tabbie
  * 
@@ -32,7 +33,9 @@ $command2 = "mysqldump -u$database_user -p******** $database_name";
 $output = array();
 $return_value = "undefined";
 
+
 exec($command, $output, $return_value);
+
 
 if ($return_value == 0) {
     header('Content-type: text/plain'); 
@@ -45,7 +48,6 @@ if ($return_value == 0) {
 
 $strip_diskname = 2; // "C:"
 $script_directory = substr($_SERVER['SCRIPT_FILENAME'], $strip_diskname, strrpos($_SERVER['SCRIPT_FILENAME'], '/') - $strip_diskname);
-
 $command = "cd \"\\$script_directory/../../mysql/bin/\" && $command";
 
 $output = array();

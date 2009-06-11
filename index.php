@@ -21,6 +21,7 @@
  * 
  * end license */
 
+header('Content-Type: text/html; utf8');
 
 if (file_exists("config/settings.php")) {
     require("index2.php");

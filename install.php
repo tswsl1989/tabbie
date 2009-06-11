@@ -65,8 +65,10 @@ function execute_query_print_result($query) {
 }
 
 $all_is_well = true;
+mysql_query("SET NAMES 'utf8' COLLATE 'utf8_unicode_ci'");
 mysql_query("DROP DATABASE $database_name");
-$all_is_well = execute_query_print_result("CREATE DATABASE $database_name") && $all_is_well;
+$all_is_well = execute_query_print_result("CREATE DATABASE $database_name CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+") && $all_is_well;
 mysql_select_db($database_name);
 foreach ($queries as $query) {
     $all_is_well = execute_query_print_result($query) && $all_is_well;

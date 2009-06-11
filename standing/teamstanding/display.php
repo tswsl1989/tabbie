@@ -52,6 +52,10 @@ switch($list)
                 break;
     case "eslbreak" :   $title.= " (ESL - Breakable)";
                 break;
+	case "efl"   :    $title.= " (EFL)";
+			                break;
+	case "eflbreak" :   $title.= " (EFL - Breakable)";
+			                break;
     default      :    $list = "all";
                 break;
 }

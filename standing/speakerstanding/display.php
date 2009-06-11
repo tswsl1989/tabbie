@@ -21,6 +21,11 @@
  * 
  * end license */
 
+require('includes/backend.php');
+
+//Upgrade DB for post 1.4.2
+convert_db_ssesl();
+
 $action=@$_GET['action'];
 $warning=@$_GET['warning'];
 
@@ -46,6 +51,8 @@ switch($list)
     case "all"   :      break;
     case "esl"   :    $title.= " (ESL)";
                 break;
+	case "efl"   :    $title.= " (EFL)";
+			                break;
     default      :    $list = "all";
                 break;
 }
@@ -84,7 +91,10 @@ if ($action == "display")
     $query = "SELECT speaker.speaker_id, speaker.team_id, speaker_name FROM speaker AS speaker";
 
     if ($list=="esl")
-        $query.=", team AS team WHERE speaker.team_id = team.team_id and team.esl = 'Y' ";
+        $query.=" WHERE speaker.speaker_esl != 'N'";
+
+    if ($list=="efl")
+        $query.=" WHERE speaker.speaker_esl = 'EFL'";
 
     $result = mysql_query($query);
     $speaker_count=mysql_num_rows($result);

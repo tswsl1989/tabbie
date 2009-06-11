@@ -29,6 +29,8 @@
             <option value="esl" <?echo ($list=="esl")?"selected":"" ?>>ESL</option>
             <option value="break" <?echo ($list=="break")?"selected":"" ?>>Breakable</option>
             <option value="eslbreak" <?echo ($list=="eslbreak")?"selected":"" ?>>ESL Breakable</option>
+			<option value="efl" <?echo ($list=="efl")?"selected":"" ?>>EFL</option>
+            <option value="eflbreak" <?echo ($list=="eflbreak")?"selected":"" ?>>EFL Breakable</option>
         </select> <br/><br/>
         
         <label for="round">Round: </label>

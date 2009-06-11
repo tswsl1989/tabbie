@@ -22,16 +22,24 @@
  * end license */
 
 require("includes/display.php");
+require("includes/backend.php");
+
+
+//Convert pre-1.4.2 databases to the new format
+convert_db_ssesl();
 
 //Get POST values and validate/convert them
+//rls="Restricted Language Status"
 
 $univ_id=trim(@$_POST['univ_id']);
-$team_code=trim(@$_POST['team_code']);
-$esl=strtoupper(trim(@$_POST['esl']));
+$team_code=makesafe(@$_POST['team_code']);
 $active=strtoupper(trim(@$_POST['active']));
 $composite=strtoupper(trim(@$_POST['composite']));
-$speaker1=trim(@$_POST['speaker1']);
-$speaker2=trim(@$_POST['speaker2']);
+$speaker1=makesafe(trim(@$_POST['speaker1']));
+$speaker2=makesafe(trim(@$_POST['speaker2']));
+$speaker1esl=trim(@$_POST['speaker1esl']);
+$speaker2esl=trim(@$_POST['speaker2esl']);
+$recordedesl=strtoupper(trim(@$_POST['esl']));
 $actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
 
 
@@ -44,12 +52,52 @@ if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
     if (!$team_code) $msg[]="Team Code Missing.";
     if (!$speaker1) $msg[]="Speaker 1 Missing.";
     if (!$speaker2) $msg[]="Speaker 2 Missing.";
+
+
+	//Change Team ESL status if justified
+	if(($speaker1esl=="EFL")&&($speaker2esl=="EFL")) $esl="EFL"; else  $esl="N";
+	if(($speaker1esl=="ESL")&&($speaker2esl=="EFL")) $esl="ESL"; else  $esl="N";
+	if(($speaker1esl=="EFL")&&($speaker2esl=="ESL")) $esl="ESL"; else  $esl="N";
+	if(($speaker1esl=="ESL")&&($speaker2esl=="ESL")) $esl="ESL"; else  $esl="N";
+	
+	if(($speaker1esl=="N")||($speaker2esl=="N"))
+	{
+		$esl="N";
+	} else {
+		if (($speaker1esl=="ESL")||($speaker2esl=="ESL")){
+			$esl="ESL";
+		} else {
+			$esl="EFL";
+		}
+	}
+	
+	
+	if($esl!=$recordedesl)
+	{
+		$messagestr="Team restrictive language status automatically set to: ";
+		if($esl=="ESL") $messagestr.="ESL";
+		if($esl=="EFL") $messagestr.="EFL";
+		if($esl=="N") $messagestr.="MBO (Main Break Only)";
+		$msg[]=$messagestr;
+	}
     
-    if ((!$esl=='Y') && (!$esl=='N')) 
+/*    if ((!$esl=='Y') && (!$esl=='N')) 
       {
         $msg[]="ESL Status not set properly.";
         $validate=0;
       }
+
+    if ((!$speaker1esl=='Y') && (!$speaker1esl=='N')) 
+      {
+        $msg[]="Speaker 1 ESL Status not set properly.";
+        $validate=0;
+      }
+
+    if ((!$speaker2esl=='Y') && (!$speaker2esl=='N')) 
+      {
+        $msg[]="Speaker 2 ESL Status not set properly.";
+        $validate=0;
+      } */
 
     if ((!$active=='Y') && (!$active=='N')) 
       {
@@ -123,8 +171,8 @@ if ($actionhidden=="add")
           {
         $row=mysql_fetch_assoc($resultteam);
         $team_id=$row['team_id'];
-        $query2 = "INSERT INTO speaker(team_id, speaker_name) ";
-        $query2.= "VALUES('$team_id','$speaker1'),('$team_id','$speaker2')";
+        $query2 = "INSERT INTO speaker(team_id, speaker_name, speaker_esl) ";
+        $query2.= "VALUES('$team_id','$speaker1', '$speaker1esl'),('$team_id','$speaker2', '$speaker2esl')";
         $result2=mysql_query($query2);
 
         if (!$result2)
@@ -185,7 +233,7 @@ if ($actionhidden=="edit")
         
         //Edit Speaker 1
         $query2 = "UPDATE speaker ";
-        $query2.= "SET speaker_name='$speaker1'";
+        $query2.= "SET speaker_name='$speaker1', speaker_esl='$speaker1esl' ";
         $query2.= "WHERE speaker_id='$speaker1id'";
         $result2=mysql_query($query2);
         if (!$result2)
@@ -193,11 +241,11 @@ if ($actionhidden=="edit")
 
         //Edit Speaker 2
         $query3 = "UPDATE speaker ";
-        $query3.= "SET speaker_name='$speaker2'";
+        $query3.= "SET speaker_name='$speaker2', speaker_esl='$speaker2esl' ";
         $query3.= "WHERE speaker_id='$speaker2id'";
-        $result3=mysql_query($query3);
+	$result3=mysql_query($query3);
         if (!$result3)
-      $msg[]="Problems editing Speaker 3 : ".mysql_error();
+      $msg[]="Problems editing Speaker 2 : ".mysql_error();
 
         if ((!$result1) || (!$result2) || (!$result3))
       {    
@@ -253,8 +301,10 @@ if ($action=="edit")
             $row2=mysql_fetch_assoc($result);
             $speaker1id=$row1['speaker_id'];
             $speaker1=$row1['speaker_name'];
+	    $speaker1esl=$row1['speaker_esl'];
             $speaker2id=$row2['speaker_id'];
             $speaker2=$row2['speaker_name'];
+	    $speaker2esl=$row2['speaker_esl'];
 
       }
       
@@ -295,13 +345,12 @@ displayMessagesUL(@$msg);
 if ($action=="display")
   {
     //Display Data in Tabular Format
-    $query = "SELECT T.team_id, univ_code, team_code, univ_name, S1.speaker_name AS speaker1, S2.speaker_name AS speaker2, esl, active, composite ";
+    $query = "SELECT T.team_id, univ_code, team_code, univ_name, S1.speaker_name AS speaker1, S2.speaker_name AS speaker2, S1.speaker_esl AS speaker1esl, S2.speaker_esl AS speaker2esl, esl, active, composite ";
     $query.= "FROM university AS U, team AS T, speaker AS S1, speaker AS S2 ";
-    $query.= "WHERE T.univ_id=U.univ_id AND S1.team_id=T.team_id AND S2.team_id=T.team_id AND S1.speaker_id<S2.speaker_id ";
+    $query.= "WHERE T.univ_id=U.univ_id AND S1.team_id=T.team_id AND S2.team_id=T.team_id AND S1.speaker_id > S2.speaker_id ";
 
     $active_query = $query . " AND T.ACTIVE = 'Y' ";
     $query.= "ORDER BY univ_code, team_code ";
-            
     $result=mysql_query($query);
     $active_result=mysql_query($active_query);
 
@@ -328,7 +377,7 @@ if ($action=="display")
         <h3>Total No. of Teams : <?echo mysql_num_rows($result)?> (<?echo mysql_num_rows($active_result)?> )</h3>          
       <? echo "<h3><a href=\"input.php?moduletype=team&amp;action=add\">Add New</a></h3>";?>      
           <table>
-          <tr><th>Team</th><th>University</th><th>Speaker 1</th><th>Speaker 2</th><th>ESL(Y/N)</th><th>Active(Y/N)</th><th>Composite(Y/N)</th></tr>
+          <tr><th>Team</th><th>University</th><th>Speaker 1</th><th>Speaker 2</th><th>Speaker 1 RLS</th><th>Speaker 2 RLS</th><th>Team RLS</th><th>Active(Y/N)</th><th>Composite(Y/N)</th></tr>
           <? while($row=mysql_fetch_assoc($result)) { ?>
 
       <tr <?if ($row['active']=='N') echo "style=\"color:red\""?>>
@@ -336,6 +385,8 @@ if ($action=="display")
          <td><?echo $row['univ_name'];?></td>
          <td><?echo $row['speaker1'] ?></td>
          <td><?echo $row['speaker2'] ?></td>
+	 <td><?echo $row['speaker1esl'] ?></td>
+	 <td><?echo $row['speaker2esl'] ?></td>
          <td><?echo $row['esl'];?></td>
           <td><?echo $row['active'];?></td>
          <td><?echo $row['composite']?></td>
@@ -368,7 +419,7 @@ if ($action=="display")
        <input type="hidden" name="team_id" value="<?echo $team_id;?>"/>
        <input type="hidden" name="speaker1id" value="<?echo $speaker1id;?>"/>
        <input type="hidden" name="speaker2id" value="<?echo $speaker2id;?>"/>
-
+	<input type="hidden" name="esl" value="<?echo $esl;?>"/>
        <label for="univ_id">University</label>
        <select id="univ_id" name="univ_id">
        <?
@@ -395,17 +446,27 @@ if ($action=="display")
                     <label for="speaker2">Speaker 2</label>
                    <input type="text" id="speaker2" name="speaker2" value="<?echo $speaker2;?>"/><br/><br/>
 
+
+                                <label for="speaker1esl">Speaker 1 ESL</label>
+                             <select id="speaker1esl" name="speaker1esl">
+                             <option value="N" <?echo ($speaker1esl=="N")?"selected":""?>>No</option>
+                             <option value="ESL" <?echo ($speaker1esl=="ESL")?"selected":""?>>ESL</option>
+							 <option value="EFL" <?echo ($speaker1esl=="EFL")?"selected":""?>>EFL</option>
+                             </select> <br/><br/>
+
+
+                                <label for="speaker2esl">Speaker 2 ESL</label>
+                             <select id="speaker2esl" name="speaker2esl">
+                             <option value="N" <?echo ($speaker2esl=="N")?"selected":""?>>No</option>
+							<option value="ESL" <?echo ($speaker2esl=="ESL")?"selected":""?>>ESL</option>
+							 <option value="EFL" <?echo ($speaker2esl=="EFL")?"selected":""?>>EFL</option>
+                             </select> <br/><br/>
+
                    <label for="active">Active</label>
                                 <select id="active" name="active">
                                 <option value="Y" <?echo ($active=="Y")?"selected":""?>>Yes</option>
                                 <option value="N" <?echo ($active=="N")?"selected":""?>>No</option>
                                 </select> <br/><br/>
-
-                                <label for="esl">ESL</label>
-                             <select id="esl" name="esl">
-                             <option value="N" <?echo ($esl=="N")?"selected":""?>>No</option>
-                             <option value="Y" <?echo ($esl=="Y")?"selected":""?>>Yes</option>
-                             </select> <br/><br/>
                 
                              <label for="composite">Composite</label>
                                            <select id="composite" name="composite">

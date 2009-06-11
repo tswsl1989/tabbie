@@ -75,7 +75,7 @@ function adjudicator_sheets_pdf($filename, $data) {
         $pdf->Ln();
         $pdf->Cell(200, 8, "Panel: " . utf8_decode($r['panel']));
         $pdf->Ln();
-        $pdf->MultiCell(250, 10, "Motion: " . utf8_decode($r['motion']));
+        $pdf->MultiCell(250, 8, "Motion: " . utf8_decode($r['motion']));
         $pdf->Ln();
         two_teams($pdf, $r, array(
             array("name" => "Opening Gov.", "short" => "og"),
@@ -85,7 +85,7 @@ function adjudicator_sheets_pdf($filename, $data) {
             array("name" => "Closing Gov.", "short" => "cg"),
             array("name" => "Closing Opp.", "short" => "co")));
         $pdf->SetFont('Arial','B', 10);
-        $pdf->Cell(250, 8, "The best team gets Rank 1. A better rank has a higher total team score (no equal scores). Learn to do math or face the bin.");
+        $pdf->Cell(250, 8, "The best team gets Rank 1. A better rank has a higher total team score (no equal scores). Learn to do arithmetic or face the bin.");
         $pdf->Ln();
         $pdf->Cell(250, 8, "Created with Tabbie. See http://www.smoothtournament.com and http://tabbie.wikidot.com");
     }

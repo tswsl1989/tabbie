@@ -481,9 +481,9 @@ if ($nextresult==$numrounds)
     if ($action=="display")
     {
         //try extracting results from the temporary result table
-        $query = "SELECT T.debate_id AS debate_id, V.venue_name AS venue_name, `first` , `second` , third, fourth, og, oo, cg, co, T1.team_code AS team_og_code, U1.univ_code AS univ_og_code, T2.team_code AS team_oo_code, U2.univ_code AS univ_oo_code, T3.team_code AS team_cg_code, U3.univ_code AS univ_cg_code, T4.team_code AS team_co_code, U4.univ_code AS univ_co_code ";
-        $query .= "FROM temp_result_round_$nextresult T, draw_round_$nextresult D, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4, venue V ";
-        $query .= "WHERE T.debate_id = D.debate_id AND T1.team_id = D.og AND T2.team_id = D.oo AND T3.team_id = D.cg AND T4.team_id = D.co AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND D.venue_id=V.venue_id ";
+        $query = "SELECT T.debate_id AS debate_id, V.venue_name AS venue_name, `first` , `second` , third, fourth, og, oo, cg, co, T1.team_code AS team_og_code, U1.univ_code AS univ_og_code, T2.team_code AS team_oo_code, U2.univ_code AS univ_oo_code, T3.team_code AS team_cg_code, U3.univ_code AS univ_cg_code, T4.team_code AS team_co_code, U4.univ_code AS univ_co_code, A.adjud_name AS chair_name ";
+        $query .= "FROM temp_result_round_$nextresult T, draw_round_$nextresult D, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4, venue V, adjudicator A, adjud_round_$nextresult J ";
+        $query .= "WHERE T.debate_id = D.debate_id AND T1.team_id = D.og AND T2.team_id = D.oo AND T3.team_id = D.cg AND T4.team_id = D.co AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND D.venue_id=V.venue_id AND A.adjud_id = J.adjud_id AND J.debate_id = D.debate_id AND J.status='chair' ";
         $query .= "ORDER BY venue_name";
 
         $resultresult=mysql_query($query);
@@ -492,7 +492,7 @@ if ($nextresult==$numrounds)
         {
             //Display result in table
             echo"<table>\n";
-                echo "<th>Edit</th><th>Venue</th><th>Opening Govt.</th><th>Opening Opp.</th><th>Closing Govt.</th><th>Closing Opp.</th>\n";
+                echo "<th>Edit</th><th>Venue</th><th>Opening Govt.</th><th>Opening Opp.</th><th>Closing Govt.</th><th>Closing Opp.</th><th>Chair Judge</th>\n";
                 while($rowresults=mysql_fetch_assoc($resultresult))
                 {
                     $results_debate_id=$rowresults['debate_id'];
@@ -514,14 +514,16 @@ if ($nextresult==$numrounds)
 
                     $venue=$rowresults['venue_name'];
 
+					$chair=$rowresults['chair_name'];
+
                     echo "<tr>\n";
                     echo "<td class=\"editdel\"><a href=\"result.php?moduletype=currentround&amp;action=edit&amp;debate_id=$results_debate_id\">Edit</a></td>";
-            echo "<td>$venue</td>\n";
+            		echo "<td>$venue</td>\n";
                     echo "<td>$team_og_name (".returnPositionString(returnposition($first,$second,$third,$fourth,$og)).")</td>\n";
                     echo "<td>$team_oo_name (".returnPositionString(returnposition($first,$second,$third,$fourth,$oo)).")</td>\n";
                     echo "<td>$team_cg_name (".returnPositionString(returnposition($first,$second,$third,$fourth,$cg)).")</td>\n";
                     echo "<td>$team_co_name (".returnPositionString(returnposition($first,$second,$third,$fourth,$co)).")</td>\n";
-
+					echo "<td>$chair</td>";
 
                     echo"</tr>\n";
                 }

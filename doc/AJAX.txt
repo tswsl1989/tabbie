@@ -1,0 +1,12 @@
+AJAX & Tabbie
+Developer Note
+Giles Robertson, June 2009
+
+Adding Ajax to Tabbie requires some architectural changes, mainly because <head/> must now vary with each page as different scripts are used.
+
+Therefore the following directory structure is proposed:
+/ajax - subdirectory for dynamic javascript, subdivided by ntu_controller and ntu_module (hence /ajax/input/adjud.js)
+/js - static javascript, which may over time replace /view/scrolling/javascripts
+/controller - for php handling server-side of ajax
+
+All of this is handled by new code in ntu_controller.php and header.php

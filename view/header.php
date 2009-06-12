@@ -28,7 +28,18 @@
     <title><?= $title ?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="<?= @$dir_hack ?>view/index.css">
-</head>
-
+<?php
+//avoid loading expensive script files if we don't need them
+$ajaxpath = 'ajax/'.$ntu_controller.'/'.$moduletype.'.js';
+if(file_exists($ajaxpath)){ ?>
+	<script type="text/JavaScript">
+	var ntu_controller = "<?= $ntu_controller ?>";
+	var moduletype = "<?= $moduletype ?>";
+	</script>
+	<script type="text/JavaScript" src="<?= @$dir_hack ?>js/jquery-1.3.2.min.js"></script>
+    <script type="text/JavaScript" src="<?= @$dir_hack ?>js/jquery-ui-1.7.1.custom.min.js"></script>
+	<script type="text/JavaScript" src="<?= $ajaxpath ?>"></script>
+<?php } ?>
 <body>
-<div id="content">
+<div id='content'>
+

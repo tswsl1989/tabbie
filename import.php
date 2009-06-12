@@ -26,6 +26,7 @@ $ntu_controller = "import";
 require("ntu_bridge.php");
 require("view/header.php");
 require("view/mainmenu.php");
+require("includes/adjudicator.php");
 ?>
 <h2>Import Backup</h2>
 <p>
@@ -62,6 +63,35 @@ if ( @$_FILES['uploadedfile']) {
             $problem = true;
             print "<p>" . mysql_error() . " in line '$line'</p>";
         }
+	}
+
+	//Upgrade files with 'conflicts' in adjudicator table]
+	$query="SHOW COLUMNS FROM adjudicator";
+	echo mysql_error();
+	$result=mysql_query($query);
+	while($row=mysql_fetch_assoc($result)){
+		if($row['Field']=='conflicts'){
+			$query=" CREATE TABLE `strikes` (`strike_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY , `adjud_id` INT NOT NULL , `team_id` INT NULL , `univ_id` INT NULL , INDEX ( `adjud_id` )) ENGINE = MYISAM";
+			mysql_query($query);
+			echo mysql_error();
+			$query="SELECT adjud_id, conflicts FROM adjudicator";
+			$strikeresult=mysql_query($query);
+			while($adjudicator=mysql_fetch_assoc($strikeresult)){
+			    $conflicts = preg_split("/, /", $adjudicator['conflicts'], -1, PREG_SPLIT_NO_EMPTY);
+			    foreach ($conflicts as $conflict) {
+			        $parts = split("[.]", $conflict);
+			        if (sizeof($parts) == 1) {
+			            add_strike_judge_univ($adjudicator['adjud_id'],__get_university_id_by_code($conflict));
+			    	} elseif (sizeof($parts == 2)) {
+			            add_strike_judge_team($adjudicator['adjud_id'],__get_team_id_by_codes($parts[0], $parts[1]));
+					}
+				}				
+			}
+			$query="ALTER TABLE adjudicator DROP COLUMN conflicts";
+			mysql_query($query);
+			echo mysql_error();
+			print "<p>Conflicts converted to new format.</p>";
+		}
     }
 
 if (! $problem )

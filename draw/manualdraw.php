@@ -37,7 +37,7 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
   {
     $exist=0;
     $msg[]="Missing tables in database!!";
-    $msg[]="Please calcualate the draw first!!";
+    $msg[]="Please calculate the draw first!!";
   }
  else // continue with rest of operation
    {
@@ -321,10 +321,10 @@ if ($exist)
         echo "</div>\n";
             
         //For the purpose of testing of conflicts
-        $oguc=$row['oguc'];
-        $oouc=$row['oouc'];
-        $cguc=$row['cguc'];
-        $couc=$row['couc'];
+        $ogid=$row['ogid'];
+        $ooid=$row['ooid'];
+        $cgid=$row['cgid'];
+        $coid=$row['coid'];
         
         echo "<form name=\"manualallocform\" method=\"POST\" action=\"draw.php?moduletype=manualdraw&amp;action=doedit&amp;debate_id=$debate_id\">\n";
 
@@ -352,30 +352,19 @@ if ($exist)
         echo "<h3>Allocated Adjudicators</h3>\n";
         
         //read all adjudicators from present round along with their status
-        $query="SELECT  A.adjud_id AS adjud_id,adjud_name,status,A.ranking AS ranking,A.conflicts FROM adjudicator AS A,temp_adjud_round_$nextround AS T WHERE A.adjud_id=T.adjud_id AND T.debate_id=$debate_id ORDER BY status";
+        $query="SELECT  A.adjud_id AS adjud_id,adjud_name,status,A.ranking AS ranking FROM adjudicator AS A,temp_adjud_round_$nextround AS T WHERE A.adjud_id=T.adjud_id AND T.debate_id=$debate_id ORDER BY status";
         $result=mysql_query($query);
 
         if (mysql_num_rows($result)!=0)
       {
             echo "<table>\n";
             echo "<th>Remove(Y/N)</th><th>Adjudicator</th><th>Status</th><th>Ranking</th><th>Conflicts</th>\n";
-            while($row=mysql_fetch_assoc($result))    
-          {
-                echo "<tr>";
-        echo "<td><input type=\"checkbox\" name=\"check_{$row['adjud_id']}\"/></td>\n";
-
-        //check for conflict and print name accordingly
-        $conflicts=preg_split("/,/",$row['conflicts'],-1, PREG_SPLIT_NO_EMPTY);
-
-            for ($x=0;$x<count($conflicts);$x++)
-              $conflicts[$x]=trim($conflicts[$x]);
-        
-
-        if (((in_array($oguc,$conflicts))||
-             (in_array($oouc,$conflicts))||
-             (in_array($cguc,$conflicts))||
-             (in_array($couc,$conflicts))))//conflicts occuring
-          {
+            while($row=mysql_fetch_assoc($result)) {
+				$adjud_id=$row['adjud_id'];
+				echo "<tr>";
+        		echo "<td><input type=\"checkbox\" name=\"check_{$row['adjud_id']}\"/></td>\n";
+				//check for conflict and print name accordingly
+		if(is_four_id_conflict($adjud_id, $ogid, $ooid, $cgid, $coid)){
             //Red Color
             $starttag="<span style=\"color:red\">";
             $endtag="</span>";
@@ -391,9 +380,7 @@ if ($exist)
                     
         echo "<td>{$row['status']}</td>";
         echo "<td>{$row['ranking']}</td>";
-        echo ($row['conflicts'])?"<td>{$row['conflicts']}</td>":"<td><b>NONE</b></td>";
-                    
-                echo "</tr>";    
+        echo "<td>".print_conflicts($adjud_id)."</td></tr>";
           }
             echo "</table>\n";
       }
@@ -405,18 +392,20 @@ if ($exist)
 
         echo "<div>";
     echo "<h3>Adjudicator Pool</h3>";
-    $query = "SELECT A.adjud_id, A.adjud_name, A.ranking, A.conflicts ";
+    $query = "SELECT A.adjud_id, A.adjud_name, A.ranking ";
     $query .= "FROM adjudicator A ";
     $query .= "LEFT JOIN temp_adjud_round_$nextround T ON A.adjud_id = T.adjud_id ";
     $query .= "WHERE T.adjud_id IS NULL AND active='Y' ORDER BY ranking DESC"; 
             
     $result=mysql_query($query);
+echo $query;
     if (mysql_num_rows($result)!=0)
       {
         echo "<table>\n";
         echo "<tr><th>Chair</th><th>Panelist</th><th>Trainee</th><th>None</th><th>Name</th><th>Ranking</th><th>Conflicts</th></tr>\n";
         while($row=mysql_fetch_assoc($result))    
           {
+		$adjud_id=$row['adjud_id'];
         echo "<tr>\n";
         echo "<td><input type=\"radio\" name=\"radio_{$row['adjud_id']}\" value=\"chair\"/></td>\n";
         echo "<td><input type=\"radio\" name=\"radio_{$row['adjud_id']}\" value=\"panelist\"/></td>\n";
@@ -424,16 +413,7 @@ if ($exist)
         echo "<td><input type=\"radio\" name=\"radio_{$row['adjud_id']}\" value=\"none\" checked=\"checked\"/></td>\n";
 
         //check for conflict and print name accordingly
-        $conflicts=preg_split("/,/",$row['conflicts'],-1, PREG_SPLIT_NO_EMPTY);
-        for ($x=0;$x<count($conflicts);$x++)
-          $conflicts[$x]=trim($conflicts[$x]);
-
-
-        if (((in_array($oguc,$conflicts))||
-             (in_array($oouc,$conflicts))||
-             (in_array($cguc,$conflicts))||
-             (in_array($couc,$conflicts))))//conflicts occuring
-          {
+		if(is_four_id_conflict($adjud_id, $ogid, $ooid, $cgid, $coid)){
             //Red Color
             $starttag="<span style=\"color:red\">";
             $endtag="</span>";
@@ -450,7 +430,7 @@ if ($exist)
         echo "<td>$starttag{$row['adjud_name']} ({$row['ranking']})$endtag</td>\n";
                         
         echo "<td>{$row['ranking']}</td>\n";
-        echo ($row['conflicts'])?"<td>{$row['conflicts']}</td>":"<td><b>NONE</b></td>";
+        echo "<td>".print_conflicts($adjud_id)."</td></tr>";
         echo "</tr>\n";
           }
         echo "</table>\n";    
@@ -516,124 +496,83 @@ if ($exist)
         echo "$text"."{$row['averagepoints']} </td>\n";                
                 
                 //For the purpose of finding conflicts
-                $oguc=$row['ogtc'];
-                $oouc=$row['ootc'];
-                $cguc=$row['cgtc'];
-                $couc=$row['cotc'];
+                $ogid=$row['ogid'];
+                $ooid=$row['ooid'];
+                $cgid=$row['cgid'];
+                $coid=$row['coid'];
 
-                //Find Chief Adjudicatmr
-                $query="SELECT A.adjud_name AS adjud_name, A.ranking, A.conflicts AS conflicts FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='chair' AND T.debate_id='{$row['debate_id']}'";
+                //Find Chief Adjudicator ?chair, surely?
+                $query="SELECT A.adjud_name AS adjud_name, A.adjud_id As adjud_id, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='chair' AND T.debate_id='{$row['debate_id']}'";
                 $resultadjud=mysql_query($query);
 
-                if (mysql_num_rows($resultadjud)==0)
-        echo "$text"."<b>NONE</b></td>";
-                else
-          {
-                   
-                    $rowadjud=mysql_fetch_assoc($resultadjud);
+                if (mysql_num_rows($resultadjud)==0) {
+       				echo "$text"."<b>NONE</b></td>";
+				} else {
+					$rowadjud=mysql_fetch_assoc($resultadjud);
+					$adjud_id=$rowadjud['$adjud_id'];
                     //check for conflict and print name accordingly
-            $conflicts=preg_split("/,/",$rowadjud['conflicts'],-1, PREG_SPLIT_NO_EMPTY);
-            for ($x=0;$x<count($conflicts);$x++)
-              $conflicts[$x]=trim($conflicts[$x]);
-
-
-            if (((in_array($oguc,$conflicts))||
-             (in_array($oouc,$conflicts))||
-             (in_array($cguc,$conflicts))||
-             (in_array($couc,$conflicts))))//conflicts occuring
-              {
-            //Red Color
-            $starttag="<span style=\"color:red\">";
-            $endtag="</span>";
-              }
-            else
-              {
-            //Set it to empty
-            $starttag="";
-            $endtag="";
-              }
-                    echo "$text"."$starttag{$rowadjud['adjud_name']} ({$rowadjud['ranking']})$endtag</td>";
-          }
+					if(is_four_id_conflict($adjud_id, $ogid, $ooid, $cgid, $coid)){
+            			//Red Color
+            			$starttag="<span style=\"color:red\">";
+            			$endtag="</span>";
+              		} else {
+            			//Set it to empty
+            			$starttag="";
+            			$endtag="";
+              		}
+				echo "$text"."$starttag{$rowadjud['adjud_name']} ({$rowadjud['ranking']})$endtag</td>";
+				}
 
                 //Find Panelists
-                $query="SELECT A.adjud_name AS adjud_name, A.conflicts AS conflicts, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='panelist' AND T.debate_id='{$row['debate_id']}'";
+                $query="SELECT A.adjud_name AS adjud_name, A.adjud_id As adjud_id, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='panelist' AND T.debate_id='{$row['debate_id']}'";
                 $resultadjud=mysql_query($query);
 
-                if (mysql_num_rows($resultadjud)==0)
-          echo "$text"."<b>NONE</b></td>";
-                else
-          {
+                if (mysql_num_rows($resultadjud)==0) {
+          			echo "$text"."<b>NONE</b></td>";
+                } else {
                     echo "$text"."<ul>\n";
                     while($rowadjud=mysql_fetch_assoc($resultadjud))
-              {
+              		{
                         //check for conflict and print name accordingly
-                        $conflicts=preg_split("/,/",$rowadjud['conflicts'],-1, PREG_SPLIT_NO_EMPTY);
-            for ($x=0;$x<count($conflicts);$x++)
-              $conflicts[$x]=trim($conflicts[$x]);
-
-
-                        if (((in_array($oguc,$conflicts))||
-                 (in_array($oouc,$conflicts))||
-                 (in_array($cguc,$conflicts))||
-                 (in_array($couc,$conflicts))))//conflicts occuring
-              {
-                //Red Color
-                $starttag="<span style=\"color:red\">";
-                $endtag="</span>";
-              }
-            else
-              {
-                //Set it to empty
-                $starttag="";
-                $endtag="";
-              }
-                       
-                        echo "<li>$starttag{$rowadjud['adjud_name']} ({$rowadjud['ranking']})$endtag</li>\n";
-              }
+						$adjud_id=$rowadjud['$adjud_id'];
+						if(is_four_id_conflict($adjud_id, $ogid, $ooid, $cgid, $coid)){
+	            			//Red Color
+	            			$starttag="<span style=\"color:red\">";
+	            			$endtag="</span>";
+	              		} else {
+	            			//Set it to empty
+	            			$starttag="";
+	            			$endtag="";
+	              		}
+						echo "<li>$starttag{$rowadjud['adjud_name']} ({$rowadjud['ranking']})$endtag</li>\n";
+					}
                     echo "</ul></td>\n";
-          }
+				}
 
                 //Find Trainees
-                $query="SELECT A.adjud_name AS adjud_name, A.conflicts AS conflicts, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='trainee' AND T.debate_id='{$row['debate_id']}'";
+                $query="SELECT A.adjud_name AS adjud_name, A.adjud_id AS adjud_id, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='trainee' AND T.debate_id='{$row['debate_id']}'";
                 $resultadjud=mysql_query($query);
-
-                if (mysql_num_rows($resultadjud)==0)
-          echo "$text"."<b>NONE</b></td>";
-                else
-          {
+                if (mysql_num_rows($resultadjud)==0){
+					echo "$text"."<b>NONE</b></td>";
+				} else {
                     echo "$text"."<ul>\n";
                     while($rowadjud=mysql_fetch_assoc($resultadjud))
-              {
+              		{
                         //check for conflict and print name accordingly
-                        $conflicts=preg_split("/,/",$rowadjud['conflicts'],-1, PREG_SPLIT_NO_EMPTY);
-            for ($x=0;$x<count($conflicts);$x++)
-              $conflicts[$x]=trim($conflicts[$x]);
-
-
-            for ($x=0;$x<count($conflicts);$x++)
-              $conflicts[$x]=trim($conflicts[$x]);
-
-                        if (((in_array($oguc,$conflicts))||
-                 (in_array($oouc,$conflicts))||
-                 (in_array($cguc,$conflicts))||
-                 (in_array($couc,$conflicts))))//conflicts occuring
-              {
-                //Red Color
-                $starttag="<span style=\"color:red\">";
-                $endtag="</span>";
-              }
-            else
-              {
-                //Set it to empty
-                $starttag="";
-                $endtag="";
-              }
-
-                        echo "<li>$starttag{$rowadjud['adjud_name']} ({$rowadjud['ranking']})$endtag</li>\n";
-
-              }
+						$adjud_id=$rowadjud['$adjud_id'];
+						if(is_four_id_conflict($adjud_id, $ogid, $ooid, $cgid, $coid)){
+	            			//Red Color
+	            			$starttag="<span style=\"color:red\">";
+	            			$endtag="</span>";
+	              		} else {
+	            			//Set it to empty
+	            			$starttag="";
+	            			$endtag="";
+	              		}
+						echo "<li>$starttag{$rowadjud['adjud_name']} ({$rowadjud['ranking']})$endtag</li>\n";
+					}
                     echo "</ul></td>\n";
-          }
+				}
                                
                 
                 echo "<td class=\"editdel\"><a href=\"draw.php?moduletype=manualdraw&amp;action=edit&amp;debate_id={$row['debate_id']}\">Edit</a></td>";

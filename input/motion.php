@@ -22,11 +22,12 @@
  * end license */
 
 require("includes/display.php");
+require("includes/backend.php");
 
 //Get POST values and validate/convert them
 
 $round_no=trim(@$_POST['round_no']);
-$motion=trim(@$_POST['motion']);
+$motion=makesafe(@$_POST['motion']);
 $actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
 
 if (($actionhidden=="add")||($actionhidden=="edit")) //do validation

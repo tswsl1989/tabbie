@@ -21,7 +21,10 @@
  * 
  * end license */
 
-
+//This file is no longer called and should not be used
+//The algorithm will not cope with the new strike system
+//Historical interest only
+die("Deprecated Algorithm: Nonfunctional");
 require_once("includes/backend.php");
 
 function allocate_ntu(&$msg) {

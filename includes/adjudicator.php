@@ -40,7 +40,7 @@ function __get_team_id_by_codes($univ_code, $team_code) {
 }
 
 function get_adjudicator_by_id($adjud_id) {
-    $query = "SELECT adjud_name, adjud_id, univ_id, conflicts, ranking FROM adjudicator WHERE adjud_id='$adjud_id'";
+    $query = "SELECT adjud_name, adjud_id, univ_id, ranking FROM adjudicator WHERE adjud_id='$adjud_id'";
     $db_result = mysql_query($query);
     $result = array();
     $row = mysql_fetch_assoc($db_result);
@@ -48,17 +48,27 @@ function get_adjudicator_by_id($adjud_id) {
     $adjudicator['adjud_name'] = $row['adjud_name'];
     $adjudicator['adjud_id'] = $row['adjud_id'];
     $adjudicator['ranking'] = $row['ranking'];
-    $adjudicator['univ_conflicts'][] = $row['univ_id'];
-    $adjudicator['team_conflicts'] = array();
-    $conflicts = preg_split("/,/", $row['conflicts'], -1, PREG_SPLIT_NO_EMPTY);
-    foreach ($conflicts as $conflict) {
-        $parts = split("[.]", $conflict);
-        if (sizeof($parts) == 1)
-            $adjudicator['univ_conflicts'][] = __get_university_id_by_code($conflict);
-        elseif (sizeof($parts == 2)) {
-                $adjudicator['team_conflicts'][] = __get_team_id_by_codes($parts[0], $parts[1]);
-        }
-    }
+	$adjudicator['team_conflicts'] = array();
+	$adjudicator['univ_conflicts'] = array();
+    //$adjudicator['univ_conflicts'][] = $row['univ_id']; - self-strike automatically added
+	$query = "SELECT univ_id FROM strikes WHERE adjud_id=$adjud_id AND team_id=0";
+	$strikeresult=mysql_query($query);
+	while($strike=mysql_fetch_assoc($strikeresult)) {
+		$adjudicator['univ_conflicts'][]=$strike['univ_id'];
+		}
+	$query = "SELECT team_id FROM strikes WHERE adjud_id=$adjud_id AND team_id != 0";
+	$strikeresult=mysql_query($query);
+	while($strike=mysql_fetch_assoc($strikeresult)) {$adjudicator['team_conflicts'][]=$strike['team_id'];}
+    //$adjudicator['team_conflicts'] = array();
+    //$conflicts = preg_split("/,/", $row['conflicts'], -1, PREG_SPLIT_NO_EMPTY);
+    //foreach ($conflicts as $conflict) {
+    //    $parts = split("[.]", $conflict);
+    //    if (sizeof($parts) == 1)
+    //        $adjudicator['univ_conflicts'][] = __get_university_id_by_code($conflict);
+    //    elseif (sizeof($parts == 2)) {
+    //            $adjudicator['team_conflicts'][] = __get_team_id_by_codes($parts[0], $parts[1]);
+    //    }
+    //}
     return $adjudicator;
 }
 

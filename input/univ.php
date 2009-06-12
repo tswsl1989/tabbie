@@ -22,11 +22,12 @@
  * end license */
 
 require("includes/display.php");
+require("includes/backend.php");
 
 //Get POST values and validate/convert them
 
-$univ_name=trim(@$_POST['univ_name']);
-$univ_code=strtoupper(trim(@$_POST['univ_code']));
+$univ_name=makesafe(@$_POST['univ_name']);
+$univ_code=strtoupper(makesafe(@$_POST['univ_code']));
 $actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
 
 if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
@@ -51,13 +52,21 @@ if ($action=="delete")
     else
       {    
         //Delete Stuff
+		//FIXME: need to delete teams, speakers, and adjudicators - and preferably warn of such.
         $univ_id=trim(@$_GET['univ_id']);
-        $query="DELETE FROM university WHERE univ_id='$univ_id'";
-        $result=mysql_query($query);
-    
+		$query="SELECT * FROM team WHERE univ_id='$univ_id'";
+        $db_result=mysql_query($query);
+		while($row=mysql_fetch_assoc($db_result)) {
+			$team_id=$row["team_id"];
+			$result=delete_team($team_id);
+		}
+		$query="DELETE FROM adjudicator WHERE univ_id='$univ_id'";
+		$db_result=mysql_query($query);
+    	$query="DELETE FROM university WHERE univ_id='$univ_id'";
+		$db_result=mysql_query($query);
         //Check for Error
         if (mysql_affected_rows()==0)
-      $msg[]="There were problems deleting : No such record.";
+        $msg[]="There were problems deleting : No such record for university.";
     
       }
 
@@ -228,7 +237,7 @@ if ($action=="display")
       if ($showdelete)
         {
          ?>
-        <td class="editdel"><a href="input.php?moduletype=univ&amp;action=delete&amp;univ_id=<?echo $row['univ_id'];?>" onClick="return confirm('Are you sure?');">Delete</a></td>
+        <td class="editdel"><a href="input.php?moduletype=univ&amp;action=delete&amp;univ_id=<?echo $row['univ_id'];?>" onClick="return confirm('WARNING: This will break your database unless you have already deleted all teams and speakers for this institution. Are you sure?');">Delete</a></td>
            <?} //Do Not Remove ?>
       </tr>
 

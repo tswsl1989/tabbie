@@ -10,9 +10,9 @@ begin
   puts "Server version: " + dbh.get_server_info
   
   # Create database (Drop if already exists)
-  dbh.query("DROP DATABASE IF EXISTS tabbie1")
-  dbh.query("CREATE DATABASE tabbie1")
-  dbh.query("USE tabbie1")
+  dbh.query("DROP DATABASE IF EXISTS tabbie")
+  dbh.query("CREATE DATABASE tabbie")
+  dbh.query("USE tabbie")
   
   # Load initial schema
   sql_init = File.read("../install/create_db.sql")
@@ -74,14 +74,14 @@ begin
   end
   
   # Populate Adjudicators
-  puts "Generating Adudicators"
+  puts "Generating Adjudicators"
   300.times do |i|
       #first_name = (1..10).to_a.inject("") { |sum,d| sum+= alphabets[rand(26)] } 
       #last_name =  (1..10).to_a.inject("") { |sum,d| sum+= alphabets[rand(26)] } 
       #name = '#{first_name} #{last_name}'
       name = names[800 + i]
       dbh.query(<<-SQL
-            INSERT INTO adjudicator(univ_id, adjud_name, ranking, active) VALUES(#{(i % 30) + 1}, '#{name}', 50, 'Y')
+            INSERT INTO adjudicator(univ_id, adjud_name, ranking, active) VALUES(#{(i % 30) + 1}, '#{name}', #{(1+rand(25))*4}, 'Y')
       SQL
       )
   end

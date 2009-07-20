@@ -35,10 +35,18 @@ if(file_exists($ajaxpath)){ ?>
 	<script type="text/JavaScript">
 	var ntu_controller = "<?= $ntu_controller ?>";
 	var moduletype = "<?= $moduletype ?>";
+	var client = "<?= sha1($_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT'].'sodiumchloride')?>";//hackish but does the job
 	</script>
 	<script type="text/JavaScript" src="<?= @$dir_hack ?>js/jquery-1.3.2.min.js"></script>
     <script type="text/JavaScript" src="<?= @$dir_hack ?>js/jquery-ui-1.7.1.custom.min.js"></script>
+	<script type="text/JavaScript" src="<?= @$dir_hack ?>js/jquery.livequery.js"></script>
 	<script type="text/JavaScript" src="<?= $ajaxpath ?>"></script>
+<?php } 
+//load custom CSS files for each controller/module
+$csspath = 'view/'.$ntu_controller.'/'.$moduletype.'.css';
+if(file_exists($csspath)){
+?>
+	<link rel="stylesheet" href="<?= $csspath ?>">
 <?php } ?>
 <body>
 <div id='content'>

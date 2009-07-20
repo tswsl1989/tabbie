@@ -36,6 +36,6 @@
 
         ?>
         <li><a href="draw.php?moduletype=currentdraw"<?echo ($moduletype=='currentdraw')?"class=\"activemain\"":""?>>Current Draw</a></li>
-        <li><a href="draw.php?moduletype=manualdraw" <?echo ($moduletype=='manualdraw')?"class=\"activemain\"":""?>>Manual Draw</a></li>
+        <li><a href="draw.php?moduletype=dragdraw" <?echo ($moduletype=='dragdraw')?"class=\"activemain\"":""?>>Manual Draw</a></li>
     </ul>
 </div>

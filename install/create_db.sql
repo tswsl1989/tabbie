@@ -4,6 +4,7 @@ CREATE TABLE `adjudicator` (
   `adjud_name` varchar(100) NOT NULL default '',
   `ranking` mediumint(9) NOT NULL default '0',
   `active` enum('Y','N') NOT NULL default 'Y',
+  `status` ENUM( 'normal', 'trainee', 'watcher', 'watched' ) NOT NULL default 'normal',
   `conflicts` varchar(100) default NULL,
   PRIMARY KEY  (`adjud_id`),
   UNIQUE KEY `adjud_name` (`adjud_name`)
@@ -13,7 +14,7 @@ CREATE TABLE `configure_adjud_draw` (
   `param_name` varchar(100) NOT NULL default '',
   `param_value` double default NULL,
   PRIMARY KEY  (`param_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Adjudicator Draw Parameter Table';
 
 
 INSERT INTO `configure_adjud_draw` VALUES 
@@ -27,6 +28,9 @@ INSERT INTO `configure_adjud_draw` VALUES
 	('panel_size_out_of_bounds',1000),
 	('adjudicator_met_adjudicator',0),
 	('adjudicator_met_team',0),
+	('trainee_in_chair',300),
+	('watcher_not_in_chair',0),
+	('watched_not_watched',150),
 	('lock',0),
 	('draw_table_speed',0);
 
@@ -81,4 +85,13 @@ CREATE TABLE `venue` (
   PRIMARY KEY  (`venue_id`),
   UNIQUE KEY `venue_name` (`venue_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Venue Table';
+
+CREATE TABLE `strikes` (
+  `adjud_id` int(11) NOT NULL,
+  `team_id` int(11) default NULL,
+  `univ_id` int(11) default NULL,
+  `strike_id` int(11) NOT NULL auto_increment,
+  PRIMARY KEY  (`strike_id`),
+  KEY `univ_id` (`univ_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Conflict Table';
 

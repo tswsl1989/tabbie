@@ -32,6 +32,8 @@ $ranking=trim(@$_POST['ranking']);
 $active=strtoupper(trim(@$_POST['active']));
 $actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
 $rankorder=trim(@$_GET['rankorder']);
+$status=trim(@$_POST['status']);
+
 
 if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
   {
@@ -90,8 +92,8 @@ if ($actionhidden=="add")
       {        
         //Add Stuff to Database
         
-        $query = "INSERT INTO adjudicator(univ_id, adjud_name, ranking, active) ";
-        $query.= " VALUES('$univ_id', '$adjud_name', '$ranking',  '$active')";
+        $query = "INSERT INTO adjudicator(univ_id, adjud_name, ranking, active, status) ";
+        $query.= " VALUES('$univ_id', '$adjud_name', '$ranking',  '$active', '$status')";
         $result=mysql_query($query);
 
         if (!$result) //Error
@@ -133,7 +135,7 @@ if ($actionhidden=="edit")
       {
         //Edit Stuff in Database
         $query = "UPDATE adjudicator ";
-        $query.= "SET univ_id='$univ_id', adjud_name='$adjud_name', ranking='$ranking', active='$active', conflicts='$conflicts' ";
+        $query.= "SET univ_id='$univ_id', adjud_name='$adjud_name', ranking='$ranking', active='$active', conflicts='$conflicts', status='$status' ";
         $query.= "WHERE adjud_id='$adjud_id'";
         $result=mysql_query($query);
         
@@ -182,6 +184,7 @@ if ($action=="edit")
             $adjud_name=$row['adjud_name'];
             $ranking=$row['ranking'];
             $active=$row['active'];
+			$status=$row['status'];
       }
       }   
     
@@ -257,7 +260,7 @@ if ($action=="display")
 			echo "<h3><a href=\"input.php?moduletype=adjud&amp;rankorder=Y\">Order by Ranking</a></h3>";
 		}?>
       <table>
-         <tr><th>Name</th><th>University</th><th>Ranking</th><th>Active(Y/N)</th><th>Conflicts</th></tr>
+         <tr><th>Name</th><th>University</th><th>Ranking</th><th>Active(Y/N)</th><th>Status</th><th>Conflicts</th></tr>
          <? while($row=mysql_fetch_assoc($result)) { ?>
 
       <tr <?if ($row['active']=='N') echo "style=\"color:red\"" ;?>>
@@ -265,6 +268,7 @@ if ($action=="display")
     <td><?echo $row['univ_code'];?></td>
    <td><?echo $row['ranking'];?></td>
     <td><?echo $row['active'];?></td>
+	<td><?if($row['status']!='normal') echo $row['status'];?></td>
    <td><?echo print_conflicts($row['adjud_id']);?></td>
     <td class="editdel"><a href="input.php?moduletype=adjud&amp;action=edit&amp;adjud_id=<?echo $row['adjud_id'];?>">Edit</a></td>
 
@@ -322,6 +326,14 @@ if ($action=="display")
                   <option value="Y" <?echo ($active=="Y")?"selected":""?>>Yes</option>
                   <option value="N" <?echo ($active=="N")?"selected":""?>>No</option>
                   </select> <br/><br/>
+
+				<label for="status">Status</label>
+				<select id="status" name="status">
+				<option value="normal" <?echo ($status=="normal")?"selected":""?>>normal</option>
+				<option value="trainee" <?echo ($status=="trainee")?"selected":""?>>trainee</option>
+				<option value="watcher" <?echo ($status=="watcher")?"selected":""?>>watcher</option>
+				<option value="watched" <?echo ($status=="watched")?"selected":""?>>watched</option>
+				</select><br/><br/>
 
                   <input type="submit" value="<?echo ($action=="edit")?"Edit Adjudicator":"Add Adjudicator" ;?>"/>
                   <input type="button" value="Cancel" onClick="location.replace('input.php?moduletype=adjud')"/>

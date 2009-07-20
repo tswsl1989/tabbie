@@ -268,12 +268,16 @@ function write_to_db($debates, $round) {
     foreach ($debates as &$debate) {
         usort($debate['adjudicators'], 'cmp_ranking');
         $chair = array_pop($debate['adjudicators']);
-        mysql_query("INSERT INTO `temp_adjud_round_$round` " .
-            "VALUES('{$debate['debate_id']}','{$chair['adjud_id']}','chair')");
-        foreach ($debate['adjudicators'] as $adjudicator)
-            mysql_query(
-                "INSERT INTO `temp_adjud_round_$round` " .
-                "VALUES('{$debate['debate_id']}','{$adjudicator['adjud_id']}','panelist')");
+		$query="INSERT INTO `temp_adjud_round_$round` (`debate_id`, `adjud_id`, `status`) VALUES ('{$debate['debate_id']}','{$chair['adjud_id']}','chair')";
+        if(!mysql_query($query)){
+			echo mysql_error();
+		}
+        foreach ($debate['adjudicators'] as $adjudicator) {
+			$query="INSERT INTO `temp_adjud_round_$round` (`debate_id`, `adjud_id`, `status`) VALUES ('{$debate['debate_id']}','{$adjudicator['adjud_id']}','panelist')";
+            if(!mysql_query($query)){
+				echo mysql_error();
+			}
+		}
     }
   }
       else {
@@ -295,17 +299,27 @@ function debate_energy(&$debate) {
     $result = 0;
     $other_adjudicators = array_reverse($debate['adjudicators']);
     foreach ($debate['adjudicators'] as $adjudicator) {
-        foreach ($adjudicator['univ_conflicts'] as $conflict) 
-            foreach ($debate['universities'] as $university)
+		//echo("Scoring adjudicator ".$adjudicator['adjud_id']."<br/>");
+        foreach ($adjudicator['univ_conflicts'] as $conflict){
+ 			//echo("Checking university conflict ".$conflict."<br/>");
+            foreach ($debate['universities'] as $university){
+				//echo("Against university in debate ".$university."<br/>");
+				//echo("Checking conflict $conflict against university $university for ajudicator ".$adjudicator['adjud_id']);
                 if ($conflict == $university) {
+					//echo("STRIKE");
                     $result += $scoring_factors['university_conflict'];
                 }
-        foreach ($adjudicator['team_conflicts'] as $conflict) 
-            foreach ($debate['teams'] as $team)
+				//echo("<br/>");
+			}
+		}
+        foreach ($adjudicator['team_conflicts'] as $conflict){
+            foreach ($debate['teams'] as $team){
                 if ($conflict == $team) {
                     $result += $scoring_factors['team_conflict'];
                 }
-        
+			}
+		}
+        //echo("<br/>");
         array_pop($other_adjudicators);
         foreach ($other_adjudicators as $other_adjudicator)
             $result += adjudicators_met($adjudicator['adjud_id'], $other_adjudicator['adjud_id']) *  $scoring_factors['adjudicator_met_adjudicator'];
@@ -317,6 +331,15 @@ function debate_energy(&$debate) {
     $adjudicators = $debate['adjudicators'];
     usort($adjudicators, 'cmp_ranking');
     $chair = array_pop($adjudicators);
+	if($chair['status']=='trainee') $result += $scoring_factors['trainee_in_chair'];
+	if($chair['status']=='watched') $result += $scoring_factors['watched_not_watched'];
+		
+	foreach($adjudicators as $panelist){
+		if($panelist['status']=='watcher') $result += $scoring_factors['watcher_not_in_chair'];
+		if(($panelist['status']=='watched')&&($chair['status']!='watcher')) {
+			$result += $scoring_factors['watched_not_watched'];
+			}
+	}
     $result += $scoring_factors['chair_not_perfect'] * (100 - $chair['ranking']);
     $result += $scoring_factors['chair_not_ciaran_perfect'] * pow(diff_to_bounds($chair['ranking'], $debate['ciaran_chair_lo'], $debate['ciaran_chair_hi']), 2);
 
@@ -367,6 +390,22 @@ function debate_energy_details(&$debate) {
     $adjudicators = $debate['adjudicators'];
     usort($adjudicators, 'cmp_ranking');
     $chair = array_pop($adjudicators);
+
+	if($chair['status']=='trainee') {
+		$result[] = array($scoring_factors['trainee_in_chair'], "Trainee is in the chair.");
+		}
+	if($chair['status']=='watched') {
+		$result[]=array($scoring_factors['watched_not_watched'], "Adjudicator marked to be watched is not being watched.");
+		}
+	foreach($adjudicators as $panelist){
+		if($panelist['status']=='watcher') {
+			$result[]=array($scoring_factors['watcher_not_in_chair'], "Adjudicator marked capable of watching is not in the chair.");
+			}
+		if(($panelist['status']=='watched')&&($chair['status']!='watcher')) {
+			$result[]=array($scoring_factors['watched_not_watched'], "Adjudicator marked to be watched is not being watched.");
+			}
+	}
+
     $diff = 100 - $chair['ranking'];
     $penalty = $scoring_factors['chair_not_perfect'] * ($diff);
     $diff = format_dec($diff);
@@ -394,6 +433,8 @@ function debate_energy_details(&$debate) {
     $diff = diff_to_bounds($panel_size, $min_panel_size, $max_panel_size);
     $penalty = pow($diff, 2) * $scoring_factors['panel_size_out_of_bounds'];
     $result[] = array("$penalty", "Desired panel bounds are [$min_panel_size, $max_panel_size] and real panel size is $panel_size");
+
+
 
     return $result;
 }

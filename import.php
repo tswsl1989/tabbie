@@ -74,7 +74,7 @@ if ( @$_FILES['uploadedfile']) {
 			$query=" CREATE TABLE `strikes` (`strike_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY , `adjud_id` INT NOT NULL , `team_id` INT NULL , `univ_id` INT NULL , INDEX ( `adjud_id` )) ENGINE = MYISAM";
 			mysql_query($query);
 			echo mysql_error();
-			$query="SELECT adjud_id, conflicts FROM adjudicator";
+			$query="SELECT adjud_id, univ_id, conflicts FROM adjudicator";
 			$strikeresult=mysql_query($query);
 			while($adjudicator=mysql_fetch_assoc($strikeresult)){
 			    $conflicts = preg_split("/, /", $adjudicator['conflicts'], -1, PREG_SPLIT_NO_EMPTY);
@@ -87,6 +87,7 @@ if ( @$_FILES['uploadedfile']) {
 					}
 				}				
 			}
+			add_strike_judge_univ($adjudicator['adjud_id'],$adjudicator['univ_id']); //Strike from own institution.
 			$query="ALTER TABLE adjudicator DROP COLUMN conflicts";
 			mysql_query($query);
 			echo mysql_error();

@@ -519,21 +519,39 @@ function del_strike_judge_team($adjud_id, $team_id){
 }
 
 function is_strike_judge_team($adjud_id, $team_id){
+	//echo("is_strike_judge_team(".$adjud_id.",".$team_id.")");
 	$query="SELECT * FROM strikes WHERE adjud_id='$adjud_id' AND team_id='$team_id'";
 	$resultstrike=mysql_query($query);
 	$rownum=mysql_num_rows($resultstrike);
 	if ($rownum>0){
+		//echo("struck by team");
+		//echo("strike on university $team_id");
 		return true;
 	} else {
-		return false;
+		if(is_strike_judge_univ($adjud_id, univ_id_from_team($team_id))){
+			//echo("struck by univ");
+			return true;
+		} else {
+			//echo("not struck");
+			return false;
+		}
 	}
 }
 
+function univ_id_from_team($team_id){
+	$query = "SELECT `univ_id` FROM `team` WHERE `team_id`='$team_id'";
+	$result = mysql_query($query);
+	$row = mysql_fetch_assoc($result);
+	return $row['univ_id'];
+}
+
 function is_strike_judge_univ($adjud_id, $univ_id){
-	$query="SELECT * FROM strikes WHERE adjud_id='$adjud_id' AND univ_id='$univ_id'";
+	$query="SELECT * FROM `strikes` WHERE `adjud_id`='$adjud_id' AND `univ_id`='$univ_id' AND `team_id` IS NULL";
 	$resultstrike=mysql_query($query);
 	$rownum=mysql_num_rows($resultstrike);
 	if ($rownum>0){
+		//echo("strike on university $univ_id");
+		//echo $query;
 		return true;
 	} else {
 		return false;
@@ -581,7 +599,7 @@ function mysql_to_xml($query, $baseelement){
 }
 
 function is_four_id_conflict($adjud_id, $ogid, $ooid, $cgid, $coid){
-	if ( (is_strike_judge_team($adjud_id, $ogid))|| (is_strike_judge_team($adjud_id, $ooid)) || (is_strike_judge_team($adjud_id, $cgid)) || (is_strike_judge_team($adjud_id, $ooid)) ){
+	if ( (is_strike_judge_team($adjud_id, $ogid))|| (is_strike_judge_team($adjud_id, $ooid)) || (is_strike_judge_team($adjud_id, $cgid)) || (is_strike_judge_team($adjud_id, $coid)) ){
 		return true;
 	} else {
 		return false;

@@ -79,20 +79,22 @@ if ($validate) {
 }
 
 if (($action=="draw") && ($validate == 1)) {
+	$debater_start=microtime(true);
 
     $teams = get_teams_positions_points(get_num_rounds());
     
     require_once("draw/algorithms/silver_line.php");
     require_once("draw/algorithms/ntu_core.php");
 
-    //$debates = draw_ntu_core($teams, $nextround);
+    //$debates = draw_ntu_core($teams, $nextround); - THIS IS NOW DEPRECATED
     $debates = draw_silver_line($teams, $nextround);
 
     if (! validate_draw($teams, $debates))
-        $msg[] = "The Algortihm has not created a valid draw!!!";
+        $msg[] = "The Algorithm has not created a valid draw!!!";
     
     $score = debates_badness($debates); //only works for silver_line since others don't attribute enough data
-    $msg[] = "The Debater Allocation Algortihm has created a draw with score $score, and 0 is the best possible score.";
+	$debater_end=microtime(true);
+    $msg[] = "The Debater Allocation Algorithm has created a draw with score $score, and 0 is the best possible score.";
 
     function funny_conversion_for_ntu_code($debates) {
         $result = array();
@@ -151,6 +153,14 @@ PRIMARY KEY (debate_id))";
     }
     $details = array();
     reallocate_simulated_annealing();
+
+	$query= "CREATE TABLE draw_lock_round_$nextround (`lock_id` MEDIUMINT( 9 ) NOT NULL ,`debate_id` MEDIUMINT( 9 ) NULL ,`adjud_id` MEDIUMINT NULL ,`expiry` BIGINT NOT NULL ,`client` VARCHAR( 64 ) NOT NULL ,PRIMARY KEY ( `lock_id` ) ,INDEX ( `client` )) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_unicode_ci";
+	$result = q($query);
+	
+	$adjudicator_end=microtime(true);
+	$adjudicator_time=round($adjudicator_end-$debater_end,3);
+	$debater_time=round($debater_end-$debater_start,3);
+	$msg[]="Debater allocation $debater_time"."s. Adjudicator allocation $adjudicator_time"."s";
 }
 
 if (($action=="draw_adjudicators_again") && ($validate == 1)) {
@@ -184,7 +194,7 @@ if (($validate==1)) {
         echo "<p>From here you can either:</p>";
         echo "<h3><a href=\"draw.php?moduletype=currentdraw&amp;action=draw_adjudicators_again\">Give the computer another shot at allocating the adjudicators (Using the current state to generate a better result).</a></h3>";
         echo '<p>or</p>';
-        echo '<h3><a href="draw.php?moduletype=manualdraw">Manually adjust adjudicators and rooms</a></h3>';
+        echo '<h3><a href="draw.php?moduletype=dragdraw">Manually adjust adjudicators and rooms</a></h3>';
         echo '<p>or</p>';
         echo '<h3><a href="draw.php?moduletype=manualdraw&amp;action=finalise">Finalize the draw</a></h3>';
 

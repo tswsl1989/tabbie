@@ -40,7 +40,7 @@ function __get_team_id_by_codes($univ_code, $team_code) {
 }
 
 function get_adjudicator_by_id($adjud_id) {
-    $query = "SELECT adjud_name, adjud_id, univ_id, ranking FROM adjudicator WHERE adjud_id='$adjud_id'";
+    $query = "SELECT adjud_name, adjud_id, univ_id, ranking, status FROM adjudicator WHERE adjud_id='$adjud_id'";
     $db_result = mysql_query($query);
     $result = array();
     $row = mysql_fetch_assoc($db_result);
@@ -48,17 +48,26 @@ function get_adjudicator_by_id($adjud_id) {
     $adjudicator['adjud_name'] = $row['adjud_name'];
     $adjudicator['adjud_id'] = $row['adjud_id'];
     $adjudicator['ranking'] = $row['ranking'];
+	$adjudicator['status'] = $row['status'];
 	$adjudicator['team_conflicts'] = array();
 	$adjudicator['univ_conflicts'] = array();
     //$adjudicator['univ_conflicts'][] = $row['univ_id']; - self-strike automatically added
-	$query = "SELECT univ_id FROM strikes WHERE adjud_id=$adjud_id AND team_id=0";
+	$query = "SELECT univ_id FROM strikes WHERE adjud_id=$adjud_id AND team_id IS NULL";
 	$strikeresult=mysql_query($query);
 	while($strike=mysql_fetch_assoc($strikeresult)) {
 		$adjudicator['univ_conflicts'][]=$strike['univ_id'];
 		}
-	$query = "SELECT team_id FROM strikes WHERE adjud_id=$adjud_id AND team_id != 0";
+	$query = "SELECT team_id FROM strikes WHERE adjud_id=$adjud_id AND team_id IS NOT NULL";
 	$strikeresult=mysql_query($query);
 	while($strike=mysql_fetch_assoc($strikeresult)) {$adjudicator['team_conflicts'][]=$strike['team_id'];}
+	//echo("Adjudicator: ".$adjud_id."<br/>");
+	//foreach($adjudicator['univ_conflicts'] as $uconflict){
+	//	echo("Conflicted university ".$uconflict."<br/>");
+	//}
+	//foreach($adjudicator['team_conflicts'] as $tconflict){
+	//	echo("Conflicted team ".$tconflict."<br/>");
+	//}
+	//echo("<br/><br/>");
     //$adjudicator['team_conflicts'] = array();
     //$conflicts = preg_split("/,/", $row['conflicts'], -1, PREG_SPLIT_NO_EMPTY);
     //foreach ($conflicts as $conflict) {
@@ -85,7 +94,9 @@ function create_temp_adjudicator_table($round) {
     $tablename = "temp_adjud_round_$round";
     mysql_query("DROP TABLE $tablename");
 
-    $query = "CREATE TABLE `$tablename` ( `debate_id` MEDIUMINT NOT NULL ,";
+    $query = "CREATE TABLE `$tablename` (";
+	$query .= " `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,";
+	$query .= " `debate_id` MEDIUMINT NOT NULL ,";
     $query .= " `adjud_id` MEDIUMINT NOT NULL ,";
     $query .= " `status` ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL );";
     $db_result = mysql_query($query);

@@ -5,7 +5,7 @@ require "mysql"
 
 begin
   # connect to the MySQL server
-  dbh = Mysql.real_connect("localhost", "root", "", "tabbie1")
+  dbh = Mysql.real_connect("localhost", "root", "", "tabbie")
     
   # Check for any temp tables
   res = dbh.query("SHOW TABLES LIKE 'temp_%'")

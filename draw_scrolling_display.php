@@ -30,10 +30,10 @@ $roundno=@$_GET['roundno'];
     <title>Draw : Round <?= $roundno ?></title>    
     <link rel="stylesheet" href="view/scrolling/css/jScrollPane.css" type="text/css" charset="utf-8"/>
     <link rel="stylesheet" href="view/scrolling/css/scrollpage.css" type="text/css" charset="utf-8"/>
-    <script type="text/javascript" charset="utf-8" src="view/scrolling/javascripts/jquery.js"></script>
-    <script type="text/javascript" charset="utf-8" src="view/scrolling/javascripts/jquery.dimensions.min.js"></script>
-    <script type="text/javascript" charset="utf-8" src="view/scrolling/javascripts/jScrollPane.min.js"></script>    
-    <script type="text/javascript" charset="utf-8" src="view/scrolling/javascripts/jquery.timer.js"></script>        
+	<script type="text/javascript" charset="utf-8" src="js/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/HGview/scrolling/javascripts/jquery.dimensions.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="js/jScrollPane-1.2.3.min.js"></script>    
+    <script type="text/javascript" charset="utf-8" src="js/jquery.timer.v-0.1.js"></script>        
     <script type="text/javascript" charset="utf-8" src="view/scrolling/javascripts/scroller.js"></script>    
 </head>
 
@@ -87,7 +87,7 @@ $db_result = mysql_query(
                  $debate_id = $row_debate['debate_id'];
                  $adj_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
                  $adj_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-                 $adj_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND status = 'chair' ";
+                 $adj_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'chair' ";
 				$adj_result=mysql_query($adj_query);
 
                  $adj_row=mysql_fetch_assoc($adj_result);
@@ -102,7 +102,7 @@ $db_result = mysql_query(
                  echo "<td class='panelists'>";
                  $pan_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
              $pan_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-             $pan_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND status = 'panelist' ";
+             $pan_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'panelist' ";
              $pan_result=mysql_query($pan_query);
              echo mysql_error();
 
@@ -118,7 +118,7 @@ $db_result = mysql_query(
                  echo "<td class='trainee'>";
                  $trainee_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
              $trainee_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-             $trainee_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND status = 'trainee' ";
+             $trainee_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'trainee' ";
              $trainee_result=mysql_query($trainee_query);
              echo mysql_error();
 

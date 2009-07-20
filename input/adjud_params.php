@@ -118,6 +118,12 @@ High values: Adjudicators are not put in panels with previous co-panellists<br/>
 <b>adjudicator_met_team</b>: Penalty for adjudicator meeting a team they have adjudcicated before again. This penalty is multiplied by the times this has occurred before.<br/>
 High values: Adjudicators are not to adjudicate the same teams again and again<br/>
 </p><p>
+<b>trainee_in_chair</b>: Penalty for an adjudicator marked as a trainee being in the chair<br/>
+</p><p>
+<b>watcher_not_in_chair</b>: Penalty for an adjudicator marked as capable of 'watching' other adjudicators not being in the chair (irrespective of whether they are watching someone). Use this value sparingly, as the algorithm will underperform if too many chairs are pre-determined.<br/>
+</p><p>
+<b>watched_not_watched</b>: Penalty for an adjudicator marked to be watched by another, more experienced adjudicator not actually being watched. To make effective use of this parameter, mark several adjudicators as 'watchers'.<br/>
+</p><p>
 <b>lock</b>: (Maybe a bit misplaced in this table, but anyway) If this lock is on a non-zero value the algorithms can not be run. This is to prevent two different computers from hitting the draw buttons at the same time and messing things up big time. If for some reason the lock is set to one, it can be removed here.<br/>
 </p>
 <p>

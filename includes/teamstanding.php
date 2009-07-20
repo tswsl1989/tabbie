@@ -62,6 +62,22 @@ function __fillUpTeamnames($team_array) {
     return $result;
 }
 
+function __fillUpLowestBreak($team_array) {
+	$result = array();
+    // Fill up all the team names
+    foreach ($team_array as $cc)
+    {
+        $teamid = $cc["teamid"];
+        $esl_query = "SELECT `esl` FROM `team` WHERE `team_id`=$teamid";
+        $esl_result = mysql_query($esl_query);
+        $esl_row = mysql_fetch_assoc($esl_result);
+        $cc["lowest_break"] = $name_row['esl'];
+		$result[]=$cc;
+    }
+    return $result;
+	
+}
+
 function team_standing_array($roundno, $list="all") {
     $warning="null";
     $query = "SELECT team_id FROM team ";
@@ -93,11 +109,13 @@ function team_standing_array($roundno, $list="all") {
                             "teamid" => $row['team_id'],
                             "team_id" => $row['team_id'], //bweghhh.... 
                             "teamname" => ' ',
+							"lowest_break" => ' ',
                             "score" => 0,
                             "speaker" => 0);    
     }
     
     $team_array = __fillUpTeamnames($team_array);
+	$team_array = __fillUpLowestBreak($team_array);
     
     foreach($team_array as &$team)
         $team['rankings'] = rankings_for_team_wudc_2004_article_4_a_iii($team['teamid'], $roundno);

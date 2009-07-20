@@ -73,9 +73,8 @@ displayMessagesP(@$msg);
             $debate_id = $row['debate_id'];
             $adj_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
             $adj_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-            $adj_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND status = 'chair' ";
+            $adj_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.`status` = 'chair' ";
             $adj_result=mysql_query($adj_query);
-
             $adj_row=mysql_fetch_assoc($adj_result);
             
             echo "<td>{$row['venue_name']}</td>\n";
@@ -88,7 +87,7 @@ displayMessagesP(@$msg);
             echo "<td>";
             $pan_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
         $pan_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-        $pan_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND status = 'panelist' ";
+        $pan_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'panelist' ";
         $pan_result=mysql_query($pan_query);
         echo mysql_error();
 
@@ -104,7 +103,7 @@ displayMessagesP(@$msg);
             echo "<td>";
             $trainee_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
         $trainee_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-        $trainee_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND status = 'trainee' ";
+        $trainee_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'trainee' ";
         $trainee_result=mysql_query($trainee_query);
         echo mysql_error();
 

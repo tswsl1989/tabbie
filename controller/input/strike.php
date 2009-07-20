@@ -51,3 +51,4 @@ if($action == 'GET'){
 
 //In any case return the current strike list.
 echo(mysql_to_xml("SELECT s.strike_id, s.adjud_id, u.univ_id, t.team_id, u.univ_name, t.team_code FROM `strikes` AS s INNER JOIN `university` AS U ON s.univ_id = u.univ_id LEFT JOIN team as t ON t.team_id = s.team_id WHERE s.adjud_id=$adjud_id ORDER BY s.strike_id ASC", "strike"));
+?>

@@ -1,0 +1,47 @@
+.placeholder { 
+	margin: 5px; 
+	padding: 4px; 
+	border: 1px solid #ffffff; 
+	float: left;  
+	width: 100px; 
+	background-color: #E4E4E4;
+	}
+	
+.judgelist { 
+	list-style-type: none; 
+	margin: 0; 
+	padding: 0; 
+	float: left; 
+	margin-right: 10px; 
+	text-align: justify;
+	min-width: 360px;
+	}
+	
+.judgelist li { 
+	height: 100%; 
+	list-style-type: none; 
+	margin: 5px; padding: 4px; 
+	border: 1px solid #ffffff; 
+	float: left; 
+	width: 100px; 
+	background-color: #99CCFF;}
+	
+.venue {
+	width: auto;
+}
+.judgelist li:hover { border: 1px solid #3d4f55; }
+
+.chair { background-color: #FFCC99 !important; }
+
+.trainee { background-color: #FFFFFF !important; }
+
+.strike {
+	background-color: #FF0000 !important; 
+	color: #FFFFFF !important; }
+
+.bigtable
+{
+	margin-left:0px;
+}
+
+.judgelist{width:100%; border: 1px solid #F3E8F3;}

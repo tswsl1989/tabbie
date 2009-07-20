@@ -7,11 +7,11 @@ $(document).ready( function () {
                          $('.footer').outerHeight();
        
         // Adjust height of scrolldisplay to maximise height
-        $('#scrolldisplay').height($(window).outerHeight() - totalHeight - 50);
+        $('#scrolldisplay').height($(window).outerHeight() - totalHeight);
         
         // Attach scrollpane
         $('#scrolldisplay').jScrollPane({animateTo:true, animateInterval:10, animateStep:2});
-
+		
         // Attach timer to scroll
         $.timer(100, function (timer) {
                $('#scrolldisplay')[0].scrollBy(parseInt($('#scrolldisplay').attr('rel')));
@@ -55,7 +55,19 @@ $(document).ready( function () {
             $('#scrolldisplay')[0].scrollTo(0);
         });
         
-
+		//CSS doesn't work. IE doesn't work. FF doesn't work some of the time.
+		//But we have ways...
+		var width=$('#theader').width()*1.01533151;
+		$('#theader').width(width);
+		$('#teamhead').width($('#team1').width());
+		$('#venuehead').width($('#venue1').width());
+		$('#open_govhead').width($('#open_gov1').width());
+		$('#open_opphead').width($('#open_opp1').width());
+		$('#close_govhead').width($('#close_gov1').width());
+		$('#close_opphead').width($('#close_opp1').width());
+		$('#chairhead').width($('#chair1').width());
+		$('#panelistshead').width($('#panelists1').width());
+		$('#traineehead').width($('#trainee1').width());
         
 });
 

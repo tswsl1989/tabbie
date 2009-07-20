@@ -32,6 +32,10 @@ body h2 {
 	background:#FFCCCC;
 }
 
+#theader table {
+	width: 100%;
+}
+
 .hide {
     display:none;
 }
@@ -39,8 +43,13 @@ body h2 {
 table thead {
 	background:#930;
 	color:#fff;
-	text-align:center;
 	text-transform:uppercase;
+	width:100%;
+}
+
+table thead th {
+	border: 1px solid #FFF;
+	overflow:hidden;
 }
 
 table {
@@ -48,8 +57,9 @@ table {
 	border-collapse:collapse;
 }
 
-table .open_gov, table .open_odd, table .close_gov, table .close_opp, table .team {
+table .open_gov, table .open_opp, table .close_gov, table .close_opp, table .team {
 	width:11%;
+	overflow: hidden;
 }
 table .venue {
 	width:7.5%;

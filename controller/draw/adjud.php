@@ -44,14 +44,25 @@ function is_panelist($adjud_id, $round){
 function add_adjudicator($adjud_id, $debate_id, $status, $round){
 	
 	$query="DELETE FROM temp_adjud_round_$round WHERE `adjud_id`='$adjud_id';";
+	echo $query;
 	if(mysql_query($query)){
 		$query="INSERT INTO temp_adjud_round_$round (`debate_id`, `adjud_id`, `status`) VALUES ('$debate_id', '$adjud_id', '$status');";
 		echo $query;
 		if(mysql_query($query)){
-			return 1;
+			//return 1;
 		} else {
-			return 0;
+			//return 0;
 		}
+		$query="SELECT debate_id FROM temp_adjud_round_$round WHERE `adjud_id`='$adjud_id';";
+		$result=mysql_query($query);
+		$row=mysql_fetch_assoc($result);
+		echo $row['debate_id'];
+		if($row['debate_id']==$debate_id){
+			echo("Good change.");
+		} else {
+			echo("Bad change.");
+		}
+		return 1;
 	} else {
 		return 0;
 	}

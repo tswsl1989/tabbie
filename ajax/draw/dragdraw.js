@@ -190,6 +190,12 @@ function add_judge_as_chair(adjud_id, debate_id) {
     });
 }
 
+function colour_draw(){
+	$('.firstcat').toggleClass("firstcatactual");
+	$('.secondcat').toggleClass("secondcatactual");
+	$('.thirdcat').toggleClass("thirdcatactual");
+}
+
 
 $(document).ready(function() {
 	display_lock=0;
@@ -237,13 +243,15 @@ $(document).ready(function() {
 			strike_check(adjud_id, debate_id);  //wait for strike_check to return before proceeding
 			release_display_lock();
         }
-    });
+    }).disableSelection();
     //adjudicator_reset();
 	free_adjudicator_update();
     $(".resetbutton").click(adjudicator_reset);
     $(".rankingbutton").click(function() {
         $('.ranking').toggle();
     });
+	$(".colourbutton").click(colour_draw);
+	colour_draw();
     //setInterval('adjudicator_update()',1000);
 	//setInterval('free_adjudicator_update()',5000);
 });

@@ -1,4 +1,5 @@
 <?php
+/*This file is not currently in use, but should provide workable locking semantics*/
 set_include_path("../../");
 require("includes/backend.php");
 

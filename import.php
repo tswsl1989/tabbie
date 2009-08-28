@@ -34,7 +34,7 @@ Use this page to import SQL files. SQL files can be created by clicking on "back
 <b>Warning: this will erase all current data from your Tabbie installation!</b>
 
 <form enctype="multipart/form-data" action="import.php" method="POST">
-<input type="hidden" name="MAX_FILE_SIZE" value="100000" />
+<input type="hidden" name="MAX_FILE_SIZE" value="1000000" />
 Choose a file to upload: <input name="uploadedfile" type="file" /><br />
 <input type="submit" value="Start Import" />
 </form>

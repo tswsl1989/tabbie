@@ -350,7 +350,7 @@ if ($action=="display")
     $query.= "WHERE T.univ_id=U.univ_id AND S1.team_id=T.team_id AND S2.team_id=T.team_id AND S1.speaker_id > S2.speaker_id ";
 
     $active_query = $query . " AND T.ACTIVE = 'Y' ";
-    $query.= "ORDER BY univ_code, team_code ";
+    $query.= "ORDER BY univ_name, team_code ";
     $result=mysql_query($query);
     $active_result=mysql_query($active_query);
 

@@ -33,7 +33,7 @@ INSERT INTO `configure_adjud_draw` VALUES
 	('watched_not_watched',150),
 	('lock',0),
 	('draw_table_speed',0);
-
+	
 CREATE TABLE `highlight` (
   `lowerlimit` char(50) default NULL,
   `upperlimit` char(50) default NULL,

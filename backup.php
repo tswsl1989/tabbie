@@ -23,6 +23,10 @@
  * end license */
 
 require_once("config/settings.php");
+
+$connection = @mysql_connect($database_host,$database_user,$database_password);
+
+
 if ($database_password)
     $password = "-p$database_password";
 else
@@ -63,7 +67,21 @@ if ($return_value == 0) {
     foreach ($output as $line)
         print "$line\n";
 
-} else { //Give up
+} else { //attempt 3 (user configured path)
+
+	$command = "/usr/local/mysql/bin/mysqldump -u$database_user $password $database_name";
+	
+	
+	exec($command, $output, $return_value);
+
+	if ($return_value == 0) {
+	    header('Content-type: text/plain'); 
+	    header('Content-Disposition: attachment; filename="' . $database_name . '.sql"');
+	    header( "Content-Description: File Transfer");
+
+	    foreach ($output as $line)
+	        print "$line\n";
+} else	{//Give up
 
 $ntu_controller = "backup";
 $title = "Tabbie - Backup Failed";
@@ -95,7 +113,9 @@ Make sure you have installed mysqldump and it is available from the path.
 If you're running Tabbie on something you created yourself, either contact Klaas for help or just take a look in this file and adapt paths to your liking. You'll be needing the executable "mysqldump" somewhere and then point relevant paths to it to have this work.
 </p>
 
+
+
 <?php
 require('view/footer.php'); 
-}}
+}}}
 ?>

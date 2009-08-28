@@ -44,4 +44,16 @@
 	margin-left:0px;
 }
 
+.firstcatactual td {
+	background-color: #ABCAF4 !important;
+}
+
+.secondcatactual td {
+	background-color: #CFA585 !important;
+}
+
+.thirdcatactual td {
+	background-color: #DD7275 !important;
+}
+
 .judgelist{width:100%; border: 1px solid #F3E8F3;}

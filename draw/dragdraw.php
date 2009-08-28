@@ -141,7 +141,7 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 	
 		
 	?>
-	<p><button class="resetbutton">Reset table</button><button class="rankingbutton">Show/hide rankings</button></p>
+	<p><button class="resetbutton">Reset table</button><button class="rankingbutton">Show/hide rankings</button><button class="colourbutton">Show/hide draw colours</button></p>
 	<table class='bigtable'>
 	<th>
 		<th>Points</th>
@@ -152,9 +152,21 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 		<th>Adjudicators</th>
 	</th>
 	<?php
+	$numdebates=count($debate_array);
+	$count=1;
 	foreach($debate_array as $debate){
+		$catnum=$count/$numdebates;
+		$count++;
+		if($catnum<=(1/3)){
+			$class='firstcat';
+		} else if ($catnum<=(2/3)) {
+			$class='secondcat';
+		} else {
+			$class='thirdcat';
+		}
 		?>
-		<tr id='D<?= $debate['debate_id'] ?>'>
+
+		<tr id='D<?= $debate['debate_id'] ?>' class='<?= $class ?>' >
 			<td class='venue'> <?= $debate['venue'] ?></td>
 			<td class='points'>
 			<?php

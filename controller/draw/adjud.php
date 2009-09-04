@@ -1,6 +1,6 @@
 <?php
 set_include_path("../../");
-require("includes/backend.php");
+@include("includes/backend.php");
 
 /* Procedure to make a judge a panelist from being chair:
 
@@ -92,8 +92,8 @@ if(!has_temp_draw()){
 //Check valid action
 if(!($action=="LIST"||$action=="ADD"||$action=="CHAIR")){
 	//Must supply a valid ACTION
-	header('HTTP/1.1 400 Bad Request');
-	echo('Specify valid ACTION value');
+	//header('HTTP/1.1 400 Bad Request');
+	//echo('Specify valid ACTION value');
 	$action="";
 }
 

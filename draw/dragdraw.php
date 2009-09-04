@@ -205,8 +205,10 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 	<?php
 	} ?>
 </table>
-<h3>Free adjudicators</h3>
-<table class="bigtable"><tr id='DFREE'><td><ul class='judgelist' id='JFREE'></ul></td></tr></table>
+<!--<h3>Free adjudicators</h3>
+<table class="bigtable"><tr id='DFREE'><td><ul class='judgelist' id='JFREE'></ul></td></tr></table>-->
+<h2>In case of problems</h2>
+If the draw does not finalise or you need to switch venues, <a href="draw.php?moduletype=manualdraw">access the old interface.</a>
 <!--<p>The 'points' column shows the average points of teams in that room, and the breaks for which that room is considered to be 'live'.</p>
 <p>The Main Break (MB) is live for teams with at least <?=$main_break_lowest_points?> points.</p>
 <p>The ESL break is live for teams with at least <?=$esl_lowest_points?> points.</p>

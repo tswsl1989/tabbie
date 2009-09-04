@@ -25,10 +25,12 @@ require_once("includes/display.php");
 require_once("includes/backend.php");
 require_once("includes/db_tools.php");
 require_once("includes/http.php");
+require_once("controller/draw/adjud.php");
 
 $action=trim(@$_GET['action']); //Check action
 if ($action=="") {
-	redirect("draw.php?moduletype=currentdraw");
+	//redirect("draw.php?moduletype=currentdraw");
+	$action="display";
 }
 
 $debate_id=trim(@$_GET['debate_id']);
@@ -156,14 +158,16 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 
              if ($validate==1)
                {
-             $query="INSERT INTO temp_adjud_round_$nextround VALUES('$debate_id','$adjud_id','$status')";
-             mysql_query($query);
+					if(!add_adjudicator($adjud_id, $debate_id, $status, $nextround)){
+						$msg[]="ERROR: Adjudicator failed to assign.";
+						$action="edit";
+					}
                }
            }
            }
 
          //Delete
-         $query="SELECT  A.adjud_id AS adjud_id,adjud_name,status FROM adjudicator AS A,temp_adjud_round_$nextround AS T WHERE A.adjud_id=T.adjud_id AND T.debate_id=$debate_id ORDER BY status";
+         $query="SELECT  A.adjud_id AS adjud_id,adjud_name,T.status FROM adjudicator AS A,temp_adjud_round_$nextround AS T WHERE A.adjud_id=T.adjud_id AND T.debate_id=$debate_id ORDER BY status";
 
          $result=mysql_query($query);
 
@@ -311,7 +315,7 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 
      $action="display";
        }
-	/*
+	
      //set title
      switch($action)
        {
@@ -330,10 +334,10 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
             
      
        }
-    */
+    
    }
 
-echo "<h2>Draw failed to validate</h2>";
+if($action=="finalise") {echo "<h2>Draw failed to validate</h2>";}
 
 displayMessagesUL(@$msg);
 
@@ -342,7 +346,7 @@ echo "<h3><a href=\"draw.php?moduletype=currentdraw&amp;action=draw_adjudicators
 echo '<p>or</p>';
 echo '<h3><a href="draw.php?moduletype=dragdraw">Manually adjust adjudicators and rooms</a></h3>';
 
-/*
+
 if ($exist)
   {    
     if ($action=="edit")
@@ -406,8 +410,9 @@ if ($exist)
         echo "<h3>Allocated Adjudicators</h3>\n";
         
         //read all adjudicators from present round along with their status
-        $query="SELECT  A.adjud_id AS adjud_id,adjud_name,status,A.ranking AS ranking FROM adjudicator AS A,temp_adjud_round_$nextround AS T WHERE A.adjud_id=T.adjud_id AND T.debate_id=$debate_id ORDER BY status";
-        $result=mysql_query($query);
+        $query="SELECT  A.adjud_id AS adjud_id,adjud_name, T.status AS status, A.ranking AS ranking FROM adjudicator AS A,temp_adjud_round_$nextround AS T WHERE A.adjud_id=T.adjud_id AND T.debate_id=$debate_id ORDER BY status";
+        //echo $query;
+		$result=mysql_query($query);
 
         if (mysql_num_rows($result)!=0)
       {
@@ -452,7 +457,7 @@ if ($exist)
     $query .= "WHERE T.adjud_id IS NULL AND active='Y' ORDER BY ranking DESC"; 
             
     $result=mysql_query($query);
-echo $query;
+//echo $query;
     if (mysql_num_rows($result)!=0)
       {
         echo "<table>\n";
@@ -643,6 +648,6 @@ echo $query;
       }
 
   }
-*/
+
 
 ?>

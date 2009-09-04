@@ -78,3 +78,48 @@ class DebateBadness
         "2, 2, 2, 3" => 0
     }
 end
+
+class DebateDistribution
+  def initialize(rounds)
+    @requests=0.0
+    @cachehits=0.0
+    @maxrounds=rounds
+    @cache=Array.new(rounds+1)
+    @cache.map! { Array.new(rounds*3+1) }
+    #The following lines set some of the termination conditions for the recursion
+    @cache[0][0]=1
+    (1..@cache[0].size-1).to_a.each{ |index| @cache[0][index]=0}
+    @cache[1][0]=@cache[1][1]=@cache[1][2]=@cache[1][3]=0.25
+  end
+  
+  def teamsonpoints(teams,round,points)
+    (teams*distribution(round,points)).round
+  end
+  
+  def cachestats
+    "#{@requests} requests made; #{@cachehits} served from cache; #{@cachehits/@requests} success;"
+  end
+  
+  def cacheinspect(round,points)
+    @cache[round][points]
+  end
+
+  def distribution(round, points)
+    @requests += 1
+    #puts "Called distribution with round #{round} and points #{points}"
+    if @cache[round][points]!=nil
+      #puts "Served from cache"
+      @cachehits += 1
+      return @cache[round][points]
+    end
+    if (points < 0) || (round==0)
+      0
+    elsif (round == 1) && (points <= 3)
+      0.25
+    else
+      returnval = distribution(round-1,points)*0.25+distribution(round-1,points-1)*0.25+distribution(round-1,points-2)*0.25+distribution(round-1,points-3)*0.25
+      @cache[round][points]=returnval
+      return returnval
+    end
+  end
+end    

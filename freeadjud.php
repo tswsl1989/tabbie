@@ -23,6 +23,7 @@
 
 require("ntu_bridge.php");
 require("view/header.php");
+require("includes/backend.php");
 ?>
 
 <?php 

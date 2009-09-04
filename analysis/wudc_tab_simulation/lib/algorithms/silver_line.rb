@@ -1,6 +1,7 @@
 require "#{File.dirname(__FILE__)}/debate_badness"
 module SilverLine
     def self.do_draw(teams_hash)
+        srand(42) #Ensure repeatability.
         @@teams_hash = teams_hash
         team_codes = teams_hash.keys
         
@@ -14,16 +15,15 @@ module SilverLine
          @@debates = team_codes.in_groups_of 4
          
          prev_soln = 0
-         while teams_badness > 0
-             total_badness =  teams_badness
-              if prev_soln == total_badness
+         while (total_badness=teams_badness) > 0 #function call AND assignment [speed](!)
+              if prev_soln == total_badness #No improvement on the last cycle
                   break  
               end
               prev_soln = total_badness
               @@debates.each_with_index do |debate, x|
                   debate.each_with_index do |team_code, pos|
-                      if team_badness(team_code,pos) > 0
-                          #puts "find_best_swap_for(#{team_code}, #{pos})"
+                      if team_badness(team_code,pos) > 0 
+                          puts "find_best_swap_for(#{team_code}, #{pos})"
                           if find_best_swap_for(team_code,pos)
                               break
                           end
@@ -59,7 +59,7 @@ module SilverLine
         @@debates.each_with_index do |debate, debate_idx|
             debate.each_with_index do |team_b_code, team_b_pos|
                 if is_swappable(team_a_code, team_b_code)
-                    #puts "team_badness(#{team_a_code}, #{team_a_pos}) + team_badness(#{team_b_code}, #{team_b_pos})"
+                    puts "team_badness(#{team_a_code}, #{team_a_pos}) + team_badness(#{team_b_code}, #{team_b_pos})"
                     current = team_badness(team_a_code, team_a_pos) + team_badness(team_b_code, team_b_pos)
                     future = team_badness(team_a_code, team_b_pos) + team_badness(team_b_code, team_a_pos)
                     net_effect = future - current

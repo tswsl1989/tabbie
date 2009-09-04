@@ -2,20 +2,20 @@ function get_display_lock(msg){
 	if(display_lock == 0){
 		display_lock = 1;
 		return 1;
-		console.log("Acquired display lock: " + msg);
+		//console.log("Acquired display lock: " + msg);
 	} else {
 		return 0;
-		console.log("Failed to acquire display lock: " + msg);
+		//console.log("Failed to acquire display lock: " + msg);
 	}
 }
 
 function release_display_lock(msg){
 	if(display_lock){
 		display_lock=0;
-		console.log("Display lock released by " +msg);
+		//console.log("Display lock released by " +msg);
 		return 1;
 	} else {
-		console.log("Attempt to release display lock: lock not engaged. From " +msg);
+		//console.log("Attempt to release display lock: lock not engaged. From " +msg);
 	}
 }
 
@@ -28,7 +28,7 @@ function strike_check(adjud_id, debate_id, lockrelease) {
 			debate_id: debate_id
 		},
 		function(xml) {
-			console.log("Strike response was: " + xml);
+			//console.log("Strike response was: " + xml);
 			should_strike=0;
 			$('strike', xml).each(function() {
 				if ($(this).find("adjud_id").text() == adjud_id) {
@@ -36,10 +36,10 @@ function strike_check(adjud_id, debate_id, lockrelease) {
 				}
 			});
 			if(should_strike){
-				console.log("Striking adjudicator " + adjud_id);
+				//console.log("Striking adjudicator " + adjud_id);
 				$('#A'+adjud_id).addClass('strike');
 			} else {
-				console.log("Destriking adjudicator " + adjud_id);
+				//console.log("Destriking adjudicator " + adjud_id);
 				$('#A'+adjud_id).removeClass('strike');
 			}
 			returnval = 1;
@@ -66,13 +66,13 @@ function adjudicatorshuffle(xml) {
                     //Adjudicator is positioned as chair
                     if (status == 'chair') {
                         //Adjudicator should be positioned as chair: nothing to do
-                        console.log("Adjudicator " + id + " exists on location as chair.");
+                        //console.log("Adjudicator " + id + " exists on location as chair.");
                         return;
                     } else {
                         //Adjudicator should be removed from the chair
                         adjud.parent().append(adjud);
                         adjud.removeClass('chair');
-                        console.log("Adjudicator " + id + " was on location but erroneously chair. Demoted.");
+                        //console.log("Adjudicator " + id + " was on location but erroneously chair. Demoted.");
                         return;
                     }
                 } else {
@@ -81,11 +81,11 @@ function adjudicatorshuffle(xml) {
                         //Adjudicator should be positioned as chair but isn't: promote
                         adjud.parent().prepend(adjud);
                         adjud.addClass('chair');
-                        console.log("Adjudicator " + id + " was on location but erroneously panelist. Promoted.");
+                        //console.log("Adjudicator " + id + " was on location but erroneously panelist. Promoted.");
                         return;
                     } else {
                         //Adjudicator isn't positioned as chair and shouldn't be
-                        console.log("Adjudicator " + id + " exists on location as panelist.");
+                        //console.log("Adjudicator " + id + " exists on location as panelist.");
                         return;
                     }
                 }
@@ -95,13 +95,13 @@ function adjudicatorshuffle(xml) {
                     $('#D' + debate_id + ' td ul').prepend(adjud);
                     adjud.addClass('chair');
 					strike_check(id, debate_id);
-					console.log("Adjudicator " + id + " moved to debate " + debate_id + " as chair.");
+					//console.log("Adjudicator " + id + " moved to debate " + debate_id + " as chair.");
                     return;
                 } else {
                     $('#D' + debate_id + ' td ul').append(adjud);
                     adjud.removeClass('chair');
 					strike_check(id, debate_id);
-					console.log("Adjudicator " + id + " moved to debate " + debate_id );
+					//console.log("Adjudicator " + id + " moved to debate " + debate_id );
                     return;
                 }
             }
@@ -113,10 +113,10 @@ function adjudicatorshuffle(xml) {
 		if (status == 'chair') {
             adjudicator.addClass("chair");
             $('#D' + debate_id + ' td ul').prepend(adjudicator);
-            console.log("New adjudicator created with id " + id + " in debate " + debate_id + " as chair.");
+            //console.log("New adjudicator created with id " + id + " in debate " + debate_id + " as chair.");
         } else {
             $('#D' + debate_id + ' td ul').append(adjudicator);
-            console.log("New adjudicator created with id " + id + " in debate " + debate_id);
+            //console.log("New adjudicator created with id " + id + " in debate " + debate_id);
         }
         if (trainee == 'trainee') {
             adjudicator.addClass("trainee");
@@ -149,23 +149,24 @@ function adjudicator_update() {
 }
 
 function free_adjudicator_update() {
-	if(get_display_lock("adjudicator_update")){
+	//console.log("FREE ADJUDICATOR UPDATE");
+	//if(get_display_lock("free_adjudicator_update")){
 	    $.post("controller/draw/adjud.php", {
 	        action: 'LIST',
 	        free: 1,
 	    },
 	    adjudicatorshuffle);
-	}
+	//}
 }
 
 function add_judge_to_panel(adjud_id, debate_id) {
-    console.log("add_judge_to_panel(" + adjud_id + "," + debate_id + ")");
+    //console.log("add_judge_to_panel(" + adjud_id + "," + debate_id + ")");
     $.ajax({
         type: "POST",
         url: "controller/draw/adjud.php",
         data: "action=ADD&adjud_id=" + adjud_id + "&debate_id=" + debate_id,
         error: function() {
-            console.log("Failed to perform judge add. Resyncing.");
+            //console.log("Failed to perform judge add. Resyncing.");
             $("judgelist").sortable('disable');
             adjudicator_reset();
             $("judgelist").sortable('enable');
@@ -174,7 +175,7 @@ function add_judge_to_panel(adjud_id, debate_id) {
 }
 
 function add_judge_as_chair(adjud_id, debate_id) {
-    console.log("add_judge_as_chair(" + adjud_id + "," + debate_id + ")");
+    //console.log("add_judge_as_chair(" + adjud_id + "," + debate_id + ")");
     $.ajax({
         type: "POST",
         url: "controller/draw/adjud.php",
@@ -182,7 +183,7 @@ function add_judge_as_chair(adjud_id, debate_id) {
         success: function() {
             },
         error: function() {
-            console.log("Failed to perform judge add. Resyncing.");
+            //console.log("Failed to perform judge add. Resyncing.");
             $("judgelist").sortable('disable');
             adjudicator_reset();
             $("judgelist").sortable('enable');
@@ -224,7 +225,7 @@ $(document).ready(function() {
                         });
                     },
                     error: function() {
-                        console.log("Failed to determine judge origin.");
+                        //console.log("Failed to determine judge origin.");
                         adjudicator_reset();
                     }
                 });
@@ -252,6 +253,6 @@ $(document).ready(function() {
     });
 	$(".colourbutton").click(colour_draw);
 	colour_draw();
-    //setInterval('adjudicator_update()',1000);
-	//setInterval('free_adjudicator_update()',5000);
+    setInterval('adjudicator_update()',1000);
+	setInterval('free_adjudicator_update()',5000);
 });

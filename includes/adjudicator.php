@@ -98,7 +98,7 @@ function create_temp_adjudicator_table($round) {
 	$query .= " `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,";
 	$query .= " `debate_id` MEDIUMINT NOT NULL ,";
     $query .= " `adjud_id` MEDIUMINT NOT NULL ,";
-    $query .= " `status` ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL );";
+    $query .= " `status` ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL , UNIQUE KEY `adjud_id` (`adjud_id`) );";
     $db_result = mysql_query($query);
     if (!$db_result)
         return mysql_error();

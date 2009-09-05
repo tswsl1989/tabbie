@@ -1,4 +1,20 @@
 CHANGELOG:
+1.5
+New Features:
+ * Drag & Drop interface for allocating adjudicators
+ * English as a Foreign Language is now supported
+ * Table-format draw display
+ * Judges can now be marked to be 'watched' by more experienced adjudicators
+
+Bugs fixed:
+ * Speaker names with non-ASCII characters now work. All data is stored and displayed as UTF8. 
+ * Importing large backup files will no longer fail.
+ * Conflict system rewritten
+
+Known Issues:
+ * The new drag-and-drop adjudicator allocation system may produce inconsistent results when under heavy load from multiple clients simultaneously. This issue is thought to be fixed but cannot be replicated under test conditions. If this occurs, rectify using the previous allocation interface, checking for judges duplicated across different debates.
+ * Printed ballots do not support characters beyond Latin1. As this may make entire speaker names unreadable, it is recommended to transliterate non-roman inputs.
+
 1.4.2
   * Bug fix. Missing php extension which was causing 404 on Windows
   * Import 'should work' now

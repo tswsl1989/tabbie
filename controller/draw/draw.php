@@ -23,7 +23,7 @@
  * end license */
 
 //THIS FILE IS NOT FUNCTIONAL OR USED AT THIS TIME
-set_include_path("../../");
+set_include_path(get_include_path() . PATH_SEPARATOR . "../../");
 require("includes/backend.php");
 
 //Information from the client

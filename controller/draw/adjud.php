@@ -22,8 +22,8 @@
  * 
  * end license */
 
-set_include_path("../../");
-@include("includes/backend.php");
+set_include_path(get_include_path() . PATH_SEPARATOR . "../../");
+include("includes/backend.php");
 
 /* Procedure to make a judge a panelist from being chair:
 

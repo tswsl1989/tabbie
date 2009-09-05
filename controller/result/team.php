@@ -21,7 +21,7 @@
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  * end license */
-set_include_path("../../");
+set_include_path(get_include_path() . PATH_SEPARATOR . "../../");
 require("includes/backend.php");
 
 //Information from the client

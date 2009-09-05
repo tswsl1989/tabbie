@@ -22,6 +22,7 @@
  * end license */
 
 $ntu_controller = "index";
+$moduletype = "";
 
 require("ntu_bridge.php");
 require("view/header.php");

@@ -207,114 +207,110 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
     
        }
 
-     if ($action=="finalise")
-       {
-     //check for all conditions satisfied
-     $validate=1;
-     $query = "SELECT DISTINCT COUNT(*) AS numadjud ";
-     $query .= "FROM temp_adjud_round_$nextround ";
-     $query .= "WHERE STATUS = 'chair'";
+	if ($action=="finalise")
+	{
+		//check for all conditions satisfied
+	    $validate=1;
+	    $query = "SELECT DISTINCT COUNT(*) AS numadjud ";
+	    $query .= "FROM temp_adjud_round_$nextround ";
+	    $query .= "WHERE STATUS = 'chair'";
 
-     $resultnumadjud=mysql_query($query);
-     $rownumadjud=mysql_fetch_assoc($resultnumadjud);
-     $adjudcount=$rownumadjud['numadjud']; //count chief adjudicators
+	    $resultnumadjud=mysql_query($query);
+	    $rownumadjud=mysql_fetch_assoc($resultnumadjud);
+	    $adjudcount=$rownumadjud['numadjud']; //count chief adjudicators
 
-       
-     $query = "SELECT COUNT(*) AS numdebates ";
-     $query .= "FROM temp_draw_round_$nextround ";
+     	$query = "SELECT COUNT(*) AS numdebates ";
+	    $query .= "FROM temp_draw_round_$nextround ";
 
-     $resultnumdebates=mysql_query($query);
-     $rownumdebates=mysql_fetch_assoc($resultnumdebates);
-     $debatecount=$rownumdebates['numdebates'];
+	    $resultnumdebates=mysql_query($query);
+	    $rownumdebates=mysql_fetch_assoc($resultnumdebates);
+	    $debatecount=$rownumdebates['numdebates'];
 
-     if ($adjudcount!=$debatecount) //No. of debates and chief adjudicators dont match
-       {
-         $validate=0;
-         $msg[]="ERROR! There are debates with no Chair Adjudicator Allocated";
-       }
+		if ($adjudcount!=$debatecount) //No. of debates and chief adjudicators dont match
+       	{
+        	$validate=0;
+         	$msg[]="ERROR! There are debates with no Chair Adjudicator Allocated ($adjudcount/$debatecount)";
+       	}
 
-	 $query="SELECT `adjud_id`, `og`, `oo`, `cg`, `co` FROM `temp_adjud_round_$nextround` INNER JOIN `temp_draw_round_$nextround` ON `temp_adjud_round_$nextround`.`debate_id`=`temp_draw_round_$nextround`.`debate_id`";
-	 $result=mysql_query($query);
-	 if(!($result=mysql_query($query))){
-		 $validate=0;
-		 $msg[]="ERROR - strike query failed to execute";
-	 } else {
-		while($row=mysql_fetch_assoc($result)){
-			$ogid=$row['og'];
-			$ooid=$row['oo'];
-			$cgid=$row['cg'];
-			$coid=$row['co'];
-			$query="SELECT `univ_id` FROM `team` WHERE `team_id` = '$ogid' OR `team_id` = '$ooid' OR `team_id` = '$cgid' OR `team_id` = '$coid'";
-			$univ_id_result=mysql_query($query);
-			if(mysql_num_rows($univ_id_result)!=4){
-				$validate=0;
-				$msg[]="ERROR - more than four teams for id (!)";
-				$msg[]="You appear to have a corrupted database. Consider restoring from a backup and check previous rounds' data carefully.";
-			}
-			$univ_ids=array();
-			while($univ_id_row=mysql_fetch_assoc($univ_id_result)){
-				$univ_ids[]=$univ_id_row['univ_id'];
-			}
-			$query="SELECT * FROM `strikes` WHERE `adjud_id` = '".$row['adjud_id']."' AND ( (`team_id` = '$ogid' OR `team_id` = '$ooid' OR `team_id` = '$cgid' OR `team_id` = '$coid' ) OR ((`univ_id` = '".$univ_ids[0]."' OR `univ_id` = '".$univ_ids[1]."' OR `univ_id` = '".$univ_ids[2]."' OR `univ_id` = '".$univ_ids[3]."') AND `team_id` IS NULL) )";
-			echo("<br/>");
-			if(!($strikeresult=mysql_query($query))){
-			 $validate=0;
-			 $msg[]="ERROR - strike query failed to execute";
-		 	} else if(mysql_num_rows($strikeresult)>0){
-			 $validate=0;
-			 $msg[]="ERROR - strike in draw";
-			 $msg[]="Adjudicator ".$row["adjud_id"]." is conflicted from their debate. Either clear the conflict or reallocate the adjudicator to proceed.";
-			
+	 	$query="SELECT `adjud_id`, `og`, `oo`, `cg`, `co` FROM `temp_adjud_round_$nextround` INNER JOIN `temp_draw_round_$nextround` ON `temp_adjud_round_$nextround`.`debate_id`=`temp_draw_round_$nextround`.`debate_id`";
+		$result=mysql_query($query);
+		if(!($result=mysql_query($query)))
+		{
+			$validate=0;
+			$msg[]="ERROR - strike query failed to execute";
+		} else {
+			while($row=mysql_fetch_assoc($result)){
+				$ogid=$row['og'];
+				$ooid=$row['oo'];
+				$cgid=$row['cg'];
+				$coid=$row['co'];
+				$query="SELECT `univ_id` FROM `team` WHERE `team_id` = '$ogid' OR `team_id` = '$ooid' OR `team_id` = '$cgid' OR `team_id` = '$coid'";
+				$univ_id_result=mysql_query($query);
+				if(mysql_num_rows($univ_id_result)!=4){
+					$validate=0;
+					$msg[]="ERROR - more than four teams for id (!)";
+					$msg[]="You appear to have a corrupted database. Consider restoring from a backup and check previous rounds' data carefully.";
+				}
+				$univ_ids=array();
+				while($univ_id_row=mysql_fetch_assoc($univ_id_result)){
+					$univ_ids[]=$univ_id_row['univ_id'];
+				}
+				
+				$query="SELECT * FROM `strikes` WHERE `adjud_id` = '".$row['adjud_id']."' AND ( (`team_id` = '$ogid' OR `team_id` = '$ooid' OR `team_id` = '$cgid' OR `team_id` = '$coid' ) OR ((`univ_id` = '".$univ_ids[0]."' OR `univ_id` = '".$univ_ids[1]."' OR `univ_id` = '".$univ_ids[2]."' OR `univ_id` = '".$univ_ids[3]."') AND `team_id` IS NULL) )";
+				if(!($strikeresult=mysql_query($query))){
+					$validate=0;
+				 	$msg[]="ERROR - strike query failed to execute";
+			 	} else if(mysql_num_rows($strikeresult)>0)
+				{
+					$validate=0;
+				 	$msg[]="ERROR - strike in draw";
+				 	$msg[]="Adjudicator ".$row["adjud_id"]." is conflicted from their debate. Either clear the conflict or reallocate the adjudicator to proceed.";	
+				}
 			}
 		}
-	}
+		//Still within $action=="validate"
+		if ($validate==1)
+       	{
+         	//create tables
+        	$query= "CREATE TABLE draw_round_$nextround (";
+	        $query.= "debate_id MEDIUMINT(9) NOT NULL ,";
+	        $query.= "og MEDIUMINT(9) NOT NULL ,";
+	        $query.= "oo MEDIUMINT(9) NOT NULL ,";
+	        $query.= "cg MEDIUMINT(9) NOT NULL ,";
+	        $query.= "co MEDIUMINT(9) NOT NULL ,";
+	        $query.= "venue_id MEDIUMINT(9) NOT NULL ,";
+	        $query.= "PRIMARY KEY (debate_id))";
+	        $result=mysql_query($query);
 
-     if ($validate==1)
-       {
-         //create tables
-         $query= "CREATE TABLE draw_round_$nextround (";
-         $query.= "debate_id MEDIUMINT(9) NOT NULL ,";
-         $query.= "og MEDIUMINT(9) NOT NULL ,";
-         $query.= "oo MEDIUMINT(9) NOT NULL ,";
-         $query.= "cg MEDIUMINT(9) NOT NULL ,";
-         $query.= "co MEDIUMINT(9) NOT NULL ,";
-         $query.= "venue_id MEDIUMINT(9) NOT NULL ,";
-         $query.= "PRIMARY KEY (debate_id))";
-         $result=mysql_query($query);
+	        $query = "CREATE TABLE adjud_round_$nextround ( `debate_id` MEDIUMINT NOT NULL ,";
+	        $query .= " `adjud_id` MEDIUMINT NOT NULL ,";
+	        $query .= " `status` ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL );";
+	        $result=mysql_query($query);
 
-         $query = "CREATE TABLE adjud_round_$nextround ( `debate_id` MEDIUMINT NOT NULL ,";
-         $query .= " `adjud_id` MEDIUMINT NOT NULL ,";
-         $query .= " `status` ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL );";
-         $result=mysql_query($query);
-
-         //Insert Values
-         $query="INSERT INTO draw_round_$nextround SELECT * FROM temp_draw_round_$nextround";
-         mysql_query($query);
+	        //Insert Values
+	        $query="INSERT INTO draw_round_$nextround SELECT * FROM temp_draw_round_$nextround";
+	        mysql_query($query);
                         
-         $query="INSERT INTO adjud_round_$nextround SELECT `debate_id`, `adjud_id`, `status` FROM temp_adjud_round_$nextround";
-         mysql_query($query);
+	        $query="INSERT INTO adjud_round_$nextround SELECT `debate_id`, `adjud_id`, `status` FROM temp_adjud_round_$nextround";
+	        mysql_query($query);
 
-		 //Make non-chair trainees, trainees.
-		 $query="UPDATE `adjud_round_$nextround` INNER JOIN `adjudicator` ON `adjud_round_$nextround`.`adjud_id` = `adjudicator`.`adjud_id` SET `adjud_round_$nextround`.`status` = 'trainee' WHERE `adjudicator`.`status` = 'trainee' AND `adjud_round_$nextround`.`status` != 'chair'";
-         mysql_query($query);
+		 	//Make non-chair trainees, trainees.
+		 	$query="UPDATE `adjud_round_$nextround` INNER JOIN `adjudicator` ON `adjud_round_$nextround`.`adjud_id` = `adjudicator`.`adjud_id` SET `adjud_round_$nextround`.`status` = 'trainee' WHERE `adjudicator`.`status` = 'trainee' AND `adjud_round_$nextround`.`status` != 'chair'";
+	        mysql_query($query);
    
-         //Delete Temporary Tables
-         $query="DROP TABLE temp_draw_round_$nextround";
-         mysql_query($query);
-         $query="DROP TABLE temp_adjud_round_$nextround";
-         mysql_query($query);
-		 $query="DROP TABLE draw_lock_round_$nextround";
-		 mysql_query($query);
+	        //Delete Temporary Tables
+	        $query="DROP TABLE temp_draw_round_$nextround";
+	        mysql_query($query);
+	        $query="DROP TABLE temp_adjud_round_$nextround";
+	        mysql_query($query);
+			$query="DROP TABLE draw_lock_round_$nextround";
+			mysql_query($query);
         
-         //Redirect
-         
-         redirect("draw.php?moduletype=round&action=showdraw&roundno=$nextround");
-            
-       }
-	
-
-     $action="display";
-       }
+	        //Redirect
+        
+	        redirect("draw.php?moduletype=round&action=showdraw&roundno=$nextround");
+		}
+	}
 	
      //set title
      switch($action)

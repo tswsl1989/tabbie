@@ -116,7 +116,7 @@ if (($action=="draw") && ($validate == 1)) {
 
     $tablename = "temp_draw_round_$nextround";
     mysql_query("DROP TABLE `$tablename`"); //KvS notes that this query apparently fails (but expectedly) in round 0
-
+	//Should you be looking for the creation of the temp_adjud table, it's in a function in includes/adjudicator
     $query= "CREATE TABLE $tablename (
 debate_id MEDIUMINT(9) NOT NULL ,
 og MEDIUMINT(9) NOT NULL ,

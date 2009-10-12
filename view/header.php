@@ -29,6 +29,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="<?= @$dir_hack ?>view/index.css">
 <?php
+
+//ERROR HANDLING: ECHO ALL ERRORS:
+function customError($errno, $errstr, $errfile, $errline)
+{
+	echo("<b>Error</b> [$errno] $errstr ($errfile:$errline)<br/>");
+}
+set_error_handler("customError");
+
 //avoid loading expensive script files if we don't need them
 $ajaxpath = 'ajax/'.$ntu_controller.'/'.$moduletype.'.js';
 if(file_exists($ajaxpath)){ ?>
@@ -37,9 +45,9 @@ if(file_exists($ajaxpath)){ ?>
 	var moduletype = "<?= $moduletype ?>";
 	var client = "<?= sha1($_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT'].'sodiumchloride')?>";//hackish but does the job
 	</script>
-	<script type="text/JavaScript" src="<?= @$dir_hack ?>js/jquery-1.3.2.min.js"></script>
-    <script type="text/JavaScript" src="<?= @$dir_hack ?>js/jquery-ui-1.7.1.custom.min.js"></script>
-	<script type="text/JavaScript" src="<?= @$dir_hack ?>js/jquery.livequery.js"></script>
+	<script type="text/JavaScript" src="js/jquery-1.3.2.min.js"></script>
+    <script type="text/JavaScript" src="js/jquery-ui-1.7.1.custom.min.js"></script>
+	<script type="text/JavaScript" src="js/jquery.livequery.js"></script>
 	<script type="text/JavaScript" src="<?= $ajaxpath ?>"></script>
 <?php } 
 //load custom CSS files for each controller/module

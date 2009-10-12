@@ -22,6 +22,7 @@
  * end license */
 
 $ntu_controller = "print";
+$moduletype="";
 $title = "Print";
 
 require("view/header.php");

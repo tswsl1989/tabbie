@@ -22,6 +22,7 @@
  * end license */
 
 $ntu_controller = "import";
+$moduletype="";
 
 require("ntu_bridge.php");
 require("view/header.php");
@@ -59,6 +60,7 @@ if ( @$_FILES['uploadedfile']) {
     
     $lines = split(";\n", file_get_contents($_FILES['uploadedfile']['tmp_name']));
     foreach ($lines as $line) {
+		echo $line;
         if (! mysql_query($line)) {
             $problem = true;
             print "<p>" . mysql_error() . " in line '$line'</p>";

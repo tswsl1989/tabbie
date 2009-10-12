@@ -47,7 +47,7 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 	displayMessagesUL(@$msg);
   } else {
 ?><h3><a href="draw.php?moduletype=manualdraw&amp;action=finalise">Finalize the draw</a></h3><?php
-	$query="SELECT A1.debate_id AS debate_id, CONCAT(U1.univ_code, ' T', T1.team_code) AS og_name, CONCAT(U2.univ_code, ' T', T2.team_code) AS oo_name, CONCAT(U3.univ_code, ' T', T3.team_code) AS cg_name, CONCAT(U4.univ_code, ' T', T4.team_code) AS co_name, CONCAT(venue_name) AS venue, T1.team_id AS og_id, T2.team_id AS oo_id, T3.team_id AS cg_id, T4.team_id AS co_id FROM temp_draw_round_$round AS A1, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4, venue WHERE og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND A1.venue_id=venue.venue_id ORDER BY venue_name";
+	$query="SELECT A1.debate_id AS debate_id, CONCAT(U1.univ_code, ' ', T1.team_code) AS og_name, CONCAT(U2.univ_code, ' ', T2.team_code) AS oo_name, CONCAT(U3.univ_code, ' ', T3.team_code) AS cg_name, CONCAT(U4.univ_code, ' ', T4.team_code) AS co_name, CONCAT(venue_name) AS venue, T1.team_id AS og_id, T2.team_id AS oo_id, T3.team_id AS cg_id, T4.team_id AS co_id FROM temp_draw_round_$round AS A1, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4, venue WHERE og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND A1.venue_id=venue.venue_id ORDER BY venue_name";
 	$result=mysql_query($query);
 	$team_array=team_standing_array($lastround);
 	/*$params=get_scoring_factors_from_db();
@@ -182,11 +182,11 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 			}
 			*/?>
 			</td>
-			<td class='team' id='<?= $debate[og_id]?>'><?= $debate[og_name]?></td>
-			<td class='team' id='<?= $debate[oo_id]?>'><?= $debate[oo_name]?></td>
-			<td class='team' id='<?= $debate[cg_id]?>'><?= $debate[cg_name]?></td>
-			<td class='team' id='<?= $debate[co_id]?>'><?= $debate[co_name]?></td>
-			<td><ul class='judgelist' id='J<?=$debate[debate_id]?>'>
+			<td class='team' id='<?= $debate['og_id']?>'><?= $debate['og_name']?></td>
+			<td class='team' id='<?= $debate['oo_id']?>'><?= $debate['oo_name']?></td>
+			<td class='team' id='<?= $debate['cg_id']?>'><?= $debate['cg_name']?></td>
+			<td class='team' id='<?= $debate['co_id']?>'><?= $debate['co_name']?></td>
+			<td><ul class='judgelist' id='J<?=$debate['debate_id']?>'>
 			<?php
 			/* WARNING: this code MUST be kept functionally equivalent to ajax/draw/dragdraw.js 
 			as both files update the same part of the DOM */

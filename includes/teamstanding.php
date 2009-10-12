@@ -71,7 +71,7 @@ function __fillUpLowestBreak($team_array) {
         $esl_query = "SELECT `esl` FROM `team` WHERE `team_id`=$teamid";
         $esl_result = mysql_query($esl_query);
         $esl_row = mysql_fetch_assoc($esl_result);
-        $cc["lowest_break"] = $name_row['esl'];
+        $cc["lowest_break"] = $esl_row['esl'];
 		$result[]=$cc;
     }
     return $result;

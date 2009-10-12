@@ -1,4 +1,5 @@
-<?php /* begin license *
+<?php 
+/* begin license *
  * 
  *     Tabbie, Debating Tabbing Software
  *     Copyright Contributors
@@ -21,7 +22,7 @@
  * 
  * end license */
 
-$round=trim(@$_POST['round']);
+$round=trim(@$_POST['round']); //Error when the index isn't present but 
 
 //Check Database
 $query="SHOW TABLES LIKE 'draw_round%'";

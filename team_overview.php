@@ -23,6 +23,7 @@
 require_once("includes/backend.php");
 
 $ntu_controller = "print"; #selected in menu
+$moduletype="";
 
 $team_id = @$_REQUEST['team_id'];
 
@@ -68,7 +69,7 @@ if (!$team_id) {
     print "Speakers: $speakers";
 
     $completed_rounds = get_num_completed_rounds();
-
+	$round_standing = 1; //Before round 1, defines variable
     $final_standing = team_standing_array($completed_rounds);
     
     for ($round = 1; $round <= $completed_rounds; $round++) {
@@ -121,7 +122,7 @@ if (!$team_id) {
     
             print "<h3>Adjudicators:</h3>";
     
-            $db_result = mysql_query("SELECT status, adjudicator.adjud_name, university.univ_name, university.univ_code FROM adjud_round_$round, adjudicator, university WHERE debate_id='$debate_id' AND adjud_round_$round.adjud_id = adjudicator.adjud_id AND adjudicator.univ_id = university.univ_id ORDER BY status");
+            $db_result = mysql_query("SELECT adjud_round_$round.status, adjudicator.adjud_name, university.univ_name, university.univ_code FROM adjud_round_$round, adjudicator, university WHERE debate_id='$debate_id' AND adjud_round_$round.adjud_id = adjudicator.adjud_id AND adjudicator.univ_id = university.univ_id ORDER BY status");
             print mysql_error();
             
             print "<table><tr><th>Role</th><th>Name</th><th>University</th></tr>";

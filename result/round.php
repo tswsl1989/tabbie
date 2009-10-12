@@ -28,7 +28,7 @@ $action=@$_GET['action'];
 $roundno=@$_GET['roundno'];
 
 $validate=1;
-if ((!$roundno)||(!ereg("^[1-9]$",$roundno)) )
+if ( ($roundno=='')||!((intval($roundno)>0)&&(intval($roundno)<10)) )
 {
     $roundno=$numdraws;
     if ($numdraws<=0) {
@@ -54,7 +54,7 @@ switch($action)
 
 echo "<h2>$title</h2>\n"; //title
 
-displayMessagesP(@$msg);
+if(isset($msg)) displayMessagesP(@$msg);
 
 //Display draw information
 

@@ -22,17 +22,22 @@
  * end license */
 
 require("includes/display.php");
-require("includes/backend.php");
+require_once("includes/backend.php");
 
 //Get POST values and validate/convert them
 
-$univ_id=trim(@$_POST['univ_id']);
-$adjud_name=makesafe(@$_POST['adjud_name']);
-$ranking=trim(@$_POST['ranking']);
-$active=strtoupper(trim(@$_POST['active']));
-$actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
-$rankorder=trim(@$_GET['rankorder']);
-$status=trim(@$_POST['status']);
+$actionhidden="";
+$rankorder=false;
+$univ_id=$adjud_name=$ranking=$active=$status="";
+$conflicts="";
+
+if(array_key_exists("univ_id", @$_POST)) $univ_id=trim(@$_POST['univ_id']);
+if(array_key_exists("adjud_name", @$_POST)) $adjud_name=makesafe(@$_POST['adjud_name']);
+if(array_key_exists("ranking", @$_POST)) $ranking=trim(@$_POST['ranking']);
+if(array_key_exists("active", @$_POST)) $active=strtoupper(trim(@$_POST['active']));
+if(array_key_exists("actionhidden", @$_POST)) $actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
+if(array_key_exists("rankorder", @$_GET)) $rankorder=trim(@$_GET['rankorder']);
+if(array_key_exists("status", @$_POST)) $status=trim(@$_POST['status']);
 
 
 if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
@@ -49,9 +54,9 @@ if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
         $validate=0;
       }
 
-    if (!ereg("^[0-9]+$",$ranking)) //Not an integer value
+    if ((0 < intval($ranking)) && (intval($ranking) >= 101)) //Not an integer value or out of range
       {
-        $msg[]="Ranking not an integer value.";
+        $msg[]="Ranking not an integer or out of range: ".intval($ranking);
         $validate=0;
       }
 
@@ -93,7 +98,7 @@ if ($actionhidden=="add")
         //Add Stuff to Database
         
         $query = "INSERT INTO adjudicator(univ_id, adjud_name, ranking, active, status) ";
-        $query.= " VALUES('$univ_id', '$adjud_name', '$ranking',  '$active', '$status')";
+        $query.= " VALUES('$univ_id', '$adjud_name', '".intval($ranking)."',  '$active', '$status')";
         $result=mysql_query($query);
 
         if (!$result) //Error
@@ -215,7 +220,7 @@ switch($action)
 
 echo "<h2>$title</h2>\n"; //titlek
 
-displayMessagesUL(@$msg);
+if(isset($msg)) displayMessagesUL(@$msg);
    
 //Check for Display
 if ($action=="display")

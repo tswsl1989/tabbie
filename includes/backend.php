@@ -608,6 +608,7 @@ function is_four_id_conflict($adjud_id, $ogid, $ooid, $cgid, $coid){
 }
 
 function print_conflicts($adjud_id=0, $negative="<b>None.</b>"){
+	$strikelist="";
 	$strikequery="SELECT u.univ_code, t.team_code FROM strikes as s INNER JOIN university AS u on s.univ_id = u.univ_id LEFT JOIN team AS t on s.team_id = t.team_id WHERE s.adjud_id = $adjud_id";
 	$strikeresult=mysql_query($strikequery);
 	echo mysql_error();

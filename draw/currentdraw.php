@@ -35,7 +35,7 @@ function cmp_debate_detail($one, $two) {
     return $result;
 }
 
-$action = @$_GET['action'];
+if(array_key_exists("action", @$_GET)) $action = @$_GET['action'];
 $title="Draw : Round " . $nextround;
 
 //Check for number of teams and venues
@@ -177,7 +177,7 @@ if (has_temp_draw()) {
 
 echo "<h2>$title</h2>\n"; //title
 
-displayMessagesUL(@$msg);
+if(isset($msg)) displayMessagesUL(@$msg);
          
 //Display Draw if required
 if (($validate==1)) {

@@ -22,7 +22,7 @@
  * end license */
 
 require("includes/display.php");
-require("includes/backend.php");
+require_once("includes/backend.php");
 
 
 //Convert pre-1.4.2 databases to the new format
@@ -31,16 +31,19 @@ convert_db_ssesl();
 //Get POST values and validate/convert them
 //rls="Restricted Language Status"
 
-$univ_id=trim(@$_POST['univ_id']);
-$team_code=makesafe(@$_POST['team_code']);
-$active=strtoupper(trim(@$_POST['active']));
-$composite=strtoupper(trim(@$_POST['composite']));
-$speaker1=makesafe(trim(@$_POST['speaker1']));
-$speaker2=makesafe(trim(@$_POST['speaker2']));
-$speaker1esl=trim(@$_POST['speaker1esl']);
-$speaker2esl=trim(@$_POST['speaker2esl']);
-$recordedesl=strtoupper(trim(@$_POST['esl']));
-$actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
+$actionhidden="";
+$univ_id=$team_code=$active=$composite=$speaker1=$speaker2=$speaker1esl=$speaker2esl=$esl="";
+
+if(array_key_exists("univ_id", @$_POST)) $univ_id=trim(@$_POST['univ_id']);
+if(array_key_exists("team_code", @$_POST)) $team_code=makesafe(@$_POST['team_code']);
+if(array_key_exists("active", @$_POST)) $active=strtoupper(trim(@$_POST['active']));
+if(array_key_exists("composite", @$_POST)) $composite=strtoupper(trim(@$_POST['composite']));
+if(array_key_exists("speaker1", @$_POST)) $speaker1=makesafe(trim(@$_POST['speaker1']));
+if(array_key_exists("speaker2", @$_POST)) $speaker2=makesafe(trim(@$_POST['speaker2']));
+if(array_key_exists("speaker1esl", @$_POST)) $speaker1esl=trim(@$_POST['speaker1esl']);
+if(array_key_exists("speaker2esl", @$_POST)) $speaker2esl=trim(@$_POST['speaker2esl']);
+if(array_key_exists("esl", @$_POST)) $recordedesl=strtoupper(trim(@$_POST['esl']));
+if(array_key_exists("actionhidden", @$_POST)) $actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
 
 
 if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
@@ -339,7 +342,7 @@ switch($action)
 
 echo "<h2>$title</h2>\n"; //title
 
-displayMessagesUL(@$msg);
+if(isset($msg)) displayMessagesUL(@$msg);
    
 //Check for Display
 if ($action=="display")

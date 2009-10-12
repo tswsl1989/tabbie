@@ -43,7 +43,7 @@ Choose a file to upload: <input name="uploadedfile" type="file" /><br />
 
 </p>
 <?
-if ( @$_FILES['uploadedfile']) {
+if ( array_key_exists("uploadedfile", @$_FILES)) {
     $problem = false;
     require_once("includes/dbconnection.php");
     

@@ -27,13 +27,15 @@ require_once("includes/db_tools.php");
 require_once("includes/http.php");
 require_once("controller/draw/adjud.php");
 
-$action=trim(@$_GET['action']); //Check action
+$action="";
+$lastmodified="";
+if(array_key_exists("action", @$_GET)) $action=trim(@$_GET['action']); //Check action
 if ($action=="") {
 	//redirect("draw.php?moduletype=currentdraw");
 	$action="display";
 }
 
-$debate_id=trim(@$_GET['debate_id']);
+if(array_key_exists("debate_id", @$_GET)) $debate_id=trim(@$_GET['debate_id']);
 $title="Draw : Round ".$nextround;
 
 $query="SHOW TABLES LIKE 'temp%round_$nextround'";
@@ -174,12 +176,14 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
          while($row=mysql_fetch_assoc($result))
            {
          $adjud_id=$row['adjud_id'];
+		 if(array_key_exists("check_$adjud_id",@$_POST)){
+			 if (@$_POST["check_$adjud_id"]=="on")
+	           {
+	             $query="DELETE FROM temp_adjud_round_$nextround WHERE adjud_id='$adjud_id'";
+	             mysql_query($query);
+	           }
+		}
 
-         if (@$_POST["check_$adjud_id"]=="on")
-           {
-             $query="DELETE FROM temp_adjud_round_$nextround WHERE adjud_id='$adjud_id'";
-             mysql_query($query);
-           }
            }
 
             
@@ -335,7 +339,7 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 
 if($action=="finalise") {echo "<h2>Draw failed to validate</h2>";}
 
-displayMessagesUL(@$msg);
+if(isset($msg)) displayMessagesUL(@$msg);
 
 echo "<p>From here you can either:</p>";
 echo "<h3><a href=\"draw.php?moduletype=currentdraw&amp;action=draw_adjudicators_again\">Give the computer another shot at allocating the adjudicators (Using the current state to generate a better result).</a></h3>";
@@ -541,7 +545,7 @@ if ($exist)
         echo "<tr>\n";
         $highlightlastmodified=((@$lastmodified)&&($row['debate_id']==$lastmodified));
 
-        $text = ($highlight==1 ? "<td style=\"color:blue\">" : "<td>");
+        //$text = ($highlight==1 ? "<td style=\"color:blue\">" : "<td>");
         $text = (($highlightlastmodified) ? "<td style=\"color:green\">" : "<td>");
         echo "$text"."{$row['venue_name']}</td>\n";
         echo "$text"."{$row['ogtc']} {$row['ogt']} <br/> ("."{$row['ogpoints']}".") </td>\n";
@@ -564,7 +568,7 @@ if ($exist)
        				echo "$text"."<b>NONE</b></td>";
 				} else {
 					$rowadjud=mysql_fetch_assoc($resultadjud);
-					$adjud_id=$rowadjud['$adjud_id'];
+					$adjud_id=$rowadjud['adjud_id'];
                     //check for conflict and print name accordingly
 					if(is_four_id_conflict($adjud_id, $ogid, $ooid, $cgid, $coid)){
             			//Red Color
@@ -589,7 +593,7 @@ if ($exist)
                     while($rowadjud=mysql_fetch_assoc($resultadjud))
               		{
                         //check for conflict and print name accordingly
-						$adjud_id=$rowadjud['$adjud_id'];
+						$adjud_id=$rowadjud['adjud_id'];
 						if(is_four_id_conflict($adjud_id, $ogid, $ooid, $cgid, $coid)){
 	            			//Red Color
 	            			$starttag="<span style=\"color:red\">";

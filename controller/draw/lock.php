@@ -24,7 +24,7 @@
  * end license */
 
 set_include_path(get_include_path() . PATH_SEPARATOR . "../../");
-require("includes/backend.php");
+require_once("includes/backend.php");
 
 function is_locked_by_client($field, $value, $client, $round){
 	$expiry=time();

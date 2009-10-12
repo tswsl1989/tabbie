@@ -24,7 +24,7 @@
 
 //THIS FILE IS NOT FUNCTIONAL OR USED AT THIS TIME
 set_include_path(get_include_path() . PATH_SEPARATOR . "../../");
-require("includes/backend.php");
+require_once("includes/backend.php");
 
 //Information from the client
 $debate_id = htmlspecialchars(trim($_POST['debate_id']));

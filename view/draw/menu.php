@@ -19,7 +19,14 @@
  *     along with Tabbie; if not, write to the Free Software
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
- * end license */ ?>
+ * end license */ 
+
+//if(!isset($roundno)){
+//	require_once("includes/backend.php");
+//	$roundno=get_num_rounds();
+//}
+
+?>
 <div id="submenu">
     <h2 class="hide">Results Submenu</h2>
     <ul>

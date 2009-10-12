@@ -25,10 +25,15 @@ require("includes/display.php");
 
 //Get POST values and validate/convert them
 
-$venue_name=trim(@$_POST['venue_name']);
-$venue_location=trim(@$_POST['venue_location']);
-$active=strtoupper(trim(@$_POST['active']));
-$actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
+$actionhidden="";
+$active="";
+$venue_name="";
+$venue_location="";
+
+if(array_key_exists("venue_name", @$_POST)) $venue_name=trim(@$_POST['venue_name']);
+if(array_key_exists("venue_location", @$_POST)) $venue_location=trim(@$_POST['venue_location']);
+if(array_key_exists("active", @$_POST)) $active=strtoupper(trim(@$_POST['active']));
+if(array_key_exists("actionhidden", @$_POST)) $actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
 
 if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
   {
@@ -191,7 +196,7 @@ switch($action)
 
 echo "<h2>$title</h2>\n"; //title
 
-displayMessagesUL(@$msg);
+if(isset($msg)) displayMessagesUL(@$msg);
 
    
 //Check for Display

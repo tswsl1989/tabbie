@@ -21,7 +21,7 @@
  * 
  * end license */
 
-$action=@$_GET['action'];
+if(array_key_exists("action", @$_GET)) $action=@$_GET['action'];
 
 $title = "Position Count";
 

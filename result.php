@@ -36,6 +36,12 @@ $numresults=mysql_num_rows($result);
 
 $nextresult=$numresults+1;
 
+if(array_key_exists("roundno", @$_GET)){
+	$roundno=@$_GET["roundno"];
+} else {
+	$roundno="";
+}
+
 
 
 

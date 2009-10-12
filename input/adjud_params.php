@@ -23,8 +23,9 @@
 require_once("draw/adjudicator/simulated_annealing_config.php");
 require("includes/display.php");
 
-$submited=trim(@$_POST['save']);
-if ($submited=="submitted") {
+$submitted="";
+if(array_key_exists("save", @$_POST)) $submitted=trim(@$_POST['save']);
+if ($submitted) {
   foreach ($scoring_factors as $pname=>$pvalue) {
     $scoring_factors[$pname]=trim(@$_POST["param_".$pname]);
   }

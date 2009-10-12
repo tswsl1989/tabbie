@@ -133,7 +133,8 @@ function draw_silver_line($teams, $seed=0) {
     shuffle($teams);
     usort($teams, "cmp_teams_on_points");
     $teams = array_reverse($teams);
-    $teams = attributed_teams_from_debates(debates_from_teams($teams));
+	$tmp002 = debates_from_teams($teams);
+    $teams = attributed_teams_from_debates($tmp002);
     ciaran_bob_shuffle($teams);
 
     $previous_solution = 0;

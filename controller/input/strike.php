@@ -22,7 +22,7 @@
  * 
  * end license */
 set_include_path(get_include_path() . PATH_SEPARATOR . "../../");
-require("includes/backend.php");
+require_once("includes/backend.php");
 
 //Information from the client
 $adjud_id = htmlspecialchars(trim($_POST['adjud_id']));

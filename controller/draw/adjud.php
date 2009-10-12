@@ -23,7 +23,7 @@
  * end license */
 
 set_include_path(get_include_path() . PATH_SEPARATOR . "../../");
-include("includes/backend.php");
+require_once("includes/backend.php");
 
 /* Procedure to make a judge a panelist from being chair:
 
@@ -92,12 +92,12 @@ function add_adjudicator($adjud_id, $debate_id, $status, $round){
 }
 
 //Information from the client
-$action = htmlspecialchars(trim($_POST['action']));
-$adjud_id = htmlspecialchars(trim($_POST['adjud_id']));
-$debate_id = htmlspecialchars(trim($_POST['debate_id']));
-$client = htmlspecialchars(trim($_POST['client']));
-$time = htmlspecialchars(trim($_POST['time']));
-$free = htmlspecialchars(trim($_POST['free']));
+if(array_key_exists("action", @$_POST)) $action = htmlspecialchars(trim($_POST['action']));
+if(array_key_exists("adjud_id", @$_POST)) $adjud_id = htmlspecialchars(trim($_POST['adjud_id']));
+if(array_key_exists("debate_id", @$_POST)) $debate_id = htmlspecialchars(trim($_POST['debate_id']));
+if(array_key_exists("client", @$_POST)) $client = htmlspecialchars(trim($_POST['client']));
+if(array_key_exists("time", @$_POST)) $time = htmlspecialchars(trim($_POST['time']));
+if(array_key_exists("free", @$_POST)) $free = htmlspecialchars(trim($_POST['free']));
 
 //Get current round no.
 $round = get_num_rounds()+1;

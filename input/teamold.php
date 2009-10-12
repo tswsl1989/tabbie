@@ -22,7 +22,7 @@
  * end license */
 
 require("includes/display.php");
-require("includes/backend.php");
+require_once("includes/backend.php");
 
 //Check DB up-to-date
 convert_db_ssesl();

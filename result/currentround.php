@@ -23,7 +23,7 @@
 
 require("includes/display.php");
 
-$action=trim(@$_GET['action']); //Check action
+if(array_key_exists("action", @$_GET)) $action=trim(@$_GET['action']); //Check action
 $validate=1;
 
 
@@ -53,6 +53,7 @@ else
         }
         else
         {
+			$speaker1_og_score=$speaker2_og_score=$speaker1_oo_score=$speaker2_oo_score=$speaker1_cg_score=$speaker2_cg_score=$speaker_1_cg_score=$speaker2_cg_score="";
             $query="SELECT S.speaker_id, S.speaker_name ";
             $query.="FROM temp_speaker_round_$nextresult TS, speaker S, draw_round_$nextresult D  ";
             $query.="WHERE TS.speaker_id=S.speaker_id AND TS.debate_id='$debate_id' AND D.og=S.team_id "; //Opening Govt
@@ -62,12 +63,12 @@ else
             $row=mysql_fetch_assoc($result);
             $speaker1_og_id=$row['speaker_id'];
             $speaker1_og_name=$row['speaker_name'];
-            $speaker1_og_score=@$_POST["speaker_$speaker1_og_id"];
+            if(array_key_exists("speaker_$speaker1_og_id",@$_POST)) $speaker1_og_score=@$_POST["speaker_$speaker1_og_id"];
             //Get second speaker
             $row=mysql_fetch_assoc($result);
             $speaker2_og_id=$row['speaker_id'];
             $speaker2_og_name=$row['speaker_name'];
-            $speaker2_og_score=@$_POST["speaker_$speaker2_og_id"];
+            if(array_key_exists("speaker_$speaker2_og_id",@$_POST)) $speaker2_og_score=@$_POST["speaker_$speaker2_og_id"];
 
             
             $query="SELECT S.speaker_id, S.speaker_name ";
@@ -79,12 +80,12 @@ else
             $row=mysql_fetch_assoc($result);
             $speaker1_oo_id=$row['speaker_id'];
             $speaker1_oo_name=$row['speaker_name'];
-            $speaker1_oo_score=@$_POST["speaker_$speaker1_oo_id"];
+            if(array_key_exists("speaker_$speaker1_oo_id",@$_POST)) $speaker1_oo_score=@$_POST["speaker_$speaker1_oo_id"];
             //Get second speaker
             $row=mysql_fetch_assoc($result);
             $speaker2_oo_id=$row['speaker_id'];
             $speaker2_oo_name=$row['speaker_name'];
-            $speaker2_oo_score=@$_POST["speaker_$speaker2_oo_id"];
+            if(array_key_exists("speaker_$speaker2_oo_id",@$_POST)) $speaker2_oo_score=@$_POST["speaker_$speaker2_oo_id"];
 
 
 
@@ -97,12 +98,12 @@ else
             $row=mysql_fetch_assoc($result);
             $speaker1_cg_id=$row['speaker_id'];
             $speaker1_cg_name=$row['speaker_name'];
-            $speaker1_cg_score=@$_POST["speaker_$speaker1_cg_id"];
+            if(array_key_exists("speaker_$speaker1_cg_id",@$_POST)) $speaker1_cg_score=@$_POST["speaker_$speaker1_cg_id"];
             //Get second speaker
             $row=mysql_fetch_assoc($result);
             $speaker2_cg_id=$row['speaker_id'];
             $speaker2_cg_name=$row['speaker_name'];
-            $speaker2_cg_score=@$_POST["speaker_$speaker2_cg_id"];
+            if(array_key_exists("speaker_$speaker2_cg_id",@$_POST)) $speaker2_cg_score=@$_POST["speaker_$speaker2_cg_id"];
            
             $query="SELECT S.speaker_id, S.speaker_name ";
             $query.="FROM temp_speaker_round_$nextresult TS, speaker S, draw_round_$nextresult D  ";
@@ -113,12 +114,12 @@ else
             $row=mysql_fetch_assoc($result);
             $speaker1_co_id=$row['speaker_id'];
             $speaker1_co_name=$row['speaker_name'];
-            $speaker1_co_score=@$_POST["speaker_$speaker1_co_id"];
+            if(array_key_exists("speaker_$speaker1_co_id",@$_POST)) $speaker1_co_score=@$_POST["speaker_$speaker1_co_id"];
             //Get second speaker
             $row=mysql_fetch_assoc($result);
             $speaker2_co_id=$row['speaker_id'];
             $speaker2_co_name=$row['speaker_name'];
-            $speaker2_co_score=@$_POST["speaker_$speaker2_co_id"];
+            if(array_key_exists("speaker_$speaker2_co_id",@$_POST)) $speaker2_co_score=@$_POST["speaker_$speaker2_co_id"];
             
 
             //Get Team Names & Venue
@@ -150,6 +151,26 @@ else
     if ($action=="edit")
     {
         unset($msg);
+		//Load the scores (taken from post above) to the post values)
+		//in case that didn't happen
+		$speaker1_og_post_score = "";
+        $speaker2_og_post_score = "";
+        $speaker1_oo_post_score = "";
+        $speaker2_oo_post_score = "";
+        $speaker1_cg_post_score = "";
+        $speaker2_cg_post_score = "";
+        $speaker1_co_post_score = "";
+        $speaker2_co_post_score = "";
+
+		if(isset($speaker1_og_score)) $speaker1_og_post_score=$speaker1_og_score;
+		if(isset($speaker2_og_score)) $speaker2_og_post_score=$speaker2_og_score;
+		if(isset($speaker1_oo_score)) $speaker1_oo_post_score=$speaker1_oo_score;
+		if(isset($speaker2_oo_score)) $speaker2_oo_post_score=$speaker2_oo_score;
+		if(isset($speaker1_cg_score)) $speaker1_cg_post_score=$speaker1_cg_score;
+		if(isset($speaker2_cg_score)) $speaker2_cg_post_score=$speaker2_cg_score;
+		if(isset($speaker1_co_score)) $speaker1_co_post_score=$speaker1_co_score;
+		if(isset($speaker2_co_score)) $speaker2_co_post_score=$speaker2_co_score;
+
         //Load in values of points from table
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker1_og_id'";
         $result=mysql_query($query);
@@ -214,6 +235,11 @@ else
         if ($speaker2_co_score == 0)
     {    $speaker2_co_score=@$speaker2_co_post_score;
     }
+
+	$team_og_score = $speaker1_og_score + $speaker2_og_score;
+$team_oo_score = $speaker1_oo_score + $speaker2_oo_score;
+$team_cg_score = $speaker1_cg_score + $speaker2_cg_score;
+$team_co_score = $speaker1_co_score + $speaker2_co_score;
 
     }
     
@@ -472,9 +498,10 @@ switch ($action)
     $title="Results : Round $numrounds : Display";
 }
 
+//HERE STARTS THE DISPLAY LOGIC
 echo "<h2>$title</h2>\n"; //title
 
-displayMessagesUL(@$msg);
+if(isset($msg)) displayMessagesUL(@$msg);
 
 if ($nextresult==$numrounds)
 {
@@ -544,6 +571,7 @@ if ($nextresult==$numrounds)
 
     if($action=="edit")
     {
+	//LOGIC FOR DISPLAYING THE EDIT FORM.
 
        ?>
             <div id="debatedetails">
@@ -581,7 +609,6 @@ if ($nextresult==$numrounds)
                     
                     <label for="<?echo "speaker_$speaker2_oo_id";?>"><?echo $speaker2_oo_name;?></label>
                     <input type="text" id="<?echo "speaker_$speaker2_oo_id";?>" name="<?echo "speaker_$speaker2_oo_id";?>" value="<?echo $speaker2_oo_score;?>"/><br/><br/>
-         <? if (@$same_validate==0)  {echo "</font>";} ?>
             </div>
 
             <? 

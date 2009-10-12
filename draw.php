@@ -28,6 +28,12 @@ $result = mysql_query($query);
 $numdraws = mysql_num_rows($result);
 $nextround = $numdraws + 1;
 
+if(array_key_exists("roundno", @$_GET)){
+	$roundno=@$_GET["roundno"];
+} else {
+	$roundno="";
+}
+
 $ntu_controller = "draw";
 $ntu_default_module = "round";
 $ntu_default_action = "";

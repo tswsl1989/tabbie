@@ -21,8 +21,8 @@
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  * end license */
-
-$round=trim(@$_POST['round']); //Error when the index isn't present but 
+$round=false;
+if(array_key_exists("round", @$_POST)) $round=trim(@$_POST['round']); 
 
 //Check Database
 $query="SHOW TABLES LIKE 'draw_round%'";

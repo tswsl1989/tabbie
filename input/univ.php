@@ -22,13 +22,16 @@
  * end license */
 
 require("includes/display.php");
-require("includes/backend.php");
+require_once("includes/backend.php");
 
 //Get POST values and validate/convert them
 
-$univ_name=makesafe(@$_POST['univ_name']);
-$univ_code=strtoupper(makesafe(@$_POST['univ_code']));
-$actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
+$actionhidden="";
+$univ_name=$univ_code="";
+
+if(array_key_exists("univ_name", @$_POST)) $univ_name=makesafe(@$_POST['univ_name']);
+if(array_key_exists("univ_code", @$_POST)) $univ_code=strtoupper(makesafe(@$_POST['univ_code']));
+if(array_key_exists("actionhidden", @$_POST)) $actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
 
 if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
   {
@@ -195,7 +198,7 @@ switch($action)
                 
 echo "<h2>$title</h2>\n"; //title
 
-displayMessagesUL(@$msg);
+if(isset($msg)) displayMessagesUL(@$msg);
    
 //Check for Display
 if ($action=="display")

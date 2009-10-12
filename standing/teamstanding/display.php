@@ -22,14 +22,19 @@
  * end license */
 
 require_once("includes/teamstanding.php");
+$warning="";
+if(array_key_exists("action", @$_GET)) $action=@$_GET['action'];
+if(array_key_exists("warning", @$_GET)) $warning=@$_GET['warning'];
 
-$action=@$_GET['action'];
-$warning=@$_GET['warning'];
-
-$list=trim(@$_POST['list']);
+$list=false;
+if(array_key_exists("list", @$_POST)) $list=@$_POST['list'];
 if (!$list)
-{    $list=trim(@$_GET['list']); //list : all, esl, break, eslbreak
-    if (!$list) $list="all"; //set to all if empty
+{    
+	if(array_key_exists("list", @$_POST)){
+		$list=trim(@$_GET['list']); //list : all, esl, break, eslbreak
+	} else {
+		$list="all"; //set to all if empty
+	}
 }
 
 if (($numdraws <> $numresults) && !$round)

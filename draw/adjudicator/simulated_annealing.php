@@ -75,6 +75,7 @@ function adjudicators_met($one, $two) {
     global $adjudicator_history;
     if (!isset($adjudicator_history[$one]))
         $adjudicator_history[$one] = array_count_values(get_co_adjudicators($one));
+	if(!isset($adjudicator_history[$one][$two])) @$adjudicator_history[$one][$two]=0;
     return @$adjudicator_history[$one][$two];
 }
 
@@ -83,6 +84,7 @@ function adjudicator_met_team($adjudicator, $team) {
     global $adjudicator_team_history;
     if (!isset($adjudicator_team_history[$adjudicator]))
         $adjudicator_team_history[$adjudicator] = array_count_values(get_adjudicator_met_teams($adjudicator));
+	if(!isset($adjudicator_team_history[$adjudicator][$team])) @$adjudicator_team_history[$adjudicator][$team]=0;
     return @$adjudicator_team_history[$adjudicator][$team];
 }
 
@@ -200,7 +202,8 @@ function reallocate_simulated_annealing() {
     $debates = debates_from_temp_draw_no_adjudicators($nextround);
     
     sort_debates($debates);
-    initial_distribution($debates, get_active_adjudicators($order_by="ranking"));
+	$tmp001=get_active_adjudicators($order_by="ranking"); //Avoids an "only variables should be passed by reference" error
+    initial_distribution($debates, $tmp001);
     set_target_values($debates);
 
     __do_a_run($debates, $nextround);

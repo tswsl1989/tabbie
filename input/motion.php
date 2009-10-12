@@ -22,13 +22,15 @@
  * end license */
 
 require("includes/display.php");
-require("includes/backend.php");
+require_once("includes/backend.php");
 
 //Get POST values and validate/convert them
+$actionhidden="";
+$round_no=$motion="";
 
-$round_no=trim(@$_POST['round_no']);
-$motion=makesafe(@$_POST['motion']);
-$actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
+if(array_key_exists("round_no", @$_POST)) $round_no=trim(@$_POST['round_no']);
+if(array_key_exists("motion", @$_POST)) $motion=makesafe(@$_POST['motion']);
+if(array_key_exists("actionhidden", @$_POST)) $actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
 
 if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
   {
@@ -174,7 +176,7 @@ switch($action)
 
 echo "<h2>$title</h2>\n"; //titlek
 
-displayMessagesUL(@$msg);
+if(isset($msg)) displayMessagesUL(@$msg);
    
 //Check for Display
 if ($action=="display")

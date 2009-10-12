@@ -95,7 +95,9 @@ function create_brackets($teams) {
             $current_bracket = array();
         }
         for ($j = 0; $j < 4; $j++) {
-            @$current_bracket[$teams[$i * 4 + $j]["points"]] += 1;
+			$relpoints=$teams[$i * 4 + $j]["points"];
+			if(!isset($current_bracket[$relpoints])) $current_bracket[$relpoints]=0;
+            @$current_bracket[$relpoints] += 1;
         }
     }
     $result[] = $current_bracket;

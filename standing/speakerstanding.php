@@ -21,7 +21,8 @@
  * 
  * end license */
 
-$round=trim(@$_POST['round']);
+$round=false;
+if(array_key_exists("round", @$_POST)) $round=trim(@$_POST['round']);
 
 //Check Database
 $query="SHOW TABLES LIKE 'draw_round%'";

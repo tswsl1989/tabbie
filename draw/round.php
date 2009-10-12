@@ -26,11 +26,12 @@
 require("includes/display.php");
 
 //Calculate Round Number (should have been already validated)
-$action=@$_GET['action'];
-$roundno=@$_GET['roundno'];
+if(array_key_exists('action', @$_GET)) $action=@$_GET['action'];
+if(array_key_exists('roundno', @$_GET)) $roundno=@$_GET['roundno'];
 
 $validate=1;
-if (($roundno=='')||(!ereg("^[1-9]$",$roundno)) )
+
+if ( ($roundno=='')||!((intval($roundno)>0)&&(intval($roundno)<10)) )
 {
 
   $roundno=$numdraws;
@@ -53,7 +54,7 @@ switch($action)
 
 echo "<h2>$title</h2>\n"; //title
 
-displayMessagesP(@$msg);
+if(isset($msg)) displayMessagesP(@$msg);
 
 //Display draw information
 
@@ -108,12 +109,12 @@ displayMessagesP(@$msg);
         echo mysql_error();
 
         $num_trainee=mysql_num_rows($trainee_result);
-        if (@$numtrainee > 0) echo "<ul>\n";
+        if ($num_trainee > 0) echo "<ul>\n";
         while($trainee_row=mysql_fetch_assoc($trainee_result))
         {    
           echo "<li>{$trainee_row['adjud_name']}</li>";
         }
-        if (@$numtrainee > 0) echo "</ul>\n";
+        if ($num_trainee > 0) echo "</ul>\n";
         echo "</td>\n";
 
        echo "</tr>\n";

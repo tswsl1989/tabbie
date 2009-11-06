@@ -78,8 +78,8 @@ if ($return_value == 0) {
 
 		$strip_diskname = 2; // "C:"
 		//The next line assumes the file is called "backup.php" and that the path separator is 1 character!
-		$script_directory = substr($_SERVER['SCRIPT_FILENAME'],0,strlen($_SERVER['SCRIPT_FILENAME'])-11);
-		$command = "cd /d \"$script_directory\\..\\..\\mysql\\bine\\\" && $basecommand";
+		$script_directory = str_replace("/","\\",substr($_SERVER['SCRIPT_FILENAME'],0,strlen($_SERVER['SCRIPT_FILENAME'])-11));
+		$command = "cd /d \"$script_directory\\..\\..\\mysql\\bin\\\" && $basecommand";
 
 
 		$output = array();

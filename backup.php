@@ -25,98 +25,131 @@
 require_once("config/settings.php");
 
 $connection = @mysql_connect($database_host,$database_user,$database_password);
-
+$attempted = array();
 
 if ($database_password)
     $password = "-p$database_password";
 else
     $password = "";
 $command = "mysqldump -u$database_user $password $database_name";
+$basecommand = $command;
 $command2 = "mysqldump -u$database_user -p******** $database_name";
 
 $output = array();
 $return_value = "undefined";
 
 
-
+//Attempt 1: mysqlbin in path
 exec($command, $output, $return_value);
-$commands[] = $command;
+$attempted[] = array($command,$return_value,$output);
 
 if ($return_value == 0) {
     header('Content-type: text/plain'); 
     header('Content-Disposition: attachment; filename="' . $database_name . '.sql"');
     header( "Content-Description: File Transfer");
-    foreach ($output as $line)
-        print "$line\n";
+    
+	foreach ($output as $line){
+		print "$line\n";
+	}
 
-} else { // attempt 2 (assuming windows/ WOS):
+} else { // attempt 2a (assuming Windows/WOS):
+	/* retained for historical interest
+	$strip_diskname = 2; // "C:"
+	$script_directory = substr($_SERVER['SCRIPT_FILENAME'], $strip_diskname, strrpos($_SERVER['SCRIPT_FILENAME'], '/') - $strip_diskname);
+	$command = "cd \"\\$script_directory/../../mysql/bin/\" && $basecommand";
 
-$strip_diskname = 2; // "C:"
-$script_directory = substr($_SERVER['SCRIPT_FILENAME'], $strip_diskname, strrpos($_SERVER['SCRIPT_FILENAME'], '/') - $strip_diskname);
-$command = "cd "\\$script_directory/../../mysql/bin/\" && $command";
 
+	$output = array();
+	$return_value = "undefined";
 
-$output = array();
-$return_value = "undefined";
-
-exec($command, $output, $return_value);
-
-if ($return_value == 0) {
-    //header('Content-type: text/plain'); 
-    //header('Content-Disposition: attachment; filename="' . $database_name . '.sql"');
-    //header( "Content-Description: File Transfer");
-
-    foreach ($output as $line)
-        print "$line\n";
-
-} else { //attempt 3 (user configured path)
-	$command = "/usr/local/mysql/bin/mysqldump -u$database_user $password $database_name";
-	
-	
 	exec($command, $output, $return_value);
+	$attempted[] = array($command,$return_value,$output);
+	*/
+	if ($return_value == 0) { //Will always be true
+    	header('Content-type: text/plain'); 
+    	header('Content-Disposition: attachment; filename="' . $database_name . '.sql"');
+    	header( "Content-Description: File Transfer");
+		
+		foreach ($output as $line){
+			print "$line\n";
+		}
+        
+	} 	else { // attempt 2b (assuming Windows XP):
 
-	if ($return_value == 0) {
-	    header('Content-type: text/plain'); 
-	    header('Content-Disposition: attachment; filename="' . $database_name . '.sql"');
-	    header( "Content-Description: File Transfer");
-
-	    foreach ($output as $line)
-	        print "$line\n";
-} else	{//Give up
-
-$ntu_controller = "backup";
-$title = "Tabbie - Backup Failed";
-$moduletype="";
-require("view/header.php");
-require("view/mainmenu.php");
-
-?> <h3>Backup Failed</h3> 
-<p>
-There was a problem executing the command '<?= $command ?>', error code: <?= $return_value ?><br>
-<?
-    foreach ($output as $line)
-        print "$line <br>";
-?>
-</p>
-
-<h4>Windows, (all in one installation / Webserver on a Stick)</h4>
-<p>
-This is an unknown problem. Please contact Klaas and report this problem as the backup utility is an important feature that we would like to have working.
-</p>
-
-<h4>Linux</h4>
-<p>
-Make sure you have installed mysqldump and it is available from the path. 
-</p>
-
-<h4>Your own server</h4>
-<p>
-If you're running Tabbie on something you created yourself, either contact Klaas for help or just take a look in this file and adapt paths to your liking. You'll be needing the executable "mysqldump" somewhere and then point relevant paths to it to have this work.
-</p>
+		$strip_diskname = 2; // "C:"
+		//The next line assumes the file is called "backup.php" and that the path separator is 1 character!
+		$script_directory = substr($_SERVER['SCRIPT_FILENAME'],0,strlen($_SERVER['SCRIPT_FILENAME'])-11);
+		$command = "cd /d \"$script_directory\\..\\..\\mysql\\bine\\\" && $basecommand";
 
 
+		$output = array();
+		$return_value = "undefined";
 
-<?php
-require('view/footer.php'); 
-}}}
+		exec($command, $output, $return_value);
+		$attempted[] = array($command,$return_value,$output);
+		if ($return_value == 0) {
+		    header('Content-type: text/plain'); 
+		    header('Content-Disposition: attachment; filename="' . $database_name . '.sql"');
+		    header( "Content-Description: File Transfer");
+
+		    foreach ($output as $line){
+			print "$line\n";
+			}
+		        
+
+		} else { //attempt 3 (user configured path)
+			$command = "/usr/local/mysql/bine/mysqldump -u$database_user $password $database_name";
+			
+			exec($command, $output, $return_value);
+			$attempted[] = array($command,$return_value,$output);
+			if ($return_value == 0) {
+			    header('Content-type: text/plain'); 
+			    header('Content-Disposition: attachment; filename="' . $database_name . '.sql"');
+			    header( "Content-Description: File Transfer");
+
+			    foreach ($output as $line){
+					print "$line\n";
+				}
+			        
+			}  else	{//Give up
+
+				$ntu_controller = "backup";
+				$title = "Tabbie - Backup Failed";
+				$moduletype="";
+				require("view/header.php");
+				require("view/mainmenu.php");
+
+				?> <h3>Backup Failed</h3> 
+				<p>
+				
+				<?
+				    foreach ($attempted as $attempt){
+				        echo("<p>There was a problem executing the command <b>" . $attempt[0] . "</b> error code: " . $attempt[1] . " output: <i> " . print_r($attempt[2]) . "</i></p>");
+					}
+				?>
+				</p>
+
+				<h4>Windows, (all in one installation / Webserver on a Stick)</h4>
+				<p>
+				This is an unknown problem. Please contact Klaas and report this problem as the backup utility is an important feature that we would like to have working.
+				</p>
+
+				<h4>Linux</h4>
+				<p>
+				Make sure you have installed mysqldump and it is available from the path. 
+				</p>
+
+				<h4>Your own server</h4>
+				<p>
+				If you're running Tabbie on something you created yourself, either contact Klaas for help or just take a look in this file and adapt paths to your liking. You'll be needing the executable "mysqldump" somewhere and then point relevant paths to it to have this work.
+				</p>
+
+
+
+				<?php
+				require('view/footer.php'); 
+			}
+		}
+	}
+}
 ?>

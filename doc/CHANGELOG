@@ -3,13 +3,14 @@ CHANGELOG:
 New Features:
  * Drag & Drop interface for allocating adjudicators
  * English as a Foreign Language is now supported
- * Table-format draw display
+ * Export draw to PowerPoint 2007 XML format
  * Judges can now be marked to be 'watched' by more experienced adjudicators
 
 Bugs fixed:
  * Speaker names with non-ASCII characters now work. All data is stored and displayed as UTF8. 
  * Importing large backup files will no longer fail.
  * Conflict system rewritten
+ * Backing up fixed for Windows Vista and 7
 
 Known Issues:
  * The new drag-and-drop adjudicator allocation system may produce inconsistent results when under heavy load from multiple clients simultaneously. This issue is thought to be fixed but cannot be replicated under test conditions. If this occurs, rectify using the previous allocation interface, checking for judges duplicated across different debates.

@@ -81,6 +81,7 @@ function adjudicatorshuffle(xml) {
         var name = $(this).find("name").text();
         var debate_id = $(this).find("debate_id").text();
         var adjud = $('#A' + id);
+		//console.log("Received Adjudicator "  + id + " (" + name +") with status " + status);
         if (adjud.length > 0) {
             //Found relevant adjudicator.
             if (adjud.parent().parent().parent().attr('id') == ('D' + debate_id)) {
@@ -102,6 +103,7 @@ function adjudicatorshuffle(xml) {
                     //Adjudicator is not positioned as chair
                     if (status == 'chair') {
                         //Adjudicator should be positioned as chair but isn't: promote
+						adjud.parent().children().removeClass('chair'); //Remove the chair class from the others(!)
                         adjud.parent().prepend(adjud);
                         adjud.addClass('chair');
                         //console.log("Adjudicator " + id + " was on location but erroneously panelist. Promoted.");
@@ -270,7 +272,7 @@ $(document).ready(function() {
     }).disableSelection();
     //adjudicator_reset();
 	free_adjudicator_update();
-    $(".resetbutton").click(adjudicator_reset);
+    $(".resetbutton").click(adjudicator_update);
     $(".rankingbutton").click(function() {
         $('.ranking').toggle();
     });

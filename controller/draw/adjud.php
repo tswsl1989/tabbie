@@ -45,7 +45,9 @@ function is_panelist($adjud_id, $round){
 			} else {
 				$query="SELECT COUNT(adjud_id) FROM temp_adjud_round_$round WHERE `adjud_id`='$adjud_id'";
 				if($count=mysql_fetch_assoc(mysql_query($query))){
-					if($count['COUNT(adjud_id)'==1]){
+					$offset=$count['COUNT(adjud_id)'];
+					//error_log("Offset $offset",0);
+					if($offset==1){
 						//in the draw but not a panelist
 						return 0;
 					} else {
@@ -99,6 +101,8 @@ if(array_key_exists("client", @$_POST)) $client = htmlspecialchars(trim($_POST['
 if(array_key_exists("time", @$_POST)) $time = htmlspecialchars(trim($_POST['time']));
 if(array_key_exists("free", @$_POST)) $free = htmlspecialchars(trim($_POST['free']));
 
+//error_log("adjud.php called with action $action, adjud_id $adjud_id, debate_id $debate_id",0);
+
 //Get current round no.
 $round = get_num_rounds()+1;
 
@@ -125,13 +129,13 @@ $masterquery="SELECT debate_id, adjudicator.adjud_id AS id, adjudicator.ranking 
 
 switch ($action) {
 	case "LIST":
-		if($time){
+		if(isset($time)){
 			$masterquery.="WHERE UNIX_TIMESTAMP(`time`) > '$time'";
 		}
-		if($adjud_id){
+		if(isset($adjud_id)){
 			$masterquery.="WHERE `temp_adjud_round_$round`.`adjud_id` = '$adjud_id'";
 		}
-		if($free){
+		if(isset($free)){
 			$masterquery = "SELECT A.adjud_id AS id, A.adjud_name AS name, A.ranking AS ranking, T.`status` AS status, A.`status` AS trainee, CONCAT('FREE','') AS debate_id ";
 		    $masterquery .= "FROM adjudicator A ";
 		    $masterquery .= "LEFT JOIN temp_adjud_round_$round T ON A.adjud_id = T.adjud_id ";

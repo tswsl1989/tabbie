@@ -55,6 +55,7 @@ List of teams, and their venues</a>
 <ul>
     <li><a href="draw_scrolling_display.php?roundno=<?= $round ?>">Draw scrolling display with teams, positions and venues</a> or</li>
 	<li><a href="draw_table_display.php?roundno=<?= $round ?>&slide=0">Draw slide display with teams, positions and venues</a> or</li>
+	<li><a href="create_powerpoint.php?roundno=<?= $round ?>">Export to Microsoft Powerpoint 2007</a></li>
     <li><a href="rest.php?result_type=csv&amp;function=adjudicator_sheets&amp;param=<?= $round ?>">Export teams, positions and venues as ".csv" document</a></li>
 </ul>
 

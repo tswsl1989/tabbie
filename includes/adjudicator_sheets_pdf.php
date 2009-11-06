@@ -85,7 +85,7 @@ function adjudicator_sheets_pdf($filename, $data) {
             array("name" => "Closing Gov.", "short" => "cg"),
             array("name" => "Closing Opp.", "short" => "co")));
         $pdf->SetFont('Arial','B', 10);
-        $pdf->Cell(250, 8, "The best team gets Rank 1. A better rank has a higher total team score (no equal scores). Learn to do arithmetic or face the bin.");
+        $pdf->Cell(250, 8, "The best team gets Rank 1. A better rank has a higher total team score (no equal scores). Failure to comply with this instruction will affect your judge ranking.");
         $pdf->Ln();
         $pdf->Cell(250, 8, "Created with Tabbie. See http://www.smoothtournament.com and http://tabbie.wikidot.com");
     }

@@ -137,7 +137,7 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 			$debate_array[$row['debate_id']]['adjudicators'][]=$adjud_result;
 		}
 	}
-	uasort(&$debate_array,'ap_cmp'); //Sorts by average points
+	uasort($debate_array,'ap_cmp'); //Sorts by average points
 	
 		
 	?>

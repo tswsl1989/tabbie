@@ -21,12 +21,20 @@
  * 
  * end license */
 
+
+/* WARNING:
+   INCLUDE OTHER TABBIE FILES WITH CARE. MANY OF THEM WILL FAIL WITHOUT config/settings.php
+*/
+
 $title = "Install Tabbie";
-require("view/header.php");
+$ntu_controller = $moduletype = "";
+require_once("view/header.php");
+require_once("includes/dbimport.php");
 ?>
     <h2>Installation</h2>
 <?php
-$action=@$_POST['action'];
+$action="";
+if(array_key_exists("action", @$_POST)) $action=trim(@$_POST['action']);
 $filename = "config/settings.php";
 
 if ($action == "install") {
@@ -47,22 +55,9 @@ fclose($f);
 
 require_once("includes/dbconnection.php");
 $queries_text = file_get_contents("install/create_db.sql");
-$queries = split(';', $queries_text);
+$queries = explode(';', $queries_text);
 
 ?><p style="font-family: courier; font-size: 10px;"><?php
-
-function execute_query_print_result($query) {
-    if (trim($query)) {
-        $result = mysql_query($query);
-        if (!$result) {
-            $error = mysql_error();
-            print "<b>$query => FAIL: $error</b><br>";
-            return false;
-        } else
-            print "$query => SUCCESS<br>";
-    }
-    return true;
-}
 
 $all_is_well = true;
 mysql_query("SET NAMES 'utf8' COLLATE 'utf8_unicode_ci'");

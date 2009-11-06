@@ -461,14 +461,14 @@ if ($exist)
     if (mysql_num_rows($result)!=0)
       {
         echo "<table>\n";
-        echo "<tr><th>Chair</th><th>Panelist</th><th>Trainee</th><th>None</th><th>Name</th><th>Ranking</th><th>Conflicts</th></tr>\n";
+        echo "<tr><th>Chair</th><th>Panelist</th><th>None</th><th>Name</th><th>Ranking</th><th>Conflicts</th></tr>\n";
         while($row=mysql_fetch_assoc($result))    
           {
 		$adjud_id=$row['adjud_id'];
         echo "<tr>\n";
         echo "<td><input type=\"radio\" name=\"radio_{$row['adjud_id']}\" value=\"chair\"/></td>\n";
         echo "<td><input type=\"radio\" name=\"radio_{$row['adjud_id']}\" value=\"panelist\"/></td>\n";
-        echo "<td><input type=\"radio\" name=\"radio_{$row['adjud_id']}\" value=\"trainee\"/></td>\n";
+        //echo "<td><input type=\"radio\" name=\"radio_{$row['adjud_id']}\" value=\"trainee\"/></td>\n";
         echo "<td><input type=\"radio\" name=\"radio_{$row['adjud_id']}\" value=\"none\" checked=\"checked\"/></td>\n";
 
         //check for conflict and print name accordingly
@@ -583,7 +583,7 @@ if ($exist)
 				}
 
                 //Find Panelists
-                $query="SELECT A.adjud_name AS adjud_name, A.adjud_id As adjud_id, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='panelist' AND T.debate_id='{$row['debate_id']}'";
+                $query="SELECT A.adjud_name AS adjud_name, A.adjud_id As adjud_id, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='panelist' AND T.debate_id='{$row['debate_id']}' AND NOT A.status = 'trainee'";
                 $resultadjud=mysql_query($query);
 
                 if (mysql_num_rows($resultadjud)==0) {
@@ -609,7 +609,7 @@ if ($exist)
 				}
 
                 //Find Trainees
-                $query="SELECT A.adjud_name AS adjud_name, A.adjud_id AS adjud_id, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='trainee' AND T.debate_id='{$row['debate_id']}'";
+                $query="SELECT A.adjud_name AS adjud_name, A.adjud_id AS adjud_id, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND A.status='trainee' AND T.status ='panelist' AND T.debate_id='{$row['debate_id']}'";
                 $resultadjud=mysql_query($query);
                 if (mysql_num_rows($resultadjud)==0){
 					echo "$text"."<b>NONE</b></td>";
@@ -618,7 +618,7 @@ if ($exist)
                     while($rowadjud=mysql_fetch_assoc($resultadjud))
               		{
                         //check for conflict and print name accordingly
-						$adjud_id=$rowadjud['$adjud_id'];
+						$adjud_id=$rowadjud['adjud_id'];
 						if(is_four_id_conflict($adjud_id, $ogid, $ooid, $cgid, $coid)){
 	            			//Red Color
 	            			$starttag="<span style=\"color:red\">";

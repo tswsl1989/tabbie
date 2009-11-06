@@ -1,5 +1,5 @@
 module RandomProbabilityOutcome
-    def self.calculate_results(debates, teams_hash)
+    def self.calculate_results(debates, teams_hash, dummy)
         results = []
         debates.each do |debate|
             result_order = debate.sort_by { rand }

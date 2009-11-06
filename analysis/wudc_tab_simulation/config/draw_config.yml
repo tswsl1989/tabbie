@@ -2,13 +2,29 @@
 num_teams: 40
 
 # number of rounds to simulate in each iteration
-num_rounds: 5
+num_rounds: 9
 
 # can be one of :
 # - deterministic_outcome : Models a completely deterministic tournament in which a higher ranked teams always wins over a lower ranked team
 # - random_probability_outcome : Models a completely random tournament in which wins are calculated randomly
-simulation_algorithm: deterministic_outcome
+# - weighted_probability_outcome: Models a tournament where higher ranked teams are more likely to win over lower ranked teams
+simulation_algorithm: random_probability_outcome
 
 # can be one of :
 # - silver_line : SilverLine algorithm developed by Klaas Van Schelven
 draw_algorithm: silver_line
+
+# weight factor for weighted_probability_outcome
+# A random number will be generated lying between -randomness_weight and +randomness_weight
+# This is then divided by 1000, and multiplied with the team rank
+# Thus a value of 400 leads to randomly generated weights from 0.6 to 1.4 times the underlying rank
+# 0 behaves identically to deterministic_outcome
+# Values above 2000 are statistically indistinguishable from random_probability_outcome
+randomness_weight: 0
+
+# Number of iterations when in stats-mode
+iterations: 2
+
+# Number of teams breaking: must be a floating-point number
+
+teams_breaking: 8.0

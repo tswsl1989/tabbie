@@ -684,4 +684,5 @@ function finalise_temporary_draw($nextround)
 	}
 	return 1;
 }
+
 ?>

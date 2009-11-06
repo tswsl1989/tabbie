@@ -38,8 +38,9 @@ $output = array();
 $return_value = "undefined";
 
 
-exec($command, $output, $return_value);
 
+exec($command, $output, $return_value);
+$commands[] = $command;
 
 if ($return_value == 0) {
     header('Content-type: text/plain'); 
@@ -52,7 +53,8 @@ if ($return_value == 0) {
 
 $strip_diskname = 2; // "C:"
 $script_directory = substr($_SERVER['SCRIPT_FILENAME'], $strip_diskname, strrpos($_SERVER['SCRIPT_FILENAME'], '/') - $strip_diskname);
-$command = "cd \"\\$script_directory/../../mysql/bin/\" && $command";
+$command = "cd "\\$script_directory/../../mysql/bin/\" && $command";
+
 
 $output = array();
 $return_value = "undefined";
@@ -60,15 +62,14 @@ $return_value = "undefined";
 exec($command, $output, $return_value);
 
 if ($return_value == 0) {
-    header('Content-type: text/plain'); 
-    header('Content-Disposition: attachment; filename="' . $database_name . '.sql"');
-    header( "Content-Description: File Transfer");
+    //header('Content-type: text/plain'); 
+    //header('Content-Disposition: attachment; filename="' . $database_name . '.sql"');
+    //header( "Content-Description: File Transfer");
 
     foreach ($output as $line)
         print "$line\n";
 
 } else { //attempt 3 (user configured path)
-
 	$command = "/usr/local/mysql/bin/mysqldump -u$database_user $password $database_name";
 	
 	
@@ -85,7 +86,7 @@ if ($return_value == 0) {
 
 $ntu_controller = "backup";
 $title = "Tabbie - Backup Failed";
-
+$moduletype="";
 require("view/header.php");
 require("view/mainmenu.php");
 

@@ -28,6 +28,7 @@ require("ntu_bridge.php");
 require("view/header.php");
 require("view/mainmenu.php");
 require("includes/adjudicator.php");
+require("includes/dbimport.php");
 ?>
 <h2>Import Backup</h2>
 <p>
@@ -57,15 +58,18 @@ if ( array_key_exists("uploadedfile", @$_FILES)) {
     }
     print mysql_error();
     mysql_select_db($database_name);
-    
-    $lines = split(";\n", file_get_contents($_FILES['uploadedfile']['tmp_name']));
+   
+	echo ('<p style="font-family: courier; font-size: 10px;">');
+    $lines = explode(";\n", file_get_contents($_FILES['uploadedfile']['tmp_name']));
     foreach ($lines as $line) {
-		echo $line;
-        if (! mysql_query($line)) {
+        /*if (! mysql_query($line)) {
             $problem = true;
-            print "<p>" . mysql_error() . " in line '$line'</p>";
+            print "<b>" . mysql_error() . " in line:</b> '$line': ";
         }
+		echo $line . "<br/>";*/
+		execute_query_print_result($line);
 	}
+	echo('</p>');
 
 	//Upgrade files with 'conflicts' in adjudicator table]
 	$query="SHOW COLUMNS FROM adjudicator";
@@ -90,9 +94,9 @@ if ( array_key_exists("uploadedfile", @$_FILES)) {
 				}				
 			}
 			add_strike_judge_univ($adjudicator['adjud_id'],$adjudicator['univ_id']); //Strike from own institution.
-			$query="ALTER TABLE adjudicator DROP COLUMN conflicts";
-			mysql_query($query);
-			echo mysql_error();
+			//$query="ALTER TABLE adjudicator DROP COLUMN conflicts";
+			//mysql_query($query);
+			//echo mysql_error();
 			print "<p>Conflicts converted to new format.</p>";
 		}
     }

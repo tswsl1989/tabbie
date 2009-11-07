@@ -1,0 +1,30 @@
+Tabbie requires PHP >= 5 and MySQL >= 5
+
+In php.ini:
+
+short_open_tag: yes
+php error reporting: configure on and displayed to taste
+
+In mysql.cnf (mysql.ini):
+
+[client]
+default_character_set=utf8
+
+[mysqld]
+default_character_set=utf8
+default_collation=utf8_general_ci
+
+Release packaging notes:
+
+Get latest MOWES version: www.mowes.chsoftware.net
+Packages: PHP, MySQL, PHPMyAdmin
+
+Add a version of mysqldump (!) to /mysql/bin
+
+Export tabbie:
+
+svn export trunk destinationdir
+
+Remove .DS_Store files etc, any other cruft (check to make sure .htaccess and config/settings.php don't exist!)
+
+Change MOWES homepage to reflect tabbie

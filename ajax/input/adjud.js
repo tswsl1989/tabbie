@@ -33,6 +33,17 @@ $(document).ready(function() {
 		});
 	};
 	
+	function adjudactivetoggle(xml){
+		$('adjudicator',xml).each(function() {
+			adjudicator=$("#adjud"+$(this).find("adjud_id").text());
+			adjudicator.text($(this).find("active").text());
+			adjudicator.parent().removeClass("inactive");
+			if(adjudicator.text()=="N"){
+				adjudicator.parent().addClass("inactive");
+			}
+		});
+	}
+	
 	function failuremsg(text){
 		$('failure').html(text);
 	}
@@ -64,6 +75,18 @@ $(document).ready(function() {
 		);
 	}));
 	
+	$('.activetoggle').click(function(){
+		$.ajax({
+			url: "controller/input/adjud.php",
+			data: {
+				adjud_id: $(this).attr("id").substring(5),
+				action: "ACTIVETOGGLE",
+			},
+			type: 'POST',
+			success: adjudactivetoggle,
+			failure: failuremsg,
+		});
+	});
 });
 
 

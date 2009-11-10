@@ -268,11 +268,11 @@ if ($action=="display")
          <tr><th>Name</th><th>University</th><th>Ranking</th><th>Active(Y/N)</th><th>Status</th><th>Conflicts</th></tr>
          <? while($row=mysql_fetch_assoc($result)) { ?>
 
-      <tr <?if ($row['active']=='N') echo "style=\"color:red\"" ;?>>
+      <tr <?if ($row['active']=='N') echo "class=\"inactive\"" ;?>>
         <td><?echo $row['adjud_name'];?></td>
     <td><?echo $row['univ_code'];?></td>
    <td><?echo $row['ranking'];?></td>
-    <td><?echo $row['active'];?></td>
+    <td class='activetoggle' id='adjud<?php echo $row['adjud_id']?>'><?echo $row['active'];?></td>
 	<td><?if($row['status']!='normal') echo $row['status'];?></td>
    <td><?echo print_conflicts($row['adjud_id']);?></td>
     <td class="editdel"><a href="input.php?moduletype=adjud&amp;action=edit&amp;adjud_id=<?echo $row['adjud_id'];?>">Edit</a></td>

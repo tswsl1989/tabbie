@@ -383,7 +383,7 @@ if ($action=="display")
           <tr><th>Team</th><th>University</th><th>Speaker 1</th><th>Speaker 2</th><th>Speaker 1 RLS</th><th>Speaker 2 RLS</th><th>Team RLS</th><th>Active(Y/N)</th><th>Composite(Y/N)</th></tr>
           <? while($row=mysql_fetch_assoc($result)) { ?>
 
-      <tr <?if ($row['active']=='N') echo "style=\"color:red\""?>>
+      <tr <?if ($row['active']=='N') echo "class=\"inactive\""?>>
         <td><?echo $row['univ_code']." ".$row['team_code'];?></td>
          <td><?echo $row['univ_name'];?></td>
          <td><?echo $row['speaker1'] ?></td>
@@ -391,7 +391,7 @@ if ($action=="display")
 	 <td><?echo $row['speaker1esl'] ?></td>
 	 <td><?echo $row['speaker2esl'] ?></td>
          <td><?echo $row['esl'];?></td>
-          <td><?echo $row['active'];?></td>
+          <td class='activetoggle' id='team<?php echo $row['team_id']?>'><?echo $row['active'];?></td>
          <td><?echo $row['composite']?></td>
           <td class="editdel"><a href="input.php?moduletype=team&amp;action=edit&amp;team_id=<?echo $row['team_id'];?>">Edit</a></td>
          <?

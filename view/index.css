@@ -258,3 +258,8 @@ td li
 {
   list-style-type:disc;
 }
+
+tr.inactive
+{
+	color: #FF0000;
+}

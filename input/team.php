@@ -377,7 +377,7 @@ if ($action=="display")
 
     //Print Table
     ?>
-        <h3>Total No. of Teams : <?echo mysql_num_rows($result)?> (<?echo mysql_num_rows($active_result)?> )</h3>          
+        <h3>Total No. of Teams : <span id="totalcount"><?echo mysql_num_rows($result)?></span> (<span id="activecount"><?echo mysql_num_rows($active_result)?></span> )</h3>          
       <? echo "<h3><a href=\"input.php?moduletype=team&amp;action=add\">Add New</a></h3>";?>      
           <table>
           <tr><th>Team</th><th>University</th><th>Speaker 1</th><th>Speaker 2</th><th>Speaker 1 RLS</th><th>Speaker 2 RLS</th><th>Team RLS</th><th>Active(Y/N)</th><th>Composite(Y/N)</th></tr>

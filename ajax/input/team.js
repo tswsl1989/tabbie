@@ -32,6 +32,11 @@ $(document).ready(function() {
 				team.parent().addClass("inactive");
 			}
 		});
+		updatecounts();
+	}
+	
+	function updatecounts(){
+		$('#activecount').text($("#totalcount").text() - $(".inactive").length);
 	}
 	
 	function failuremsg(text){

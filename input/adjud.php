@@ -256,7 +256,7 @@ if ($action=="display")
     //Print Table
     ?>
 
-      <h3>Total No. of Adjudicators : <?echo mysql_num_rows($result)?> (<?echo mysql_num_rows($active_result)?>)</h3>
+      <h3>Total No. of Adjudicators : <span id="totalcount"><?echo mysql_num_rows($result)?></span> (<span id="activecount"><?echo mysql_num_rows($active_result)?></span>)</h3>
 
          <?echo "<h3><a href=\"input.php?moduletype=adjud&amp;action=add\">Add New</a></h3>";
 		 if($rankorder){

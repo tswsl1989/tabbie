@@ -33,6 +33,10 @@ $(document).ready(function() {
 		});
 	};
 	
+	function updatecounts(){
+		$('#activecount').text($("#totalcount").text() - $(".inactive").length);
+	}
+	
 	function adjudactivetoggle(xml){
 		$('adjudicator',xml).each(function() {
 			adjudicator=$("#adjud"+$(this).find("adjud_id").text());
@@ -42,6 +46,7 @@ $(document).ready(function() {
 				adjudicator.parent().addClass("inactive");
 			}
 		});
+		updatecounts();
 	}
 	
 	function failuremsg(text){

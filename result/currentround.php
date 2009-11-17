@@ -419,6 +419,12 @@ $team_co_score = $speaker1_co_score + $speaker2_co_score;
         {    if ($aa > 0)
             {    $validate = 0;
                 $msg[]="1 or more speakers without any score entered. ";
+				$query="SELECT DISTINCT venue.venue_name AS venue FROM `venue` INNER JOIN draw_round_$nextresult ON venue.venue_id = draw_round_$nextresult.venue_id INNER JOIN `temp_speaker_round_$nextresult` ON draw_round_$nextresult.debate_id = temp_speaker_round_$nextresult.debate_id WHERE temp_speaker_round_$nextresult.points = 0";
+				$result=mysql_query($query);
+				echo mysql_error();
+				while ($row=mysql_fetch_assoc($result)){
+					$msg[]="Re-enter ballot for ".$row['venue'];
+				}
             }
         }
         
@@ -426,7 +432,7 @@ $team_co_score = $speaker1_co_score + $speaker2_co_score;
         {
             //Create and add values to results table
             
-            $query ="CREATE TABLE `result_round_$nextresult` ( ";
+        $query ="CREATE TABLE `result_round_$nextresult` ( ";
         $query.="`debate_id` mediumint(9) NOT NULL default '0',";
         $query.="`first` mediumint(9) NOT NULL default '0',";
         $query.="`second` mediumint(9) NOT NULL default '0',";

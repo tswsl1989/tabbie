@@ -247,12 +247,12 @@ if (($validate==1)) {
             $avg_points = sprintf("%01.2f", $row['points'] / 4);
             echo "<td>$avg_points</td>\n";
 
-            if (! @$row['chair'])
+            if (!array_key_exists("chair", @$row))
                 echo "<td><b>None Assigned</b></td>";
             else
                 echo "<td>{$row['chair']}</td>";
 
-            if (! @$row['panel'])
+            if (!array_key_exists("panel", @$row))
                 echo "<td><b>None Assigned</b></td>";
             else {
                 echo "<td><ul>\n";

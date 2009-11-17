@@ -46,6 +46,7 @@ if (@$_REQUEST["result_type"] == "txt") {
     eval("{$function}_pdf('{$function}_round_$param.pdf', " . '$result["data"]' . ");");
 } elseif (@$_REQUEST["result_type"] == "html") {
     $ntu_controller = "print"; #selected in menu
+	$moduletype="";
     $title = @$_REQUEST["title"];
     
     require("view/header.php");

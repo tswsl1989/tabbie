@@ -114,9 +114,18 @@ function results_by_position($round) {
             $team_id = $row[0];
             foreach ($RANKINGS as $RANKING) {
                 $team_on_ranking = __team_on_ranking($round, $team_id, $RANKING);
-                @$current[$RANKING] += $team_on_ranking;
+				if(isset($current[$RANKING])){ //avoid throwing error when [$RANKING] not yet index
+					@$current[$RANKING] += $team_on_ranking;
+				} else {
+					@$current[$RANKING] = $team_on_ranking;
+				}
+                
                 if ($team_on_ranking) {
-                    @$current["total"] += points_for_ranking($RANKING);
+					if(isset($current["total"])){ //avoid throwing error when ["total"] not yet index
+						 @$current["total"] += points_for_ranking($RANKING);
+					} else {
+						 @$current["total"] = points_for_ranking($RANKING);
+					}
                 }
             }
         }

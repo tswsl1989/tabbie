@@ -103,7 +103,7 @@ if($intslide > $maxrooms) $slide="premotion";
 ?>                        
     </div></div><div class="push"></div> <!-- End of scrolldisplay -->
 	<div class="footer"><!-- BEGIN class footer-->
-		Created with Tabbie, see <a href="http://smoothtournament.com">http://smoothtournament.com</a> and <a href="http://tabbie.wikidot.com">http://tabbie.wikidot.com</a>. Maintained by the Cambridge Union.
+		Created with Tabbie, see <a href="http://smoothtournament.com">http://smoothtournament.com</a> and <a href="http://tabbie.wikidot.com">http://tabbie.wikidot.com</a>.
 	</div><!-- END class footer-->
 </body>
 </html>

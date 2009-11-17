@@ -23,12 +23,15 @@
 require_once("includes/backend.php");
 
 $ntu_controller = "print"; #selected in menu
+$moduletype="";
 $title = "Motion Fairness";
 require("view/header.php");
 require("view/mainmenu.php");
 
 $POSITIONS = array('og' => "Opening Government", 'oo' => "Opening Opposition", 'cg' => "Closing Government", 'co' => "Closing Opposition");
 $INFOS = array('first', 'second', 'third', 'fourth', 'normalized');
+$totals=array('og' => "", 'oo' => "", 'cg' => "", 'co' => "");
+$total=0;
 
 for ($round = 1; $round <= get_num_completed_rounds(); $round++) {
     $motion = get_motion_for_round($round);

@@ -98,7 +98,7 @@ if ($return_value == 0) {
 		        
 
 		} else { //attempt 3 (user configured path)
-			$command = "/usr/local/mysql/bine/mysqldump -u$database_user $password $database_name";
+			$command = "/usr/local/mysql/bin/mysqldump -u$database_user $password $database_name";
 			
 			exec($command, $output, $return_value);
 			$attempted[] = array($command,$return_value,$output);

@@ -45,6 +45,8 @@ INSERT INTO `highlight` VALUES ('50','100','result');
 CREATE TABLE `motions` (
   `round_no` smallint(6) NOT NULL default '0',
   `motion` text NOT NULL,
+  `info_slide` enum('Y','N') NOT NULL default 'N',
+  `info` text NOT NULL,
   PRIMARY KEY  (`round_no`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

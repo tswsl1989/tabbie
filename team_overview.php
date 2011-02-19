@@ -106,7 +106,7 @@ if (!$team_id) {
                 $after = team_standing_for_team($round_standing, $id);
                 $final = team_standing_for_team($final_standing, $id);
     
-                print "<tr><td>$long</td><td><a href=\"team_overview?team_id=$id\">$name</a></td><td>$ranking</td><td>$points</td><td>$before</td><td>$after</td><td>$final</td></tr>";
+                print "<tr><td>$long</td><td><a href=\"team_overview.php?team_id=$id\">$name</a></td><td>$ranking</td><td>$points</td><td>$before</td><td>$after</td><td>$final</td></tr>";
             }
     
             print "</table>";

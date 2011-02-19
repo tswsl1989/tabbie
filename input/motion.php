@@ -26,20 +26,34 @@ require_once("includes/backend.php");
 
 //Get POST values and validate/convert them
 $actionhidden="";
-$round_no=$motion="";
+$round_no=$motion=$info="";
+$info_slide="N";
 
 if(array_key_exists("round_no", @$_POST)) $round_no=trim(@$_POST['round_no']);
 if(array_key_exists("motion", @$_POST)) $motion=makesafe(@$_POST['motion']);
+if(array_key_exists("info_slide", @$_POST)) $info_slide=trim(@$_POST['info_slide']);
+if(array_key_exists("info", @$_POST)) $info=makesafe(@$_POST['info']);
 if(array_key_exists("actionhidden", @$_POST)) $actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
 
 if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
   {
     $validate=1;
+	$info_check=true;
     //Check if they are empty and set the validate flag accordingly
 
     if (!$round_no) $msg[]="Round Number Missing.";
     if (!$motion) $msg[]="Motion Missing.";
-    if ((!$round_no) || (!$motion)) $validate=0;
+	if ($info_slide=="Y" && (!$info))
+	{
+		$msg[]="Info Text Missing, But Set To Yes.";
+		$info_check=false;
+	}
+	if ($info_slide=="N" && ($info))
+	{
+		$msg[]="Info Text Present, But Set To No.";
+		$info_check=false;
+	}
+    if ((!$round_no) || (!$motion) || (!$info_check)) $validate=0;
 
     
   }
@@ -66,8 +80,8 @@ if ($actionhidden=="add")
       {        
         //Add Stuff to Database
         
-        $query = "INSERT INTO motions (round_no, motion) ";
-        $query.= " VALUES('$round_no', '$motion')";
+        $query = "INSERT INTO motions (round_no, motion, info_slide, info) ";
+        $query.= " VALUES('$round_no', '$motion', '$info_slide', '$info')";
         $result=mysql_query($query);
 
         if (!$result) //Error
@@ -100,7 +114,7 @@ if ($actionhidden=="edit")
       {
         //Edit Stuff in Database
         $query = "UPDATE motions ";
-        $query.= "SET motion='$motion' ";
+        $query.= "SET motion='$motion', info_slide='$info_slide', info='$info' ";
         $query.= "WHERE round_no='$round_no'";
         $result=mysql_query($query);
         
@@ -146,6 +160,8 @@ if ($action=="edit")
             $row=mysql_fetch_assoc($result);
             $round_no=$row['round_no'];
             $motion=$row['motion'];
+			$info_slide=$row['info_slide'];
+			$info=$row['info'];
       }
       }   
     
@@ -200,13 +216,16 @@ if ($action=="display")
 
          <?echo "<h3><a href=\"input.php?moduletype=motion&amp;action=add\">Add New</a></h3>";?>
       <table>
-         <tr><th>Round Number</th><th>Motion</th></tr>
+         <tr><th>Round Number</th><th>Motion</th><th>Info Slide</th><th>Text</th></tr>
          <? while($row=mysql_fetch_assoc($result)) { ?>
 
       <tr>
         <td><?echo $row['round_no'];?></td>
     <td><?echo $row['motion'];?></td>
+	<td><?echo $row['info_slide'];?></td>
+	<td><?echo $row['info'];?></td>
     <td class="editdel"><a href="input.php?moduletype=motion&amp;action=edit&amp;round_no=<?echo $row['round_no'];?>">Edit</a></td>
+	<td class="editdel"><a href="input.php?moduletype=motion&amp;action=delete&amp;round_no=<?echo $row['round_no'];?>">Delete</a></td>
       </tr>
           <?} //Do Not Remove  ?> 
     </table>
@@ -231,6 +250,13 @@ if ($action=="display")
         <? } ?>
        <label for="motion">Motion</label>
        <textarea rows="3" cols="60" id="motion" name="motion"><?= $motion ?></textarea><br/><br/>
+	   <label for="info_slide">Info Slide</label>
+	    <select id="info_slide" name="info_slide">
+		 <option value="Y" <?echo ($info_slide=="Y")?"selected":""?>>Yes</option>
+         <option value="N" <?echo (($info_slide=="N")||(!$info_slide))?"selected":""?>>No</option>
+        </select><br/><br/>
+	   <label for="info">Text</label>
+	    <textarea type="text" rows="3" cols="60" id="info" name="info"><?= $info ?></textarea><br/><br/>
 
                   <input type="submit" value="<?echo ($action=="edit")?"Edit Motion":"Add Motion" ;?>"/>
                   <input type="button" value="Cancel" onClick="location.replace('input.php?moduletype=motion')"/>

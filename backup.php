@@ -31,9 +31,9 @@ if ($database_password)
     $password = "-p$database_password";
 else
     $password = "";
-$command = "mysqldump -u$database_user $password $database_name";
+$command = "mysqldump -u $database_user $password $database_name";
 $basecommand = $command;
-$command2 = "mysqldump -u$database_user -p******** $database_name";
+$command2 = "mysqldump -u $database_user -p******** $database_name";
 
 $output = array();
 $return_value = "undefined";

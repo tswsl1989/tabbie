@@ -22,6 +22,7 @@
  * end license */
 
 require("includes/display.php");
+require("includes/backend.php");
 
 //Get POST values and validate/convert them
 
@@ -30,8 +31,8 @@ $active="";
 $venue_name="";
 $venue_location="";
 
-if(array_key_exists("venue_name", @$_POST)) $venue_name=trim(@$_POST['venue_name']);
-if(array_key_exists("venue_location", @$_POST)) $venue_location=trim(@$_POST['venue_location']);
+if(array_key_exists("venue_name", @$_POST)) $venue_name=makesafe(@$_POST['venue_name']);
+if(array_key_exists("venue_location", @$_POST)) $venue_location=makesafe(@$_POST['venue_location']);
 if(array_key_exists("active", @$_POST)) $active=strtoupper(trim(@$_POST['active']));
 if(array_key_exists("actionhidden", @$_POST)) $actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
 

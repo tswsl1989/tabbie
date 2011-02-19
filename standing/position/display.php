@@ -123,7 +123,7 @@ if ($action == "display")
     echo "<tr><th>Team Name</th><th>OG</th><th>OO</th><th>CG</th><th>CO</th></tr>\n";
     foreach ($team_array as $team) {
         echo "<tr>\n";
-            echo "<td><a href=\"team_overview?team_id={$team['teamid']}\">".$team["teamname"]."</a></td>\n";
+            echo "<td><a href=\"team_overview.php?team_id={$team['teamid']}\">".$team["teamname"]."</a></td>\n";
             echo "<td>".$team["og"]."</td>\n";
             echo "<td>".$team["oo"]."</td>\n";
             echo "<td>".$team["cg"]."</td>\n";

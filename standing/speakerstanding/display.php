@@ -186,7 +186,7 @@ if ($action == "display")
         echo "<tr>\n";
             echo "<td>$display_ranking</td>\n";
             echo "<td>".$speaker_array[$x]["speakername"]."</td>\n";
-            echo "<td>"."<a href=\"team_overview?team_id={$speaker_array[$x]['team_id']}\">".$speaker_array[$x]["teamname"]."</td>\n";
+            echo "<td>"."<a href=\"team_overview.php?team_id={$speaker_array[$x]['team_id']}\">".$speaker_array[$x]["teamname"]."</td>\n";
             for ($y=1;$y<=$roundno;$y++)
                 echo "<td>" . $speaker_array[$x]["round_$y"] . "</td>";
             echo "<td>".$speaker_array[$x]["points"]."</td>\n";

@@ -99,7 +99,7 @@ if (get_num_rounds() == 0 && !has_temp_draw()) {
 <li><a href="draw_scrolling_display.php?roundno=<?= $round ?>">In the browser (scrolling)</a></li>
 <li><a href="rest.php?result_type=csv&amp;function=adjudicator_sheets&amp;param=<?= $round ?>">Export .csv</a></li>
 </ul>
-<li>Display the motion</li>
+<li><a href="motion.php?roundno=<?= $round ?>">Display the motion</a></li>
 <li><a href="backup.php">Make a backup (and save it on another computer)</a></li>
 
 <? } if (in_array($state, array("before_draw", "before_tournament", "during_draw", "during_round"))) { ?>

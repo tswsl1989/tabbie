@@ -125,7 +125,7 @@ if ((mysql_num_rows($result))<1) //the table don't exist
 	     $query.= "cg MEDIUMINT(9) NOT NULL ,";
 	     $query.= "co MEDIUMINT(9) NOT NULL ,";
 	     $query.= "venue_id MEDIUMINT(9) NOT NULL ,";
-	     $query.= "PRIMARY KEY (debate_id))";
+	     $query.= "PRIMARY KEY (debate_id)), ENGINE=InnoDB";
 	     $result=mysql_query($query);
 
 	    

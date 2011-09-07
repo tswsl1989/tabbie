@@ -283,12 +283,12 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 	        $query.= "cg MEDIUMINT(9) NOT NULL ,";
 	        $query.= "co MEDIUMINT(9) NOT NULL ,";
 	        $query.= "venue_id MEDIUMINT(9) NOT NULL ,";
-	        $query.= "PRIMARY KEY (debate_id))";
+	        $query.= "PRIMARY KEY (debate_id)), ENGINE=InnoDB";
 	        $result=mysql_query($query);
 
 	        $query = "CREATE TABLE adjud_round_$nextround ( `debate_id` MEDIUMINT NOT NULL ,";
 	        $query .= " `adjud_id` MEDIUMINT NOT NULL ,";
-	        $query .= " `status` ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL );";
+	        $query .= " `status` ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL ), ENGINE=INNODB;";
 	        $result=mysql_query($query);
 
 	        //Insert Values

@@ -29,6 +29,7 @@ require("view/header.php");
 require("view/mainmenu.php");
 require("includes/adjudicator.php");
 require("includes/dbimport.php");
+require_once("includes/dbconnection.php");
 ?>
 <h2>Import Backup</h2>
 <p>
@@ -46,7 +47,6 @@ Choose a file to upload: <input name="uploadedfile" type="file" /><br />
 <?
 if ( array_key_exists("uploadedfile", @$_FILES)) {
     $problem = false;
-    require_once("includes/dbconnection.php");
     
     if (!mysql_query("DROP DATABASE $database_name")) {
          $problem = true;
@@ -80,6 +80,7 @@ if ( array_key_exists("uploadedfile", @$_FILES)) {
 	$result=mysql_query($query);
 	while($row=mysql_fetch_assoc($result)){
 		if($row['Field']=='conflicts'){
+			// Does this do what we want? Does it not recreate strikes in many cases?!
 			$query=" CREATE TABLE `strikes` (`strike_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY , `adjud_id` INT NOT NULL , `team_id` INT NULL , `univ_id` INT NULL , INDEX ( `adjud_id` )) ENGINE = MYISAM";
 			mysql_query($query);
 			echo mysql_error();
@@ -103,6 +104,18 @@ if ( array_key_exists("uploadedfile", @$_FILES)) {
 			print "<p>Conflicts converted to new format.</p>";
 		}
     }
+
+	//Upgrade MyISAM dbs to InnoDB
+	$query="SELECT `table_name`,`engine` FROM INFORMATION_SCHEMA.TABLES WHERE `table_schema`='$database_name';";
+	echo mysql_error();
+	$result=mysql_query($query);
+	while($row=mysql_fetch_assoc($result)){
+		if ($row["engine"] == "MyISAM"){
+			$query = "ALTER TABLE `".$row["table_name"]."` ENGINE=InnoDB;";
+			mysql_query($query);
+			print "<p>Converting ".$row["table_name"]." to InnoDB. ".mysql_error()."</p>";
+		}
+	}
 
 if (! $problem )
     print "<p><b>Imported File Succesfully</b></p>"; 

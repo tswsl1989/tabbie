@@ -35,7 +35,7 @@
 	$query = "CREATE TABLE $tablename2 (";
 	$query .= "team_id MEDIUMINT(9) NOT NULL default '0' PRIMARY KEY,";
 	$query .= "team_points MEDIUMINT(9) default '0',";
-	$query .= "team_speaks MEDIUMINT(9) default '0')";
+	$query .= "team_speaks MEDIUMINT(9) default '0'), ENGINE=InnoDB";
 	$result=mysql_query($query);
     		if (!$result){
         		$msg[]=mysql_error();}

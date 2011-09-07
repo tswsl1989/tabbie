@@ -126,7 +126,7 @@ if (($action=="draw")&&($validate==1))//Check Action : Draw
     $query.= "cg MEDIUMINT(9) NOT NULL ,";
     $query.= "co MEDIUMINT(9) NOT NULL ,";
     $query.= "venue_id MEDIUMINT(9) NOT NULL ,";
-    $query.= "PRIMARY KEY (debate_id))";
+    $query.= "PRIMARY KEY (debate_id)), ENGINE=InnoDB;";
     $result=mysql_query($query);
     if (!$result)
         $msg[]=mysql_error();
@@ -155,7 +155,8 @@ if (($action=="draw")&&($validate==1))//Check Action : Draw
 	$query .= "cg_speaker1 varchar(50), ";
 	$query .= "cg_speaker2 varchar(50), ";
 	$query .= "co_speaker1 varchar(50), ";
-	$query .= "co_speaker2 varchar(50)) ";
+	$query .= "co_speaker2 varchar(50)), ";
+	$query .= "ENGINE=InnoDB"
 
 
 	$result=mysql_query($query);

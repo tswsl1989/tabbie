@@ -58,7 +58,7 @@ if($intslide > $maxrooms) $slide="premotion";
 		if($slide == "0") {
 			echo("<div class='notice'><a href='draw_table_display.php?roundno=".$roundno."&slide=1'>Draw Round</a></div>");
 		} elseif($slide=="premotion") {
-			echo("<div class='notice'><a href='draw_table_display.php?roundno=".$roundno."&slide=motion'>Motion</a></div>");
+			echo("<div class='notice'><a href='draw_table_display.php?roundno=".$roundno."&slide=motion'>Motion</a><br /><a href='draw_table_display.php?roundno=".$roundno."&slide=1' style='font-size: 0.4em'>Display draw again</a></div>");
 		} elseif($slide=="motion") {
 			echo("<div class='notice'>" . get_motion_for_round($roundno) . "</div>");
 		} else {
@@ -73,8 +73,9 @@ if($intslide > $maxrooms) $slide="premotion";
 			echo("<div class='venue'>".venue_name($row["venue_id"])."</div>");
 			echo("<div class='prop'>Proposition</div>");
 			echo("<div class='opp'>Opposition</div>");
-			echo("<div class='og'>".team_code_long_table($row["og"])."</div>");
+			echo("<div class='og'> ".team_code_long_table($row["og"])."</div>");
 			echo("<div class='oo'>".team_code_long_table($row["oo"])."</div>");
+			echo("<br />");
 			echo("<div class='cg'>".team_code_long_table($row["cg"])."</div>");
 			echo("<div class='co'>".team_code_long_table($row["co"])."</div>");	
 		
@@ -85,16 +86,28 @@ if($intslide > $maxrooms) $slide="premotion";
 			$db_result = mysql_query("SELECT * FROM `adjud_round_$roundno` WHERE `debate_id` = $debate_id AND `status` = CONVERT ( _utf8 'panelist' USING latin1)");
 			if(mysql_num_rows($db_result)>0){
 				echo ("<div class='panelist'>");
+				$first=1;
 				while($row=mysql_fetch_assoc($db_result)) {
-					echo(adjudicator_name($row["adjud_id"]) . ", ");
+					if ($first==1) {
+						echo adjudicator_name($row["adjud_id"]);
+					}else {
+						echo ", " . adjudicator_name($row["adjud_id"]);
+					}
+					$first=0;
 				}
 				echo ("</div>");
 			}
 			$db_result = mysql_query("SELECT * FROM `adjud_round_$roundno` WHERE `debate_id` = $debate_id AND `status` = CONVERT ( _utf8 'trainee' USING latin1)");
 			if(mysql_num_rows($db_result)>0){
 				echo ("<div class='trainee'>");
+				$first=1;
 				while($row=mysql_fetch_assoc($db_result)) {
-					echo(adjudicator_name($row["adjud_id"]) . " (t), ");
+					if ($first==1) {
+						echo adjudicator_name($row["adjud_id"]) . " (t)";
+					}else {
+						echo ", " . adjudicator_name($row["adjud_id"]). " (t)";
+					}
+					$first=0;
 				}
 				echo ("</div>");
 			}

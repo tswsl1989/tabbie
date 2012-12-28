@@ -33,12 +33,12 @@ require_once("includes/backend.php");
 require_once("includes/phppowerpoint/PHPPowerPoint/IOFactory.php");
 
 
-/* SOAS Colours
+// SOAS Colours
 $SOASYellow = new PHPPowerPoint_Style_Color( "FFFCFF7E" );
 $SOASGreen = new PHPPowerPoint_Style_Color( "FFC58A68" );
 $SOASOchre = new PHPPowerPoint_Style_Color( "FF974A1C" );
 $SOASBrown  = new PHPPowerPoint_Style_Color( "FF364F39" );
-*/
+
 
 
 function add_text_element($slide, $text, $width, $height, $xoffset, $yoffset, $fontsize, $italic=false){
@@ -50,9 +50,10 @@ function add_text_element($slide, $text, $width, $height, $xoffset, $yoffset, $f
 	$shape->getAlignment()->setHorizontal( PHPPowerPoint_Style_Alignment::HORIZONTAL_CENTER);
 	$shape->getAlignment()->setVertical( PHPPowerPoint_Style_Alignment::VERTICAL_CENTER);
 	$textRun = $shape->createTextRun($text);
-	$textRun->getFont()->setBold(true);
+	$textRun->getFont()->setBold(false);
 	$textRun->getFont()->setName("Georgia");
 	$textRun->getFont()->setSize($fontsize);
+	$textRun->getFont()->setColor(new PHPPowerPoint_Style_Color( "FF222222" ));
 	if($italic){
 		$textRun->getFont()->setItalic(true);
 	}
@@ -72,10 +73,10 @@ function add_design_element($slide, $path, $width, $height, $xoffset, $yoffset){
 function two_slide_room_block($slide, $row_debate, $roundno, $offset){
 	add_text_element($slide, $row_debate['venue_name'], 380, 90, 10+$offset, 50, 30, true);
 	
-	add_text_element($slide, $row_debate["ogtc"] . " " . $row_debate["ogt"], 380, 100,  10+$offset, 140, 30);
-	add_text_element($slide, $row_debate["ootc"] . " " . $row_debate["oot"], 380, 100,  10+$offset, 240, 30);
-	add_text_element($slide, $row_debate["cgtc"] . " " . $row_debate["cgt"], 380, 100,  10+$offset, 340, 30);
-	add_text_element($slide, $row_debate["cotc"] . " " . $row_debate["cot"], 380, 100,  10+$offset, 440, 30);
+	add_text_element($slide, $row_debate["ogtc"] . " " . $row_debate["ogt"], 380, 100,  10+$offset, 140, 24);
+	add_text_element($slide, $row_debate["ootc"] . " " . $row_debate["oot"], 380, 100,  10+$offset, 240, 24);
+	add_text_element($slide, $row_debate["cgtc"] . " " . $row_debate["cgt"], 380, 100,  10+$offset, 340, 24);
+	add_text_element($slide, $row_debate["cotc"] . " " . $row_debate["cot"], 380, 100,  10+$offset, 440, 24);
 	
 	$judgelist = "";
 	
@@ -117,7 +118,7 @@ function two_slide_room_block($slide, $row_debate, $roundno, $offset){
 
 	//Place panellists and trainees
 	$judgelist=substr($judgelist,0,strlen($judgelist)-2); //removes the trailing commas (!)
-	add_text_element($slide, $judgelist, 380, 120,  10+$offset, 540, 22, true);
+	add_text_element($slide, $judgelist, 380, 120,  10+$offset, 540, 20, true);
 }
 
 $roundno=@$_GET['roundno'];
@@ -201,10 +202,10 @@ if(isset($generate)){
 			add_text_element($slide, "Opposition", 460, 50, 490, 110, 18);
 
 			//Teams
-			add_text_element($slide, $row_debate["ogtc"] . " " . $row_debate["ogt"], 460, 190,  10, 160, 44);
-			add_text_element($slide, $row_debate["ootc"] . " " . $row_debate["oot"], 460, 190, 490, 160, 44);
-			add_text_element($slide, $row_debate["cgtc"] . " " . $row_debate["cgt"], 460, 190,  10, 350, 44);
-			add_text_element($slide, $row_debate["cotc"] . " " . $row_debate["cot"], 460, 190, 490, 350, 44);
+			add_text_element($slide, $row_debate["ogtc"] . " " . $row_debate["ogt"], 460, 190,  10, 160, 28);
+			add_text_element($slide, $row_debate["ootc"] . " " . $row_debate["oot"], 460, 190, 490, 160, 28);
+			add_text_element($slide, $row_debate["cgtc"] . " " . $row_debate["cgt"], 460, 190,  10, 350, 28);
+			add_text_element($slide, $row_debate["cotc"] . " " . $row_debate["cot"], 460, 190, 490, 350, 28);
 
 			//Find the chair adjudicator
 			$debate_id = $row_debate['debate_id'];
@@ -214,7 +215,7 @@ if(isset($generate)){
 			$adj_result=mysql_query($adj_query);
 			$adj_row=mysql_fetch_assoc($adj_result);
 
-			add_text_element($slide, $adj_row["adjud_name"], 940, 55,  10, 550, 30);
+			add_text_element($slide, $adj_row["adjud_name"], 940, 55,  10, 550, 26);
 
 			//Find the panellists
 			$panellistlist = "";
@@ -245,7 +246,8 @@ if(isset($generate)){
 			}
 
 			//Place panellists and trainees
-			add_text_element($slide, $panellistlist, 940, 85,  10, 605, 30);
+			$panellistlist=substr($panellistlist,0,strlen($panellistlist)-2); //removes the trailing commas (!)
+			add_text_element($slide, $panellistlist, 940, 85,  10, 605, 24);
 		}
 	} else if ($roomsperslide == 2){
 		/* 2 rooms per slide
@@ -306,7 +308,7 @@ if(isset($generate)){
 	// Slide with the motion on it
 	$currentSlide = $presentation->createSlide();
 	if($otherslides != "") add_design_element($currentSlide, $otherslides, 960, 720, 0, 0);
-	add_text_element($currentSlide, get_motion_for_round($roundno), 930, 720, 10, 10, 80);
+	add_text_element($currentSlide, get_motion_for_round($roundno), 930, 720, 10, 80, 45);
 	
 	//Write out the file
 	$objWriter = PHPPowerPoint_IOFactory::createWriter($presentation, 'PowerPoint2007');

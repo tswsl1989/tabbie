@@ -124,7 +124,7 @@ oo MEDIUMINT(9) NOT NULL ,
 cg MEDIUMINT(9) NOT NULL ,
 co MEDIUMINT(9) NOT NULL ,
 venue_id MEDIUMINT(9) NOT NULL ,
-PRIMARY KEY (debate_id)), ENGINE=InnoDB";
+PRIMARY KEY (debate_id))";
 
     $result = q($query);
     
@@ -154,7 +154,7 @@ PRIMARY KEY (debate_id)), ENGINE=InnoDB";
     $details = array();
     reallocate_simulated_annealing();
 
-	$query= "CREATE TABLE draw_lock_round_$nextround (`lock_id` MEDIUMINT( 9 ) NOT NULL ,`debate_id` MEDIUMINT( 9 ) NULL ,`adjud_id` MEDIUMINT NULL ,`expiry` BIGINT NOT NULL ,`client` VARCHAR( 64 ) NOT NULL ,PRIMARY KEY ( `lock_id` ) ,INDEX ( `client` )) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_unicode_ci, ENGINE=InnoDB";
+	$query= "CREATE TABLE draw_lock_round_$nextround (`lock_id` MEDIUMINT( 9 ) NOT NULL ,`debate_id` MEDIUMINT( 9 ) NULL ,`adjud_id` MEDIUMINT NULL ,`expiry` BIGINT NOT NULL ,`client` VARCHAR( 64 ) NOT NULL ,PRIMARY KEY ( `lock_id` ) ,INDEX ( `client` )) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_unicode_ci";
 	$result = q($query);
 	
 	$adjudicator_end=microtime(true);
@@ -233,7 +233,7 @@ if (($validate==1)) {
         usort($table_data, "cmp_debate_desc");
 
         echo "<table>\n";
-            echo "<tr><th>Venue Name</th><th>Opening Govt</th><th>Opening Opp</th><th>Closing Govt</th><th>Closing Opp</th><th>Avg. Points</th><th>Chair</th><th>Panelists</th><th>Adj. Allocation Score</th></tr>\n";
+            echo "<tr><th>Venue Name</th><th>1st Prop</th><th>1st Opp</th><th>2nd Prop</th><th>2nd Opp</th><th>Avg. Points</th><th>Chair</th><th>Panelists</th><th>Adj. Allocation Score</th></tr>\n";
 
         foreach ($table_data as $row) {
             echo "<tr>\n";

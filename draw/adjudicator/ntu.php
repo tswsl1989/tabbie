@@ -69,7 +69,7 @@ $result=mysql_query($query);
 $query = "CREATE TABLE `$tablename` ( `debate_id` MEDIUMINT NOT NULL ,";
 $query .= " `adjud_id` MEDIUMINT NOT NULL ,";
 $query .= " `status` ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL );";
-$query .= ', ENGINE=InnoDB';
+$query .= '';
 $result=mysql_query($query);
 if (!$result)
     $msg[]=mysql_error();

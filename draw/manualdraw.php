@@ -20,7 +20,7 @@
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  * end license */
-
+/* Modified by Tom Lake <tswsl1989@sucs.org> and released 2011-02-20 */
 require_once("includes/display.php");
 require_once("includes/backend.php");
 require_once("includes/db_tools.php");
@@ -269,6 +269,11 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 					$validate=0;
 				 	$msg[]="ERROR - strike in draw";
 				 	$msg[]="Adjudicator ".$row["adjud_id"]." is conflicted from their debate. Either clear the conflict or reallocate the adjudicator to proceed.";	
+					$allow_override = 1;
+					if(isset($_GET['override']) && $_GET['override']=='alpha'){
+						$msg[]="Adjudicator clash override in effect";
+						$validate=1;
+					}
 				}
 			}
 		}
@@ -283,12 +288,12 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 	        $query.= "cg MEDIUMINT(9) NOT NULL ,";
 	        $query.= "co MEDIUMINT(9) NOT NULL ,";
 	        $query.= "venue_id MEDIUMINT(9) NOT NULL ,";
-	        $query.= "PRIMARY KEY (debate_id)), ENGINE=InnoDB";
+	        $query.= "PRIMARY KEY (debate_id))";
 	        $result=mysql_query($query);
 
 	        $query = "CREATE TABLE adjud_round_$nextround ( `debate_id` MEDIUMINT NOT NULL ,";
 	        $query .= " `adjud_id` MEDIUMINT NOT NULL ,";
-	        $query .= " `status` ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL ), ENGINE=INNODB;";
+	        $query .= " `status` ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL );";
 	        $result=mysql_query($query);
 
 	        //Insert Values
@@ -340,7 +345,9 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 if($action=="finalise") {echo "<h2>Draw failed to validate</h2>";}
 
 if(isset($msg)) displayMessagesUL(@$msg);
-
+if($allow_override==1) {
+	echo "<h3><a style=\"color: #f00\"href=\"draw.php?moduletype=manualdraw&amp;action=finalise&amp;override=alpha\">Click here to override confilcts and finalise draw</a></h3>";
+}
 echo "<p>From here you can either:</p>";
 echo "<h3><a href=\"draw.php?moduletype=currentdraw&amp;action=draw_adjudicators_again\">Give the computer another shot at allocating the adjudicators (Using the current state to generate a better result).</a></h3>";
 echo '<p>or</p>';

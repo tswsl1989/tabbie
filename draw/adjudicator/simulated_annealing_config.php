@@ -31,7 +31,7 @@ function ensure_scoring_factors_in_db() {
   param_name varchar(100), 
   param_value double, 
   PRIMARY KEY (param_name) 
-), ENGINE=InnoDB");
+)");
 
     $values = array('university_conflict', 'team_conflict', 'chair_not_perfect', 'chair_not_ciaran_perfect', 'panel_steepness', 'panel_strength_not_perfect', 'panel_size_not_perfect', 'panel_size_out_of_bounds', 'adjudicator_met_adjudicator', 'adjudicator_met_team', 'lock', 'draw_table_speed');
     foreach ($values as $value) {

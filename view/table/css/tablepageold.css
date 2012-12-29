@@ -16,6 +16,8 @@ html, body {
 
 .container {
 	padding-top:1em;
+	padding-left: 4em;
+	padding-right: 4em;
 	font-size:120%;
 }
 .footer, .push {
@@ -25,8 +27,14 @@ html, body {
 
 div.notice, div.chair, div.venue, div.panelist, div.trainee {
 	text-align:center;
+	font-size: 65%;
+	padding-left: 3em;
+	padding-right: 3em;
+	clear: both;
 }
-
+div.venue {
+	font-size: 120%;
+}
 div.header {
 	padding :.5em;
 }
@@ -47,7 +55,7 @@ div.prop{
 	min-width: 49%;
 	min-height:5%;
 	text-align: center;
-	font-size:50%;
+	font-size: 18px;
 	padding:0em;
 }
 
@@ -56,45 +64,57 @@ div.opp{
 	min-width: 49%;
 	min-height:5%;
 	text-align: center;
-	font-size:50%;
+	font-size: 18px;
 	padding:0em;
 }
 
 div.og{
 	float:left;
 	min-width: 49%;
+	max-width:49%;
 	min-height:30%;
+	max-height:35%;
 	text-align: center;
 	padding-top: 1em;
 	padding-bottom: 1em;
+	clear: left;
 }
 
 
 div.oo{
 	float:right;
 	min-width:49%;
+	max-width:49%;
 	min-height:30%;
+	max-height:35%;
 	text-align: center;
 	padding-top: 1em;
 	padding-bottom: 1em;
+	clear: right;
 }
 
 div.cg{
 	float:left;
 	min-width:49%;
+	max-width:49%;
 	min-height:30%;
+	max-height:35%;
 	text-align: center;
 	padding-top: 1em;
 	padding-bottom: 1em;
+	clear: left;
 }
 
 div.co{
 	float:right;
 	min-width:49%;
+	max-width:49%;
 	min-height:30%;
+	max-height:35%;
 	text-align: center;
 	padding-top: 1em;
 	padding-bottom: 1em;
+	clear: right;
 }
 
 div.notice {

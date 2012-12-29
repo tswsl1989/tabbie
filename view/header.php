@@ -29,6 +29,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="<?= @$dir_hack ?>view/index.css">
 <?php
+ if (file_exists('view/custom.css')) {?>
+    <link rel="stylesheet" href="<?= @$dir_hack ?>view/custom.css">
+<?php 
+ }
 
 //ERROR HANDLING: ECHO ALL ERRORS:
 function customError($errno, $errstr, $errfile, $errline)

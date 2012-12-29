@@ -441,13 +441,13 @@ if ($action=="display")
        </select><br/><br/>
                 
        <label for="team_code">Team Code</label>
-       <input type="text" id="team_code" name="team_code" value="<?echo $team_code;?>"/><br/><br/>
+       <input type="text" maxlength="50" id="team_code" name="team_code" value="<?echo $team_code;?>"/><br/><br/>
 
        <label for="speaker1">Speaker 1</label>
-                    <input type="text" id="speaker1" name="speaker1" value="<?echo $speaker1;?>"/><br/><br/>
+                    <input maxlength="100" type="text" id="speaker1" name="speaker1" value="<?echo $speaker1;?>"/><br/><br/>
                
                     <label for="speaker2">Speaker 2</label>
-                   <input type="text" id="speaker2" name="speaker2" value="<?echo $speaker2;?>"/><br/><br/>
+                   <input maxlength="100" type="text" id="speaker2" name="speaker2" value="<?echo $speaker2;?>"/><br/><br/>
 
 
                                 <label for="speaker1esl">Speaker 1 ESL</label>

@@ -349,7 +349,7 @@ $team_co_score = $speaker1_co_score + $speaker2_co_score;
         $query.="`second` mediumint(9) NOT NULL default '0',";
         $query.="`third` mediumint(9) NOT NULL default '0',";
         $query.="`fourth` mediumint(9) NOT NULL default '0',";
-        $query.="PRIMARY KEY  (`debate_id`)), ENGINE=InnoDB";
+        $query.="PRIMARY KEY  (`debate_id`))";
 
         $result=mysql_query($query);
 
@@ -376,7 +376,7 @@ $team_co_score = $speaker1_co_score + $speaker2_co_score;
             $query.="`speaker_id` mediumint(9) NOT NULL default '0',"; 
             $query.="`debate_id` mediumint(9) NOT NULL default '0',";
             $query.="`points` smallint(9) NOT NULL default '0', ";
-            $query.="PRIMARY KEY (`speaker_id`)), ENGINE=InnoDB";
+            $query.="PRIMARY KEY (`speaker_id`))";
 
             $result=mysql_query($query);
             
@@ -438,7 +438,7 @@ $team_co_score = $speaker1_co_score + $speaker2_co_score;
         $query.="`second` mediumint(9) NOT NULL default '0',";
         $query.="`third` mediumint(9) NOT NULL default '0',";
         $query.="`fourth` mediumint(9) NOT NULL default '0',";
-        $query.="PRIMARY KEY  (`debate_id`)), ENGINE=InnoDB";
+        $query.="PRIMARY KEY  (`debate_id`))";
         $result=mysql_query($query);
         
         if (!$result) //Get Error Message
@@ -455,7 +455,7 @@ $team_co_score = $speaker1_co_score + $speaker2_co_score;
                 $query.="`speaker_id` mediumint(9) NOT NULL default '0',"; 
                 $query.="`debate_id` mediumint(9) NOT NULL default '0',";
                 $query.="`points` smallint(9) NOT NULL default '0', ";
-                $query.="PRIMARY KEY (`speaker_id`)), ENGINE=InnoDB";
+                $query.="PRIMARY KEY (`speaker_id`))";
             $result=mysql_query($query);
                     
                 if(!$result)

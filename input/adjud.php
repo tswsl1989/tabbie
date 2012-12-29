@@ -366,16 +366,14 @@ if($action=="edit"){
 
 
 
-				   ?><input type="text" id="add_team_code" name="add_team_code"</input><input type="button" value="Add conflict" id="addstrike"/></form>
+				   ?><input type="text" id="add_team_code" name="add_team_code"></input><input type="button" value="Add conflict" id="addstrike"/></form>
 
 
 				<h5>Current conflicts:</h5>
 				<p class="failure"></p>
 				<table id="striketable">
 				</table>
-
-
-            
+				<?PHP echo print_conflicts($adjud_id);?>            
                   <?
             }
                   }

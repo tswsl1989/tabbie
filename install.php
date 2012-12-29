@@ -20,7 +20,7 @@
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  * end license */
-
+/* Modified by Tom Lake <tswsl1989@sucs.org> and released 2011-02-20 */
 
 /* WARNING:
    INCLUDE OTHER TABBIE FILES WITH CARE. MANY OF THEM WILL FAIL WITHOUT config/settings.php
@@ -38,11 +38,39 @@ if(array_key_exists("action", @$_POST)) $action=trim(@$_POST['action']);
 $filename = "config/settings.php";
 
 if ($action == "install") {
+	if ($_FILES['local_image']['error'] == 0){
+		$im_str=file_get_contents($_FILES['local_image']['tmp_name']);
+		$image=imagecreatefromstring($im_str);
+		$x=imagesx($image);
+		$y=imagesy($image);
+		if($y>100) {
+			$m=100/$y;
+			$new_y=100;
+			$new_x=$x*$m;
+		}else{
+			$new_x=$x;
+			$new_y=$y;
+		}
+		$resized=imagecreatetruecolor($new_x,$new_y);
+		imagecopyresampled($resized, $image, 0, 0, 0, 0, $new_x, $new_y, $x, $y);
+		if (imagepng($resized,"./view/local_logo.png")){
+			$image_path="view/local_logo.png";
+		}else{
+			die("Unable to save resized image");
+		}
+	} elseif($_FILES['local_image']['error'] == 4) { 
+		$image_path="";
+	} else{
+		echo "Image Upload Failed";
+		die("Unable to proceed - Image Upload failed with error code ".$_FILES['local_image']['error']);
+	}
     $setup_contents = '<?php
 $database_host = "' . @$_POST['database_host'] . '";
 $database_user = "' . @$_POST['database_user'] . '";
 $database_password = "' . @$_POST['database_password'] . '";
 $database_name = "' . @$_POST['database_name'] . '";
+$local_name = "'.@$_POST['local_name'].'";
+$local_image ="'.$image_path.'";
 ?>';
 
 $f = fopen($filename, 'w');
@@ -84,15 +112,20 @@ if ($all_is_well) {
 Please fill out the form below. If you have no idea what these options mean - just click on the install button. Users that try to reinstall here: Please be aware of the fact that any existing data in the database indicated below will be overwritten.
 </p>
 
-<form action="install.php" method="POST">
+<form action="install.php" enctype="multipart/form-data" method="POST">
     <input type="hidden" name="action" value="install"/>
     <input type="text" size="30" name="database_host" value="localhost"> Database Host<br/>
     <input type="text" size="30" name="database_user" value="root"> Database User<br/>
     <input type="text" size="30" name="database_password" value=""> Database Password<br/>
     <input type="text" size="30" name="database_name" value="tabbie"> Database Name<br/>
+    <input type="text" size="30" name="local_name" value="Tabbie"> Tournament Title<br/>
+    <input type="hidden" name="MAX_FILE_SIZE" value="300000">
+    <input type="file" name="local_image" value=""> Logo<br/>
     <input type="submit" value="Install"/>
 </form>
 
+<p>
+Tournament title is displayed on menu screens and printouts.</p>
 <?php
 }
 ?>

@@ -20,6 +20,18 @@
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  * end license */ ?>
+<h2 id="title">
+<?PHP
+ if($local_image != "") {
+	 echo '<img src="'.$local_image.'" alt="Logo" />';
+ }
+ if($local_name!=""){
+	 echo $local_name;
+ } else {
+	 echo "Tabbie";
+ }
+?>
+</h2>
 <div id="mainmenu">
 <h2 class="hide">Main Menu</h2>
 <ul>

@@ -62,7 +62,7 @@ CREATE TABLE `speaker` (
 CREATE TABLE `team` (
   `team_id` mediumint(9) NOT NULL auto_increment,
   `univ_id` mediumint(9) NOT NULL default '0',
-  `team_code` varchar(20) NOT NULL default '',
+  `team_code` varchar(50) NOT NULL default '',
   `esl` varchar(3) default NULL,
   `active` enum('N','Y') NOT NULL default 'N',
   `composite` enum('N','Y') NOT NULL default 'Y',

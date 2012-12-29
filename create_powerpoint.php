@@ -82,9 +82,9 @@ function two_slide_room_block($slide, $row_debate, $roundno, $offset){
 	
 	//Find the chair adjudicator
 	$debate_id = $row_debate['debate_id'];
-    $adj_query  = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
-    $adj_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-    $adj_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'chair' ";
+	$adj_query  = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
+	$adj_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
+	$adj_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'chair' ";
 	$adj_result=mysql_query($adj_query);
 	$adj_row=mysql_fetch_assoc($adj_result);
 	
@@ -209,9 +209,9 @@ if(isset($generate)){
 
 			//Find the chair adjudicator
 			$debate_id = $row_debate['debate_id'];
-	        $adj_query  = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
-	        $adj_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-	        $adj_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'chair' ";
+			$adj_query  = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
+			$adj_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
+			$adj_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'chair' ";
 			$adj_result=mysql_query($adj_query);
 			$adj_row=mysql_fetch_assoc($adj_result);
 
@@ -221,27 +221,25 @@ if(isset($generate)){
 			$panellistlist = "";
 
 			$pan_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
-	     	$pan_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-	     	$pan_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'panelist' ";
-	     	$pan_result = mysql_query($pan_query);
+			$pan_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
+			$pan_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'panelist' ";
+			$pan_result = mysql_query($pan_query);
 			if(mysql_num_rows($pan_result) > 0){
-				while($pan_row=mysql_fetch_assoc($pan_result))
-		        {    
-		          $panellistlist .= $pan_row['adjud_name'] . ", ";
-		        }
+				while($pan_row=mysql_fetch_assoc($pan_result)) {    
+					$panellistlist .= $pan_row['adjud_name'] . ", ";
+		        	}
 			}
 
 			//And the trainees		
 			$trainee_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
-	     	$trainee_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-	     	$trainee_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'trainee' ";
-	     	$trainee_result=mysql_query($trainee_query);
+			$trainee_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
+			$trainee_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'trainee' ";
+			$trainee_result=mysql_query($trainee_query);
 
-	     	$num_trainee=mysql_num_rows($trainee_result);
-	     	if (@$numtrainee > 0){
-				while($trainee_row=mysql_fetch_assoc($trainee_result))
-				{    
-		       		$panellistlist .= $trainee_row['adjud_name'] . " (t), ";
+			$num_trainee=mysql_num_rows($trainee_result);
+			if (@$numtrainee > 0){
+				while($trainee_row=mysql_fetch_assoc($trainee_result)) {    
+					$panellistlist .= $trainee_row['adjud_name'] . " (t), ";
 				}
 			}
 
@@ -305,6 +303,15 @@ if(isset($generate)){
 	if($otherslides != "") add_design_element($currentSlide, $firstslide, 960, 720, 0, 0);
 	add_text_element($currentSlide, "The Motion", 700, 300, 325, 520, 65);
 	
+	// Info slide, if required
+	$query = "SELECT motion, info, info_slide FROM motions WHERE round_no = $roundno;";
+	$motion=mysql_query($query);
+	$motion=mysql_fetch_assoc($motion);
+	if ($motion['info_slide'] == 'Y') {
+		$currentSlide = $presentation->createSlide();
+		add_text_element($currentSlide, $motion['info'], 930, 720, 10, 80, 30);
+	}
+
 	// Slide with the motion on it
 	$currentSlide = $presentation->createSlide();
 	if($otherslides != "") add_design_element($currentSlide, $otherslides, 960, 720, 0, 0);

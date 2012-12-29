@@ -63,12 +63,17 @@ function two_teams(&$pdf, $r, $teams) {
 
 function adjudicator_sheets_pdf($filename, $data) {
     $pdf = new FPDF("L"); #Landscape
+    $local_logo = "./view/local_logo.png";
     foreach ($data as $r) {
         $pdf->AddPage();
         $pdf->SetLeftMargin(25);
         $pdf->SetLineWidth(1.0);
-        $pdf->SetFont('Arial','B', 11);
+        $pdf->SetFont('Helvetica','B', 11);
+        if (file_exists($local_logo))  {
+            $pdf->Image($local_logo,240,10);
+        }
         $pdf->Cell(220, 8, "Venue: " . utf8_decode($r['venue']));
+        $pdf->Ln();
         $pdf->Cell(20, 8, "Round: " . utf8_decode($r['round']));
         $pdf->Ln();
         $pdf->Cell(200, 8, "Chair: " . utf8_decode($r['chair']));
@@ -85,8 +90,8 @@ function adjudicator_sheets_pdf($filename, $data) {
             array("name" => "Closing Gov.", "short" => "cg"),
             array("name" => "Closing Opp.", "short" => "co")));
         $pdf->SetFont('Arial','B', 10);
-        $pdf->Cell(250, 8, "The best team gets Rank 1. A better rank has a higher total team score (no equal scores). Failure to comply with this instruction will affect your judge ranking.");
-        $pdf->Ln();
+        $pdf->Cell(250, 8, "The best team gets Rank 1. Higher rank requires higher total team score (no equal scores). Failure to comply with this instruction will affect your judge ranking.");
+	$pdf->Ln();
         $pdf->Cell(250, 8, "Created with Tabbie. See http://www.smoothtournament.com and http://tabbie.wikidot.com");
     }
     

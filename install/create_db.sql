@@ -8,16 +8,16 @@ CREATE TABLE `adjudicator` (
   `conflicts` varchar(100) default NULL,
   PRIMARY KEY  (`adjud_id`),
   UNIQUE KEY `adjud_name` (`adjud_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Adjudicator Table';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Adjudicator Table';
 
-CREATE TABLE `configure_adjud_draw` (
+CREATE TABLE `settings` (
   `param_name` varchar(100) NOT NULL default '',
   `param_value` double default NULL,
   PRIMARY KEY  (`param_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Adjudicator Draw Parameter Table';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Adjudicator Draw Parameter Table';
 
 
-INSERT INTO `configure_adjud_draw` VALUES 
+INSERT INTO `settings` VALUES 
 	('university_conflict',10000),
 	('team_conflict',10000),
 	('chair_not_perfect',0),
@@ -32,23 +32,17 @@ INSERT INTO `configure_adjud_draw` VALUES
 	('watcher_not_in_chair',0),
 	('watched_not_watched',150),
 	('lock',0),
-	('draw_table_speed',8);
+	('draw_table_speed',8),
+	('highlight_lowerlimit', 50),
+	('highlight_upperlimit', 90);
 	
-CREATE TABLE `highlight` (
-  `lowerlimit` char(50) default NULL,
-  `upperlimit` char(50) default NULL,
-  `type` char(50) default NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-INSERT INTO `highlight` VALUES ('50','100','result');
-
 CREATE TABLE `motions` (
   `round_no` smallint(6) NOT NULL default '0',
   `motion` text NOT NULL,
   `info_slide` enum('Y','N') NOT NULL default 'N',
   `info` text NOT NULL,
   PRIMARY KEY  (`round_no`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `speaker` (
   `speaker_id` mediumint(9) NOT NULL auto_increment,
@@ -57,7 +51,7 @@ CREATE TABLE `speaker` (
   `speaker_esl` char(3) NOT NULL default 'N',
   PRIMARY KEY  (`speaker_id`),
   UNIQUE KEY `team_id` (`team_id`,`speaker_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Speaker Table';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Speaker Table';
 
 CREATE TABLE `team` (
   `team_id` mediumint(9) NOT NULL auto_increment,
@@ -68,7 +62,7 @@ CREATE TABLE `team` (
   `composite` enum('N','Y') NOT NULL default 'Y',
   PRIMARY KEY  (`team_id`),
   UNIQUE KEY `univ_id` (`univ_id`,`team_code`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Team Table';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Team Table';
 
 CREATE TABLE `university` (
   `univ_id` mediumint(9) NOT NULL auto_increment,
@@ -76,7 +70,7 @@ CREATE TABLE `university` (
   `univ_code` varchar(20) NOT NULL default '',
   PRIMARY KEY  (`univ_id`),
   UNIQUE KEY `univ_code` (`univ_code`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='University Table';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='University Table';
 
 
 CREATE TABLE `venue` (
@@ -86,7 +80,7 @@ CREATE TABLE `venue` (
   `active` enum('Y','N') NOT NULL default 'Y',
   PRIMARY KEY  (`venue_id`),
   UNIQUE KEY `venue_name` (`venue_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Venue Table';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Venue Table';
 
 CREATE TABLE `strikes` (
   `adjud_id` int(11) NOT NULL,
@@ -95,5 +89,5 @@ CREATE TABLE `strikes` (
   `strike_id` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (`strike_id`),
   KEY `univ_id` (`univ_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Conflict Table';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Conflict Table';
 

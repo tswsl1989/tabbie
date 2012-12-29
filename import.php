@@ -98,13 +98,13 @@ if ( array_key_exists("uploadedfile", @$_FILES)) {
 				}				
 			}
 			add_strike_judge_univ($adjudicator['adjud_id'],$adjudicator['univ_id']); //Strike from own institution.
-			//$query="ALTER TABLE adjudicator DROP COLUMN conflicts";
-			//mysql_query($query);
-			//echo mysql_error();
+			$query="ALTER TABLE adjudicator DROP COLUMN conflicts";
+			mysql_query($query);
+			echo mysql_error();
 			print "<p>Conflicts converted to new format.</p>";
 		}
     }
-
+	include('draw/adjudicator/simulated_annealing_config.php'); ## Converts settings table
 	//Upgrade MyISAM dbs to InnoDB
 	$query="SELECT `table_name`,`engine` FROM INFORMATION_SCHEMA.TABLES WHERE `table_schema`='$database_name';";
 	echo mysql_error();

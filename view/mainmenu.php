@@ -19,10 +19,13 @@
  *     along with Tabbie; if not, write to the Free Software
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
- * end license */ ?>
+ * end license */ 
+include('config/settings.php');
+?>
+
 <h2 id="title">
 <?PHP
- if($local_image != "") {
+ if($local_image != "" && file_exists($local_image)) {
 	 echo '<img src="'.$local_image.'" alt="Logo" />';
  }
  if($local_name!=""){

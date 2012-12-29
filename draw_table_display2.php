@@ -25,10 +25,10 @@ require_once("draw/adjudicator/simulated_annealing_config.php");
 $roundno=@$_GET['roundno'];
 $slide=@$_GET['slide'];
 $norefresh=@$_GET['norefresh'];
-	$query="SELECT COUNT(*) FROM `draw_round_$roundno` WHERE 1";
-	$result=mysql_query($query);
-	$row=mysql_fetch_array($result);
-	$maxrooms=$row["COUNT(*)"];
+$query="SELECT COUNT(*) FROM `draw_round_$roundno` WHERE 1";
+$result=mysql_query($query);
+$row=mysql_fetch_array($result);
+$maxrooms=$row["COUNT(*)"];
 $refreshspeed=$scoring_factors["draw_table_speed"];
 
 $intslide=intval($slide);

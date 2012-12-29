@@ -28,7 +28,7 @@ $roundno=@$_GET['roundno'];
 <html>
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <title>Draw :: Round <?= $roundno ?></title>
+	<title>Draw :: Round <?= $roundno ?></title>
 	<meta name="generator" content="S5" />
 	<meta name="version" content="S5 1.1" />
 	<meta name="presdate" content="20050728" />

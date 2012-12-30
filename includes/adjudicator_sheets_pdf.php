@@ -21,6 +21,7 @@
  * 
  * end license */
 
+require_once('config/settings.php');
 require('includes/fpdf/fpdf.php');
 
 function speaker(&$pdf, $r, $speaker) {
@@ -62,15 +63,16 @@ function two_teams(&$pdf, $r, $teams) {
 }
 
 function adjudicator_sheets_pdf($filename, $data) {
+    global $local_image;
+
     $pdf = new FPDF("L"); #Landscape
-    $local_logo = "./view/local_logo.png";
     foreach ($data as $r) {
         $pdf->AddPage();
         $pdf->SetLeftMargin(25);
         $pdf->SetLineWidth(1.0);
         $pdf->SetFont('Helvetica','B', 11);
-        if (file_exists($local_logo))  {
-            $pdf->Image($local_logo,240,10);
+        if (file_exists($local_image))  {
+            $pdf->Image($local_image,240,10);
         }
         $pdf->Cell(220, 8, "Venue: " . utf8_decode($r['venue']));
         $pdf->Ln();

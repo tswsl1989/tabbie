@@ -53,8 +53,8 @@ if ($action == "install") {
 		}
 		$resized=imagecreatetruecolor($new_x,$new_y);
 		imagecopyresampled($resized, $image, 0, 0, 0, 0, $new_x, $new_y, $x, $y);
-		if (imagepng($resized,"./view/local_logo.png")){
-			$image_path="view/local_logo.png";
+		if (imagepng($resized,"./config/local_logo.png")){
+			$image_path="config/local_logo.png";
 		}else{
 			die("Unable to save resized image");
 		}

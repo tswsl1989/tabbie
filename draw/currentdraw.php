@@ -93,7 +93,7 @@ if (($action=="draw") && ($validate == 1)) {
         $msg[] = "The Algorithm has not created a valid draw!!!";
     
     $score = debates_badness($debates); //only works for silver_line since others don't attribute enough data
-	$debater_end=microtime(true);
+    $debater_end=microtime(true);
     $msg[] = "The Debater Allocation Algorithm has created a draw with score $score, and 0 is the best possible score.";
 
     function funny_conversion_for_ntu_code($debates) {
@@ -115,7 +115,7 @@ if (($action=="draw") && ($validate == 1)) {
     //Store draw in temporary database
 
     $tablename = "temp_draw_round_$nextround";
-    mysql_query("DROP TABLE `$tablename`"); //KvS notes that this query apparently fails (but expectedly) in round 0
+    mysql_query("DROP TABLE IF EXISTS `$tablename`"); //KvS notes that this query apparently fails (but expectedly) in round 0
 	//Should you be looking for the creation of the temp_adjud table, it's in a function in includes/adjudicator
     $query= "CREATE TABLE $tablename (
 debate_id MEDIUMINT(9) NOT NULL ,

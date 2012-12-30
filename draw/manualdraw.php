@@ -312,11 +312,11 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 	        mysql_query($query);
 	        $query="DROP TABLE temp_adjud_round_$nextround";
 	        mysql_query($query);
-			$query="DROP TABLE draw_lock_round_$nextround";
-			mysql_query($query);
+		$query="DROP TABLE draw_lock_round_$nextround";
+		mysql_query($query);
         
 	        //Redirect
-        
+		mysql_query("UPDATE settings SET param_value=".$nextround." WHERE param_name='round'"); 
 	        redirect("draw.php?moduletype=round&action=showdraw&roundno=$nextround");
 		}
 	}

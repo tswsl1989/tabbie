@@ -25,9 +25,9 @@ require("ntu_bridge.php");
 require_once("result/func.php"); //Helper Functions
 
 //Get Number of  Rounds Completed
-$query="SHOW TABLES LIKE 'draw_round%'";
+$query="SELECT param_value FROM settings WHERE param_name='round'";
 $result=mysql_query($query);
-$numrounds=mysql_num_rows($result);
+$numrounds=mysql_fetch_assoc($result)['param_value'];
 
 //Get Number of Rounds result entered for
 $query="SHOW TABLES LIKE 'result_round%'";

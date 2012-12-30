@@ -668,17 +668,9 @@ if ($nextresult==$numrounds)
     {    
       echo "<h3>Debate Details</h3>\n";
       echo "<p>Venue : $venue</p>\n";
-        $rangequery = "SELECT * FROM highlight WHERE type = 'result' ";
-        $rangeresult = mysql_query($rangequery);
-        $rangerow = mysql_fetch_assoc($rangeresult);
-        if ($rangerow)
-        {    $lower_limit = $rangerow['lowerlimit'];
-            $upper_limit = $rangerow['upperlimit'];
-        }
-        else
-        {    $lower_limit = '0';
-            $upper_limit = '100';
-        }
+      require_once("draw/adjudicator/simulated_annealing_config.php");
+      $lower_limit = $scoring_factors['highlight_lowerlimit'];
+      $upper_limit = $scoring_factors['highlight_upperlimit'];
 
       //sort scores to find position
       $scores_arr['og']=$team_og_score;

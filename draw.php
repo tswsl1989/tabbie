@@ -23,9 +23,9 @@
 
 require("ntu_bridge.php");
 
-$query = "SHOW TABLES LIKE 'draw_round%'";
+$query = "SELECT param_value FROM settings WHERE param_name='round'";
 $result = mysql_query($query);
-$numdraws = mysql_num_rows($result);
+$numdraws = mysql_num_rows($result) ? mysql_fetch_assoc($result)['param_value'] : 0;
 $nextround = $numdraws + 1;
 
 if(array_key_exists("roundno", @$_GET)){

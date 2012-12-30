@@ -158,7 +158,7 @@ function debates_from_temp_draw_with_adjudicators($round) {
         }
         $new_row['adjudicators'] = array();
         $adjudicators_db_result = mysql_query("SELECT adjud_id FROM temp_adjud_round_$round WHERE debate_id='{$row['debate_id']}'");
-		while ($row2 = mysql_fetch_assoc($adjudicators_db_result)) {
+	while ($row2 = mysql_fetch_assoc($adjudicators_db_result)) {
             $new_row['adjudicators'][] = get_adjudicator_by_id($row2['adjud_id']);
         }
         $result[] = $new_row;

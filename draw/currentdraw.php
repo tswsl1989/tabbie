@@ -200,8 +200,9 @@ if (($validate==1)) {
 
         $table_data = array();
         while($row = mysql_fetch_assoc($result)) {
-            foreach (array("venue_name", "ogtc", "ogt", "ootc", "oot", "cgtc", "cgt", "cotc", "cot", "debate_id") as $copy)
+            foreach (array("venue_name", "ogtc", "ogt", "ootc", "oot", "cgtc", "cgt", "cotc", "cot", "debate_id") as $copy) {
                 $row2[$copy] = $row[$copy];
+	    }
             $row2['ogpoints'] = points_for_team($row['ogid'], $numdraws);
             $row2['oopoints'] = points_for_team($row['ooid'], $numdraws);
             $row2['cgpoints'] = points_for_team($row['cgid'], $numdraws);

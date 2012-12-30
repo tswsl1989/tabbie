@@ -28,35 +28,26 @@ $validate=1;
 
 
 //Check for No of Draws against No. of results entered
-if ($nextresult!=$numrounds)
-{
+if ($nextresult!=$numrounds) {
     $msg[]="Current Round Draw hasnt been created. Cannot input results";
     $validate=0;
-}
+} else { 
 
-else
-{
-
-
-    if (($action=="doedit")||($action=="process")||($action=="edit"))
-    {
+    if (($action=="doedit")||($action=="process")||($action=="edit")) {
         //Validate debate_id
         $debate_id=@$_GET['debate_id'];
 
         $query="SELECT * FROM temp_result_round_$nextresult WHERE debate_id='$debate_id'";
         $result=mysql_query($query);
-        if (mysql_num_rows($result)==0)
-        {
+        if (mysql_num_rows($result)==0) {
             $validate=0;
             $msg[]="Invalid Debate ID. No such debate in database.";
             $action="display";
-        }
-        else
-        {
-			$speaker1_og_score=$speaker2_og_score=$speaker1_oo_score=$speaker2_oo_score=$speaker1_cg_score=$speaker2_cg_score=$speaker_1_cg_score=$speaker2_cg_score="";
+        } else {
+            $speaker1_og_score=$speaker2_og_score=$speaker1_oo_score=$speaker2_oo_score=$speaker1_cg_score=$speaker2_cg_score=$speaker_1_cg_score=$speaker2_cg_score="";
             $query="SELECT S.speaker_id, S.speaker_name ";
-            $query.="FROM temp_speaker_round_$nextresult TS, speaker S, draw_round_$nextresult D  ";
-            $query.="WHERE TS.speaker_id=S.speaker_id AND TS.debate_id='$debate_id' AND D.og=S.team_id "; //Opening Govt
+            $query.="FROM temp_speaker_round_$nextresult TS, speaker S, draws D  ";
+            $query.="WHERE D.round_no=$nextresult AND TS.speaker_id=S.speaker_id AND TS.debate_id='$debate_id' AND D.og=S.team_id "; //Opening Govt
             $query.="ORDER BY S.speaker_name";
             $result=mysql_query($query);
             //Get first speaker details
@@ -70,10 +61,9 @@ else
             $speaker2_og_name=$row['speaker_name'];
             if(array_key_exists("speaker_$speaker2_og_id",@$_POST)) $speaker2_og_score=@$_POST["speaker_$speaker2_og_id"];
 
-            
             $query="SELECT S.speaker_id, S.speaker_name ";
-            $query.="FROM temp_speaker_round_$nextresult TS, speaker S, draw_round_$nextresult D  ";
-            $query.="WHERE TS.speaker_id=S.speaker_id AND TS.debate_id='$debate_id' AND D.oo=S.team_id ";//Opening Opp
+            $query.="FROM temp_speaker_round_$nextresult TS, speaker S, draws D  ";
+            $query.="WHERE D.round_no=$nextresult AND TS.speaker_id=S.speaker_id AND TS.debate_id='$debate_id' AND D.oo=S.team_id ";//Opening Opp
             $query.="ORDER BY S.speaker_name";
             $result=mysql_query($query);
             //Get first speaker details
@@ -87,11 +77,9 @@ else
             $speaker2_oo_name=$row['speaker_name'];
             if(array_key_exists("speaker_$speaker2_oo_id",@$_POST)) $speaker2_oo_score=@$_POST["speaker_$speaker2_oo_id"];
 
-
-
             $query="SELECT S.speaker_id, S.speaker_name ";
-            $query.="FROM temp_speaker_round_$nextresult TS, speaker S, draw_round_$nextresult D  ";
-            $query.="WHERE TS.speaker_id=S.speaker_id AND TS.debate_id='$debate_id' AND D.cg=S.team_id "; //Closing Govt
+            $query.="FROM temp_speaker_round_$nextresult TS, speaker S, draws D  ";
+            $query.="WHERE D.round_no = $nextresult AND TS.speaker_id=S.speaker_id AND TS.debate_id='$debate_id' AND D.cg=S.team_id "; //Closing Govt
             $query.="ORDER BY S.speaker_name";
             $result=mysql_query($query);
             //Get first speaker details
@@ -106,8 +94,8 @@ else
             if(array_key_exists("speaker_$speaker2_cg_id",@$_POST)) $speaker2_cg_score=@$_POST["speaker_$speaker2_cg_id"];
            
             $query="SELECT S.speaker_id, S.speaker_name ";
-            $query.="FROM temp_speaker_round_$nextresult TS, speaker S, draw_round_$nextresult D  ";
-            $query.="WHERE TS.speaker_id=S.speaker_id AND TS.debate_id='$debate_id' AND D.co=S.team_id "; //Closing Opp
+            $query.="FROM temp_speaker_round_$nextresult TS, speaker S, draws D  ";
+            $query.="WHERE D.round_no=$nextresult AND TS.speaker_id=S.speaker_id AND TS.debate_id='$debate_id' AND D.co=S.team_id "; //Closing Opp
             $query.="ORDER BY S.speaker_name";
             $result=mysql_query($query);
             //Get first speaker details
@@ -121,13 +109,11 @@ else
             $speaker2_co_name=$row['speaker_name'];
             if(array_key_exists("speaker_$speaker2_co_id",@$_POST)) $speaker2_co_score=@$_POST["speaker_$speaker2_co_id"];
             
-
             //Get Team Names & Venue
             $query = "SELECT T.debate_id AS debate_id, V.venue_name AS venue_name, `first` , `second` , third, fourth, og, oo, cg, co, T1.team_code AS team_og_code, T1.team_id AS team_og_id, U1.univ_code AS univ_og_code, T2.team_code AS team_oo_code, T2.team_id AS team_oo_id, U2.univ_code AS univ_oo_code, T3.team_code AS team_cg_code, T3.team_id AS team_cg_id, U3.univ_code AS univ_cg_code, T4.team_code AS team_co_code, T4.team_id AS team_co_id, U4.univ_code AS univ_co_code ";
-            
-            $query .= "FROM temp_result_round_$nextresult T, draw_round_$nextresult D, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4, venue V ";
-            
-            $query .= "WHERE T.debate_id = '$debate_id' AND T.debate_id = D.debate_id AND T1.team_id = D.og AND T2.team_id = D.oo AND T3.team_id = D.cg AND T4.team_id = D.co AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND D.venue_id=V.venue_id "; 
+            $query .= "FROM temp_result_round_$nextresult T, draws D, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4, venue V ";
+            $query .= "WHERE D.round_no=$nextresult AND T.debate_id = '$debate_id' AND T.debate_id = D.debate_id AND T1.team_id = D.og AND T2.team_id = D.oo AND T3.team_id = D.cg AND T4.team_id = D.co AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND D.venue_id=V.venue_id "; 
+
             $result=mysql_query($query);
             $rowresults=mysql_fetch_assoc($result);
             
@@ -136,10 +122,10 @@ else
             $team_cg_id= $rowresults['team_cg_id'];
             $team_co_id= $rowresults['team_co_id'];
             $team_og_name=$rowresults['univ_og_code'].' '.$rowresults['team_og_code'];
-        $team_oo_name=$rowresults['univ_oo_code'].' '.$rowresults['team_oo_code'];
-        $team_cg_name=$rowresults['univ_cg_code'].' '.$rowresults['team_cg_code'];
-        $team_co_name=$rowresults['univ_co_code'].' '.$rowresults['team_co_code'];
-        $venue=$rowresults['venue_name'];
+            $team_oo_name=$rowresults['univ_oo_code'].' '.$rowresults['team_oo_code'];
+            $team_cg_name=$rowresults['univ_cg_code'].' '.$rowresults['team_cg_code'];
+            $team_co_name=$rowresults['univ_co_code'].' '.$rowresults['team_co_code'];
+            $venue=$rowresults['venue_name'];
 
 
             //Validate the values (numeric Between 1 and 100)
@@ -148,12 +134,11 @@ else
         }
     }
 
-    if ($action=="edit")
-    {
+    if ($action=="edit") {
         unset($msg);
-		//Load the scores (taken from post above) to the post values)
-		//in case that didn't happen
-		$speaker1_og_post_score = "";
+        //Load the scores (taken from post above) to the post values)
+        //in case that didn't happen
+        $speaker1_og_post_score = "";
         $speaker2_og_post_score = "";
         $speaker1_oo_post_score = "";
         $speaker2_oo_post_score = "";
@@ -162,188 +147,187 @@ else
         $speaker1_co_post_score = "";
         $speaker2_co_post_score = "";
 
-		if(isset($speaker1_og_score)) $speaker1_og_post_score=$speaker1_og_score;
-		if(isset($speaker2_og_score)) $speaker2_og_post_score=$speaker2_og_score;
-		if(isset($speaker1_oo_score)) $speaker1_oo_post_score=$speaker1_oo_score;
-		if(isset($speaker2_oo_score)) $speaker2_oo_post_score=$speaker2_oo_score;
-		if(isset($speaker1_cg_score)) $speaker1_cg_post_score=$speaker1_cg_score;
-		if(isset($speaker2_cg_score)) $speaker2_cg_post_score=$speaker2_cg_score;
-		if(isset($speaker1_co_score)) $speaker1_co_post_score=$speaker1_co_score;
-		if(isset($speaker2_co_score)) $speaker2_co_post_score=$speaker2_co_score;
+        if(isset($speaker1_og_score)) $speaker1_og_post_score=$speaker1_og_score;
+        if(isset($speaker2_og_score)) $speaker2_og_post_score=$speaker2_og_score;
+        if(isset($speaker1_oo_score)) $speaker1_oo_post_score=$speaker1_oo_score;
+        if(isset($speaker2_oo_score)) $speaker2_oo_post_score=$speaker2_oo_score;
+        if(isset($speaker1_cg_score)) $speaker1_cg_post_score=$speaker1_cg_score;
+        if(isset($speaker2_cg_score)) $speaker2_cg_post_score=$speaker2_cg_score;
+        if(isset($speaker1_co_score)) $speaker1_co_post_score=$speaker1_co_score;
+        if(isset($speaker2_co_score)) $speaker2_co_post_score=$speaker2_co_score;
 
         //Load in values of points from table
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker1_og_id'";
         $result=mysql_query($query);
         $row=mysql_fetch_assoc($result);
         $speaker1_og_score=$row['points'];
-        if ($speaker1_og_score == 0)
-        {    $speaker1_og_score=@$speaker1_og_post_score;
+        if ($speaker1_og_score == 0) {
+            $speaker1_og_score=@$speaker1_og_post_score;
         }
         
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker2_og_id'";
         $result=mysql_query($query);
         $row=mysql_fetch_assoc($result);
         $speaker2_og_score=$row['points'];
-        if ($speaker2_og_score == 0)
-    {    $speaker2_og_score=@$speaker2_og_post_score;
-    }
+        if ($speaker2_og_score == 0){
+            $speaker2_og_score=@$speaker2_og_post_score;
+        }
 
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker1_oo_id'";
         $result=mysql_query($query);
         $row=mysql_fetch_assoc($result);
         $speaker1_oo_score=$row['points'];
-        if ($speaker1_oo_score == 0)
-    {    $speaker1_oo_score=@$speaker1_oo_post_score;
-    }
+        if ($speaker1_oo_score == 0) {
+            $speaker1_oo_score=@$speaker1_oo_post_score;
+        }
         
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker2_oo_id'";
         $result=mysql_query($query);
         $row=mysql_fetch_assoc($result);
         $speaker2_oo_score=$row['points'];
-        if ($speaker2_oo_score == 0)
-    {    $speaker2_oo_score=@$speaker2_oo_post_score;
-    }
+        if ($speaker2_oo_score == 0){
+            $speaker2_oo_score=@$speaker2_oo_post_score;
+        }
 
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker1_cg_id'";
         $result=mysql_query($query);
         $row=mysql_fetch_assoc($result);
         $speaker1_cg_score=$row['points'];
-        if ($speaker1_cg_score == 0)
-    {    $speaker1_cg_score=@$speaker1_cg_post_score;
-    }
+        if ($speaker1_cg_score == 0) {
+            $speaker1_cg_score=@$speaker1_cg_post_score;
+        }
 
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker2_cg_id'";
         $result=mysql_query($query);
         $row=mysql_fetch_assoc($result);
         $speaker2_cg_score=$row['points'];
-        if ($speaker2_cg_score == 0)
-    {    $speaker2_cg_score=@$speaker2_cg_post_score;
-    }
+        if ($speaker2_cg_score == 0) {
+            $speaker2_cg_score=@$speaker2_cg_post_score;
+        }
 
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker1_co_id'";
         $result=mysql_query($query);
         $row=mysql_fetch_assoc($result);
         $speaker1_co_score=$row['points'];
-        if ($speaker1_co_score == 0)
-    {    $speaker1_co_score=@$speaker1_co_post_score;
-    }
+        if ($speaker1_co_score == 0) {
+            $speaker1_co_score=@$speaker1_co_post_score;
+        }
 
         $query="SELECT points FROM temp_speaker_round_$nextresult WHERE speaker_id='$speaker2_co_id'";
         $result=mysql_query($query);
         $row=mysql_fetch_assoc($result);
         $speaker2_co_score=$row['points'];
-        if ($speaker2_co_score == 0)
-    {    $speaker2_co_score=@$speaker2_co_post_score;
-    }
-
-	$team_og_score = $speaker1_og_score + $speaker2_og_score;
-$team_oo_score = $speaker1_oo_score + $speaker2_oo_score;
-$team_cg_score = $speaker1_cg_score + $speaker2_cg_score;
-$team_co_score = $speaker1_co_score + $speaker2_co_score;
-
-    }
-    
-    
-    if ($action=="doedit")
-    {
-    $team_og_score = $speaker1_og_score + $speaker2_og_score;
-    $team_oo_score = $speaker1_oo_score + $speaker2_oo_score;
-    $team_cg_score = $speaker1_cg_score + $speaker2_cg_score;
-    $team_co_score = $speaker1_co_score + $speaker2_co_score;
-        
-        $result_score_array = array($team_og_score,$team_oo_score,$team_cg_score,$team_co_score);
-    $result_teamname_array = array($team_og_name,$team_oo_name,$team_cg_name,$team_co_name);
-    $result_teamid_array = array($team_og_id,$team_oo_id,$team_cg_id,$team_co_id);
-
-    array_multisort ($result_score_array, SORT_DESC,
-                    $result_teamname_array,
-                    $result_teamid_array);
-      
-        $query ="UPDATE `temp_result_round_$nextresult` SET ";
-    $query.="first = '$result_teamid_array[0]', ";
-    $query.="second = '$result_teamid_array[1]', ";
-    $query.="third = '$result_teamid_array[2]', ";
-    $query.="fourth = '$result_teamid_array[3]' ";
-    $query.="WHERE debate_id = '$debate_id' ";
-    $result=mysql_query($query);
-    if (!$result) //Get Error Message
-      {    $msg[]="Error creating results table.".mysql_error();
-        $action="display";
-    }
-    
-    $temp_speaker_points_array = array($speaker1_og_score,$speaker2_og_score,$speaker1_oo_score,$speaker2_oo_score,$speaker1_cg_score,$speaker2_cg_score,$speaker1_co_score,$speaker2_co_score);
-    $temp_speaker_id_array = array($speaker1_og_id,$speaker2_og_id,$speaker1_oo_id,$speaker2_oo_id,$speaker1_cg_id,$speaker2_cg_id,$speaker1_co_id,$speaker2_co_id);
-            
-    for ($i=0;$i<8;$i++)
-    {    $query ="UPDATE `temp_speaker_round_$nextresult` SET ";
-        $query.="points = '$temp_speaker_points_array[$i]' ";
-        $query.="WHERE debate_id = '$debate_id' AND speaker_id = '$temp_speaker_id_array[$i]' ";
-        $result=mysql_query($query);
-        if (!$result) //Get Error Message
-          {    $msg[]="Error creating results table.".mysql_error();
-            $action="display";
+        if ($speaker2_co_score == 0) {
+            $speaker2_co_score=@$speaker2_co_post_score;
         }
+
+        $team_og_score = $speaker1_og_score + $speaker2_og_score;
+        $team_oo_score = $speaker1_oo_score + $speaker2_oo_score;
+        $team_cg_score = $speaker1_cg_score + $speaker2_cg_score;
+        $team_co_score = $speaker1_co_score + $speaker2_co_score;
+
     }
+    
+    
+    if ($action=="doedit") {
+            $team_og_score = $speaker1_og_score + $speaker2_og_score;
+            $team_oo_score = $speaker1_oo_score + $speaker2_oo_score;
+            $team_cg_score = $speaker1_cg_score + $speaker2_cg_score;
+            $team_co_score = $speaker1_co_score + $speaker2_co_score;
+                
+            $result_score_array = array($team_og_score,$team_oo_score,$team_cg_score,$team_co_score);
+            $result_teamname_array = array($team_og_name,$team_oo_name,$team_cg_name,$team_co_name);
+            $result_teamid_array = array($team_og_id,$team_oo_id,$team_cg_id,$team_co_id);
+
+            array_multisort ($result_score_array, SORT_DESC,
+                            $result_teamname_array,
+                            $result_teamid_array);
+              
+            $query ="UPDATE `temp_result_round_$nextresult` SET ";
+            $query.="first = '$result_teamid_array[0]', ";
+            $query.="second = '$result_teamid_array[1]', ";
+            $query.="third = '$result_teamid_array[2]', ";
+            $query.="fourth = '$result_teamid_array[3]' ";
+            $query.="WHERE debate_id = '$debate_id' ";
+            $result=mysql_query($query);
+            if (!$result) { //Get Error Message
+                $msg[]="Error creating results table.".mysql_error();
+                $action="display";
+            }
+            
+            $temp_speaker_points_array = array($speaker1_og_score,$speaker2_og_score,$speaker1_oo_score,$speaker2_oo_score,$speaker1_cg_score,$speaker2_cg_score,$speaker1_co_score,$speaker2_co_score);
+            $temp_speaker_id_array = array($speaker1_og_id,$speaker2_og_id,$speaker1_oo_id,$speaker2_oo_id,$speaker1_cg_id,$speaker2_cg_id,$speaker1_co_id,$speaker2_co_id);
+                    
+            for ($i=0;$i<8;$i++) {
+                $query ="UPDATE `temp_speaker_round_$nextresult` SET ";
+                $query.="points = '$temp_speaker_points_array[$i]' ";
+                $query.="WHERE debate_id = '$debate_id' AND speaker_id = '$temp_speaker_id_array[$i]' ";
+                $result=mysql_query($query);
+                if (!$result) { //Get Error Message
+                    $msg[]="Error creating results table.".mysql_error();
+                    $action="display";
+                }
+            }
     }
 
-    if ($action=="process")
-    {
+    if ($action=="process") {
         $team_og_score = $speaker1_og_score + $speaker2_og_score;
-    $team_oo_score = $speaker1_oo_score + $speaker2_oo_score;
-    $team_cg_score = $speaker1_cg_score + $speaker2_cg_score;
-    $team_co_score = $speaker1_co_score + $speaker2_co_score;
+        $team_oo_score = $speaker1_oo_score + $speaker2_oo_score;
+        $team_cg_score = $speaker1_cg_score + $speaker2_cg_score;
+        $team_co_score = $speaker1_co_score + $speaker2_co_score;
 
         $score_min = 1;
         $score_max = 100;
-        if (($speaker1_og_score < $score_min) OR ($speaker1_og_score > $score_max) OR
+        if (
+            ($speaker1_og_score < $score_min) OR ($speaker1_og_score > $score_max) OR
             ($speaker1_oo_score < $score_min) OR ($speaker1_oo_score > $score_max) OR
             ($speaker1_cg_score < $score_min) OR ($speaker1_cg_score > $score_max) OR
             ($speaker1_co_score < $score_min) OR ($speaker1_co_score > $score_max) OR
-        ($speaker2_og_score < $score_min) OR ($speaker2_og_score > $score_max) OR
+            ($speaker2_og_score < $score_min) OR ($speaker2_og_score > $score_max) OR
             ($speaker2_oo_score < $score_min) OR ($speaker2_oo_score > $score_max) OR
             ($speaker2_cg_score < $score_min) OR ($speaker2_cg_score > $score_max) OR
-            ($speaker2_co_score < $score_min) OR ($speaker2_co_score > $score_max)  )
-        {    $validate = 0;
+            ($speaker2_co_score < $score_min) OR ($speaker2_co_score > $score_max)  
+        ) {
+             $validate = 0;
              $msg[]="Invalid score entered for one or more debaters.";
         }
         
-        if (($team_og_score == $team_oo_score) OR ($team_og_score == $team_cg_score) OR ($team_og_score == $team_co_score)
-            OR ($team_oo_score == $team_cg_score) OR ($team_oo_score == $team_co_score)
-            OR ($team_cg_score == $team_co_score)    )
-        {    $validate = 0;
+        if (
+            ($team_og_score == $team_oo_score) OR ($team_og_score == $team_cg_score) OR
+            ($team_og_score == $team_co_score) OR ($team_oo_score == $team_cg_score) OR 
+            ($team_oo_score == $team_co_score) OR ($team_cg_score == $team_co_score)
+        ) {
+             $validate = 0;
              $msg[]="Two or more teams with same total scores";
         }
         
-       if ($validate==1)
-        {
+       if ($validate==1) {
             //Process the results and ask for confirmation
-            
-        $result_score_array = array($team_og_score,$team_oo_score,$team_cg_score,$team_co_score);
-        $result_teamname_array = array($team_og_name,$team_oo_name,$team_cg_name,$team_co_name);
-        $result_teamid_array = array($team_og_id,$team_oo_id,$team_cg_id,$team_co_id);
-                       
-        $speaker1_og_post_score = @$_POST["speaker_$speaker1_og_id"];
-        $speaker2_og_post_score = @$_POST["speaker_$speaker2_og_id"];
-        $speaker1_oo_post_score = @$_POST["speaker_$speaker1_oo_id"];
-        $speaker2_oo_post_score = @$_POST["speaker_$speaker2_oo_id"];
-        $speaker1_cg_post_score = @$_POST["speaker_$speaker1_cg_id"];
-        $speaker2_cg_post_score = @$_POST["speaker_$speaker2_cg_id"];
-        $speaker1_co_post_score = @$_POST["speaker_$speaker1_co_id"];
-        $speaker2_co_post_score = @$_POST["speaker_$speaker2_co_id"];
-
-        }
-        else
-        {
+               
+           $result_score_array = array($team_og_score,$team_oo_score,$team_cg_score,$team_co_score);
+           $result_teamname_array = array($team_og_name,$team_oo_name,$team_cg_name,$team_co_name);
+           $result_teamid_array = array($team_og_id,$team_oo_id,$team_cg_id,$team_co_id);
+                          
+           $speaker1_og_post_score = @$_POST["speaker_$speaker1_og_id"];
+           $speaker2_og_post_score = @$_POST["speaker_$speaker2_og_id"];
+           $speaker1_oo_post_score = @$_POST["speaker_$speaker1_oo_id"];
+           $speaker2_oo_post_score = @$_POST["speaker_$speaker2_oo_id"];
+           $speaker1_cg_post_score = @$_POST["speaker_$speaker1_cg_id"];
+           $speaker2_cg_post_score = @$_POST["speaker_$speaker2_cg_id"];
+           $speaker1_co_post_score = @$_POST["speaker_$speaker1_co_id"];
+           $speaker2_co_post_score = @$_POST["speaker_$speaker2_co_id"];
+   
+        } else {
             $action="edit"; //Go back to edit mode
         }
         
     }
 
-    if ($action=="create")
-    {
+    if ($action=="create") {
         unset($msg);
         //Create temporary table
         $query ="CREATE TABLE `temp_result_round_$nextresult` ( ";
+        $query.="`round_no` mediumint(9) NOT NULL default $nextresult,";
         $query.="`debate_id` mediumint(9) NOT NULL default '0',";
         $query.="`first` mediumint(9) NOT NULL default '0',";
         $query.="`second` mediumint(9) NOT NULL default '0',";
@@ -353,18 +337,14 @@ $team_co_score = $speaker1_co_score + $speaker2_co_score;
 
         $result=mysql_query($query);
 
-        if (!$result) //Get Error Message
-        {
-      $msg[]="Error creating results table.".mysql_error();
-          $action="display";
-        }
-        else
-        {
+        if (!$result) { //Get Error Message
+            $msg[]="Error creating results table.".mysql_error();
+            $action="display";
+        } else {
             //Get debate IDs of present round
-            $query="SELECT debate_id FROM draw_round_$nextresult";
+            $query="SELECT debate_id FROM draws WHERE round_no = $nextresult";
             $resultdebates=mysql_query($query);
-            while($rowdebates=mysql_fetch_assoc($resultdebates))
-            {
+            while($rowdebates=mysql_fetch_assoc($resultdebates)) {
                 $result_debate_id=$rowdebates['debate_id'];
                 //Add a corresponding entry into created table
                 $query="INSERT INTO temp_result_round_$nextresult(debate_id) VALUES('$result_debate_id')";
@@ -372,7 +352,8 @@ $team_co_score = $speaker1_co_score + $speaker2_co_score;
             }
 
             //create speaker table
-            $query ="CREATE TABLE `temp_speaker_round_$nextresult` ( ";
+            $query ="CREATE TABLE IF NOT EXISTS `temp_speaker_round_$nextresult` ( ";
+            $query.="`round_no` mediumint(9) NOT NULL default $nextresult,";
             $query.="`speaker_id` mediumint(9) NOT NULL default '0',"; 
             $query.="`debate_id` mediumint(9) NOT NULL default '0',";
             $query.="`points` smallint(9) NOT NULL default '0', ";
@@ -380,20 +361,16 @@ $team_co_score = $speaker1_co_score + $speaker2_co_score;
 
             $result=mysql_query($query);
             
-            if(!$result)
-            {
-          $msg[]="Error creating speaker points table.".mysql_error();
-          $action="display";
-            }
-            else
-            {
+            if(!$result) {
+              $msg[]="Error creating speaker points table.".mysql_error();
+              $action="display";
+            } else {
                $query = "SELECT speaker_id, debate_id ";
-               $query .= "FROM speaker S, draw_round_$nextresult D ";
-               $query .= "WHERE S.team_id = D.og OR S.team_id = D.oo OR S.team_id = D.cg OR S.team_id = D.co ";
+               $query .= "FROM speaker S, draws D ";
+               $query .= "WHERE D.round_no = $nextresult AND (S.team_id = D.og OR S.team_id = D.oo OR S.team_id = D.cg OR S.team_id = D.co) ";
                $speakerresult=mysql_query($query);
 
-                while($rowspeaker=mysql_fetch_assoc($speakerresult))
-                {
+                while($rowspeaker=mysql_fetch_assoc($speakerresult)) {
                     $result_speaker_id=$rowspeaker['speaker_id'];
                     $result_debate_id=$rowspeaker['debate_id'];
 
@@ -406,8 +383,7 @@ $team_co_score = $speaker1_co_score + $speaker2_co_score;
         $result="display";
     }
 
-    if ($action=="finalize")
-    {
+    if ($action=="finalize") {
         //Finalize the results after some checks
         
         $query = "SELECT  COUNT(*)  FROM  `temp_speaker_round_$nextresult` ";
@@ -419,73 +395,63 @@ $team_co_score = $speaker1_co_score + $speaker2_co_score;
         {    if ($aa > 0)
             {    $validate = 0;
                 $msg[]="1 or more speakers without any score entered. ";
-				$query="SELECT DISTINCT venue.venue_name AS venue FROM `venue` INNER JOIN draw_round_$nextresult ON venue.venue_id = draw_round_$nextresult.venue_id INNER JOIN `temp_speaker_round_$nextresult` ON draw_round_$nextresult.debate_id = temp_speaker_round_$nextresult.debate_id WHERE temp_speaker_round_$nextresult.points = 0";
-				$result=mysql_query($query);
-				echo mysql_error();
-				while ($row=mysql_fetch_assoc($result)){
-					$msg[]="Re-enter ballot for ".$row['venue'];
-				}
+                                $query="SELECT DISTINCT venue.venue_name AS venue FROM `venue` INNER JOIN draws ON venue.venue_id = draws.venue_id INNER JOIN `temp_speaker_round_$nextresult` ON draws.debate_id = temp_speaker_round_$nextresult.debate_id WHERE temp_speaker_round_$nextresult.points = 0 AND draws.round_no=$nextresult";
+                                $result=mysql_query($query);
+                                echo mysql_error();
+                                while ($row=mysql_fetch_assoc($result)){
+                                        $msg[]="Re-enter ballot for ".$row['venue'];
+                                }
             }
         }
         
-        if ($validate == 1)
-        {
+        if ($validate == 1) {
             //Create and add values to results table
             
-        $query ="CREATE TABLE `result_round_$nextresult` ( ";
-        $query.="`debate_id` mediumint(9) NOT NULL default '0',";
-        $query.="`first` mediumint(9) NOT NULL default '0',";
-        $query.="`second` mediumint(9) NOT NULL default '0',";
-        $query.="`third` mediumint(9) NOT NULL default '0',";
-        $query.="`fourth` mediumint(9) NOT NULL default '0',";
-        $query.="PRIMARY KEY  (`debate_id`))";
-        $result=mysql_query($query);
+            //$query ="CREATE TABLE `result_round_$nextresult` ( ";
+            //$query.="`debate_id` mediumint(9) NOT NULL default '0',";
+            //$query.="`first` mediumint(9) NOT NULL default '0',";
+            //$query.="`second` mediumint(9) NOT NULL default '0',";
+            //$query.="`third` mediumint(9) NOT NULL default '0',";
+            //$query.="`fourth` mediumint(9) NOT NULL default '0',";
+            //$query.="PRIMARY KEY  (`debate_id`))";
+            //$result=mysql_query($query);
         
-        if (!$result) //Get Error Message
-          {    
-            $msg[]="Error creating results table.".mysql_error();
-            $action="display";
-          }
-            else
-        {    $query="INSERT INTO result_round_$nextresult SELECT * FROM temp_result_round_$nextresult";
-                    mysql_query($query);
+            if (!$result) { //Get Error Message
+                $msg[]="Error creating results table.".mysql_error();
+                $action="display";
+            } else {
+                $query="INSERT INTO results SELECT * FROM temp_result_round_$nextresult";
+                mysql_query($query);
     
-            //create speaker table
-                $query ="CREATE TABLE `speaker_round_$nextresult` ( ";
-                $query.="`speaker_id` mediumint(9) NOT NULL default '0',"; 
-                $query.="`debate_id` mediumint(9) NOT NULL default '0',";
-                $query.="`points` smallint(9) NOT NULL default '0', ";
-                $query.="PRIMARY KEY (`speaker_id`))";
-            $result=mysql_query($query);
+                //create speaker table
+                //$query ="CREATE TABLE `speaker_results` ( ";
+                //$query.="`speaker_id` mediumint(9) NOT NULL default '0',"; 
+                //$query.="`debate_id` mediumint(9) NOT NULL default '0',";
+                //$query.="`points` smallint(9) NOT NULL default '0', ";
+                //$query.="PRIMARY KEY (`speaker_id`))";
+                //$result=mysql_query($query);
                     
-                if(!$result)
-              {    $msg[]="Error creating speaker points table ".mysql_error();
-                        $action="display";
-                }
-                else
-                {    $query="INSERT INTO speaker_round_$nextresult SELECT * FROM temp_speaker_round_$nextresult";
-                        mysql_query($query);
-                        
-                        $query="DROP TABLE temp_result_round_$nextresult";
-                mysql_query($query);
-                $query="DROP TABLE temp_speaker_round_$nextresult";
-                mysql_query($query);
+                if(!$result) {
+                    $msg[]="Error creating speaker points table ".mysql_error();
+                    $action="display";
+                } else {
+                    $query="INSERT INTO speaker_results SELECT * FROM temp_speaker_round_$nextresult";
+                    mysql_query($query);
+                    $query="DROP TABLE temp_result_round_$nextresult";
+                    mysql_query($query);
+                    $query="DROP TABLE temp_speaker_round_$nextresult";
+                    mysql_query($query);
                 
-                //Redirect
-               require_once("includes/http.php");
-               redirect("result.php?moduletype=round&action=showresult&roundno=$nextresult");
+                    //Redirect
+                    require_once("includes/http.php");
+                    redirect("result.php?moduletype=round&action=showresult&roundno=$nextresult");
                 }
-            $result="display";
+                $result="display";
             }
-    }
-    else
-    {
+    } else {
         $action="display"; //Go back to display mode
     }
-
-    }
-
-
+	}
 }
 
 switch ($action)
@@ -515,8 +481,8 @@ if ($nextresult==$numrounds)
     {
         //try extracting results from the temporary result table
         $query = "SELECT T.debate_id AS debate_id, V.venue_name AS venue_name, `first` , `second` , third, fourth, og, oo, cg, co, T1.team_code AS team_og_code, U1.univ_code AS univ_og_code, T2.team_code AS team_oo_code, U2.univ_code AS univ_oo_code, T3.team_code AS team_cg_code, U3.univ_code AS univ_cg_code, T4.team_code AS team_co_code, U4.univ_code AS univ_co_code, A.adjud_name AS chair_name ";
-        $query .= "FROM temp_result_round_$nextresult T, draw_round_$nextresult D, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4, venue V, adjudicator A, adjud_round_$nextresult J ";
-        $query .= "WHERE T.debate_id = D.debate_id AND T1.team_id = D.og AND T2.team_id = D.oo AND T3.team_id = D.cg AND T4.team_id = D.co AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND D.venue_id=V.venue_id AND A.adjud_id = J.adjud_id AND J.debate_id = D.debate_id AND J.status='chair' ";
+        $query .= "FROM temp_result_round_$nextresult T, draws D, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4, venue V, adjudicator A, draw_adjud J ";
+        $query .= "WHERE D.round_no = $nextresult AND J.round_no = $nextresult AND T.debate_id = D.debate_id AND T1.team_id = D.og AND T2.team_id = D.oo AND T3.team_id = D.cg AND T4.team_id = D.co AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND D.venue_id=V.venue_id AND A.adjud_id = J.adjud_id AND J.debate_id = D.debate_id AND J.status='chair' ";
         $query .= "ORDER BY venue_name";
 
         $resultresult=mysql_query($query);
@@ -547,16 +513,16 @@ if ($nextresult==$numrounds)
 
                     $venue=$rowresults['venue_name'];
 
-					$chair=$rowresults['chair_name'];
+                                        $chair=$rowresults['chair_name'];
 
                     echo "<tr>\n";
                     echo "<td class=\"editdel\"><a href=\"result.php?moduletype=currentround&amp;action=edit&amp;debate_id=$results_debate_id\">Edit</a></td>";
-            		echo "<td>$venue</td>\n";
+                            echo "<td>$venue</td>\n";
                     echo "<td>$team_og_name (".returnPositionString(returnposition($first,$second,$third,$fourth,$og)).")</td>\n";
                     echo "<td>$team_oo_name (".returnPositionString(returnposition($first,$second,$third,$fourth,$oo)).")</td>\n";
                     echo "<td>$team_cg_name (".returnPositionString(returnposition($first,$second,$third,$fourth,$cg)).")</td>\n";
                     echo "<td>$team_co_name (".returnPositionString(returnposition($first,$second,$third,$fourth,$co)).")</td>\n";
-					echo "<td>$chair</td>";
+                                        echo "<td>$chair</td>";
 
                     echo"</tr>\n";
                 }
@@ -577,7 +543,7 @@ if ($nextresult==$numrounds)
 
     if($action=="edit")
     {
-	//LOGIC FOR DISPLAYING THE EDIT FORM.
+        //LOGIC FOR DISPLAYING THE EDIT FORM.
 
        ?>
             <div id="debatedetails">

@@ -30,9 +30,9 @@ $result=mysql_query($query);
 $numrounds=mysql_fetch_assoc($result)['param_value'];
 
 //Get Number of Rounds result entered for
-$query="SHOW TABLES LIKE 'result_round%'";
+$query="SELECT MAX(round_no) FROM results";
 $result=mysql_query($query);
-$numresults=mysql_num_rows($result);
+$numresults=$result ? mysql_fetch_array($result)[0] : 0;
 
 $nextresult=$numresults+1;
 

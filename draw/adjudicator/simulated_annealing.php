@@ -52,6 +52,7 @@ further tuning of the SA algorithm
 further optimizing (speed) of the SA algorithm
 */
 
+
 //Simulated Annealing:
 $RUNS = 20000;
 $UPHILL_PROBABILITY = 0.5;
@@ -61,6 +62,9 @@ $DETERMINATION = 500; // amount of times the algorithm searches for a better sol
 //Display Setting:
 $MESSAGE_TRESHHOLD = 0;
 
+function print_debug() {
+	print "<pre>".print_r(debug_backtrace(), 1)."</pre>";
+}
 
 function occurrences_of($value, $array) {
     $result = 0;

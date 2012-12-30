@@ -281,30 +281,30 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 		if ($validate==1)
        	{
          	//create tables
-        	$query= "CREATE TABLE draw_round_$nextround (";
-	        $query.= "debate_id MEDIUMINT(9) NOT NULL ,";
-	        $query.= "og MEDIUMINT(9) NOT NULL ,";
-	        $query.= "oo MEDIUMINT(9) NOT NULL ,";
-	        $query.= "cg MEDIUMINT(9) NOT NULL ,";
-	        $query.= "co MEDIUMINT(9) NOT NULL ,";
-	        $query.= "venue_id MEDIUMINT(9) NOT NULL ,";
-	        $query.= "PRIMARY KEY (debate_id))";
-	        $result=mysql_query($query);
+        	//$query= "CREATE TABLE draw_round_$nextround (";
+	        //$query.= "debate_id MEDIUMINT(9) NOT NULL ,";
+	        //$query.= "og MEDIUMINT(9) NOT NULL ,";
+	        //$query.= "oo MEDIUMINT(9) NOT NULL ,";
+	        //$query.= "cg MEDIUMINT(9) NOT NULL ,";
+	        //$query.= "co MEDIUMINT(9) NOT NULL ,";
+	        //$query.= "venue_id MEDIUMINT(9) NOT NULL ,";
+	        //$query.= "PRIMARY KEY (debate_id))";
+	        //$result=mysql_query($query);
 
-	        $query = "CREATE TABLE adjud_round_$nextround ( `debate_id` MEDIUMINT NOT NULL ,";
-	        $query .= " `adjud_id` MEDIUMINT NOT NULL ,";
-	        $query .= " `status` ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL );";
-	        $result=mysql_query($query);
+	        //$query = "CREATE TABLE adjud_round_$nextround ( `debate_id` MEDIUMINT NOT NULL ,";
+	        //$query .= " `adjud_id` MEDIUMINT NOT NULL ,";
+	        //$query .= " `status` ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL );";
+	        //$result=mysql_query($query);
 
 	        //Insert Values
-	        $query="INSERT INTO draw_round_$nextround SELECT * FROM temp_draw_round_$nextround";
+	        $query="INSERT INTO draws SELECT $nextround as 'round_no', `debate_id`, `og`, `oo`, `cg`, `co`, `venue_id` FROM temp_draw_round_$nextround";
 	        mysql_query($query);
                         
-	        $query="INSERT INTO adjud_round_$nextround SELECT `debate_id`, `adjud_id`, `status` FROM temp_adjud_round_$nextround";
+	        $query="INSERT INTO draw_adjud SELECT $nextround as 'round_no', `debate_id`, `adjud_id`, `status` FROM temp_adjud_round_$nextround";
 	        mysql_query($query);
 
 		 	//Make non-chair trainees, trainees.
-		 	$query="UPDATE `adjud_round_$nextround` INNER JOIN `adjudicator` ON `adjud_round_$nextround`.`adjud_id` = `adjudicator`.`adjud_id` SET `adjud_round_$nextround`.`status` = 'trainee' WHERE `adjudicator`.`status` = 'trainee' AND `adjud_round_$nextround`.`status` != 'chair'";
+	 	$query="UPDATE `draw_adjud` INNER JOIN `adjudicator` ON `draw_adjud`.`adjud_id` = `adjudicator`.`adjud_id` SET `draw_adjud`.`status` = 'trainee' WHERE `adjudicator`.`status` = 'trainee' AND `draw_adjud`.`status` != 'chair' AND `draw_adjud`.`round_no` = $nextround";
 	        mysql_query($query);
    
 	        //Delete Temporary Tables
@@ -315,8 +315,8 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 		$query="DROP TABLE draw_lock_round_$nextround";
 		mysql_query($query);
         
-	        //Redirect
 		mysql_query("UPDATE settings SET param_value=".$nextround." WHERE param_name='round'"); 
+	        //Redirect
 	        redirect("draw.php?moduletype=round&action=showdraw&roundno=$nextround");
 		}
 	}

@@ -25,8 +25,8 @@ require_once("includes/dbconnection.php");
 require_once("includes/db_tools.php");
 
 function get_num_rounds() {
-    $result = q("SHOW TABLES LIKE 'draw_round%'");
-    return mysql_num_rows($result);
+    $result = q("SELECT param_value FROM settings WHERE param_name='round'");
+    return mysql_fetch_array($result)[0];
 }
 
 function has_temp_draw() {
@@ -35,8 +35,13 @@ function has_temp_draw() {
 }
 
 function get_num_completed_rounds() {
-    $result = q("SHOW TABLES LIKE 'result_round%'");
-    return mysql_num_rows($result);
+    $result = q("SELECT MAX(round_no) FROM (SELECT d.round_no, COUNT(d.debate_id) as dCount, COUNT(r.debate_id) as rCount FROM draws AS d, results AS r WHERE d.round_no = r.round_no GROUP BY d.round_no) AS C");
+    $count=mysql_fetch_array($result)[0];
+    if ($count === NULL) {
+	    return 0;
+    } else {
+	    return $count;
+    }
 }
 
 function has_temp_result() {
@@ -45,12 +50,12 @@ function has_temp_result() {
 }
 
 function __team_on_ranking($round, $team_id, $ranking) {
-    $query = "SELECT $ranking FROM result_round_$round WHERE $ranking = $team_id";
+    $query = "SELECT $ranking FROM results WHERE round_no=$round AND $ranking = $team_id";
     return (mysql_num_rows(q($query)));
 }
 
 function __team_on_position($round, $team_id, $position) {
-    $query = "SELECT $position FROM draw_round_$round WHERE $position = '$team_id'";
+    $query = "SELECT $position FROM draws WHERE round_no=$round AND $position = '$team_id'";
     return (mysql_num_rows(q($query)));
 }
 
@@ -159,9 +164,9 @@ function get_adjudicators_venues($round) {
         $result["data"] = array();
         return $result;
     }
-    $query = "SELECT v.*, a.* FROM adjudicator AS a, draw_round_$round AS d, " .
-                "venue AS v, adjud_round_$round AS adjud  " .
-                "WHERE d.venue_id=v.venue_id AND adjud.debate_id = d.debate_id AND " .
+    $query = "SELECT v.*, a.* FROM adjudicator AS a, drawd AS d, " .
+                "venue AS v, draw_adjud AS adjud  " .
+                "WHERE d.round_no=$round AND adjud.round_no=$round AND d.venue_id=v.venue_id AND adjud.debate_id = d.debate_id AND " .
                 "a.adjud_id = adjud.adjud_id ORDER BY adjud_name";
     
     $query_result = mysql_query($query);
@@ -182,8 +187,8 @@ function get_teams_venues($round) {
     }
 
     $query = "SELECT v.venue_id AS venue_id, v.venue_location AS venue_location, v.venue_name AS venue_name, t.team_id AS team_id, t.team_code AS team_code, u.univ_code AS univ_code ";
-        $query.="FROM team AS t, university AS u, draw_round_$round AS d, venue AS v ";
-        $query.="WHERE d.venue_id=v.venue_id AND (t.team_id=d.og OR t.team_id=d.oo OR t.team_id=d.cg OR t.team_id=d.co) AND t.univ_id=u.univ_id ";
+        $query.="FROM team AS t, university AS u, draws AS d, venue AS v ";
+        $query.="WHERE d.round_no=$round AND d.venue_id=v.venue_id AND (t.team_id=d.og OR t.team_id=d.oo OR t.team_id=d.cg OR t.team_id=d.co) AND t.univ_id=u.univ_id ";
         $query.="ORDER BY univ_code, team_code ";
 
     $query_result = mysql_query($query);
@@ -195,7 +200,7 @@ function get_teams_venues($round) {
         $pos_string = "";
         foreach($positions as $position) {
             $pos_string = $position;
-            $pos_query = "SELECT $position FROM draw_round_$round WHERE $position={$row['team_id']}";
+            $pos_query = "SELECT $position FROM draws WHERE round_no=$round AND $position={$row['team_id']}";
             $pos_query_result = mysql_query($pos_query);
             if (mysql_num_rows($pos_query_result) > 0)
                 break;
@@ -222,8 +227,8 @@ function adjudicator_sheets($round) {
     
     // Get the individual debate details
     $venue_query = "SELECT draw.debate_id AS debate_id, draw.og AS ogid, draw.oo AS ooid, draw.cg AS cgid, draw.co AS coid, draw.venue_id AS venue_id, venue.venue_name AS venue_name, venue.venue_location AS venue_location, oguniv.univ_code AS og_univ_code, ogteam.team_code AS og_team_code, oouniv.univ_code AS oo_univ_code, ooteam.team_code AS oo_team_code, cguniv.univ_code AS cg_univ_code, cgteam.team_code AS cg_team_code, couniv.univ_code AS co_univ_code, coteam.team_code AS co_team_code ";
-    $venue_query .= "FROM draw_round_$round AS draw, venue AS venue, university AS oguniv, team AS ogteam, university AS oouniv, team AS ooteam, university AS cguniv, team AS cgteam, university AS couniv, team AS coteam ";
-    $venue_query .= "WHERE draw.venue_id = venue.venue_id AND ogteam.team_id = draw.og AND oguniv.univ_id = ogteam.univ_id AND ooteam.team_id = draw.oo AND oouniv.univ_id = ooteam.univ_id AND cgteam.team_id = draw.cg AND cguniv.univ_id = cgteam.univ_id AND coteam.team_id = draw.co AND couniv.univ_id = coteam.univ_id ";
+    $venue_query .= "FROM draws AS draw, venue AS venue, university AS oguniv, team AS ogteam, university AS oouniv, team AS ooteam, university AS cguniv, team AS cgteam, university AS couniv, team AS coteam ";
+    $venue_query .= "WHERE draw.round_no=$round AND draw.venue_id = venue.venue_id AND ogteam.team_id = draw.og AND oguniv.univ_id = ogteam.univ_id AND ooteam.team_id = draw.oo AND oouniv.univ_id = ooteam.univ_id AND cgteam.team_id = draw.cg AND cguniv.univ_id = cgteam.univ_id AND coteam.team_id = draw.co AND couniv.univ_id = coteam.univ_id ";
     $venue_query .= "ORDER BY venue_location, venue_name ";
     
     $venue_result = mysql_query($venue_query);
@@ -243,13 +248,13 @@ function adjudicator_sheets($round) {
         $co = $venue_row['co_univ_code'].' '.$venue_row['co_team_code'];
         
         // Get Chair
-        $chfadj_query = "SELECT adjud.adjud_name AS adjud_name FROM adjud_round_$round AS round, adjudicator AS adjud WHERE round.debate_id = $debate_id AND round.status = 'chair' AND adjud.adjud_id = round.adjud_id ";
+        $chfadj_query = "SELECT adjud.adjud_name AS adjud_name FROM draw_adjud AS round, adjudicator AS adjud WHERE round.round_no=$round AND round.debate_id = $debate_id AND round.status = 'chair' AND adjud.adjud_id = round.adjud_id ";
         $chfadj_result = mysql_query($chfadj_query);
         $chfadj_row=mysql_fetch_assoc($chfadj_result);
         $chair = $chfadj_row['adjud_name'];
 
         // Get Panelists
-        $pnladj_query = "SELECT adjud.adjud_name AS adjud_name FROM adjud_round_$round AS round, adjudicator AS adjud WHERE round.debate_id = $debate_id AND round.status = 'panelist' AND adjud.adjud_id = round.adjud_id ";
+        $pnladj_query = "SELECT adjud.adjud_name AS adjud_name FROM draw_adjud AS round, adjudicator AS adjud WHERE round.round_no=$round AND round.debate_id = $debate_id AND round.status = 'panelist' AND adjud.adjud_id = round.adjud_id ";
         $pnladj_result = mysql_query($pnladj_query);
 		$panel="";
         while ($pnladj_row=mysql_fetch_assoc($pnladj_result))
@@ -351,7 +356,7 @@ function adjudicator_sheets($round) {
 
 function get_co_adjudicators_for_round($adjud_id, $round) {
     $result = array();
-    $db_result = q("SELECT b.adjud_id FROM adjud_round_$round AS a, adjud_round_$round AS b WHERE a.adjud_id = '$adjud_id' AND a.debate_id = b.debate_id AND NOT b.adjud_id = '$adjud_id'");
+    $db_result = q("SELECT b.adjud_id FROM draw_adjud AS a, draw_adjud AS b WHERE a.round_no=$round AND b.round_no=$round AND  a.adjud_id = '$adjud_id' AND a.debate_id = b.debate_id AND NOT b.adjud_id = '$adjud_id'");
     while ($row = mysql_fetch_array($db_result))
         $result[] = $row[0];
     return $result;
@@ -366,7 +371,7 @@ function get_co_adjudicators($adjud_id) {
 
 function get_adjudicator_met_teams_for_round($adjud_id, $round) {
     $result = array();
-    $db_result = q("SELECT draw.og, draw.oo, draw.cg, draw.co FROM adjud_round_$round AS a, draw_round_$round AS draw WHERE a.adjud_id = '$adjud_id' AND a.debate_id = draw.debate_id");
+    $db_result = q("SELECT draw.og, draw.oo, draw.cg, draw.co FROM draw_adjud AS a, draws AS draw WHERE a.round_no=$round AND draw.round_no=$round AND a.adjud_id = '$adjud_id' AND a.debate_id = draw.debate_id");
     while ($row = mysql_fetch_array($db_result)) {
         $result[] = $row[0];
         $result[] = $row[1];
@@ -433,10 +438,10 @@ function get_university($univ_id) {
 
 function delete_team($team_id) {
 	//Check for whether debates have started
-    $query="SHOW  TABLES  LIKE  '%_round_%'";
+    $query="SELECT COUNT(round_no) FROM draws";
     $result=mysql_query($query);
 
-    if (mysql_num_rows($result)!=0)
+    if (mysql_fetch_array($result)[0]!=0)
       $msg[]="Debates in progress. Cannot delete now.";
     else
       {    
@@ -460,10 +465,10 @@ function delete_team($team_id) {
 
 function delete_adjud($adjud_id){
 	//Check for whether debates have started
-    $query="SHOW  TABLES  LIKE  '%_round_%'";
+    $query="SELECT COUNT(round_no) FROM draws";
     $result=mysql_query($query);
 
-    if (mysql_num_rows($result)!=0)
+    if (mysql_fetch_array($result)[0]!=0)
       $msg[]="Debates in progress. Cannot delete now.";
     else
       {

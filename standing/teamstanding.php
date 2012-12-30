@@ -21,17 +21,15 @@
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  * end license */
+require_once('includes/backend.php');
+
 $round=false;
 if(array_key_exists("round", @$_POST)) $round=trim(@$_POST['round']); 
 
 //Check Database
-$query="SHOW TABLES LIKE 'draw_round%'";
-$result=mysql_query($query);
-$numdraws=mysql_num_rows($result);
+$numdraws=get_num_rounds();
 
-$query="SHOW TABLES LIKE 'result_round%'";
-$result=mysql_query($query);
-$numresults=mysql_num_rows($result);
+$numresults=get_num_completed_rounds();
 
 $action = "display";
 if (!$round)

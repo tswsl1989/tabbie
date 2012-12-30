@@ -131,7 +131,7 @@ function team_standing_array($roundno, $list="all") {
         {
             $team_array[$index]["round_$x"] = 0; //default;
             // Check for first
-            $score_query = "SELECT first FROM result_round_$x WHERE first = '$team_id' ";
+            $score_query = "SELECT first FROM results WHERE round_no=$x AND first = '$team_id' ";
             $score_result = mysql_query($score_query);
             $score_count = mysql_num_rows($score_result);
             if ($score_count > 0) {
@@ -139,14 +139,14 @@ function team_standing_array($roundno, $list="all") {
             }
     
             // Check for second
-            $score_query = "SELECT second FROM result_round_$x WHERE second = '$team_id' ";
+            $score_query = "SELECT second FROM results WHERE round_no=$x AND second = '$team_id' ";
             $score_result = mysql_query($score_query);
             $score_count = mysql_num_rows($score_result);
             if ($score_count > 0)
                 $team_array[$index]["round_$x"] = 2;
     
             // Check for third
-            $score_query = "SELECT third FROM result_round_$x WHERE third = '$team_id' ";
+            $score_query = "SELECT third FROM results WHERE round_no=$x AND third = '$team_id' ";
             $score_result = mysql_query($score_query);
             $score_count = mysql_num_rows($score_result);
             if ($score_count > 0)
@@ -155,8 +155,8 @@ function team_standing_array($roundno, $list="all") {
 
             $score +=  $team_array[$index]["round_$x"];
             // Speaker points
-            $score_query = "SELECT points FROM speaker_round_$x AS round, speaker AS speaker ";
-            $score_query .= "WHERE speaker.team_id = '$team_id' AND speaker.speaker_id = round.speaker_id ";
+            $score_query = "SELECT points FROM speaker_results AS round, speaker AS speaker ";
+            $score_query .= "WHERE round.round_no=$x AND speaker.team_id = '$team_id' AND speaker.speaker_id = round.speaker_id ";
             $score_result = mysql_query($score_query);
             while ($score_row = mysql_fetch_assoc($score_result))
             {

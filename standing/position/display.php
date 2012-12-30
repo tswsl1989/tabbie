@@ -80,28 +80,28 @@ if ($action == "display")
             for ($x = 1; $x <= $round; $x++)
             {
                 // Check for OG
-                $score_query = "SELECT og FROM draw_round_$x WHERE og = '$team_id' ";
+                $score_query = "SELECT og FROM draws WHERE round_no=$x AND og = '$team_id' ";
                 $score_result = mysql_query($score_query);
                 $score_count = mysql_num_rows($score_result);
                 if ($score_count > 0)
                     $og++;
         
                 // Check for OO
-                $score_query = "SELECT oo FROM draw_round_$x WHERE oo = '$team_id' ";
+                $score_query = "SELECT oo FROM draws WHERE round_no=$x AND oo = '$team_id' ";
                 $score_result = mysql_query($score_query);
                 $score_count = mysql_num_rows($score_result);
                 if ($score_count > 0)
                     $oo++;
         
                 // Check for CG
-                $score_query = "SELECT cg FROM draw_round_$x WHERE cg = '$team_id' ";
+                $score_query = "SELECT cg FROM draws WHERE round_no=$x AND cg = '$team_id' ";
                 $score_result = mysql_query($score_query);
                 $score_count = mysql_num_rows($score_result);
                 if ($score_count > 0)
                     $cg++;
                 
                 // Check for CO
-                $score_query = "SELECT co FROM draw_round_$x WHERE co = '$team_id' ";
+                $score_query = "SELECT co FROM draws WHERE round_no=$x AND co = '$team_id' ";
                 $score_result = mysql_query($score_query);
                 $score_count = mysql_num_rows($score_result);
                 if ($score_count > 0)

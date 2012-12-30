@@ -21,7 +21,7 @@
  * 
  * end license */
 
-require('includes/backend.php');
+require_once('includes/backend.php');
 $warning="";
 //Upgrade DB for post 1.4.2
 convert_db_ssesl();
@@ -148,8 +148,8 @@ if ($action == "display")
         $points = 0;
         for ($x=1;$x<=$roundno;$x++)
         {
-            $score_query = "SELECT points FROM speaker_round_$x ";
-            $score_query .= "WHERE speaker_id = '$speaker_id' ";
+            $score_query = "SELECT points FROM speaker_results ";
+            $score_query .= "WHERE round_no=$x AND speaker_id = '$speaker_id' ";
             $score_result = mysql_query($score_query);
             $score_row = mysql_fetch_assoc($score_result);
             $points += $score_row['points'];

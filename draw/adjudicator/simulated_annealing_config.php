@@ -60,21 +60,26 @@ function ensure_scoring_factors_in_db() {
             'panel_size_out_of_bounds' => 1000,
             'panel_steepness' => 0.1,
             'panel_strength_not_perfect' => 1,
+	    'round' => 0,
             'team_conflict' => 10000,
             'trainee_in_chair' => 300,
             'university_conflict' => 10000,
-            'watcher_not_watched' => 150,
+            'watched_not_watched' => 150,
 	    'watcher_not_in_chair' => 0);
+
     $defapplied = 0;
+    $defs = array();
     foreach ($values as $name => $value) {
         $db_res = mysql_query("SELECT * FROM settings WHERE param_name='$name'");
         if (!(mysql_fetch_assoc($db_res))) {
             mysql_query("INSERT INTO settings (param_name, param_value) VALUES ('$name', $value)");
 	    $defapplied = 1;
+	    $defs[]=$name;
         }
     }
     if ($defapplied == 1) {
-	    print "Some settings missing - default values used";
+	    print "Some settings missing - default values used for: ".implode(", ", $defs);
+	    
     }
 }
 

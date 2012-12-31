@@ -78,14 +78,14 @@ $db_result = mysql_query(
 	//Quick hack to id the first row
 	print "<tr><td class='team' id='team1'>{$row['univ_code']} {$row['team_code']}</td>";
     $query = "SELECT debate_id AS debate_id, T1.team_code AS ogt, T2.team_code AS oot, T3.team_code AS cgt, T4.team_code AS cot, U1.univ_code AS ogtc, U2.univ_code AS ootc, U3.univ_code AS cgtc, U4.univ_code AS cotc, venue_name, venue_location ";
-    $query .= "FROM draw_round_$roundno, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4,venue ";
-    $query .= "WHERE og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND draw_round_$roundno.venue_id=venue.venue_id AND (og = {$row['team_id']} OR oo = {$row['team_id']} OR cg = {$row['team_id']} OR co = {$row['team_id']})"; 
+    $query .= "FROM draws D, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4,venue ";
+    $query .= "WHERE D.round_no=$roundno AND og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND D.venue_id=venue.venue_id AND (og = {$row['team_id']} OR oo = {$row['team_id']} OR cg = {$row['team_id']} OR co = {$row['team_id']})"; 
     $result=mysql_query($query);
     $row_debate=mysql_fetch_assoc($result);
              $debate_id = $row_debate['debate_id'];
              $adj_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
-             $adj_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-             $adj_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'chair' ";
+             $adj_query .= "FROM draw_adjud AR, adjudicator Ad ";
+             $adj_query .= "WHERE AR.round_no=$roundno AND debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'chair' ";
 			$adj_result=mysql_query($adj_query);
 
              $adj_row=mysql_fetch_assoc($adj_result);
@@ -99,8 +99,8 @@ $db_result = mysql_query(
 
              echo "<td id='panelists1' class='panelists'>";
              $pan_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
-         $pan_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-         $pan_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'panelist' ";
+         $pan_query .= "FROM draw_adjud AR, adjudicator Ad ";
+         $pan_query .= "WHERE AR.round_no=$roundno AND debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'panelist' ";
          $pan_result=mysql_query($pan_query);
          echo mysql_error();
 
@@ -115,8 +115,8 @@ $db_result = mysql_query(
 
              echo "<td id='trainee1' class='trainee'>";
              $trainee_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
-         $trainee_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-         $trainee_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'trainee' ";
+         $trainee_query .= "FROM draw_adjud AR, adjudicator Ad ";
+         $trainee_query .= "WHERE AR.round_no=$roundno AND debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'trainee' ";
          $trainee_result=mysql_query($trainee_query);
          echo mysql_error();
 
@@ -134,14 +134,14 @@ $db_result = mysql_query(
     while ($row = mysql_fetch_assoc($db_result)) {
         print "<tr><td class='team'>{$row['univ_code']} {$row['team_code']}</td>";
         $query = "SELECT debate_id AS debate_id, T1.team_code AS ogt, T2.team_code AS oot, T3.team_code AS cgt, T4.team_code AS cot, U1.univ_code AS ogtc, U2.univ_code AS ootc, U3.univ_code AS cgtc, U4.univ_code AS cotc, venue_name, venue_location ";
-        $query .= "FROM draw_round_$roundno, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4,venue ";
-        $query .= "WHERE og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND draw_round_$roundno.venue_id=venue.venue_id AND (og = {$row['team_id']} OR oo = {$row['team_id']} OR cg = {$row['team_id']} OR co = {$row['team_id']})"; 
+        $query .= "FROM draws D, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4,venue ";
+        $query .= "WHERE D.round_no=$roundno AND og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND D.venue_id=venue.venue_id AND (og = {$row['team_id']} OR oo = {$row['team_id']} OR cg = {$row['team_id']} OR co = {$row['team_id']})"; 
         $result=mysql_query($query);
         $row_debate=mysql_fetch_assoc($result);
                  $debate_id = $row_debate['debate_id'];
                  $adj_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
-                 $adj_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-                 $adj_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'chair' ";
+                 $adj_query .= "FROM draw_adjud AR, adjudicator Ad ";
+                 $adj_query .= "WHERE AR.round_no=$roundno AND debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'chair' ";
 				$adj_result=mysql_query($adj_query);
 
                  $adj_row=mysql_fetch_assoc($adj_result);
@@ -155,8 +155,8 @@ $db_result = mysql_query(
 
                  echo "<td class='panelists'>";
                  $pan_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
-             $pan_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-             $pan_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'panelist' ";
+             $pan_query .= "FROM draw_adjud AR, adjudicator Ad ";
+             $pan_query .= "WHERE AR.round_no=$roundno AND debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'panelist' ";
              $pan_result=mysql_query($pan_query);
              echo mysql_error();
 
@@ -171,8 +171,8 @@ $db_result = mysql_query(
 
                  echo "<td class='trainee'>";
                  $trainee_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
-             $trainee_query .= "FROM adjud_round_$roundno AR, adjudicator Ad ";
-             $trainee_query .= "WHERE debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'trainee' ";
+             $trainee_query .= "FROM draw_adjud AR, adjudicator Ad ";
+             $trainee_query .= "WHERE AR.round_no=$roundno AND debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'trainee' ";
              $trainee_result=mysql_query($trainee_query);
              echo mysql_error();
 

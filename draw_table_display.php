@@ -25,7 +25,7 @@ require_once("draw/adjudicator/simulated_annealing_config.php");
 $roundno=@$_GET['roundno'];
 $slide=@$_GET['slide'];
 $norefresh=@$_GET['norefresh'];
-	$query="SELECT COUNT(*) FROM `draw_round_$roundno` WHERE 1";
+	$query="SELECT COUNT(*) FROM `draws` WHERE round_no=$roundno";
 	$result=mysql_query($query);
 	$row=mysql_fetch_array($result);
 	$maxrooms=$row["COUNT(*)"];
@@ -63,7 +63,7 @@ if($intslide > $maxrooms) $slide="premotion";
 			echo("<div class='notice'>" . get_motion_for_round($roundno) . "</div>");
 		} else {
 			?><div class='container'><?php
-			$query = "SELECT * FROM `draw_round_$roundno` ORDER BY venue_id ASC";
+			$query = "SELECT * FROM `draws` WHERE round_no=$roundno ORDER BY venue_id ASC";
 			$db_result=mysql_query($query);
 			for($i=1;$i<$intslide;$i++)
 			  {
@@ -80,10 +80,10 @@ if($intslide > $maxrooms) $slide="premotion";
 			echo("<div class='co'>".team_code_long_table($row["co"])."</div>");	
 		
 			$debate_id = $row['debate_id'];
-			$db_result = mysql_query("SELECT * FROM `adjud_round_$roundno` WHERE `debate_id` = $debate_id AND `status` = CONVERT ( _utf8 'chair' USING latin1)");
+			$db_result = mysql_query("SELECT * FROM draw_adjud WHERE `round_no`=$roundno AND `debate_id` = $debate_id AND `status` = CONVERT ( _utf8 'chair' USING latin1)");
 			$row = mysql_fetch_array($db_result);
 			echo("<div class='chair'>".adjudicator_name($row['adjud_id'])."</div>");
-			$db_result = mysql_query("SELECT * FROM `adjud_round_$roundno` WHERE `debate_id` = $debate_id AND `status` = CONVERT ( _utf8 'panelist' USING latin1)");
+			$db_result = mysql_query("SELECT * FROM draw_adjud WHERE `round_no`=$roundno AND `debate_id` = $debate_id AND `status` = CONVERT ( _utf8 'panelist' USING latin1)");
 			if(mysql_num_rows($db_result)>0){
 				echo ("<div class='panelist'>");
 				$first=1;
@@ -97,7 +97,7 @@ if($intslide > $maxrooms) $slide="premotion";
 				}
 				echo ("</div>");
 			}
-			$db_result = mysql_query("SELECT * FROM `adjud_round_$roundno` WHERE `debate_id` = $debate_id AND `status` = CONVERT ( _utf8 'trainee' USING latin1)");
+			$db_result = mysql_query("SELECT * FROM draw_adjud WHERE `round_no`=$roundno AND `debate_id` = $debate_id AND `status` = CONVERT ( _utf8 'trainee' USING latin1)");
 			if(mysql_num_rows($db_result)>0){
 				echo ("<div class='trainee'>");
 				$first=1;

@@ -64,11 +64,12 @@ $roundno=@$_GET['roundno'];
 			
 <?php
 	// Get the individual debate details
-	$venue_query = "SELECT draw.debate_id AS debate_id, draw.og AS ogid, draw.oo AS ooid, draw.cg AS cgid, draw.co AS coid, draw.venue_id AS venue_id, venue.venue_name AS venue_name, venue.venue_location AS venue_location, oguniv.univ_code AS og_univ_code, ogteam.team_code AS og_team_code, oouniv.univ_code AS oo_univ_code, ooteam.team_code AS oo_team_code, cguniv.univ_code AS cg_univ_code, cgteam.team_code AS cg_team_code, couniv.univ_code AS co_univ_code, coteam.team_code AS co_team_code ";
-	$venue_query .= "FROM draw_round_$roundno AS draw, venue AS venue, university AS oguniv, team AS ogteam, university AS oouniv, team AS ooteam, university AS cguniv, team AS cgteam, university AS couniv, team AS coteam ";
-	$venue_query .= "WHERE draw.venue_id = venue.venue_id AND ogteam.team_id = draw.og AND oguniv.univ_id = ogteam.univ_id AND ooteam.team_id = draw.oo AND oouniv.univ_id = ooteam.univ_id AND cgteam.team_id = draw.cg AND cguniv.univ_id = cgteam.univ_id AND coteam.team_id = draw.co AND couniv.univ_id = coteam.univ_id ";
+	$venue_query = "SELECT d.debate_id AS debate_id, d.og AS ogid, d.oo AS ooid, d.cg AS cgid, d.co AS coid, d.venue_id AS venue_id, venue.venue_name AS venue_name, venue.venue_location AS venue_location, oguniv.univ_code AS og_univ_code, ogteam.team_code AS og_team_code, oouniv.univ_code AS oo_univ_code, ooteam.team_code AS oo_team_code, cguniv.univ_code AS cg_univ_code, cgteam.team_code AS cg_team_code, couniv.univ_code AS co_univ_code, coteam.team_code AS co_team_code ";
+	$venue_query .= "FROM draws AS d, venue AS venue, university AS oguniv, team AS ogteam, university AS oouniv, team AS ooteam, university AS cguniv, team AS cgteam, university AS couniv, team AS coteam ";
+	$venue_query .= "WHERE d.round_no=$roundno AND d.venue_id = venue.venue_id AND ogteam.team_id = d.og AND oguniv.univ_id = ogteam.univ_id AND ooteam.team_id = d.oo AND oouniv.univ_id = ooteam.univ_id AND cgteam.team_id = d.cg AND cguniv.univ_id = cgteam.univ_id AND coteam.team_id = d.co AND couniv.univ_id = coteam.univ_id ";
 	$venue_query .= "ORDER BY RAND() ";
 	$venue_result = mysql_query($venue_query);
+	print mysql_error();
 	while ($venue_row=mysql_fetch_assoc($venue_result))
 	{
 		$debate_id = $venue_row['debate_id'];
@@ -97,7 +98,7 @@ echo <<< END
 			</div>\n
 END;
 		// Get Chair
-		$chfadj_query = "SELECT adjud.adjud_name AS adjud_name FROM adjud_round_$roundno AS round, adjudicator AS adjud WHERE round.debate_id = $debate_id AND round.status = 'chair' AND adjud.adjud_id = round.adjud_id ";
+		$chfadj_query = "SELECT adjud.adjud_name AS adjud_name FROM draw_adjud AS round, adjudicator AS adjud WHERE round.round_no=$roundno AND round.debate_id = $debate_id AND round.status = 'chair' AND adjud.adjud_id = round.adjud_id ";
 		$chfadj_result = mysql_query($chfadj_query);
 		$chfadj_row=mysql_fetch_assoc($chfadj_result);
 echo <<< END
@@ -106,7 +107,7 @@ echo <<< END
 				<p>{$chfadj_row['adjud_name']}
 END;
 		// Get Panelists
-		$pnladj_query = "SELECT adjud.adjud_name AS adjud_name FROM adjud_round_$roundno AS round, adjudicator AS adjud WHERE round.debate_id = $debate_id AND round.status = 'panelist' AND adjud.adjud_id = round.adjud_id ";
+		$pnladj_query = "SELECT adjud.adjud_name AS adjud_name FROM draw_adjud AS round, adjudicator AS adjud WHERE round.round_no=$roundno AND round.debate_id = $debate_id AND round.status = 'panelist' AND adjud.adjud_id = round.adjud_id ";
 		$pnladj_result = mysql_query($pnladj_query);
 		while($pan_row=mysql_fetch_assoc($pnladj_result))
 		{    

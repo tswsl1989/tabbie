@@ -22,6 +22,8 @@
  * end license */
 require_once("includes/backend.php");
 require_once("draw/adjudicator/simulated_annealing_config.php");
+require_once("includes/adjudicator.php");
+
 $roundno=@$_GET['roundno'];
 $slide=@$_GET['slide'];
 $norefresh=@$_GET['norefresh'];
@@ -80,32 +82,30 @@ if($intslide > $maxrooms) $slide="premotion";
 			echo("<div class='co'>".team_code_long_table($row["co"])."</div>");	
 		
 			$debate_id = $row['debate_id'];
-			$db_result = mysql_query("SELECT * FROM draw_adjud WHERE `round_no`=$roundno AND `debate_id` = $debate_id AND `status` = CONVERT ( _utf8 'chair' USING latin1)");
-			$row = mysql_fetch_array($db_result);
-			echo("<div class='chair'>".adjudicator_name($row['adjud_id'])."</div>");
-			$db_result = mysql_query("SELECT * FROM draw_adjud WHERE `round_no`=$roundno AND `debate_id` = $debate_id AND `status` = CONVERT ( _utf8 'panelist' USING latin1)");
-			if(mysql_num_rows($db_result)>0){
+			echo("<div class='chair'>".get_chair($roundno, $debate_id)."</div>");
+			$p = get_panel($roundno, $debate_id);
+			if ($p) {
 				echo ("<div class='panelist'>");
 				$first=1;
-				while($row=mysql_fetch_assoc($db_result)) {
+				foreach ($p as $pan) {
 					if ($first==1) {
-						echo adjudicator_name($row["adjud_id"]);
+						echo $pan;
 					}else {
-						echo ", " . adjudicator_name($row["adjud_id"]);
+						echo ", " . $pan;
 					}
 					$first=0;
 				}
 				echo ("</div>");
 			}
-			$db_result = mysql_query("SELECT * FROM draw_adjud WHERE `round_no`=$roundno AND `debate_id` = $debate_id AND `status` = CONVERT ( _utf8 'trainee' USING latin1)");
-			if(mysql_num_rows($db_result)>0){
+			$t = get_trainees($roundno, $debate_id);
+			if($t){
 				echo ("<div class='trainee'>");
 				$first=1;
-				while($row=mysql_fetch_assoc($db_result)) {
+				foreach ($t as $trainee) {
 					if ($first==1) {
-						echo adjudicator_name($row["adjud_id"]) . " (t)";
+						echo $trainee. " (t)";
 					}else {
-						echo ", " . adjudicator_name($row["adjud_id"]). " (t)";
+						echo ", " .$trainee. " (t)";
 					}
 					$first=0;
 				}
@@ -114,7 +114,7 @@ if($intslide > $maxrooms) $slide="premotion";
 		}
 
 ?>                        
-    </div></div><div class="push"></div> <!-- End of scrolldisplay -->
+    </div></div><div class="push"></div>
 	<div class="footer"><!-- BEGIN class footer-->
 		Created with Tabbie, see <a href="http://smoothtournament.com">http://smoothtournament.com</a> and <a href="http://tabbie.wikidot.com">http://tabbie.wikidot.com</a>.
 	</div><!-- END class footer-->

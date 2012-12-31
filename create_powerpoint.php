@@ -30,6 +30,7 @@ error_reporting(E_ALL);
 set_include_path(get_include_path() . PATH_SEPARATOR . "includes/phppowerpoint/");
 require_once("includes/backend.php");
 //require_once("includes/phppowerpoint/PHPPowerpoint.php");
+require_once("includes/adjudicator.php");
 require_once("includes/phppowerpoint/PHPPowerPoint/IOFactory.php");
 
 
@@ -61,13 +62,13 @@ function add_text_element($slide, $text, $width, $height, $xoffset, $yoffset, $f
 
 function add_design_element($slide, $path, $width, $height, $xoffset, $yoffset){
 	$shape = $slide->createDrawingShape();
-    $shape->setName('Graphic');
-    $shape->setDescription('Graphic');
-    $shape->setPath($path);
-    $shape->setWidth($width);
-    $shape->setHeight($height);
-    $shape->setOffsetX($xoffset);
-    $shape->setOffsetY($yoffset);
+	$shape->setName('Graphic');
+	$shape->setDescription('Graphic');
+	$shape->setPath($path);
+	$shape->setWidth($width);
+	$shape->setHeight($height);
+	$shape->setOffsetX($xoffset);
+	$shape->setOffsetY($yoffset);
 }
 
 function two_slide_room_block($slide, $row_debate, $roundno, $offset){
@@ -81,43 +82,21 @@ function two_slide_room_block($slide, $row_debate, $roundno, $offset){
 	$judgelist = "";
 	
 	//Find the chair adjudicator
-	$debate_id = $row_debate['debate_id'];
-	$adj_query  = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
-	$adj_query .= "FROM draw_adjud AR, adjudicator Ad ";
-	$adj_query .= "WHERE AR.round_no=$roundno AND debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'chair' ";
-	$adj_result=mysql_query($adj_query);
-	$adj_row=mysql_fetch_assoc($adj_result);
-	
-	$judgelist.=$adj_row["adjud_name"]." (c), ";
+	$judgelist.=get_chair($roundno, $row_debate["debate_id"])." (c), ";
 	
 	//Find the panellists
-	$pan_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
- 	$pan_query .= "FROM draw_adjud AR, adjudicator Ad ";
- 	$pan_query .= "WHERE AR.round_no=$roundno AND debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'panelist' ";
- 	$pan_result = mysql_query($pan_query);
-	if(mysql_num_rows($pan_result) > 0){
-		while($pan_row=mysql_fetch_assoc($pan_result))
-        {    
-          $judgelist .= $pan_row['adjud_name'] . ", ";
-        }
+	$p = get_panel($roundno, $row_debate["debate_id"]); 
+	if ($p) {
+		$judgelist .= implode(", ", $p);
 	}
 
 	//And the trainees		
-	$trainee_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
- 	$trainee_query .= "FROM draw_adjud AR, adjudicator Ad ";
- 	$trainee_query .= "WHERE AR.round_no=$roundno AND debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'trainee' ";
- 	$trainee_result=mysql_query($trainee_query);
-
- 	$num_trainee=mysql_num_rows($trainee_result);
- 	if (@$numtrainee > 0){
-		while($trainee_row=mysql_fetch_assoc($trainee_result))
-		{    
-       		$judgelist .= $trainee_row['adjud_name'] . " (t), ";
-		}
+	$t = get_trainees($roundno, $row_debate["debate_id"]);
+	if ($t) {
+		$judgelist .=", ".implode(" (t), ", $t)." (t)";
 	}
 
 	//Place panellists and trainees
-	$judgelist=substr($judgelist,0,strlen($judgelist)-2); //removes the trailing commas (!)
 	add_text_element($slide, $judgelist, 380, 120,  10+$offset, 540, 20, true);
 }
 
@@ -208,44 +187,23 @@ if(isset($generate)){
 			add_text_element($slide, $row_debate["cotc"] . " " . $row_debate["cot"], 460, 190, 490, 350, 28);
 
 			//Find the chair adjudicator
-			$debate_id = $row_debate['debate_id'];
-			$adj_query  = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
-			$adj_query .= "FROM draw_adjud AR, adjudicator Ad ";
-			$adj_query .= "WHERE round_no=$roundno AND debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'chair' ";
-			$adj_result=mysql_query($adj_query);
-			$adj_row=mysql_fetch_assoc($adj_result);
-
-			add_text_element($slide, $adj_row["adjud_name"], 940, 55,  10, 550, 26);
+			add_text_element($slide, get_chair($roundno, $row_debate["debate_id"]),  940, 55,  10, 550, 26);
 
 			//Find the panellists
-			$panellistlist = "";
-
-			$pan_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
-			$pan_query .= "FROM draw_adjud AR, adjudicator Ad ";
-			$pan_query .= "WHERE round_no=$roundno AND debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'panelist' ";
-			$pan_result = mysql_query($pan_query);
-			if(mysql_num_rows($pan_result) > 0){
-				while($pan_row=mysql_fetch_assoc($pan_result)) {    
-					$panellistlist .= $pan_row['adjud_name'] . ", ";
-		        	}
+			$panelistlist = "";
+			$p = get_panel($roundno, $row_debate["debate_id"]);
+			if ($p) {
+				$panelistlist .= implode(", ", $p);
 			}
-
-			//And the trainees		
-			$trainee_query = "SELECT AR.adjud_id as adjud_id, Ad.adjud_name as adjud_name ";
-			$trainee_query .= "FROM draw_adjud AR, adjudicator Ad ";
-			$trainee_query .= "WHERE round_no=$roundno AND debate_id = $debate_id AND AR.adjud_id = Ad.adjud_id AND AR.status = 'trainee' ";
-			$trainee_result=mysql_query($trainee_query);
-
-			$num_trainee=mysql_num_rows($trainee_result);
-			if (@$numtrainee > 0){
-				while($trainee_row=mysql_fetch_assoc($trainee_result)) {    
-					$panellistlist .= $trainee_row['adjud_name'] . " (t), ";
-				}
+			$t = get_trainees($roundno, $row_debate["debate_id"]);
+			if ($t) {
+				$panelistlist .=  ", ";
+				//And the trainees		
+				$panelistlist .= implode(" (t), ", $t)." (t)";
 			}
 
 			//Place panellists and trainees
-			$panellistlist=substr($panellistlist,0,strlen($panellistlist)-2); //removes the trailing commas (!)
-			add_text_element($slide, $panellistlist, 940, 85,  10, 605, 24);
+			add_text_element($slide, $panelistlist, 940, 85,  10, 605, 24);
 		}
 	} else if ($roomsperslide == 2){
 		/* 2 rooms per slide

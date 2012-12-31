@@ -21,6 +21,8 @@
  * 
  * end license */
 require_once("includes/backend.php");
+require_once("includes/adjudicator.php");
+
 $roundno=@$_GET['roundno'];
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -97,23 +99,20 @@ echo <<< END
 				</div>
 			</div>\n
 END;
-		// Get Chair
-		$chfadj_query = "SELECT adjud.adjud_name AS adjud_name FROM draw_adjud AS round, adjudicator AS adjud WHERE round.round_no=$roundno AND round.debate_id = $debate_id AND round.status = 'chair' AND adjud.adjud_id = round.adjud_id ";
-		$chfadj_result = mysql_query($chfadj_query);
-		$chfadj_row=mysql_fetch_assoc($chfadj_result);
+		$chfadj = get_chair($roundno, $debate_id);
 echo <<< END
 			<div id='bottom'>
 				<h2>Adjudicators</h2>
-				<p>{$chfadj_row['adjud_name']}
+				<p>{$chfadj}
 END;
 		// Get Panelists
-		$pnladj_query = "SELECT adjud.adjud_name AS adjud_name FROM draw_adjud AS round, adjudicator AS adjud WHERE round.round_no=$roundno AND round.debate_id = $debate_id AND round.status = 'panelist' AND adjud.adjud_id = round.adjud_id ";
-		$pnladj_result = mysql_query($pnladj_query);
-		while($pan_row=mysql_fetch_assoc($pnladj_result))
-		{    
-			echo ", {$pan_row['adjud_name']}";
+		echo ", ".implode(", ", get_panel($roundno, $debate_id));
+		$trainees = get_trainees($roundno, $debate_id);
+		if ($trainees) {
+			echo ", ".implode(" (t), ", $trainees)." (t)";
 		}
 		echo "</p>\n";
+
 echo <<< END
 			</div>
 		</div>\n

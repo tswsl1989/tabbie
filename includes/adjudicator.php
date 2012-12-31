@@ -21,9 +21,6 @@
  * 
  * end license */
 
-//team-level conflicts should be a possibility
-//but uni-level is a good starting point
-
 require_once("includes/backend.php");
 
 function __get_university_id_by_code($univ_code) {
@@ -166,5 +163,40 @@ function debates_from_temp_draw_with_adjudicators($round) {
     return $result;
 }
 
+function get_chair($round, $debate_id) {
+	$adj_query = "SELECT DA.adjud_id AS adjud_id, AJ.adjud_name AS adjud_name FROM draw_adjud DA, adjudicator AJ WHERE DA.round_no = $round AND DA.debate_id = $debate_id AND DA.adjud_id = AJ.adjud_id AND DA.status = 'chair'";
+	$adj_result=mysql_query($adj_query);
+	if ($adj_result) {
+		$adj_row=mysql_fetch_assoc($adj_result);
+		return $adj_row['adjud_name'];
+	} else {
+		return FALSE;
+	}
+}
 
+function get_panel($round, $debate_id) {
+	$pan_query = "SELECT DA.adjud_id AS adjud_id, AJ.adjud_name AS adjud_name FROM draw_adjud AS DA, adjudicator AS AJ WHERE DA.round_no = $round AND debate_id = $debate_id AND DA.adjud_id = AJ.adjud_id AND DA.status = 'panelist' ";
+	$pan_result = mysql_query($pan_query);
+	$rv = array();
+	if(mysql_num_rows($pan_result) > 0){
+		while($pan_row=mysql_fetch_assoc($pan_result)) {
+			$rv[]=$pan_row['adjud_name'];
+		}
+	}
+	return $rv;
+}
+
+function get_trainees($round, $debate_id) {
+	$trainee_query = "SELECT DA.adjud_id AS adjud_id, AJ.adjud_name AS adjud_name FROM draw_adjud AS DA, adjudicator AS AJ WHERE DA.round_no=$round AND debate_id = $debate_id AND DA.adjud_id = AJ.adjud_id AND DA.status = 'trainee' ";
+	$trainee_result=mysql_query($trainee_query);
+
+	$num_trainee=mysql_num_rows($trainee_result);
+	$rv=array();
+	if ($num_trainee > 0){
+		while($trainee_row=mysql_fetch_assoc($trainee_result)) {    
+			$rv[] = $trainee_row['adjud_name'];
+		}
+	}
+	return $rv;
+}
 ?>

@@ -114,7 +114,7 @@ function results_by_position($round) {
     foreach ($POSITIONS as $POSITION) {
         $result[$POSITION] = array();
         $current =& $result[$POSITION];
-        $db_result = q("SELECT $POSITION FROM draw_round_$round");
+        $db_result = q("SELECT $POSITION FROM draws WHERE round_no=$round");
         while ($row = mysql_fetch_array($db_result)) {
             $team_id = $row[0];
             foreach ($RANKINGS as $RANKING) {
@@ -164,7 +164,7 @@ function get_adjudicators_venues($round) {
         $result["data"] = array();
         return $result;
     }
-    $query = "SELECT v.*, a.* FROM adjudicator AS a, drawd AS d, " .
+    $query = "SELECT v.*, a.* FROM adjudicator AS a, draws AS d, " .
                 "venue AS v, draw_adjud AS adjud  " .
                 "WHERE d.round_no=$round AND adjud.round_no=$round AND d.venue_id=v.venue_id AND adjud.debate_id = d.debate_id AND " .
                 "a.adjud_id = adjud.adjud_id ORDER BY adjud_name";
@@ -419,8 +419,7 @@ function venue_name($venue_id) {
 }
 
 function get_room_name_from_debate($debate_id, $round){
-	$drawtable="draw_round_".$round;
-	$query = "SELECT venue_name FROM venue INNER JOIN ".$drawtable." ON venue.venue_id = ".$drawtable.".venue_id WHERE debate_id = ".$debate_id;
+	$query = "SELECT venue_name FROM venue INNER JOIN draws ON venue.venue_id = draws.venue_id WHERE round_no=$round AND debate_id = ".$debate_id;
 	$return = mysql_fetch_assoc(mysql_query($query));
 	return $return["venue_name"];
 }

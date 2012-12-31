@@ -81,7 +81,7 @@ if (!$team_id) {
         print "<h3>Motion: $motion</h3>";
 
         $db_result = mysql_query(
-            "SELECT debate_id AS debate_id, T1.team_id AS ogid, T2.team_id AS ooid, T3.team_id AS cgid, T4.team_id AS coid, T1.team_code AS ogt, T2.team_code AS oot, T3.team_code AS cgt, T4.team_code AS cot, U1.univ_code AS ogtc, U2.univ_code AS ootc, U3.univ_code AS cgtc, U4.univ_code AS cotc, venue_name, venue_location FROM draw_round_$round, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4,venue WHERE og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND draw_round_$round.venue_id=venue.venue_id AND (og = '$team_id' OR oo = '$team_id' OR cg = '$team_id' OR co = '$team_id')");
+            "SELECT debate_id AS debate_id, T1.team_id AS ogid, T2.team_id AS ooid, T3.team_id AS cgid, T4.team_id AS coid, T1.team_code AS ogt, T2.team_code AS oot, T3.team_code AS cgt, T4.team_code AS cot, U1.univ_code AS ogtc, U2.univ_code AS ootc, U3.univ_code AS cgtc, U4.univ_code AS cotc, venue_name, venue_location FROM draws D, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4,venue WHERE D.round_no=$round AND og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND D.venue_id=venue.venue_id AND (og = '$team_id' OR oo = '$team_id' OR cg = '$team_id' OR co = '$team_id')");
         if (mysql_num_rows($db_result) == 0) {
             print "<h3>Team did not participate in this round</h3>";
         } else {
@@ -113,7 +113,7 @@ if (!$team_id) {
         
             print "<h3>Speakers:</h3>";
     
-            $db_result = mysql_query("SELECT speaker_round_$round.points, speaker.speaker_name, university.univ_code, team.team_code FROM speaker_round_$round, speaker, team, university WHERE debate_id='$debate_id' AND speaker_round_$round.speaker_id = speaker.speaker_id AND speaker.team_id = team.team_id AND team.univ_id = university.univ_id ORDER BY speaker_name");
+            $db_result = mysql_query("SELECT SR.points, speaker.speaker_name, university.univ_code, team.team_code FROM speaker_results SR, speaker, team, university WHERE SR.round_no=$round AND debate_id='$debate_id' AND SR.speaker_id = speaker.speaker_id AND speaker.team_id = team.team_id AND team.univ_id = university.univ_id ORDER BY speaker_name");
             
             print "<table><tr><th>Name</th><th>Team</th><th>Points</th></tr>";
             while ($row = mysql_fetch_assoc($db_result))
@@ -122,7 +122,7 @@ if (!$team_id) {
     
             print "<h3>Adjudicators:</h3>";
     
-            $db_result = mysql_query("SELECT adjud_round_$round.status, adjudicator.adjud_name, university.univ_name, university.univ_code FROM adjud_round_$round, adjudicator, university WHERE debate_id='$debate_id' AND adjud_round_$round.adjud_id = adjudicator.adjud_id AND adjudicator.univ_id = university.univ_id ORDER BY status");
+            $db_result = mysql_query("SELECT draw_adjud.status, adjudicator.adjud_name, university.univ_name, university.univ_code FROM draw_adjud, adjudicator, university WHERE draw_adjud.round_no=$round AND debate_id='$debate_id' AND draw_adjud.adjud_id = adjudicator.adjud_id AND adjudicator.univ_id = university.univ_id ORDER BY status");
             print mysql_error();
             
             print "<table><tr><th>Role</th><th>Name</th><th>University</th></tr>";

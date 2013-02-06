@@ -26,7 +26,8 @@ require_once("includes/db_tools.php");
 
 function get_num_rounds() {
     $result = q("SELECT param_value FROM settings WHERE param_name='round'");
-    return mysql_fetch_array($result)[0];
+    $ret=mysql_fetch_array($result);
+    return $ret[0];
 }
 
 function has_temp_draw() {
@@ -36,7 +37,8 @@ function has_temp_draw() {
 
 function get_num_completed_rounds() {
     $result = q("SELECT MAX(round_no) FROM (SELECT d.round_no, COUNT(d.debate_id) as dCount, COUNT(r.debate_id) as rCount FROM draws AS d, results AS r WHERE d.round_no = r.round_no GROUP BY d.round_no) AS C");
-    $count=mysql_fetch_array($result)[0];
+    $count=mysql_fetch_array($result);
+    $count=$count[0];
     if ($count === NULL) {
 	    return 0;
     } else {
@@ -439,8 +441,8 @@ function delete_team($team_id) {
 	//Check for whether debates have started
     $query="SELECT COUNT(round_no) FROM draws";
     $result=mysql_query($query);
-
-    if (mysql_fetch_array($result)[0]!=0)
+    $r=mysql_fetch_array($result);
+    if ($r[0]!=0)
       $msg[]="Debates in progress. Cannot delete now.";
     else
       {    
@@ -466,8 +468,9 @@ function delete_adjud($adjud_id){
 	//Check for whether debates have started
     $query="SELECT COUNT(round_no) FROM draws";
     $result=mysql_query($query);
+    $r=mysql_fetch_array($result);
 
-    if (mysql_fetch_array($result)[0]!=0)
+    if ($r[0]!=0)
       $msg[]="Debates in progress. Cannot delete now.";
     else
       {

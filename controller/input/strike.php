@@ -27,34 +27,46 @@ require_once("includes/backend.php");
 //Information from the client
 $adjud_id = htmlspecialchars(trim($_POST['adjud_id']));
 $team_code = htmlspecialchars(trim($_POST['team_code']));
+$team_id = htmlspecialchars(trim($_POST['team_id']));
 $univ_id = htmlspecialchars(trim($_POST['univ_id']));
 $action = htmlspecialchars(trim($_POST['action']));
 $strike_id = htmlspecialchars(trim($_POST['strike_id']));
-
-if($team_code && $univ_id){
-	$team_id=get_team_id($univ_id, $team_code);
-	if(!$team_id){
-		//Error condition: client requested non-existent team.
-		header('HTTP/1.1 403 Forbidden');
-		echo('Team does not exist.');
-	}
-}
+$msg=FALSE;
 
 //Add a strike
 if($action == 'ADD'){
-	if($team_id){
+	$fail=0;
+	if($univ_id && $team_id) {
+		if (!mysql_query("SELECT `team_code` FROM team WHERE team_id=".$team_id.";")) {
+			//Error condition: client requested non-existent team.
+			header('HTTP/1.1 403 Forbidden');
+			$msg='Team id does not exist.'.mysql_error();
+			$fail=1;
+	 		$team_id=FALSE;
+		}
+	}elseif($team_code && $univ_id){
+		$team_id=get_team_id($univ_id, $team_code);
+		if(!$team_id ){
+			//Error condition: client requested non-existent team.
+			header('HTTP/1.1 403 Forbidden');
+			$msg='Team code does not exist.';
+			$fail=1;
+			$team_id=FALSE;
+		}
+	}
+	if($team_id && !$fail){
 		if(is_strike_judge_team($adjud_id, $team_id)){
 			//error condition: strike already in place
 			header('HTTP/1.1 403 Forbidden');
-			echo('Strike already in place.');
+			$msg='Strike already in place.';
 		} else {
 			add_strike_judge_team($adjud_id, $team_id, $univ_id);
 		}
-	} else {
+	} elseif (!$fail) {
 		if(is_strike_judge_univ($adjud_id, $univ_id)){
 			//error condition: strike already in place
 			header('HTTP/1.1 403 Forbidden');
-			echo('Strike already in place.');
+			$msg='Strike already in place.';
 		} else {
 			add_strike_judge_univ($adjud_id, $univ_id);
 		}
@@ -72,5 +84,8 @@ if($action == 'GET'){
 }
 
 //In any case return the current strike list.
-echo(mysql_to_xml("SELECT s.strike_id, s.adjud_id, u.univ_id, t.team_id, u.univ_name, t.team_code FROM `strikes` AS s INNER JOIN `university` AS U ON s.univ_id = u.univ_id LEFT JOIN team as t ON t.team_id = s.team_id WHERE s.adjud_id=$adjud_id ORDER BY s.strike_id ASC", "strike"));
+echo(mysql_to_xml("SELECT s.strike_id, s.adjud_id, u.univ_id, t.team_id, u.univ_name, t.team_code FROM `strikes` AS s INNER JOIN `university` AS u ON s.univ_id = u.univ_id LEFT JOIN team as t ON t.team_id = s.team_id WHERE s.adjud_id=$adjud_id ORDER BY s.strike_id ASC", "strike"));
+if ($msg) {
+	echo "<message>$msg</message>";
+}
 ?>

@@ -29,10 +29,30 @@ $(document).ready(function() {
 			univ_name=$(this).find("univ_name").text();
 			univ_code=$(this).find("team_code").text();
 			strike_id=$(this).find("strike_id").text();
-			$('#striketable').append("<tr><td>"+univ_name+" "+univ_code+"</td><td id="+strike_id+" class='remove'>Delete</td</tr>");
+			$('#striketable').append("<tr><td>"+univ_name+" "+univ_code+"</td><td><a href=\"#\" id="+strike_id+" class='remove'>Delete</a></td</tr>");
 		});
 	};
-	
+	function updateteams(xml){
+                $('#add_team_code').html("");
+                $('#add_team_code').append("<option value=\"\"><emph>Institution Clash</emph></option>");
+		$('team',xml).each(function() {
+			team_id=$(this).find("team_id").text();
+			team_code=$(this).find("team_code").text();
+			$('#add_team_code').append("<option value=\""+team_id+"\">"+team_code+"</option>");
+		});
+	};
+
+	$("#add_univ_id").change(function(){
+	 	$.ajax({
+			url: "controller/input/teambyuni.php",
+			data: {
+				univ_id: $("#add_univ_id").val(),
+			}, 
+			type: 'GET',
+			success: updateteams,
+			failure: failuremsg,
+		});
+	});
 	function updatecounts(){
 		$('#activecount').text($("#totalcount").text() - $(".inactive").length);
 	}
@@ -50,7 +70,17 @@ $(document).ready(function() {
 	}
 	
 	function failuremsg(text){
-		$('failure').html(text);
+		$('.failure').html(text);
+	 	$.ajax({
+			url: "controller/input/strike.php",
+			data: {
+				adjud_id: $("#adjud_id").val(),
+				action: "GET",
+			}, 
+			type: 'POST',
+			success: displaystriketable,
+			failure: displaystriketable,
+		});
 	}
 	
 	$("#addstrike").click(function(){
@@ -59,7 +89,7 @@ $(document).ready(function() {
 			data: {
 				adjud_id: $("#adjud_id").val(),
 				univ_id: $("#add_univ_id").val(),
-				team_code: $("#add_team_code").val(),
+				team_id: $("#add_team_code").val(),
 				action: "ADD",
 			}, 
 			type: 'POST',

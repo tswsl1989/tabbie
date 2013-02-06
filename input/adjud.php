@@ -221,7 +221,7 @@ switch($action)
 echo "<h2>$title</h2>\n"; //titlek
 
 if(isset($msg)) displayMessagesUL(@$msg);
-   
+
 //Check for Display
 if ($action=="display")
   {
@@ -298,8 +298,7 @@ if ($action=="display")
    {
 
      //Display Form and Values
-     ?>
-            
+     ?>   
      <form action="input.php?moduletype=adjud" method="POST">
        <input type="hidden" name="actionhidden" value="<?echo $action;?>"/>
        <input type="hidden" name="adjud_id" id="adjud_id" value="<?echo $adjud_id;?>"/>
@@ -350,7 +349,7 @@ if($action=="edit"){
 ?>
 <form method=post action="">
 				       <h4>Conflicts: Select the university and insert the team code. Leave blank to strike all teams from that university.</h4>
-						<label for="add_conflict">Add conflict:</label>
+						<label for="add_univ_id">Add conflict:</label>
 				               <select id="add_univ_id" name="univ_id">
 				               <?
 				               $query="SELECT univ_id,univ_name FROM university ORDER BY univ_name";
@@ -363,17 +362,18 @@ if($action=="edit"){
 				   else
 				     echo "<option value=\"{$row['univ_id']}\">{$row['univ_name']}</option>\n";
 				     }
+                                   echo "</select>";     
 
-
-
-				   ?><input type="text" id="add_team_code" name="add_team_code"></input><input type="button" value="Add conflict" id="addstrike"/></form>
+				   ?><select id="add_team_code" name="team_code"></select><input type="button" value="Add conflict" id="addstrike"/></form>
 
 
 				<h5>Current conflicts:</h5>
 				<p class="failure"></p>
 				<table id="striketable">
 				</table>
+				<noscript>
 				<?PHP echo print_conflicts($adjud_id);?>            
+				</noscript>
                   <?
             }
                   }

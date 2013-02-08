@@ -25,7 +25,8 @@ require("ntu_bridge.php");
 
 $query = "SELECT param_value FROM settings WHERE param_name='round'";
 $result = mysql_query($query);
-$numdraws = mysql_num_rows($result) ? mysql_fetch_assoc($result)['param_value'] : 0;
+$numdraws = mysql_num_rows($result) ? mysql_fetch_assoc($result) : array('param_value' => 0);
+$numdraws = $numdraws['param_value'];
 $nextround = $numdraws + 1;
 
 if(array_key_exists("roundno", @$_GET)){

@@ -126,5 +126,5 @@ CREATE TABLE `speaker_results` (
 	`speaker_id` mediumint(9) NOT NULL DEFAULT '0', 
 	`debate_id` mediumint(9) NOT NULL DEFAULT '0',
 	`points` smallint(9) NOT NULL DEFAULT '0',
-	PRIMARY KEY (`speaker_id`)
+	PRIMARY KEY (`speaker_id`, `round_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT="Speaker results";

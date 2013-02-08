@@ -29,7 +29,7 @@ $validate=1;
 
 //Check for No of Draws against No. of results entered
 if ($nextresult!=$numrounds) {
-    $msg[]="Current Round Draw hasnt been created. Cannot input results";
+    $msg[]="Current Round Draw hasn't been created. Cannot input results";
     $validate=0;
 } else { 
 
@@ -374,7 +374,7 @@ if ($nextresult!=$numrounds) {
                     $result_speaker_id=$rowspeaker['speaker_id'];
                     $result_debate_id=$rowspeaker['debate_id'];
 
-                    $query="INSERT INTO temp_speaker_round_$nextresult(speaker_id, debate_id) VALUES('$result_speaker_id','$result_debate_id')";
+                    $query="INSERT INTO temp_speaker_round_$nextresult(speaker_id, debate_id, round_no) VALUES('$result_speaker_id','$result_debate_id', $nextresult)";
                     $result=mysql_query($query);
                     
                 }
@@ -421,8 +421,8 @@ if ($nextresult!=$numrounds) {
                 $action="display";
             } else {
                 $query="INSERT INTO results SELECT * FROM temp_result_round_$nextresult";
-                mysql_query($query);
-    
+                print $result=mysql_query($query);
+		print mysql_error();
                 //create speaker table
                 //$query ="CREATE TABLE `speaker_results` ( ";
                 //$query.="`speaker_id` mediumint(9) NOT NULL default '0',"; 
@@ -436,7 +436,8 @@ if ($nextresult!=$numrounds) {
                     $action="display";
                 } else {
                     $query="INSERT INTO speaker_results SELECT * FROM temp_speaker_round_$nextresult";
-                    mysql_query($query);
+	            print $result=mysql_query($query);
+		    print mysql_error();
                     $query="DROP TABLE temp_result_round_$nextresult";
                     mysql_query($query);
                     $query="DROP TABLE temp_speaker_round_$nextresult";

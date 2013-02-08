@@ -38,11 +38,10 @@ function has_temp_draw() {
 function get_num_completed_rounds() {
     $result = q("SELECT MAX(round_no) FROM (SELECT d.round_no, COUNT(d.debate_id) as dCount, COUNT(r.debate_id) as rCount FROM draws AS d, results AS r WHERE d.round_no = r.round_no GROUP BY d.round_no) AS C");
     $count=mysql_fetch_array($result);
-    $count=$count[0];
-    if ($count === NULL) {
+    if ($count[0] === NULL) {
 	    return 0;
     } else {
-	    return $count;
+	    return $count[0];
     }
 }
 

@@ -35,25 +35,25 @@ $msg=FALSE;
 
 //Add a strike
 if($action == 'ADD'){
-	$fail=0;
-	if($univ_id && $team_id) {
-		if (!mysql_query("SELECT `team_code` FROM team WHERE team_id=".$team_id.";")) {
-			//Error condition: client requested non-existent team.
-			header('HTTP/1.1 403 Forbidden');
-			$msg='Team id does not exist.'.mysql_error();
-			$fail=1;
-	 		$team_id=FALSE;
-		}
-	}elseif($team_code && $univ_id){
-		$team_id=get_team_id($univ_id, $team_code);
-		if(!$team_id ){
-			//Error condition: client requested non-existent team.
-			header('HTTP/1.1 403 Forbidden');
-			$msg='Team code does not exist.';
-			$fail=1;
-			$team_id=FALSE;
-		}
-	}
+        $fail=0;
+        if($univ_id && $team_id) {
+        	if (!mysql_query("SELECT `team_code` FROM team WHERE team_id=".$team_id.";")) {
+        		//Error condition: client requested non-existent team.
+        		header('HTTP/1.1 403 Forbidden');
+        		$msg='Team id does not exist.'.mysql_error();
+        		$fail=1;
+         		$team_id=FALSE;
+        	}
+        }elseif($team_code && $univ_id){
+        	$team_id=get_team_id($univ_id, $team_code);
+        	if(!$team_id ){
+        		//Error condition: client requested non-existent team.
+        		header('HTTP/1.1 403 Forbidden');
+        		$msg='Team code does not exist.';
+        		$fail=1;
+        		$team_id=FALSE;
+        	}
+        }
 	if($team_id && !$fail){
 		if(is_strike_judge_team($adjud_id, $team_id)){
 			//error condition: strike already in place

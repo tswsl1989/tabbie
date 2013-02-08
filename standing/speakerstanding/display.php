@@ -53,13 +53,17 @@ $title = "Speaker Standings";
 
 switch($list)
 {
-    case "all"   :      break;
-    case "esl"   :    $title.= " (ESL)";
-                break;
-	case "efl"   :    $title.= " (EFL)";
-			                break;
-    default      :    $list = "all";
-                break;
+    case "all":
+	break;
+    case "esl":
+	$title.= " (ESL)";
+	break;
+    case "efl":
+	$title.= " (EFL)";
+	break;
+    default:
+	$list = "all";
+	break;
 }
                 
 switch($action)
@@ -146,6 +150,7 @@ if ($action == "display")
         $index = $cc["index"];
         $speaker_id = $cc["speakerid"];
         $points = 0;
+
         for ($x=1;$x<=$roundno;$x++)
         {
             $score_query = "SELECT points FROM speaker_results ";
@@ -183,7 +188,7 @@ if ($action == "display")
             $display_ranking = ($x+1);
         } else
             $display_ranking = "-";
-        echo "<tr>\n";
+	    echo "<tr>\n";
             echo "<td>$display_ranking</td>\n";
             echo "<td>".$speaker_array[$x]["speakername"]."</td>\n";
             echo "<td>"."<a href=\"team_overview.php?team_id={$speaker_array[$x]['team_id']}\">".$speaker_array[$x]["teamname"]."</td>\n";

@@ -1,4 +1,5 @@
-<?php /* begin license *
+<?php
+/* begin license *
  * 
  *     Tabbie, Debating Tabbing Software
  *     Copyright Contributors
@@ -20,40 +21,19 @@
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  * end license */
+set_include_path(get_include_path() . PATH_SEPARATOR . "../../");
+require_once("includes/backend.php");
 
-require("ntu_bridge.php");
-require_once("result/func.php"); //Helper Functions
+assert_options(ASSERT_BAIL, 1);
 
-//Get Number of  Rounds Completed
-$query="SELECT param_value FROM settings WHERE param_name='round'";
-$result=mysql_fetch_assoc(mysql_query($query));
-$numrounds=$result['param_value'];
+//Information from the client
+$univ_id = htmlspecialchars(trim($_REQUEST['univ_id']));
 
-//Get Number of Rounds result entered for
-$query="SELECT MAX(round_no) FROM results";
-$result=mysql_query($query);
-$numresults=$result ? mysql_fetch_array($result) : array(0 => 0);
-$numresults=$numresults[0];
-
-$nextresult=$numresults+1;
-
-if(array_key_exists("roundno", @$_GET)){
-	$roundno=@$_GET["roundno"];
-} else {
-	$roundno="";
+if(!($univ_id)){
+	//Error condition: client requested non-existent team.
+	header('HTTP/1.1 403 Forbidden');
+	echo('Incomplete request ('.$univ_id.')');
+	die();
 }
-
-
-
-
-$ntu_controller = "result";
-$ntu_default_module = "currentround";
-$ntu_default_action = "";
-$ntu_titles = array(
-    "floor" => "Floor Managers",
-    "chfadjud" => "Chief Adjudicator/DCAs",
-    "tab" => "Tab Room",);
-
-require("ntu_controller.php");
-
+echo(mysql_to_xml("SELECT `team_id`, `team_code` FROM `team` WHERE `univ_id` ='$univ_id'","team"));
 ?>

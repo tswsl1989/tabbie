@@ -1,1 +1,4 @@
 view/custom.css
+config/local_logo.png
+config/settings.php
+error_log

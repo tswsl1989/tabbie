@@ -26,13 +26,14 @@ require_once("result/func.php"); //Helper Functions
 
 //Get Number of  Rounds Completed
 $query="SELECT param_value FROM settings WHERE param_name='round'";
-$result=mysql_query($query);
-$numrounds=mysql_fetch_assoc($result)['param_value'];
+$result=mysql_fetch_assoc(mysql_query($query));
+$numrounds=$reultl['param_value'];
 
 //Get Number of Rounds result entered for
 $query="SELECT MAX(round_no) FROM results";
 $result=mysql_query($query);
-$numresults=$result ? mysql_fetch_array($result)[0] : 0;
+$numresults=$result ? mysql_fetch_array($result) : array(0 => 0);
+$numresults=$numresults[0];
 
 $nextresult=$numresults+1;
 

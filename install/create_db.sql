@@ -108,7 +108,8 @@ CREATE TABLE draw_adjud (
 	`round_no` MEDIUMINT(9) NOT NULL,
 	`debate_id` MEDIUMINT(9) NOT NULL,
 	`adjud_id` MEDIUMINT(9) NOT NULL,
-	`status` ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL 
+	`status` ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL ,
+	PRIMARY KEY (`round_no`, `debate_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT="Adjudicator Allocations table";
 
 CREATE TABLE `results` (
@@ -118,7 +119,7 @@ CREATE TABLE `results` (
 	`second` MEDIUMINT(9) NOT NULL DEFAULT '0',
 	`third` MEDIUMINT(9) NOT NULL DEFAULT '0',
 	`fourth` MEDIUMINT(9) NOT NULL DEFAULT '0',
-	PRIMARY KEY  (`debate_id`)
+	PRIMARY KEY  (`debate_id`, `round_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT="Team results";
 
 CREATE TABLE `speaker_results` (

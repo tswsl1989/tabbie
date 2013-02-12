@@ -24,22 +24,24 @@
     <h2 class="hide">Teamstandings Submenu</h2>
     <form action=standing.php?moduletype=position method="POST">
        <label for="round">Round: </label>
-        <select id="round" name="round">
         <?
-            $query="SHOW TABLES LIKE 'result_round%'";
-        $result=mysql_query($query);
-        $numresults=mysql_num_rows($result);
-        if (!$round)
-            $round=$numdraws;
-        for ($i=1;$i<=$numdraws;$i++)
-        {    $text="<option value=\"".$i."\" ";
-            if ($i==$round)
-                $text.="selected";
-            $text.=">Round: ".$i."</option>";
-            echo "$text";
-        }
+	if ($numresults > 0) {
+		echo '<select id="round" name="round">';
+	        if (!$round)
+	            $round=$numresults;
+	        for ($i=1;$i<=$numresults;$i++) {
+		    $text="<option value=\"".$i."\" ";
+	            if ($i==$round)
+	                $text.="selected";
+	            $text.=">Round: ".$i."</option>";
+	            echo "$text";
+		}
+		echo "</select>";
+	} else {
+		echo "<strong> No rounds completed, so no results</strong>";
+	}
     ?>
-    </select> <br/><br/>
+    <br/><br/>
     
     <input type="submit" value="Change"/>
      </form>

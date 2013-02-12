@@ -140,7 +140,7 @@ if ($actionhidden=="edit")
       {
         //Edit Stuff in Database
         $query = "UPDATE adjudicator ";
-        $query.= "SET univ_id='$univ_id', adjud_name='$adjud_name', ranking='$ranking', active='$active', conflicts='$conflicts', status='$status' ";
+        $query.= "SET univ_id='$univ_id', adjud_name='$adjud_name', ranking='$ranking', active='$active', status='$status' ";
         $query.= "WHERE adjud_id='$adjud_id'";
         $result=mysql_query($query);
         

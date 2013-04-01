@@ -96,7 +96,19 @@ mysql_select_db($database_name);
 foreach ($queries as $query) {
     $all_is_well = execute_query_print_result($query) && $all_is_well;
 }
-
+if (file_exists("install/university.sql")) {
+	echo "<h3> University code list found, loading...";
+	$queries = explode(";", file_get_contents("install/university.sql"));
+	$u = true;
+	foreach ($queries as $query) {
+		$u = mysql_query($query) && $u;
+	}
+	if ($u) {
+		echo "Success!</h3>";
+	} else {
+		echo "Failed!</h3>";
+	}
+}
 ?></p><?php
 
 if ($all_is_well) {

@@ -70,6 +70,7 @@ $roundno=@$_GET['roundno'];
 	$row = mysql_fetch_array( $motion_result );
 	if( $row['info_slide'] == "Y" )
 	{
+		$row['info'] = str_replace("\r", "<br />", $row['info']);
 echo <<< END
 		<div class='slide'>
 			<h1>Info Slide</h1>

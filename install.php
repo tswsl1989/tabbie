@@ -112,7 +112,7 @@ if (file_exists("install/university.sql")) {
 ?></p><?php
 
 if ($all_is_well) {
-    echo '<h2>Installation Succesful</h2><a href="index.php">Start using Tabbie</a>';
+    echo '<h2>Installation Successful</h2><a href="index.php">Start using Tabbie</a>';
 } else echo '<h2>Installation Failed</h2>Make sure you have the right Database  permissions';
 
 } else {

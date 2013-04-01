@@ -5,7 +5,6 @@ CREATE TABLE `adjudicator` (
   `ranking` mediumint(9) NOT NULL DEFAULT '0',
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `status` ENUM( 'normal', 'trainee', 'watcher', 'watched' ) NOT NULL DEFAULT 'normal',
-  `conflicts` varchar(100) DEFAULT NULL,
   PRIMARY KEY  (`adjud_id`),
   UNIQUE KEY `adjud_name` (`adjud_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Adjudicator Table';
@@ -109,7 +108,7 @@ CREATE TABLE draw_adjud (
 	`debate_id` MEDIUMINT(9) NOT NULL,
 	`adjud_id` MEDIUMINT(9) NOT NULL,
 	`status` ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL ,
-	PRIMARY KEY (`round_no`, `debate_id`)
+	PRIMARY KEY (`round_no`, `debate_id`, `adjud_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT="Adjudicator Allocations table";
 
 CREATE TABLE `results` (

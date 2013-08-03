@@ -516,14 +516,21 @@ if ($nextresult==$numrounds)
 
                                         $chair=$rowresults['chair_name'];
 
-                    echo "<tr>\n";
+		    $og_pos=returnPositionString(returnposition($first,$second,$third,$fourth,$og));
+		    $oo_pos=returnPositionString(returnposition($first,$second,$third,$fourth,$oo));
+		    $cg_pos=returnPositionString(returnposition($first,$second,$third,$fourth,$cg));
+		    $co_pos=returnPositionString(returnposition($first,$second,$third,$fourth,$co));
+
+		    $rowclass= ($og_pos=="<b>none</b>" && $oo_pos=="<b>none</b>" && $cg_pos=="<b>none</b>" && $co_pos=="<b>none</b>") ? "res_r" : "res_g";
+
+                    echo "<tr class='$rowclass'>\n";
                     echo "<td class=\"editdel\"><a href=\"result.php?moduletype=currentround&amp;action=edit&amp;debate_id=$results_debate_id\">Edit</a></td>";
                             echo "<td>$venue</td>\n";
-                    echo "<td>$team_og_name (".returnPositionString(returnposition($first,$second,$third,$fourth,$og)).")</td>\n";
-                    echo "<td>$team_oo_name (".returnPositionString(returnposition($first,$second,$third,$fourth,$oo)).")</td>\n";
-                    echo "<td>$team_cg_name (".returnPositionString(returnposition($first,$second,$third,$fourth,$cg)).")</td>\n";
-                    echo "<td>$team_co_name (".returnPositionString(returnposition($first,$second,$third,$fourth,$co)).")</td>\n";
-                                        echo "<td>$chair</td>";
+                    echo "<td>$team_og_name (".$og_pos.")</td>\n";
+                    echo "<td>$team_oo_name (".$oo_pos.")</td>\n";
+                    echo "<td>$team_cg_name (".$cg_pos.")</td>\n";
+                    echo "<td>$team_co_name (".$co_pos.")</td>\n";
+                    echo "<td>$chair</td>";
 
                     echo"</tr>\n";
                 }

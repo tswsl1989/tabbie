@@ -13,14 +13,15 @@ begin
   res.free
   
   # Check for tables starting with draw_round and find the next round
-  res = dbh.query("SHOW TABLES LIKE 'draw_round_%'")
-  current_draw_round = res.num_rows
+  res = dbh.query("SELECT param_value FROM settings WHERE param_name='round'")
+  current_draw_round = res.fetch_hash['param_value']
   res.free 
   
-  res = dbh.query("SHOW TABLES LIKE 'result_round_%'")
-  current_result_round = res.num_rows
+  res = dbh.query("SELECT MAX(round_no) as param_value FROM results")
+  current_result_round = (res.fetch_hash['param_value'].to_i) 
   res.free
   
+  puts "Draw: #{current_draw_round}    Round: #{current_result_round}"
 
   unless current_result_round == current_draw_round
       # Fixed points tally
@@ -29,7 +30,7 @@ begin
                 65,
                 56]
       # Select debates
-      res = dbh.query("SELECT * from draw_round_#{current_draw_round}")
+      res = dbh.query("SELECT * from draws WHERE round_no = #{current_draw_round}")
       team_results = []
       speaker_points = []
       while row = res.fetch_hash do
@@ -58,33 +59,13 @@ begin
       dbh.query("DROP TABLE IF EXISTS temp_result_round_#{current_draw_round}")
       dbh.query("DROP TABLE IF EXISTS temp_speaker_round_#{current_draw_round}")
       # Team results table
-      dbh.query(<<-SQL
-      CREATE TABLE `result_round_#{current_draw_round}` (
-        `debate_id` mediumint(9) NOT NULL default '0',
-        `first` mediumint(9) NOT NULL default '0',
-        `second` mediumint(9) NOT NULL default '0',
-        `third` mediumint(9) NOT NULL default '0',
-        `fourth` mediumint(9) NOT NULL default '0',
-        PRIMARY KEY  (`debate_id`))
-      SQL
-     )
-     
-     # Speaker points table
-     dbh.query(<<-SQL
-     CREATE TABLE `speaker_round_#{current_draw_round}` (
-       `speaker_id` mediumint(9) NOT NULL default '0',
-       `debate_id` mediumint(9) NOT NULL default '0',
-       `points` smallint(9) NOT NULL default '0',
-       PRIMARY KEY  (`speaker_id`))
-     SQL
-     )
       
       # Write data into tables
       team_results.each do |result_entry|
           dbh.query(<<-SQL
-          INSERT INTO result_round_#{current_draw_round} 
+          INSERT INTO results 
           VALUES (
-          #{result_entry.inject('') { |sum,i| sum+= "#{i},"}.chomp(',')}
+          #{current_draw_round}, #{result_entry.inject('') { |sum,i| sum+= "#{i},"}.chomp(',')}
           )
           SQL
           )
@@ -92,9 +73,9 @@ begin
       
       speaker_points.each do |speaker_entry|
            dbh.query(<<-SQL
-           INSERT INTO speaker_round_#{current_draw_round}
+           INSERT INTO speaker_results 
            VALUES (
-           #{speaker_entry.inject('') { |sum,i| sum+= "#{i},"}.chomp(',')}
+           #{current_draw_round}, #{speaker_entry.inject('') { |sum,i| sum+= "#{i},"}.chomp(',')}
            )
            SQL
            )

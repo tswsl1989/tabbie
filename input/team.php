@@ -301,7 +301,7 @@ if ($action=="edit")
             $active=$row['active'];
             $composite=$row['composite'];
 
-            $result=mysql_query("SELECT * FROM speaker WHERE team_id='$team_id'");
+            $result=mysql_query("SELECT * FROM speaker WHERE team_id='$team_id' ORDER BY speaker_id ASC");
             if (mysql_num_rows($result)!=2)
           {
                 unset($msg);//remove possible validation msgs
@@ -360,7 +360,7 @@ if ($action=="display")
     //Display Data in Tabular Format
     $query = "SELECT T.team_id, univ_code, team_code, univ_name, S1.speaker_name AS speaker1, S2.speaker_name AS speaker2, S1.speaker_esl AS speaker1esl, S2.speaker_esl AS speaker2esl, esl, S1.speaker_novice as speaker1novice, S2.speaker_novice as speaker2novice, novice, active, composite ";
     $query.= "FROM university AS U, team AS T, speaker AS S1, speaker AS S2 ";
-    $query.= "WHERE T.univ_id=U.univ_id AND S1.team_id=T.team_id AND S2.team_id=T.team_id AND S1.speaker_id > S2.speaker_id ";
+    $query.= "WHERE T.univ_id=U.univ_id AND S1.team_id=T.team_id AND S2.team_id=T.team_id AND S1.speaker_id < S2.speaker_id ";
 
     $active_query = $query . " AND T.ACTIVE = 'Y' ";
     $query.= "ORDER BY univ_name, team_code ";
@@ -457,39 +457,36 @@ if ($action=="display")
        <label for="team_code">Team Code</label>
        <input type="text" maxlength="50" id="team_code" name="team_code" value="<?echo $team_code;?>"/><br/><br/>
 
-	<label for="speaker1">Speaker 1</label>
-	<input maxlength="100" type="text" id="speaker1" name="speaker1" value="<?echo $speaker1;?>"/><br/><br/>
-               
-	<label for="speaker2">Speaker 2</label>
-	<input maxlength="100" type="text" id="speaker2" name="speaker2" value="<?echo $speaker2;?>"/><br/><br/>
-
-
-	<label for="speaker1esl">Speaker 1 ESL</label>
-	<select id="speaker1esl" name="speaker1esl">
-		<option value="N" <?echo ($speaker1esl=="N")?"selected":""?>>No</option>
-		<option value="ESL" <?echo ($speaker1esl=="ESL")?"selected":""?>>ESL</option>
-		<option value="EFL" <?echo ($speaker1esl=="EFL")?"selected":""?>>EFL</option>
-	</select> <br/><br/>
-
-
-	<label for="speaker2esl">Speaker 2 ESL</label>
-	<select id="speaker2esl" name="speaker2esl">
-		<option value="N" <?echo ($speaker2esl=="N")?"selected":""?>>No</option>
-		<option value="ESL" <?echo ($speaker2esl=="ESL")?"selected":""?>>ESL</option>
-		<option value="EFL" <?echo ($speaker2esl=="EFL")?"selected":""?>>EFL</option>
-	</select> <br/><br/>
-
-	<label for="speaker1novice">Speaker 1 Novice</label>
-	<select id="speaker1novice" name="speaker1novice">
-		<option value="N" <?echo ($speaker1novice=="N")?"selected":""?>>No</option>
-		<option value="Y" <?echo ($speaker1novice=="Y")?"selected":""?>>Yes</option>
-	</select> <br/><br/>
-
-	<label for="speaker2novice">Speaker 2 Novice</label>
-	<select id="speaker2novice" name="speaker2novice">
-		<option value="N" <?echo ($speaker2novice=="N")?"selected":""?>>No</option>
-		<option value="Y" <?echo ($speaker2novice=="Y")?"selected":""?>>Yes</option>
-	</select> <br/><br/>
+	<br /><strong>Speaker Details</strong><br />
+	<table>
+	<tr><th>&nbsp</th><th>Name</th><th>ESL/EFL</th><th>Novice</th></tr>
+	<tr>
+		<td>1.</td>
+		<td><input maxlength="100" type="text" id="speaker1" name="speaker1" value="<?echo $speaker1;?>"/></td>
+		<td><select id="speaker1esl" name="speaker1esl">
+			<option value="N" <?echo ($speaker1esl=="N")?"selected":""?>>No</option>
+			<option value="ESL" <?echo ($speaker1esl=="ESL")?"selected":""?>>ESL</option>
+			<option value="EFL" <?echo ($speaker1esl=="EFL")?"selected":""?>>EFL</option>
+		</select></td>
+		<td><select id="speaker1novice" name="speaker1novice">
+			<option value="N" <?echo ($speaker1novice=="N")?"selected":""?>>No</option>
+			<option value="Y" <?echo ($speaker1novice=="Y")?"selected":""?>>Yes</option>
+		</select></td>
+	</tr>
+	<tr>
+		<td>2.</td>
+		<td><input maxlength="100" type="text" id="speaker2" name="speaker2" value="<?echo $speaker2;?>"/></td>
+		<td><select id="speaker2esl" name="speaker2esl">
+			<option value="N" <?echo ($speaker2esl=="N")?"selected":""?>>No</option>
+			<option value="ESL" <?echo ($speaker2esl=="ESL")?"selected":""?>>ESL</option>
+			<option value="EFL" <?echo ($speaker2esl=="EFL")?"selected":""?>>EFL</option>
+		</select></td>
+		<td><select id="speaker2novice" name="speaker2novice">
+			<option value="N" <?echo ($speaker2novice=="N")?"selected":""?>>No</option>
+			<option value="Y" <?echo ($speaker2novice=="Y")?"selected":""?>>Yes</option>
+		</select></td>
+	</tr>
+	</table>
 
 	<label for="active">Active</label>
 	<select id="active" name="active">

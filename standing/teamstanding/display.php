@@ -50,31 +50,46 @@ $title = "Team Standings";
 
 switch($list)
 {
-    case "all"   :      break;
-    case "esl"   :    $title.= " (ESL)";
-                break;
-    case "break" :    $title.= " (Breakable)";
-                break;
-    case "eslbreak" :   $title.= " (ESL - Breakable)";
-                break;
-	case "efl"   :    $title.= " (EFL)";
-			                break;
-	case "eflbreak" :   $title.= " (EFL - Breakable)";
-			                break;
-    default      :    $list = "all";
-                break;
+	case "all":
+		break;
+	case "esl":
+		$title.= " (ESL)";
+		break;
+	case "break":
+		$title.= " (Breakable)";
+		break;
+	case "eslbreak":
+		$title.= " (ESL - Breakable)";
+		break;
+	case "efl":
+		$title.= " (EFL)";
+		break;
+	case "eflbreak":
+		$title.= " (EFL - Breakable)";
+		break;
+	case "novice":
+		$title.= " (Novice)";
+		break;
+	case "novicebreak":
+		$title.= " (Novice - Breakable)";
+		break;
+	default:
+		$list = "all";
+		break;
 }
                 
 switch($action)
 {
-    case "display":     $title.=" - Round $roundno";
-                        break;
-    case "warning":     $title.=" - Confirm";
-                        break;
-    default:
-                        $title.=" - Round $roundno";
-                        $action="display";
-                        break;
+	case "display":
+		$title.=" - Round $roundno";
+		break;
+	case "warning":
+		$title.=" - Confirm";
+		break;
+	default:
+		$title.=" - Round $roundno";
+		$action="display";
+		break;
 }
 
 include("header.php");

@@ -97,6 +97,12 @@ function team_standing_array($roundno, $list="all") {
     if ($list=="eflbreak")
         $query.=" WHERE esl = 'EFL' and composite = 'N' ";
 
+    if ($list=="novice")
+        $query.=" WHERE novice = 'Y'";
+
+    if ($list=="novicebreak")
+        $query.=" WHERE novice = 'Y' and composite = 'N' ";
+
     $result = mysql_query($query);
     $team_count=mysql_num_rows($result);
             

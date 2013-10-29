@@ -49,6 +49,7 @@ CREATE TABLE `speaker` (
   `team_id` mediumint(9) NOT NULL DEFAULT '0',
   `speaker_name` varchar(100) NOT NULL DEFAULT '',
   `speaker_esl` char(3) NOT NULL DEFAULT 'N',
+  `speaker_novice` char(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY  (`speaker_id`),
   UNIQUE KEY `team_id` (`team_id`,`speaker_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Speaker Table';
@@ -58,6 +59,7 @@ CREATE TABLE `team` (
   `univ_id` mediumint(9) NOT NULL DEFAULT '0',
   `team_code` varchar(50) NOT NULL DEFAULT '',
   `esl` varchar(3) DEFAULT NULL,
+  `novice` varchar(3) DEFAULT NULL,
   `active` enum('N','Y') NOT NULL DEFAULT 'N',
   `composite` enum('N','Y') NOT NULL DEFAULT 'Y',
   PRIMARY KEY  (`team_id`),

@@ -27,7 +27,8 @@
         <select id="list" name="list">
             <option value="all" <?echo ($list=="all")?"selected":"" ?>>All</option>
             <option value="esl" <?echo ($list=="esl")?"selected":"" ?>>ESL</option>
-			<option value="efl" <?echo ($list=="efl")?"selected":"" ?>>EFL</option>
+            <option value="efl" <?echo ($list=="efl")?"selected":"" ?>>EFL</option>
+            <option value="novice" <?echo ($list=="novice")?"selected":"" ?>>Novice</option>
         </select> <br/><br/>
         
         <label for="round">Round: </label>

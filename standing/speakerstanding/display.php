@@ -61,6 +61,9 @@ switch($list)
     case "efl":
 	$title.= " (EFL)";
 	break;
+    case "novice":
+	$title.= " (Novice)";
+	break;
     default:
 	$list = "all";
 	break;
@@ -68,14 +71,16 @@ switch($list)
                 
 switch($action)
 {
-    case "display":     $title.=" - Round $roundno";
-                        break;
-    case "warning":     $title.=" - Confirm";
-                        break;
-    default:
-                        $title.=" - Round $roundno";
-                        $action="display";
-                        break;
+case "display":
+	$title.=" - Round $roundno";
+	break;
+case "warning":
+	$title.=" - Confirm";
+	break;
+default:
+	$title.=" - Round $roundno";
+	$action="display";
+	break;
 }
 
 include("header.php");
@@ -104,6 +109,9 @@ if ($action == "display")
 
     if ($list=="efl")
         $query.=" WHERE speaker.speaker_esl = 'EFL'";
+
+    if ($list=="novice")
+	    $query.=" WHERE speaker_novice = 'Y'";
 
     $result = mysql_query($query);
     $speaker_count=mysql_num_rows($result);

@@ -22,5 +22,12 @@
  * end license */ ?>
 </div>
 
+<?php
+ if (file_exists("config/version.txt")) {
+	 $version_num = file_get_contents("config/version.txt");
+	 echo "<p class='version'>Tabbie version: $version_num</p>";
+ }
+?>
+
 </body>
 </html>

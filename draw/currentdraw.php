@@ -129,7 +129,7 @@ PRIMARY KEY (debate_id))";
     $result = q($query);
     
     $result1 = q("SELECT venue_id FROM venue WHERE active='Y'");
-    while ($row1 = mysql_fetch_assoc($result1)) {
+    while ($row1 = $result1->FetchRow()) {
         $venue[] = $row1['venue_id'];
     }
 
@@ -213,8 +213,8 @@ if (($validate==1)) {
             $query="SELECT A.adjud_name AS adjud_name, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='chair' AND T.debate_id='{$row['debate_id']}'";
             $resultadjud=q($query);
 
-            if (mysql_num_rows($resultadjud) > 0) {
-                $rowadjud = mysql_fetch_assoc($resultadjud);
+            if ($resultadjud->RecordCount() > 0) {
+                $rowadjud = $resultadjud->FetchRow();
                 $row2['chair'] = "{$rowadjud['adjud_name']} ({$rowadjud['ranking']})";
             }
 
@@ -222,9 +222,9 @@ if (($validate==1)) {
             $query="SELECT A.adjud_name AS adjud_name, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='panelist' AND T.debate_id='{$row['debate_id']}'";
             $resultadjud=q($query);
 
-            if (mysql_num_rows($resultadjud) > 0) {
+            if ($resultadjud->RecordCount() > 0) {
                 $row2['panel'] = array();
-                while($rowadjud=mysql_fetch_assoc($resultadjud)) {
+                while($rowadjud=$resultadjud->FetchRow()) {
                     $row2['panel'][] = "{$rowadjud['adjud_name']} ({$rowadjud['ranking']})";
                 }
              }

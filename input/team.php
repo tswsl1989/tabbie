@@ -130,37 +130,10 @@ if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
     if ((!$univ_id) || (!$team_code) || (!$speaker1) ||(!$speaker2)) $validate=0;
   }
 
-if ($action=="delete")
-  {
-    
-    //Check for whether debates have started
-    $query="SELECT COUNT(debate_id) FROM draw;";
-    $result=mysql_query($query);
-
-    if (mysql_num_rows($result)!=0)
-      $msg[]="Debates in progress. Cannot delete now.";
-    else
-      {    
-    
-        //Delete Stuff (From Both Speaker and Team)
-        $team_id=trim(@$_GET['team_id']);
-    
-        $query1="DELETE FROM speaker WHERE team_id='$team_id'";
-        $result1=mysql_query($query1);
-    //Check for Error
-        if (mysql_affected_rows()==0)
-      $msg[]="There were problems deleting speakers: No such record.";
-   
-        $query2="DELETE FROM team WHERE team_id='$team_id'";
-        $result2=mysql_query($query2);
-        //Check for Error
-        if (mysql_affected_rows()==0)
-      $msg[]="There were problems deleting team: No such record.";
-      }
-   
-    //Change Mode to Display
-    $action="display";    
-  }
+if ($action=="delete") {
+    $msg=delete_team(@$_GET['team_id']);
+    $action="display";
+ }
 
 if ($actionhidden=="add")
   {

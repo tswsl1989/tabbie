@@ -26,38 +26,41 @@ require_once("includes/db_tools.php");
 
 function get_num_rounds() {
     $result = q("SELECT param_value FROM settings WHERE param_name='round'");
-    $ret=mysql_fetch_array($result);
-    return $ret[0];
+    return $result->Fields("param_value");
 }
 
 function has_temp_draw() {
     $result = q("SHOW TABLES LIKE 'temp_draw_round%'");
-    return mysql_num_rows($result);
+    return $result->RecordCount();
 }
 
 function get_num_completed_rounds() {
-    $result = q("SELECT MAX(round_no) FROM (SELECT d.round_no, COUNT(d.debate_id) as dCount, COUNT(r.debate_id) as rCount FROM draws AS d, results AS r WHERE d.round_no = r.round_no GROUP BY d.round_no) AS C");
-    $count=mysql_fetch_array($result);
-    if ($count[0] === NULL) {
+    $result = q("SELECT MAX(round_no) as MRN FROM (SELECT d.round_no, COUNT(d.debate_id) as dCount, COUNT(r.debate_id) as rCount FROM draws AS d, results AS r WHERE d.round_no = r.round_no GROUP BY d.round_no) AS C");
+    $count=$result->FetchRow();
+    if ($count['MRN'] === NULL) {
 	    return 0;
     } else {
-	    return $count[0];
+	    return $count['MRN'];
     }
 }
 
 function has_temp_result() {
     $result = q("SHOW TABLES LIKE 'temp_result_round%'");
-    return mysql_num_rows($result);
+    return $result->RecordCount();
 }
 
 function __team_on_ranking($round, $team_id, $ranking) {
-    $query = "SELECT $ranking FROM results WHERE round_no=$round AND $ranking = $team_id";
-    return (mysql_num_rows(q($query)));
+    $query="SELECT * FROM results WHERE round_no=? AND $ranking=?"; /* Needs to be a better way than this. Including $ranking in params gets it quoted, which breaks as the final criteria always returns false */
+    $params=array($round, $team_id);
+    $rs = qp($query, $params);
+    return $rs->RecordCount();
 }
 
 function __team_on_position($round, $team_id, $position) {
-    $query = "SELECT $position FROM draws WHERE round_no=$round AND $position = '$team_id'";
-    return (mysql_num_rows(q($query)));
+    $query = "SELECT * FROM draws WHERE round_no=? AND $position=?";
+    $params = array($round, $team_id);
+    $rs = qp($query, $params);
+    return $rs->RecordCount();
 }
 
 function points_for_ranking($ranking) {
@@ -100,7 +103,7 @@ function positions_for_team($team_id, $nr_of_rounds) {
 function get_teams_positions_points($nr_of_rounds) {
     $db_result = q("SELECT team_id FROM team WHERE active='Y' ORDER BY team_id");
     $teams = array();
-    while ($team = mysql_fetch_assoc($db_result)) {
+    while ($team = $db_result->FetchRow()) {
         $team['points'] = points_for_team($team['team_id'], $nr_of_rounds);
         $team['positions'] = positions_for_team($team['team_id'], $nr_of_rounds);
         $teams[] = $team;
@@ -116,7 +119,7 @@ function results_by_position($round) {
         $result[$POSITION] = array();
         $current =& $result[$POSITION];
         $db_result = q("SELECT $POSITION FROM draws WHERE round_no=$round");
-        while ($row = mysql_fetch_array($db_result)) {
+        while ($row = $db_result->FetchRow()) {
             $team_id = $row[0];
             foreach ($RANKINGS as $RANKING) {
                 $team_on_ranking = __team_on_ranking($round, $team_id, $RANKING);
@@ -125,7 +128,7 @@ function results_by_position($round) {
 				} else {
 					@$current[$RANKING] = $team_on_ranking;
 				}
-                
+
                 if ($team_on_ranking) {
 					if(isset($current["total"])){ //avoid throwing error when ["total"] not yet index
 						 @$current["total"] += points_for_ranking($RANKING);
@@ -167,13 +170,13 @@ function get_adjudicators_venues($round) {
     }
     $query = "SELECT v.*, a.* FROM adjudicator AS a, draws AS d, " .
                 "venue AS v, draw_adjud AS adjud  " .
-                "WHERE d.round_no=$round AND adjud.round_no=$round AND d.venue_id=v.venue_id AND adjud.debate_id = d.debate_id AND " .
+                "WHERE d.round_no=? AND adjud.round_no=? AND d.venue_id=v.venue_id AND adjud.debate_id = d.debate_id AND " .
                 "a.adjud_id = adjud.adjud_id ORDER BY adjud_name";
-    
-    $query_result = mysql_query($query);
+
+    $query_result = qp($query,array($round, $round));
     $data = array();
-    
-    while ($row =mysql_fetch_assoc($query_result)) {
+
+    while ($row = $query_result->FetchRow()) {
         $data[] = array($row["adjud_name"], $row["venue_name"], $row["venue_location"]);
     }
     $result["data"] = $data;
@@ -189,21 +192,22 @@ function get_teams_venues($round) {
 
     $query = "SELECT v.venue_id AS venue_id, v.venue_location AS venue_location, v.venue_name AS venue_name, t.team_id AS team_id, t.team_code AS team_code, u.univ_code AS univ_code ";
         $query.="FROM team AS t, university AS u, draws AS d, venue AS v ";
-        $query.="WHERE d.round_no=$round AND d.venue_id=v.venue_id AND (t.team_id=d.og OR t.team_id=d.oo OR t.team_id=d.cg OR t.team_id=d.co) AND t.univ_id=u.univ_id ";
+        $query.="WHERE d.round_no=? AND d.venue_id=v.venue_id AND (t.team_id=d.og OR t.team_id=d.oo OR t.team_id=d.cg OR t.team_id=d.co) AND t.univ_id=u.univ_id ";
         $query.="ORDER BY univ_code, team_code ";
 
-    $query_result = mysql_query($query);
+    $query_result = qp($query, array($round));
 
     $data = array();
-    while ($row = mysql_fetch_assoc($query_result)) {
+    while ($row = $query_result->FetchRow()) {
         // Find the Position
         $positions = array("og", "oo", "cg", "co");
         $pos_string = "";
         foreach($positions as $position) {
             $pos_string = $position;
-            $pos_query = "SELECT $position FROM draws WHERE round_no=$round AND $position={$row['team_id']}";
-            $pos_query_result = mysql_query($pos_query);
-            if (mysql_num_rows($pos_query_result) > 0)
+	    $pos_query = "SELECT * FROM draws WHERE round_no=? AND $position=?";
+	    $pos_params = array($round, $row['team_id']);
+            $pos_query_result = qp($pos_query, $pos_params);
+            if ($pos_query_result->RecordCount() > 0)
                 break;
         }
         $data[] = array($row['univ_code'] . " " . $row['team_code'], $row["venue_name"], $row["venue_location"], strtoupper($pos_string));
@@ -213,32 +217,32 @@ function get_teams_venues($round) {
 }
 
 function get_motion_for_round($round) {
-    $motion_query = "SELECT motion FROM motions WHERE round_no = $round ";
-    $motion_result = mysql_query($motion_query);
-    $motion_row = mysql_fetch_assoc($motion_result);
+    $motion_query = "SELECT motion FROM motions WHERE round_no = ?";
+    $motion_result = qp($motion_query, array($round));
+    $motion_row = $motion_result->FetchRow();
     return $motion_row['motion'];
 }
 
 function adjudicator_sheets($round) {
     // Get the motion for the round
-    $motion_query = "SELECT motion FROM motions WHERE round_no = $round ";
-    $motion_result = mysql_query($motion_query);
-    $motion_row=mysql_fetch_assoc($motion_result);
+    $motion_query = "SELECT motion FROM motions WHERE round_no = ?";
+    $motion_result = qp($motion_query, array($round));
+    $motion_row=$motion_result->FetchRow();
     $motion = $motion_row['motion'];
-    
+
     // Get the individual debate details
     $venue_query = "SELECT draw.debate_id AS debate_id, draw.og AS ogid, draw.oo AS ooid, draw.cg AS cgid, draw.co AS coid, draw.venue_id AS venue_id, venue.venue_name AS venue_name, venue.venue_location AS venue_location, oguniv.univ_code AS og_univ_code, ogteam.team_code AS og_team_code, oouniv.univ_code AS oo_univ_code, ooteam.team_code AS oo_team_code, cguniv.univ_code AS cg_univ_code, cgteam.team_code AS cg_team_code, couniv.univ_code AS co_univ_code, coteam.team_code AS co_team_code ";
     $venue_query .= "FROM draws AS draw, venue AS venue, university AS oguniv, team AS ogteam, university AS oouniv, team AS ooteam, university AS cguniv, team AS cgteam, university AS couniv, team AS coteam ";
-    $venue_query .= "WHERE draw.round_no=$round AND draw.venue_id = venue.venue_id AND ogteam.team_id = draw.og AND oguniv.univ_id = ogteam.univ_id AND ooteam.team_id = draw.oo AND oouniv.univ_id = ooteam.univ_id AND cgteam.team_id = draw.cg AND cguniv.univ_id = cgteam.univ_id AND coteam.team_id = draw.co AND couniv.univ_id = coteam.univ_id ";
+    $venue_query .= "WHERE draw.round_no=? AND draw.venue_id = venue.venue_id AND ogteam.team_id = draw.og AND oguniv.univ_id = ogteam.univ_id AND ooteam.team_id = draw.oo AND oouniv.univ_id = ooteam.univ_id AND cgteam.team_id = draw.cg AND cguniv.univ_id = cgteam.univ_id AND coteam.team_id = draw.co AND couniv.univ_id = coteam.univ_id ";
     $venue_query .= "ORDER BY venue_location, venue_name ";
-    
-    $venue_result = mysql_query($venue_query);
-    
+
+    $venue_result = qp($venue_query, array($round));
+
     $data = array();
-    while ($venue_row=mysql_fetch_assoc($venue_result))
-    {    $venue_location = $venue_row['venue_location'];
+    while ($venue_row=$venue_result->FetchRow()) {
+        $venue_location = $venue_row['venue_location'];
         $venue_name = $venue_row['venue_name'];
-        $debate_id = $venue_row['debate_id'];    
+        $debate_id = $venue_row['debate_id'];
         $ogid = $venue_row['ogid'];
         $ooid = $venue_row['ooid'];
         $cgid = $venue_row['cgid'];
@@ -247,84 +251,37 @@ function adjudicator_sheets($round) {
         $oo = $venue_row['oo_univ_code'].' '.$venue_row['oo_team_code'];
         $cg = $venue_row['cg_univ_code'].' '.$venue_row['cg_team_code'];
         $co = $venue_row['co_univ_code'].' '.$venue_row['co_team_code'];
-        
+	$debate_param = array($round, $debate_id);
+
+
         // Get Chair
-        $chfadj_query = "SELECT adjud.adjud_name AS adjud_name FROM draw_adjud AS round, adjudicator AS adjud WHERE round.round_no=$round AND round.debate_id = $debate_id AND round.status = 'chair' AND adjud.adjud_id = round.adjud_id ";
-        $chfadj_result = mysql_query($chfadj_query);
-        $chfadj_row=mysql_fetch_assoc($chfadj_result);
+        $chfadj_query = "SELECT adjud.adjud_name AS adjud_name FROM draw_adjud AS round, adjudicator AS adjud WHERE round.round_no=? AND round.debate_id=? AND round.status = 'chair' AND adjud.adjud_id = round.adjud_id ";
+        $chfadj_result = qp($chfadj_query, $debate_param);
+        $chfadj_row=$chfadj_result->FetchRow();
         $chair = $chfadj_row['adjud_name'];
 
         // Get Panelists
-        $pnladj_query = "SELECT adjud.adjud_name AS adjud_name FROM draw_adjud AS round, adjudicator AS adjud WHERE round.round_no=$round AND round.debate_id = $debate_id AND round.status = 'panelist' AND adjud.adjud_id = round.adjud_id ";
-        $pnladj_result = mysql_query($pnladj_query);
-		$panel="";
-        while ($pnladj_row=mysql_fetch_assoc($pnladj_result))
-		{
-			if($panel=="")
-			{
-				$panel=$pnladj_row['adjud_name'];
-			} else {
-				$panel = $panel.", ".$pnladj_row['adjud_name'];
-			}
+        $pnladj_query = "SELECT adjud.adjud_name AS adjud_name FROM draw_adjud AS round, adjudicator AS adjud WHERE round.round_no=? AND round.debate_id =? AND round.status = 'panelist' AND adjud.adjud_id = round.adjud_id ";
+        $pnladj_result = qp($pnladj_query, $debate_param);
+	$panel="";
+        while ($pnladj_row=$pnladj_result->FetchRow()) {
+		if($panel=="") {
+			$panel=$pnladj_row['adjud_name'];
+		} else {
+			$panel = $panel.", ".$pnladj_row['adjud_name'];
 		}
-		if(strlen($panel)>114)
-		{
-			$panel=substr($panel,0,143);
-		}
+	}
+	if(strlen($panel)>114) {
+		$panel=substr($panel,0,143);
+	}
 
-        
+
         // Get Speakers
-        $ogspkr_query = "SELECT speaker_name FROM speaker WHERE team_id = $ogid ORDER BY speaker_name ";
-        $ogspkr_result = mysql_query($ogspkr_query);
-        $ogspkr_row = mysql_fetch_assoc($ogspkr_result);
-        for ($i=0;$i<2;$i++)
-        {     switch($i)
-            {    case 0: $ogspkr1 = $ogspkr_row['speaker_name'];
-                    break;
-                case 1: $ogspkr2 = $ogspkr_row['speaker_name'];
-                    break;
-            }
-            $ogspkr_row = mysql_fetch_assoc($ogspkr_result);
-        }
-        
-        $oospkr_query = "SELECT speaker_name FROM speaker WHERE team_id = $ooid ORDER BY speaker_name ";
-        $oospkr_result = mysql_query($oospkr_query);
-        $oospkr_row = mysql_fetch_assoc($oospkr_result);
-        for ($i=0;$i<2;$i++)
-        {     switch($i)
-            {    case 0: $oospkr1 = $oospkr_row['speaker_name'];
-                    break;
-                case 1: $oospkr2 = $oospkr_row['speaker_name'];
-                    break;
-            }
-            $oospkr_row = mysql_fetch_assoc($oospkr_result);
-        }
-        
-        $cgspkr_query = "SELECT speaker_name FROM speaker WHERE team_id = $cgid ORDER BY speaker_name ";
-        $cgspkr_result = mysql_query($cgspkr_query);
-        $cgspkr_row = mysql_fetch_assoc($cgspkr_result);
-        for ($i=0;$i<2;$i++)
-        {     switch($i)
-            {    case 0: $cgspkr1 = $cgspkr_row['speaker_name'];
-                    break;
-                case 1: $cgspkr2 = $cgspkr_row['speaker_name'];
-                    break;
-            }
-            $cgspkr_row = mysql_fetch_assoc($cgspkr_result);
-        }
+        list($ogspkr1, $ogspkr2) = get_speaker_names($ogid);
+        list($oospkr1, $oospkr2) = get_speaker_names($ooid);
+        list($cgspkr1, $cgspkr2) = get_speaker_names($cgid);
+        list($cospkr1, $cospkr2) = get_speaker_names($coid);
 
-        $cospkr_query = "SELECT speaker_name FROM speaker WHERE team_id = $coid ORDER BY speaker_name ";
-        $cospkr_result = mysql_query($cospkr_query);
-        $cospkr_row = mysql_fetch_assoc($cospkr_result);
-        for ($i=0;$i<2;$i++)
-        {     switch($i)
-            {    case 0: $cospkr1 = $cospkr_row['speaker_name'];
-                    break;
-                case 1: $cospkr2 = $cospkr_row['speaker_name'];
-                    break;
-            }
-            $cospkr_row = mysql_fetch_assoc($cospkr_result);
-        }
         @$panelist_2 = @$panelist_2 ? (", " . @$panelist_2) : "";
         @$panelist_3 = @$panelist_3 ? (", " . @$panelist_3) : "";
 
@@ -357,9 +314,9 @@ function adjudicator_sheets($round) {
 
 function get_co_adjudicators_for_round($adjud_id, $round) {
     $result = array();
-    $db_result = q("SELECT b.adjud_id FROM draw_adjud AS a, draw_adjud AS b WHERE a.round_no=$round AND b.round_no=$round AND  a.adjud_id = '$adjud_id' AND a.debate_id = b.debate_id AND NOT b.adjud_id = '$adjud_id'");
-    while ($row = mysql_fetch_array($db_result))
-        $result[] = $row[0];
+    $db_result = qp("SELECT b.adjud_id AS adjud_id FROM draw_adjud AS a, draw_adjud AS b WHERE a.round_no=? AND b.round_no=? AND  a.adjud_id =? AND a.debate_id = b.debate_id AND NOT b.adjud_id=?", array($round, $round, $adjud_id, $adjud_id));
+    while ($row = $db_result->FetchRow())
+        $result[] = $row['adjud_id'];
     return $result;
 }
 
@@ -372,12 +329,12 @@ function get_co_adjudicators($adjud_id) {
 
 function get_adjudicator_met_teams_for_round($adjud_id, $round) {
     $result = array();
-    $db_result = q("SELECT draw.og, draw.oo, draw.cg, draw.co FROM draw_adjud AS a, draws AS draw WHERE a.round_no=$round AND draw.round_no=$round AND a.adjud_id = '$adjud_id' AND a.debate_id = draw.debate_id");
-    while ($row = mysql_fetch_array($db_result)) {
-        $result[] = $row[0];
-        $result[] = $row[1];
-        $result[] = $row[2];
-        $result[] = $row[3];
+    $db_result = qp("SELECT draw.og, draw.oo, draw.cg, draw.co FROM draw_adjud AS a, draws AS draw WHERE a.round_no=? AND draw.round_no=? AND a.adjud_id=? AND a.debate_id = draw.debate_id", array($round, $round, $adjud_id));
+    while ($row = $db_result->FetchRow()) {
+        $result[] = $row['og'];
+        $result[] = $row['oo'];
+        $result[] = $row['cg'];
+        $result[] = $row['co'];
     }
     return $result;
 }
@@ -390,99 +347,86 @@ function get_adjudicator_met_teams($adjud_id) {
 }
 
 function team_name($team_id) {
-    $db_result = q("SELECT university.univ_code, team.team_code FROM university, team WHERE team.team_id = '$team_id' AND team.univ_id = university.univ_id");
-    $row = mysql_fetch_assoc($db_result);
+    $db_result = qp("SELECT university.univ_code, team.team_code FROM university, team WHERE team.team_id=? AND team.univ_id = university.univ_id", array($team_id));
+    $row = $db_result->FetchRow();
     return $row['univ_code'] . " " . $row['team_code'];
 }
 
 function team_name_long($team_id) {
-    $db_result = q("SELECT university.univ_code, team.team_code, university.univ_name FROM university, team WHERE team.team_id = '$team_id' AND team.univ_id = university.univ_id");
-    $row = mysql_fetch_assoc($db_result);
+    $db_result = qp("SELECT university.univ_code, team.team_code, university.univ_name FROM university, team WHERE team.team_id = ? AND team.univ_id = university.univ_id", array($team_id));
+    $row = $db_result->FetchRow();
     return "{$row['univ_code']} {$row['team_code']} ({$row['univ_name']})";
 }
 
 function team_name_long_table($team_id) {
-    $db_result = q("SELECT university.univ_code, team.team_code, university.univ_name FROM university, team WHERE team.team_id = '$team_id' AND team.univ_id = university.univ_id");
-    $row = mysql_fetch_assoc($db_result);
+    $db_result = qp("SELECT university.univ_code, team.team_code, university.univ_name FROM university, team WHERE team.team_id = ? AND team.univ_id = university.univ_id", array($team_id));
+    $row = $db_result->FetchRow();
     return "{$row['univ_name']} {$row['team_code']}";
 }
 
 function team_code_long_table($team_id) {
-    $db_result = q("SELECT university.univ_code, team.team_code, university.univ_name FROM university, team WHERE team.team_id = '$team_id' AND team.univ_id = university.univ_id");
-    $row = mysql_fetch_assoc($db_result);
+    $db_result = qp("SELECT university.univ_code, team.team_code, university.univ_name FROM university, team WHERE team.team_id = ? AND team.univ_id = university.univ_id", array($team_id));
+    $row = $db_result->FetchRow();
     return "{$row['univ_code']} {$row['team_code']}";
 }
 
 function venue_name($venue_id) {
 	$db_result=q("SELECT venue_name FROM `venue` WHERE venue_id=$venue_id");
-	$row = mysql_fetch_assoc($db_result);
+	$row = $db_result->FetchRow();
 	return $row['venue_name'];
 }
 
 function get_room_name_from_debate($debate_id, $round){
-	$query = "SELECT venue_name FROM venue INNER JOIN draws ON venue.venue_id = draws.venue_id WHERE round_no=$round AND debate_id = ".$debate_id;
-	$return = mysql_fetch_assoc(mysql_query($query));
-	return $return["venue_name"];
+	$query = "SELECT venue_name FROM venue INNER JOIN draws ON venue.venue_id = draws.venue_id WHERE round_no=? AND debate_id = ?";
+	$param = array($round, $debate_id);
+	$rws = qp($query, $param);
+	return $res->Fields("venue_name");
 }
 
 function adjudicator_name($adjudicator_id){
-	$query="SELECT adjud_name FROM adjudicator WHERE adjudicator.adjud_id = $adjudicator_id";
-	$result = mysql_query($query);
-	$return = mysql_fetch_assoc($result);
-	return $return["adjud_name"];
+	$res=qp("SELECT adjud_name FROM adjudicator WHERE adjudicator.adjud_id = ?",array($adjudicator_id));
+	return $res->Fields("adjud_name");
 }
 
 function get_university($univ_id) {
-    return mysql_fetch_assoc(q("SELECT * FROM university WHERE univ_id = '$univ_id'"));
+    return q("SELECT * FROM university WHERE univ_id = '$univ_id'")->FetchRow();
 }
 
 function delete_team($team_id) {
-	//Check for whether debates have started
-    $query="SELECT COUNT(round_no) FROM draws";
-    $result=mysql_query($query);
-    $r=mysql_fetch_array($result);
-    if ($r[0]!=0)
-      $msg[]="Debates in progress. Cannot delete now.";
-    else
-      {    
-    
-        //Delete Stuff (From Both Speaker and Team
-    
-        $query1="DELETE FROM speaker WHERE team_id='$team_id'";
-        $result1=mysql_query($query1);
-    //Check for Error
-        if (mysql_affected_rows()==0)
-      $msg[]="There were problems deleting speakers: No such record.";
-   
-        $query2="DELETE FROM team WHERE team_id='$team_id'";
-        $result2=mysql_query($query2);
+    //Check for whether debates have started
+    $c = count_rows("draws");
+    if ($c!=0) {
+        $msg[]="Debates in progress. Cannot delete now.";
+    } else {
+        $result1=qp("DELETE FROM speaker WHERE team_id=?", array($team_id));
         //Check for Error
-        if (mysql_affected_rows()==0)
-      $msg[]="There were problems deleting team: No such record.";
-      }
-	
+        if ($result1->Affected_Rows()==0) {
+            $msg[]="There were problems deleting speakers: No such record.";
+        }
+        $result2=qp("DELETE FROM team WHERE team_id=?", array($team_id));
+        //Check for Error
+        if ($result2->Affected_Rows()==0) {
+            $msg[]="There were problems deleting team: No such record.";
+	}
+    }
+    return $msg;
 }
 
 function delete_adjud($adjud_id){
-	//Check for whether debates have started
-    $query="SELECT COUNT(round_no) FROM draws";
-    $result=mysql_query($query);
-    $r=mysql_fetch_array($result);
-
-    if ($r[0]!=0)
-      $msg[]="Debates in progress. Cannot delete now.";
-    else
-      {
+    $c = count_rows("draws");
+    if ($c!=0) {
+        $msg[]="Debates in progress. Cannot delete now.";
+    } else {
         //Delete Stuff
         $adjud_id=trim(@$_GET['adjud_id']);
-        $query="DELETE FROM adjudicator WHERE adjud_id='$adjud_id'";
-        $result=mysql_query($query);
+	$result=qp("DELETE FROM adjudicator WHERE adjud_id=?", array($adjud_id));
 
         //Check for Error
-        if (mysql_affected_rows()==0)
-      $msg[]="There were problems deleting : No such record.";
-      }
-  
+        if ($result->Affected_Rows()==0) {
+            $msg[]="There were problems deleting : No such record.";
+        }
+    }
+    return $msg;
 }
 
 function convert_db_ssesl(){
@@ -494,8 +438,7 @@ function convert_db_ssesl(){
 				mysql_query("ALTER TABLE  `speaker` ADD  `speaker_esl` CHAR( 3 ) NOT NULL DEFAULT  'N'");
 				$query="SELECT speaker.speaker_id, team.esl, speaker.speaker_esl FROM  `speaker` INNER JOIN  `team` ON speaker.team_id = team.team_id";
 				$result=mysql_query($query);
-				while ($row = mysql_fetch_array($result)) 
-				{
+				while ($row = mysql_fetch_array($result)) {
 					if ($row[esl]=="Y") set_speaker_esl($row[speaker_id], "Y");
 			    }
 			}
@@ -504,7 +447,7 @@ function convert_db_ssesl(){
 }
 
 function set_speaker_esl($speaker_id, $esl){
-	mysql_query("UPDATE  `speaker` SET  `speaker_esl` =  '".$esl."' WHERE  `speaker`.`speaker_id` =".$speaker_id);
+	return q("UPDATE `speaker` SET  `speaker_esl`=? WHERE  `speaker`.`speaker_id` =?", array($esl,$speaker_id));
 }
 
 function makesafe($string){
@@ -515,29 +458,26 @@ function makesafe($string){
 }
 
 function add_strike_judge_team($adjud_id, $team_id, $univ_id){
-	$query="INSERT INTO strikes(adjud_id, team_id, univ_id) VALUES('$adjud_id','$team_id', '$univ_id')";
-	mysql_query($query);
+	return qp("INSERT INTO strikes (adjud_id, team_id, univ_id) VALUES(?, ?, ?)", array($adjud_id, $team_id, $univ_id));
 }
 
 function add_strike_judge_univ($adjud_id, $univ_id){
-	$query="INSERT INTO strikes(adjud_id, univ_id) VALUES('$adjud_id','$univ_id')";
-	mysql_query($query);
+	return qp("INSERT INTO strikes (adjud_id, univ_id) VALUES(?, ?)", array($adjud_id, $univ_id));
 }
 
 function del_strike_judge_team($adjud_id, $team_id){
 	//you'd better pass this function a valid strike or else: it's 1am.
-	$query="SELECT * FROM strikes WHERE adjud_id='$adjud_id' AND team_id='$team_id'";
-    $resultstrike=mysql_query($query);
-    $row=mysql_fetch_assoc($resultstrike);
-    $strike_id=$row['team_id'];
-	$query="DELETE * FROM strikes where strike_id='$strike_id'";
+	$r=qp("SELECT * FROM strikes WHERE adjud_id=? AND team_id=?", array($adjud_id, $team_id));
+	$row=$r->FetchRow();
+	$strike_id=$row['team_id'];
+	$r=qp("DELETE * FROM strikes where strike_id=?", array($strike_id));
+	return $r->Affected_Rows();
 }
 
 function is_strike_judge_team($adjud_id, $team_id){
 	//echo("is_strike_judge_team(".$adjud_id.",".$team_id.")");
-	$query="SELECT * FROM strikes WHERE adjud_id='$adjud_id' AND team_id='$team_id'";
-	$resultstrike=mysql_query($query);
-	$rownum=mysql_num_rows($resultstrike);
+	$resultstrike=qp("SELECT * FROM strikes WHERE adjud_id=? AND team_id=?", array($adjud_id, $team_id));
+	$rownum=$resultstrike->RecordCount();
 	if ($rownum>0){
 		//echo("struck by team");
 		//echo("strike on university $team_id");
@@ -554,16 +494,15 @@ function is_strike_judge_team($adjud_id, $team_id){
 }
 
 function univ_id_from_team($team_id){
-	$query = "SELECT `univ_id` FROM `team` WHERE `team_id`='$team_id'";
-	$result = mysql_query($query);
-	$row = mysql_fetch_assoc($result);
+	$result = qp("SELECT `univ_id` FROM `team` WHERE `team_id`=?", array($team_id));
+	$row = $result->FetchRow();
 	return $row['univ_id'];
 }
 
 function is_strike_judge_univ($adjud_id, $univ_id){
-	$query="SELECT * FROM `strikes` WHERE `adjud_id`='$adjud_id' AND `univ_id`='$univ_id' AND `team_id` IS NULL";
-	$resultstrike=mysql_query($query);
-	$rownum=mysql_num_rows($resultstrike);
+	$query=
+	$resultstrike=qp("SELECT * FROM `strikes` WHERE `adjud_id`=? AND `univ_id`=? AND `team_id` IS NULL", array($adjud_id, $univ_id));
+	$rownum=$resultstrike->RecordCount();
 	if ($rownum>0){
 		//echo("strike on university $univ_id");
 		//echo $query;
@@ -573,35 +512,33 @@ function is_strike_judge_univ($adjud_id, $univ_id){
 	}
 }
 function del_strike_id($strike_id){
-	$query = "DELETE FROM `strikes` WHERE `strikes`.`strike_id` = $strike_id";
-	mysql_query($query);
+	return qp("DELETE FROM `strikes` WHERE `strikes`.`strike_id` = ?" , array($strike_id));
 }
-	
+
 function get_team_id($univ_id, $team_code){
-	$query="SELECT team_id FROM team WHERE univ_id='$univ_id' AND team_code='$team_code'";
-	mysql_query($query);
-	$resultteam=mysql_query($query);
-    $row=mysql_fetch_assoc($resultteam);
-    $team_id=$row['team_id'];
+	$resultteam=qp("SELECT team_id FROM team WHERE univ_id=? AND team_code=?", array($univ_id, $team_code));
+	$row=$resultteam->FetchRow();
+	$team_id=$row['team_id'];
 	return $team_id;
 }
 
 function strikes_to_conflict_list($adjud_id){
-	$query="SELECT * FROM strikes WHERE adjud_id='$adjud_id'";
+	$query="SELECT * FROM strikes WHERE adjud_id=?";
+	$param=array($adjud_id);
 	$conflict_list="";
-	$result=mysql_query($query);
-	while($row=mysql_fetch_assoc($result)){
+	$result=qp($query, $param);
+	while($row=$result->FetchRow()){
 		$conflict_list=$conflict_list.team_name($row['team_id']).",";
 	}
 	return $conflict_list;
 }
 
 function mysql_to_xml($query, $baseelement){
-	$result=mysql_query($query);
-	$dom = new DomDocument('1.0', 'utf8'); 
+	$result=q($query);
+	$dom = new DomDocument('1.0', 'utf8');
 	$top = $dom->createElement('collection');
 	$top = $dom->appendChild($top);
-	while($row = mysql_fetch_assoc($result)) {
+	while($row = $result->FetchRow()) {
 		$element = $dom->createElement($baseelement);
 		$element = $top->appendchild($element);
 		foreach ($row as $key => $value) {
@@ -619,15 +556,15 @@ function is_four_id_conflict($adjud_id, $ogid, $ooid, $cgid, $coid){
 	} else {
 		return false;
 	}
-	
+
 }
 
 function print_conflicts($adjud_id=0, $negative="<b>None</b>"){
 	$strikelist="";
-	$strikequery="SELECT u.univ_code, t.team_code FROM strikes as s INNER JOIN university AS u on s.univ_id = u.univ_id LEFT JOIN team AS t on s.team_id = t.team_id WHERE s.adjud_id = $adjud_id";
-	$strikeresult=mysql_query($strikequery);
+	$strikequery="SELECT u.univ_code, t.team_code FROM strikes as s INNER JOIN university AS u on s.univ_id = u.univ_id LEFT JOIN team AS t on s.team_id = t.team_id WHERE s.adjud_id = ?";
+	$strikeresult=qp($strikequery, array($adjud_id));
 	//echo mysql_error();
-	while($strike=mysql_fetch_assoc($strikeresult)){
+	while($strike=$strikeresult->FetchRow()){
 		$strikelist .= $strike['univ_code']." ".$strike['team_code'].", ";
 	}
 	//remove trailing comma
@@ -639,22 +576,21 @@ function print_conflicts($adjud_id=0, $negative="<b>None</b>"){
 	return $strikelist;
 }
 
-function finalise_temporary_draw($nextround)
-{
-	$query = "SELECT DISTINCT COUNT(*) AS numadjud ";
+function finalise_temporary_draw($nextround) {
+    $query = "SELECT DISTINCT COUNT(*) AS numadjud ";
     $query .= "FROM temp_adjud_round_$nextround ";
     $query .= "WHERE STATUS = 'chair'";
 
-    $resultnumadjud=mysql_query($query);
-    $rownumadjud=mysql_fetch_assoc($resultnumadjud);
+    $resultnumadjud=q($query);
+    $rownumadjud=$resultnumadjud->FetchRow();
     $adjudcount=$rownumadjud['numadjud']; //count chair adjudicators
 
-      
+
     $query = "SELECT COUNT(*) AS numdebates ";
     $query .= "FROM temp_draw_round_$nextround ";
 
-    $resultnumdebates=mysql_query($query);
-    $rownumdebates=mysql_fetch_assoc($resultnumdebates);
+    $resultnumdebates=q($query);
+    $rownumdebates=$resultnumdebates->FetchRow();
     $debatecount=$rownumdebates['numdebates'];
 
     if ($adjudcount!=$debatecount) //No. of debates and chair adjudicators dont match
@@ -663,41 +599,47 @@ function finalise_temporary_draw($nextround)
 		return 0;
       }
 	 $query="SELECT `adjud_id`, `og`, `oo`, `cg`, `co` FROM `temp_adjud_round_$nextround` INNER JOIN `temp_draw_round_$nextround` ON `temp_adjud_round_$nextround`.`debate_id`=`temp_draw_round_$nextround`.`debate_id`";
-	 $result=mysql_query($query);
-	 if(!($result=mysql_query($query))){
+	 if(!($result=q($query))){
 		 $msg[]="ERROR - strike query failed to execute";
 		return 0;
 	 } else {
-		while($row=mysql_fetch_assoc($result)){
+		while($row=$result->FetchRow()){
 			$ogid=$row['og'];
 			$ooid=$row['oo'];
 			$cgid=$row['cg'];
 			$coid=$row['co'];
-			$query="SELECT `univ_id` FROM `team` WHERE `team_id` = '$ogid' OR `team_id` = '$ooid' OR `team_id` = '$cgid' OR `team_id` = '$coid'";
-			$univ_id_result=mysql_query($query);
-			if(mysql_num_rows($univ_id_result)!=4){
+			$query="SELECT `univ_id` FROM `team` WHERE `team_id`=? OR `team_id`=? OR `team_id` = ? OR `team_id` = ?";
+			$univ_id_result=qp($query, array($ogid, $ooid, $cgid, $coid));
+			if($univ_id_result->RecordCount()!=4){
 				$msg[]="ERROR - more than four teams for id (!)";
 				$msg[]="You appear to have a corrupted database. Consider restoring from a backup and check previous rounds' data carefully.";
 				return 0;
 			}
 			$univ_ids=array();
-			while($univ_id_row=mysql_fetch_assoc($univ_id_result)){
+			while($univ_id_row=$univ_id_result->FetchRow()){
 				$univ_ids[]=$univ_id_row['univ_id'];
 			}
-			$query="SELECT * FROM `strikes` WHERE `adjud_id` = '".$row['adjud_id']."' AND ( (`team_id` = '$ogid' OR `team_id` = '$ooid' OR `team_id` = '$cgid' OR `team_id` = '$coid' ) OR ((`univ_id` = '".$univ_ids[0]."' OR `univ_id` = '".$univ_ids[1]."' OR `univ_id` = '".$univ_ids[2]."' OR `univ_id` = '".$univ_ids[3]."') AND `team_id` IS NULL) )";
+			$query="SELECT * FROM `strikes` WHERE `adjud_id`=? AND ((`team_id`=? OR `team_id`=? OR `team_id`=? OR `team_id`=? ) OR ((`univ_id`=? OR `univ_id`=? OR `univ_id`=? OR `univ_id`=?) AND `team_id` IS NULL))";
+			$param=array($row['adjud_id'], $ogid, $ooid, $cgid, $coid, $univ_ids[0], $univ_ids[1], $univ_ids[2], $univ_ids[3]);
 			echo("<br/>");
-			if(!($strikeresult=mysql_query($query))){
+			if(!($strikeresult=qp($query, $param))){
 			 	$msg[]="ERROR - strike query failed to execute";
 				return 0;
-		 	} else if(mysql_num_rows($strikeresult)>0){
+		 	} else if($strikeresult->RecordCount()>0){
 				return 0;
-			 $msg[]="ERROR - strike in draw";
-			 $msg[]="Adjudicator ".$row["adjud_id"]." is conflicted from their debate. Either clear the conflict or reallocate the adjudicator to proceed.";
-
+				$msg[]="ERROR - strike in draw";
+				$msg[]="Adjudicator ".$row["adjud_id"]." is conflicted from their debate. Either clear the conflict or reallocate the adjudicator to proceed.";
 			}
 		}
 	}
 	return 1;
+}
+
+function get_speaker_names($team_id) {
+        $spkr_query = "SELECT speaker_name FROM speaker WHERE team_id = ? ORDER BY speaker_name ";
+        $spkr_result = qp($spkr_query, array($team_id));
+	$spkr_row = $spkr_result->GetArray();
+	return array($spkr_row[0]['speaker_name'], $spkr_row[1]['speaker_name']);
 }
 
 ?>

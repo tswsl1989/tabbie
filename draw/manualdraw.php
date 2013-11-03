@@ -528,13 +528,12 @@ if ($exist)
 
         $result=mysql_query($query);
     
-        if ($result)
-      {
-            echo "<table id=\"manualdraw\">\n";
-        echo "<tr><th>Venue Name</th><th>Opening Govt</th><th>Opening Opp</th><th>Closing Govt</th><th>Closing Opp</th><th>Average Points</th><th>Chair</th><th>Panelists</th><th>Trainee</th></tr>\n";
+        if ($result) {
+		echo "<table id=\"manualdraw\">\n";
+		echo "<tr><th>Venue Name</th><th>Opening Govt</th><th>Opening Opp</th><th>Closing Govt</th><th>Closing Opp</th><th>Average Points</th><th>Chair</th><th>Panelists</th><th>Trainee</th></tr>\n";
 			//Nasty hack to make it display in tab order with average points; fix! - GWJR
 			while($row=mysql_fetch_array($result)){
-				$row['ogpoints'] = points_for_team($row['ogid'], $numdraws);
+			    $row['ogpoints'] = points_for_team($row['ogid'], $numdraws);
 			    $row['oopoints'] = points_for_team($row['ooid'], $numdraws);
 			    $row['cgpoints'] = points_for_team($row['cgid'], $numdraws);
 			    $row['copoints'] = points_for_team($row['coid'], $numdraws);

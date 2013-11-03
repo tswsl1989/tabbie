@@ -65,36 +65,17 @@ if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
     
   }
 
-if ($action=="delete")
-  {
-
-    //Check for whether debates have started
-    $query="SHOW  TABLES  LIKE  '%_round_%'";
-    $result=mysql_query($query);
-
-    if (mysql_num_rows($result)!=0)
-    	$msg[]="Debates in progress. Cannot delete now.";
-    else
-      {
-        //Delete Stuff
-        $adjud_id=trim(@$_GET['adjud_id']);
-        $query="DELETE FROM adjudicator WHERE adjud_id='$adjud_id'";
-        $result=mysql_query($query);
-    
-        //Check for Error
-        if (mysql_affected_rows()==0)
-      	$msg[]="There were problems deleting : No such record.";
-      }
-    
-    //Change Mode to Display
-    $action="display";    
-  }
+if ($action=="delete") {
+    $adjud_id=trim(@$GET['adjud_id']);
+    $msg = delete_adjud($adjud_id);
+    $action="display";
+}
 
 if ($actionhidden=="add")
   {
     //Check Validation
     if ($validate==1)
-      {        
+      {
         //Add Stuff to Database
         
         $query = "INSERT INTO adjudicator(univ_id, adjud_name, ranking, active, status) ";

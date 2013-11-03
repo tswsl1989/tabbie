@@ -22,15 +22,17 @@
  * end license */
 
 function execute_query_print_result($query) {
-    if (trim($query)) {
-        $result = mysql_query($query);
-        if (!$result) {
-            $error = mysql_error();
-            print "<b>$query => FAIL: $error</b><br>";
-            return false;
-        } else
-            print "$query => SUCCESS<br>";
-    }
+	global $DBConn;
+	if (trim($query)) {
+		$result = $DBConn->Execute($query);
+		if (!$result) {
+			$error = $DBConn->ErrorMsg();
+			print "<b>$query => FAIL: $error</b><br>";
+			return false;
+		} else {
+			print "$query => SUCCESS<br>";
+		}
+	}
     return true;
 }
 

@@ -22,24 +22,30 @@
  * end license */
 
 function q($query) {
-    $result = mysql_query($query);
-    $error = mysql_error();
-    if ($error) {
-        $version = phpversion();
-        if ($version[0] == '5') 
-            eval('throw new Exception("Error in query [$query]:" .  $error);');
-        else {
-            print "Error in query [$query]:" .  $error;
-            die;
-        }
+    global $DBConn;
+    ini_set('display_errors','1');
+    $result = $DBConn->Execute($query);
+    if (!$result) {
+        $error = $DBConn->ErrorMsg();
+        throw new Exception("Error in query [$query]:" .  $error);
+    }
+    return $result;
+}
+
+function qp($query, $params) {
+    global $DBConn;
+    $result = $DBConn->Execute($query, $params);
+    if (!$result) {
+        $error = $DBConn->ErrorMsg();
+        throw new Exception("Error in query [$query, ".print_r($params)."]:" .  $error);
     }
     return $result;
 }
 
 function count_rows($table, $where_clause = "1 = 1") {
-    $query = "SELECT COUNT(*) FROM $table WHERE $where_clause";
+    $query = "SELECT * FROM $table WHERE $where_clause";
     $result = q($query);
-    $row = mysql_fetch_row($result);
-    return $row[0];
+    $rc = $result->RecordCount();
+    return $rc;
 }
 ?>

@@ -25,14 +25,18 @@ set_include_path(get_include_path() . PATH_SEPARATOR . "../../");
 require_once("includes/backend.php");
 
 //Information from the client
-$adjud_id = htmlspecialchars(trim($_POST['adjud_id']));
-$team_code = htmlspecialchars(trim($_POST['team_code']));
-$team_id = htmlspecialchars(trim($_POST['team_id']));
-$univ_id = htmlspecialchars(trim($_POST['univ_id']));
-$action = htmlspecialchars(trim($_POST['action']));
-$strike_id = htmlspecialchars(trim($_POST['strike_id']));
+$adjud_id = htmlspecialchars(trim((isset($_POST['adjud_id']) ? $_POST['adjud_id'] : "")));
+$team_code = htmlspecialchars(trim((isset($_POST['team_code']) ? $_POST['team_code'] : "")));
+$team_id = htmlspecialchars(trim((isset($_POST['team_id']) ? $_POST['team_id'] : "")));
+$univ_id = htmlspecialchars(trim((isset($_POST['univ_id']) ? $_POST['univ_id'] : "")));
+$action = htmlspecialchars(trim((isset($_POST['action']) ? $_POST['action'] : "")));
+$strike_id = htmlspecialchars(trim((isset($_POST['strike_id']) ? $_POST['strike_id'] : "")));
 $msg=FALSE;
 
+if ($adjud_id == "undefined") {
+	// Bad value passed in by JS
+	$adjud_id = -1;
+}
 //Add a strike
 if($action == 'ADD'){
         $fail=0;

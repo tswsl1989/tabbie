@@ -28,6 +28,6 @@ mysql_connect($database_host, $database_user, $database_password);
 mysql_select_db($database_name);
 mysql_query("SET NAMES 'utf8' COLLATE 'utf8_unicode_ci'");
 global $DBconn;
-$DBConn = &ADONewConnection("mysqli://$database_user:$database_password@$database_host/$database_name");
+$DBConn = ADONewConnection("mysqli://$database_user:$database_password@$database_host/$database_name");
 $DBConn->SetFetchMode(ADODB_FETCH_ASSOC);
 ?>

@@ -48,4 +48,9 @@ function count_rows($table, $where_clause = "1 = 1") {
     $rc = $result->RecordCount();
     return $rc;
 }
+
+function get_db_error() {
+    global $DBConn;
+    return $DBConn->ErrorMsg();
+}
 ?>

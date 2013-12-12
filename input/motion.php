@@ -55,132 +55,124 @@ if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
 	}
     if ((!$round_no) || (!$motion) || (!$info_check)) $validate=0;
 
-    
+
   }
 
-if ($action=="delete")
-  { 
-        //Delete Stuff
-        $round_no=trim(@$_GET['round_no']);
-        $query="DELETE FROM motions WHERE round_no='$round_no'";
-        $result=mysql_query($query);
+if ($action=="delete") {
+	//Delete Stuff
+	$round_no=trim(@$_GET['round_no']);
+	$query="DELETE FROM motions WHERE round_no=?";
+	try {
+		$result=qp($query, array($round_no));
+	} catch (Exception $e) {
+		$msg[]="There were problems deleting: ".$e->getMessage();
+	}
+	//Check for Error
+	if (!$result) {
+		$msg[]="There were problems deleting : No such record.";
+	}
 
-        //Check for Error
-        if (mysql_affected_rows()==0)
-      $msg[]="There were problems deleting : No such record.";
-    
-    //Change Mode to Display
-    $action="display";    
-  }
+	//Change Mode to Display
+	$action="display";
+}
 
-if ($actionhidden=="add")
-  {
-    //Check Validation
-    if ($validate==1)
-      {        
-        //Add Stuff to Database
-        
-        $query = "INSERT INTO motions (round_no, motion, info_slide, info) ";
-        $query.= " VALUES('$round_no', '$motion', '$info_slide', '$info')";
-        $result=mysql_query($query);
-
-        if (!$result) //Error
-      {
-            $msg[]="There was some problem adding : ". mysql_error(); //Display Msg
-            $action="add";
-      }
-
-        else
-      {
-            //If Okay Change Mode to Display
-            $msg[]="Record Successfully Added";
-            $action="display";
-      }
-      }
-    else
-      {
-        //Back to Add Mode
-        $action="add";
-      }
-  }
+if ($actionhidden=="add") {
+	//Check Validation
+	if ($validate==1) {
+		//Add Stuff to Database
+		$query = "INSERT INTO motions (round_no, motion, info_slide, info) VALUES(?, ?, ?, ?)";
+		try {
+			$result=qp($query, array($round_no, $motion, $info_slide, $info));
+		} catch (Exception $e) {
+			$msg[]="There was some problem adding: ".$e->getMessage(); //Display Msg
+			$action="add";
+			$validate=0;
+		}
+		if ($validate==1) {
+			//If Okay Change Mode to Display
+			$msg[]="Record Successfully Added";
+			$action="display";
+		}
+	} else {
+		//Back to Add Mode
+		$action="add";
+	}
+}
 
 
-if ($actionhidden=="edit")
-  {
-    
-    $round_no=trim(@$_POST['round_no']);
-    //Check Validation
-    if ($validate==1)
-      {
-        //Edit Stuff in Database
-        $query = "UPDATE motions ";
-        $query.= "SET motion='$motion', info_slide='$info_slide', info='$info' ";
-        $query.= "WHERE round_no='$round_no'";
-        $result=mysql_query($query);
-        
-        //If not okay raise error else change mode to display
-        if (!$result)
-      {
-            //Raise Error
-            $msg[]="There were some problems editing : ".mysql_error();
-            $action="edit";
-      }
-        else
-      {
-            //All okay
-            $msg[]="Record edited successfully.";
-            $action="display";
-      }
-      }
+if ($actionhidden=="edit") {
 
-    else
-      {
-        //Back to Edit Mode
-        $action="edit";
-      }
-  }
+	$round_no=trim(@$_POST['round_no']);
+	//Check Validation
+	if ($validate==1) {
+		//Edit Stuff in Database
+		$query = "UPDATE motions SET motion=?, info_slide=?, info=? WHERE round_no=?";
+		$result = false;
+		try {
+			$result=qp($query, array($motion, $info_slide, $info, $round_no));
+		} catch (Exception $e) {
+			$msg[] = "An error was encountered: ".$e->getMessage();
+			$result=false;
+		}
+		//If not okay raise error else change mode to display
+		if (!$result) {
+			//Raise Error
+			$msg[]="There were some problems editing : ".get_db_error();
+			$action="edit";
+		} else {
+			//All okay
+			$msg[]="Record edited successfully.";
+			$action="display";
+		}
+	} else {
+		//Back to Edit Mode
+		$action="edit";
+	}
+}
 
-if ($action=="edit")
-  {
-   
-    if ($actionhidden!="edit")
-      {
-        $round_no=trim(@$_GET['round_no']); 
+if ($action=="edit") {
 
-        //Extract values from database
-        $query="SELECT * FROM motions WHERE round_no='$round_no'";
-        $result=mysql_query($query);
-        if (mysql_num_rows($result)==0)
-      {
-            $msg[]="There were some problems editing : Record Not Found ";
-            $action="display";
-      }
-        else
-      {
-            $row=mysql_fetch_assoc($result);
-            $round_no=$row['round_no'];
-            $motion=$row['motion'];
+	if ($actionhidden!="edit") {
+		$round_no=trim(@$_GET['round_no']);
+
+		//Extract values from database
+		$query="SELECT * FROM motions WHERE round_no=?";
+		$result=false;
+		try {
+			$result=qp($query, array($round_no));
+		} catch (Exception $e) {
+			$msg[] = "An error was encountered: ".$e->getMessage();
+			$result=false;
+		}
+
+		if (!$result) {
+			$msg[]="There were some problems editing : Record Not Found ";
+			$action="display";
+		} else {
+			$row=$result->FetchRow();
+			$round_no=$row['round_no'];
+			$motion=$row['motion'];
 			$info_slide=$row['info_slide'];
 			$info=$row['info'];
-      }
-      }   
-    
-  }
+		}
+	}
+
+}
 
 
 switch($action)
   {
-  case "add" : 
+  case "add" :
     $title.=": Add";
     break;
-  case "edit" :   
+  case "edit" :
     $title.=": Edit";
     break;
-                   
+
   case "display" :
     $title.=": Display";
     break;
-                    
+
   case "delete"  :
     $title.=": Display";
     break;
@@ -193,22 +185,22 @@ switch($action)
 echo "<h2>$title</h2>\n"; //titlek
 
 if(isset($msg)) displayMessagesUL(@$msg);
-   
+
 //Check for Display
 if ($action=="display")
   {
     //Display Data in Tabular Format
-    $result=mysql_query("SELECT * FROM motions ORDER BY round_no");
+    $result=q("SELECT * FROM motions ORDER BY round_no");
 
-    if (mysql_num_rows($result)==0)
+    if (count_rows($result)==0)
       {
-    //Print Empty Message    
+    //Print Empty Message
     echo "<h3>No Motions Found.</h3>";
     echo "<h3><a href=\"input.php?moduletype=motion&amp;action=add\">Add New</a></h3>";
       }
     else
       {
-                
+
     //Print Table
     ?>
 
@@ -227,7 +219,7 @@ if ($action=="display")
     <td class="editdel"><a href="input.php?moduletype=motion&amp;action=edit&amp;round_no=<?echo $row['round_no'];?>">Edit</a></td>
 	<td class="editdel"><a href="input.php?moduletype=motion&amp;action=delete&amp;round_no=<?echo $row['round_no'];?>">Delete</a></td>
       </tr>
-          <?} //Do Not Remove  ?> 
+          <?} //Do Not Remove  ?>
     </table>
 
   <?

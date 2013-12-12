@@ -63,11 +63,9 @@ $roundno=@$_GET['roundno'];
 <?php
 	// Get the motion
 	$min = $roundno - 1;
-	$motion_query = "SELECT motion, info_slide, info ";
-	$motion_query .= "FROM motions ";
-	$motion_query .= "WHERE round_no=$roundno";
-	$motion_result = mysql_query($motion_query);
-	$row = mysql_fetch_array( $motion_result );
+	$motion_query = "SELECT motion, info_slide, info FROM motions WHERE round_no=?";
+	$motion_result = qp($motion_query, array($roundno));
+	$row = $motion_result->FetchRow();
 	if( $row['info_slide'] == "Y" )
 	{
 		$row['info'] = str_replace("\r", "<br />", $row['info']);

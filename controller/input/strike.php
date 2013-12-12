@@ -41,7 +41,7 @@ if ($adjud_id == "undefined") {
 if($action == 'ADD'){
         $fail=0;
         if($univ_id && $team_id) {
-        	if (!mysql_query("SELECT `team_code` FROM team WHERE team_id=".$team_id.";")) {
+                if (!qp("SELECT `team_code` FROM team WHERE team_id=?", array($team_id))) {
         		//Error condition: client requested non-existent team.
         		header('HTTP/1.1 403 Forbidden');
         		$msg='Team id does not exist.'.mysql_error();

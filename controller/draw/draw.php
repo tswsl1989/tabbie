@@ -52,9 +52,9 @@ if(!($action=="CHECKSTRIKE")){
 }
 
 //Check for strikes
-$query = "SELECT og, oo, cg, co FROM temp_draw_round_$round WHERE `debate_id` = '$debate_id'";
-if($result=mysql_query($query)){
-	$row=mysql_fetch_assoc($result);
+$query = "SELECT og, oo, cg, co FROM temp_draw_round_$round WHERE `debate_id` = ?";
+if($result=qp($query, array($debate_id))){
+	$row=$result->FetchRow();
 	$ogid=$row['og'];
 	$ooid=$row['oo'];
 	$cgid=$row['cg'];

@@ -44,16 +44,16 @@ if($action!="ACTIVETOGGLE"){
 	die();
 }
 
-$query="SELECT `adjud_id`, `active` FROM `adjudicator` WHERE `adjud_id` ='$adjud_id'";
-$result=mysql_query($query);
-if(mysql_num_rows($result)!=1){
+$query="SELECT `adjud_id`, `active` FROM `adjudicator` WHERE `adjud_id` =?";
+$result=qp($query, array($adjud_id));
+if($result->RecordCount()!=1){
 	//Adjud_id was not unique: risk working on the wrong adjudicator
 	header('HTTP/1.1 403 Forbidden');
 	echo('Adjud_id did not specify a unique adjudicator ($adjud_id)');
 	die();
 }
 
-$adjudicator=mysql_fetch_assoc($result);
+$adjudicator=$result->FetchRow();
 
 if($adjudicator['active']=="Y"){
 	$active="N";

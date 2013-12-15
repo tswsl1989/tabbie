@@ -24,7 +24,7 @@
 
 
 
-error_reporting(E_ALL);
+error_reporting(~E_ALL);
 
 /** Set the include path for PHPPowerPoint's subclasses (!) */
 set_include_path(get_include_path() . PATH_SEPARATOR . "includes/phppowerpoint/");
@@ -161,11 +161,10 @@ if(isset($generate)){
 	//Put in the room data (!)
 	$query = "SELECT debate_id AS debate_id, T1.team_code AS ogt, T2.team_code AS oot, T3.team_code AS cgt, T4.team_code AS cot, U1.univ_code AS ogtc, U2.univ_code AS ootc, U3.univ_code AS cgtc, U4.univ_code AS cotc, venue_name, venue_location ";
 	$query .= "FROM draws D, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4,venue ";
-	$query .= "WHERE D.round_no=$roundno AND og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND D.venue_id=venue.venue_id ORDER BY venue_name ASC"; 
-	$result=mysql_query($query);
-	echo(mysql_error());
+	$query .= "WHERE D.round_no=? AND og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND D.venue_id=venue.venue_id ORDER BY venue_name ASC"; 
+	$result=qp($query, array($roundno));
 	if ($roomsperslide == 1){
-		while ($row_debate=mysql_fetch_assoc($result))
+		while ($row_debate=$result->FetchRow())
 		{
 			//Create a new slide
 			$slide=$presentation->createSlide();
@@ -262,9 +261,9 @@ if(isset($generate)){
 	add_text_element($currentSlide, "The Motion", 700, 300, 325, 520, 65);
 	
 	// Info slide, if required
-	$query = "SELECT motion, info, info_slide FROM motions WHERE round_no = $roundno;";
-	$motion=mysql_query($query);
-	$motion=mysql_fetch_assoc($motion);
+	$query = "SELECT motion, info, info_slide FROM motions WHERE round_no = ?;";
+	$motion=qp($query, array($roundno));
+	$motion=$motion->FetchRow();
 	if ($motion['info_slide'] == 'Y') {
 		$currentSlide = $presentation->createSlide();
 		add_text_element($currentSlide, $motion['info'], 930, 720, 10, 80, 30);

@@ -44,16 +44,16 @@ if($action!="ACTIVETOGGLE"){
 	die();
 }
 
-$query="SELECT `team_id`, `active` FROM `team` WHERE `team_id` ='$team_id'";
-$result=mysql_query($query);
-if(mysql_num_rows($result)!=1){
+$query="SELECT `team_id`, `active` FROM `team` WHERE `team_id` =?";
+$result=qp($query, array($team_id));
+if($result->RecordCount()!=1){
 	//Team_id was not unique: risk working on the wrong team
 	header('HTTP/1.1 403 Forbidden');
 	echo('Team_id did not specify a unique adjudicator ($team_id)');
 	die();
 }
 
-$team=mysql_fetch_assoc($result);
+$team=$result->FetchRow();
 
 if($team['active']=="Y"){
 	$active="N";

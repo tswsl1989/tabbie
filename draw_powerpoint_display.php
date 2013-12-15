@@ -68,11 +68,11 @@ $roundno=@$_GET['roundno'];
 	// Get the individual debate details
 	$venue_query = "SELECT d.debate_id AS debate_id, d.og AS ogid, d.oo AS ooid, d.cg AS cgid, d.co AS coid, d.venue_id AS venue_id, venue.venue_name AS venue_name, venue.venue_location AS venue_location, oguniv.univ_code AS og_univ_code, ogteam.team_code AS og_team_code, oouniv.univ_code AS oo_univ_code, ooteam.team_code AS oo_team_code, cguniv.univ_code AS cg_univ_code, cgteam.team_code AS cg_team_code, couniv.univ_code AS co_univ_code, coteam.team_code AS co_team_code ";
 	$venue_query .= "FROM draws AS d, venue AS venue, university AS oguniv, team AS ogteam, university AS oouniv, team AS ooteam, university AS cguniv, team AS cgteam, university AS couniv, team AS coteam ";
-	$venue_query .= "WHERE d.round_no=$roundno AND d.venue_id = venue.venue_id AND ogteam.team_id = d.og AND oguniv.univ_id = ogteam.univ_id AND ooteam.team_id = d.oo AND oouniv.univ_id = ooteam.univ_id AND cgteam.team_id = d.cg AND cguniv.univ_id = cgteam.univ_id AND coteam.team_id = d.co AND couniv.univ_id = coteam.univ_id ";
+	$venue_query .= "WHERE d.round_no=? AND d.venue_id = venue.venue_id AND ogteam.team_id = d.og AND oguniv.univ_id = ogteam.univ_id AND ooteam.team_id = d.oo AND oouniv.univ_id = ooteam.univ_id AND cgteam.team_id = d.cg AND cguniv.univ_id = cgteam.univ_id AND coteam.team_id = d.co AND couniv.univ_id = coteam.univ_id ";
 	$venue_query .= "ORDER BY RAND() ";
-	$venue_result = mysql_query($venue_query);
+	$venue_result = qp($venue_query, array($roundno));
 	print mysql_error();
-	while ($venue_row=mysql_fetch_assoc($venue_result))
+	while ($venue_row=$venue_result->FetchRow())
 	{
 		$debate_id = $venue_row['debate_id'];
 echo <<< END

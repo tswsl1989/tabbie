@@ -120,7 +120,7 @@ function results_by_position($round) {
         $current =& $result[$POSITION];
         $db_result = q("SELECT $POSITION FROM draws WHERE round_no=$round");
         while ($row = $db_result->FetchRow()) {
-            $team_id = $row[0];
+            $team_id = $row[$POSITION];
             foreach ($RANKINGS as $RANKING) {
                 $team_on_ranking = __team_on_ranking($round, $team_id, $RANKING);
 				if(isset($current[$RANKING])){ //avoid throwing error when [$RANKING] not yet index

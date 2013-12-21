@@ -192,7 +192,7 @@ if ($action=="display")
     //Display Data in Tabular Format
     $result=q("SELECT * FROM motions ORDER BY round_no");
 
-    if (count_rows($result)==0)
+    if ($result->RecordCount()==0)
       {
     //Print Empty Message
     echo "<h3>No Motions Found.</h3>";
@@ -204,12 +204,12 @@ if ($action=="display")
     //Print Table
     ?>
 
-      <h3>Total No. of Motions : <?echo mysql_num_rows($result)?></h3>
+      <h3>Total No. of Motions : <?echo $result->RecordCount()?></h3>
 
          <?echo "<h3><a href=\"input.php?moduletype=motion&amp;action=add\">Add New</a></h3>";?>
       <table>
          <tr><th>Round Number</th><th>Motion</th><th>Info Slide</th><th>Text</th></tr>
-         <? while($row=mysql_fetch_assoc($result)) { ?>
+         <? while($row=$result->FetchRow()) { ?>
 
       <tr>
         <td><?echo $row['round_no'];?></td>

@@ -84,9 +84,7 @@ if (($action=="draw") && ($validate == 1)) {
     $teams = get_teams_positions_points(get_num_rounds());
     
     require_once("draw/algorithms/silver_line.php");
-    require_once("draw/algorithms/ntu_core.php");
 
-    //$debates = draw_ntu_core($teams, $nextround); - THIS IS NOW DEPRECATED
     $debates = draw_silver_line($teams, $nextround);
 
     if (! validate_draw($teams, $debates))

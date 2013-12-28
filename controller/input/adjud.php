@@ -24,11 +24,9 @@
 set_include_path(get_include_path() . PATH_SEPARATOR . "../../");
 require_once("includes/backend.php");
 
-assert_options(ASSERT_BAIL, 1);
-
 //Information from the client
-$adjud_id = htmlspecialchars(trim($_POST['adjud_id']));
-$action = htmlspecialchars(trim($_POST['action']));
+$adjud_id = trim($_POST['adjud_id']);
+$action = trim($_POST['action']);
 
 if(!($adjud_id && $action)){
 	//Error condition: client requested non-existent team.
@@ -40,7 +38,7 @@ if(!($adjud_id && $action)){
 if($action!="ACTIVETOGGLE"){
 	//Error condition: client requested non-existent team.
 	header('HTTP/1.1 403 Forbidden');
-	echo('Action not valid ($action)');
+	echo 'Action not valid ('.$action.')';
 	die();
 }
 
@@ -63,10 +61,17 @@ if($adjudicator['active']=="N"){
 }
 
 //$active needs to be a valid value before we put it into the DB!
-assert("(\"$active\" == \"Y\") || (\"$active\" == \"N\")");
+if (!(($active == "Y") || ($active == "N"))) {
+	header("HTTP/1.1 403 Forbidden");
+	echo "Active state invalid";
+	die();
+}
 
-$query = "UPDATE `adjudicator` SET `active` = '$active' WHERE `adjud_id` = $adjud_id";
-$result=mysql_query($query);
-echo(mysql_error());
+$query = "UPDATE `adjudicator` SET `active` = ? WHERE `adjud_id` = ?";
+$result=qp($query, array($active, $adjud_id));
+if (!$result) {
+	echo $DBCONN->ErrorMsg();
+}
+
 echo(mysql_to_xml("SELECT `adjud_id`, `active` FROM `adjudicator` WHERE `adjud_id`='$adjud_id'","adjudicator"));
 ?>

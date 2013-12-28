@@ -24,11 +24,9 @@
 set_include_path(get_include_path() . PATH_SEPARATOR . "../../");
 require_once("includes/backend.php");
 
-assert_options(ASSERT_BAIL, 1);
-
 //Information from the client
-$team_id = htmlspecialchars(trim($_POST['team_id']));
-$action = htmlspecialchars(trim($_POST['action']));
+$team_id = trim($_POST['team_id']);
+$action = trim($_POST['action']);
 
 if(!($team_id && $action)){
 	//Error condition: client requested non-existent team.
@@ -44,7 +42,7 @@ if($action!="ACTIVETOGGLE"){
 	die();
 }
 
-$query="SELECT `team_id`, `active` FROM `team` WHERE `team_id` =?";
+$query="SELECT team_id, active FROM team WHERE team_id =?";
 $result=qp($query, array($team_id));
 if($result->RecordCount()!=1){
 	//Team_id was not unique: risk working on the wrong team
@@ -65,8 +63,10 @@ if($team['active']=="N"){
 //$active needs to be a valid value before we put it into the DB!
 assert("(\"$active\" == \"Y\") || (\"$active\" == \"N\")");
 
-$query = "UPDATE `team` SET `active` = '$active' WHERE `team_id` = $team_id";
-$result=mysql_query($query);
-echo(mysql_error());
+$query = "UPDATE team SET active = ? WHERE team_id = ?";
+$result=qp($query, array($active, $team_id));
+if (!$result) {
+	echo $DBConn->ErrorMsg();
+}
 echo(mysql_to_xml("SELECT `team_id`, `active` FROM `team` WHERE `team_id`='$team_id'","team"));
 ?>

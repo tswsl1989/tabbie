@@ -49,8 +49,7 @@ if(array_key_exists("novice", @$_POST)) $recordednovice=strtoupper(trim(@$_POST[
 if(array_key_exists("actionhidden", @$_POST)) $actionhidden=trim(@$_POST['actionhidden']); //Hidden form variable to indicate action
 
 
-if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
-  {
+if (($actionhidden=="add")||($actionhidden=="edit")) { //do validation
     $validate=1;
     //Check if they are empty and set the validate flag accordingly
 
@@ -65,9 +64,8 @@ if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
 	if(($speaker1esl=="ESL")&&($speaker2esl=="EFL")) $esl="ESL"; else  $esl="N";
 	if(($speaker1esl=="EFL")&&($speaker2esl=="ESL")) $esl="ESL"; else  $esl="N";
 	if(($speaker1esl=="ESL")&&($speaker2esl=="ESL")) $esl="ESL"; else  $esl="N";
-	
-	if(($speaker1esl=="N")||($speaker2esl=="N"))
-	{
+
+	if(($speaker1esl=="N")||($speaker2esl=="N")) {
 		$esl="N";
 	} else {
 		if (($speaker1esl=="ESL")||($speaker2esl=="ESL")){
@@ -76,7 +74,6 @@ if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
 			$esl="EFL";
 		}
 	}
-	
 	if (($speaker1novice=="Y") && ($speaker2novice=="Y")) {
 		$novice="Y";
 	} else if (($speaker1novice=="Y")||($speaker2novice=="Y")) {
@@ -85,9 +82,7 @@ if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
 		$novice="N";
 	}
 
-	
-	if($esl!=$recordedesl)
-	{
+	if($esl!=$recordedesl) {
 		$messagestr="Team restrictive language status automatically set to: ";
 		if($esl=="ESL") $messagestr.="ESL";
 		if($esl=="EFL") $messagestr.="EFL";
@@ -109,14 +104,12 @@ if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
 		$msg[]=$messagestr;
 	}
 
-    if ((!$active=='Y') && (!$active=='N')) 
-      {
+    if ((!$active=='Y') && (!$active=='N')) {
         $msg[]="Active Status not set properly.";
         $validate=0;
-      }
-   
-    if ((!$composite=='Y') && (!$composite=='N')) 
-      {
+    }
+
+    if ((!$composite=='Y') && (!$composite=='N')) {
         $msg[]="Composite Status not set properly.";
         $validate=0;
       }
@@ -135,298 +128,257 @@ if ($action=="delete") {
     $action="display";
  }
 
-if ($actionhidden=="add")
-  {
+if ($actionhidden=="add") {
     //Check Validation
-    if ($validate==1)
-      {        
+    if ($validate==1) {
         //Insert Team First
-        $query1 = "INSERT INTO team(univ_id, team_code, esl, novice, active, composite) ";
-        $query1.= "VALUES('$univ_id','$team_code','$esl','$novice','$active','$composite')";
-        $result1=mysql_query($query1);
+	$query1 = "INSERT INTO team(univ_id, team_code, esl, novice, active, composite) VALUES(?, ?, ?, ?, ?, ?)";
+	$result1=qp($query1, array($univ_id, $team_code, $esl, $novice, $active, $composite));
 
-        if ($result1)
-      {
-        $queryteam="SELECT team_id FROM team WHERE univ_id='$univ_id' AND team_code='$team_code'";
-        $resultteam=mysql_query($queryteam);
+        if ($result1) {
+		$queryteam="SELECT team_id FROM team WHERE univ_id=? AND team_code=?";
+		$resultteam=qp($queryteam, array($univ_id, $team_code));
 
-        if ($resultteam) 
-          {
-        $row=mysql_fetch_assoc($resultteam);
-        $team_id=$row['team_id'];
-        $query2 = "INSERT INTO speaker(team_id, speaker_name, speaker_esl, speaker_novice) ";
-        $query2.= "VALUES('$team_id','$speaker1', '$speaker1esl', '$speaker1novice'),('$team_id','$speaker2', '$speaker2esl','$speaker2novice')";
-        $result2=mysql_query($query2);
+		if ($resultteam) {
+			$row=$resultteam->FetchRow();
+			$team_id=$row['team_id'];
+			$query2 = "INSERT INTO speaker(team_id, speaker_name, speaker_esl, speaker_novice) VALUES (?, ?, ?, ?), (?, ?, ?, ?)";
+			$result2 = qp($query2, array($team_id, $speaker1, $speaker1esl, $speaker1novice, $team_id, $speaker2, $speaker2esl, $speaker2novice));
 
-        if (!$result2)
-          {
-            //Error. Go to display
-            unset($msg);
-            $msg[]="Serious Error : Cannot Insert Speakers. ".mysql_error();
-            $action="display";
-          }
-        else
-          {
-            $msg[]="Added record successfully";
-          }
-          }
-        else
-          {
-        //Error Finding Team. Go to display
-        unset($msg);
-        $msg[]="Serious Error : Cannot Find Team.".mysql_error();
-        $action="display";
-          }
-      }
-
-        else
-      {
+			if (!$result2) {
+				//Error. Go to display
+				unset($msg);
+				$msg[]="Serious Error : Cannot Insert Speakers. ".$DBConn->ErrorMsg();
+				$action="display";
+			} else {
+				$msg[]="Added record successfully";
+			}
+		} else {
+			//Error Finding Team. Go to display
+			unset($msg);
+			$msg[]="Serious Error : Cannot Find Team.".$DBConn->ErrorMsg();
+			$action="display";
+		}
+	} else {
             //Error Adding Team. Show error
-            $msg[]="Error during insert : ".mysql_error();
+            $msg[]="Error during insert : ".$DBConn->ErrorMsg();
             $action="add";
-      }
+	}
 
-      }  
-       
-    else
-      {
-        //Back to Add Mode
-        $action="add";
-      }
-  }
+   } else {
+	//Back to Add Mode
+	$action="add";
+   }
+}
 
 
-if ($actionhidden=="edit")
-  {
-    
-    $team_id=trim(@$_POST['team_id']);
-    $speaker1id=trim(@$_POST['speaker1id']);
-    $speaker2id=trim(@$_POST['speaker2id']);
-    //Check Validation
-    if ($validate==1)
-      {
-        
-        //Edit Team
-        $query1 = "UPDATE team ";
-        $query1.= "SET univ_id='$univ_id', team_code='$team_code', esl='$esl', novice='$novice', active='$active', composite='$composite'";
-        $query1.= "WHERE team_id='$team_id'";
-        $result1=mysql_query($query1);
-        if (!$result1) 
-      $msg[]="Problems editing Team : ".mysql_error();
-        
-        //Edit Speaker 1
-        $query2 = "UPDATE speaker ";
-        $query2.= "SET speaker_name='$speaker1', speaker_esl='$speaker1esl', speaker_novice='$speaker1novice' ";
-        $query2.= "WHERE speaker_id='$speaker1id'";
-        $result2=mysql_query($query2);
-        if (!$result2)
-      $msg[]="Problems editing Speaker 1 : ".mysql_error();
+if ($actionhidden=="edit") {
+	$team_id=trim(@$_POST['team_id']);
+	$speaker1id=trim(@$_POST['speaker1id']);
+	$speaker2id=trim(@$_POST['speaker2id']);
+	//Check Validation
+	if ($validate==1) {
+		$team_record["univ_id"] = $univ_id;
+		$team_record["team_code"] = $team_code;
+		$team_record["esl"] = $esl;
+		$team_record["novice"] = $novice;
+		$team_record["active"] = $active;
+		$team_record["composite"] = $composite;
+		$team_record["team_id"] = $team_id;
+		$result1=$DBConn->Replace("team", $team_record, "team_id", true);
+		if (!$result1) {
+		      $msg[]="Problems editing Team : ".$DBConn->ErrorMsg();
+		}
 
-        //Edit Speaker 2
-        $query3 = "UPDATE speaker ";
-        $query3.= "SET speaker_name='$speaker2', speaker_esl='$speaker2esl', speaker_novice='$speaker2novice' ";
-        $query3.= "WHERE speaker_id='$speaker2id'";
-	$result3=mysql_query($query3);
-        if (!$result3)
-      $msg[]="Problems editing Speaker 2 : ".mysql_error();
+		//Edit Speaker 1
+		$speaker1_record["speaker_id"] = $speaker1id;
+		$speaker1_record["speaker_name"] = $speaker1;
+		$speaker1_record["speaker_esl"] = $speaker1esl;
+		$speaker1_record["speaker_novice"] = $speaker1novice;
 
-        if ((!$result1) || (!$result2) || (!$result3))
-      {    
-            $action="edit";
-      }
-    else
-      {
-        $msg[]="Record Edited Successfully.";
-      }
-      }
+		$result2=$DBConn->Replace("speaker", $speaker1_record, "speaker_id", true);
+		if (!$result2) {
+			$msg[]="Problems editing Speaker 1 : ".$DBConn->ErrorMsg();
+		}
 
-    else
-      {
-        //Back to Edit Mode
-        $action="edit";
-      }
-  }
+		//Edit Speaker 2
+		$speaker2_record["speaker_id"] = $speaker2id;
+		$speaker2_record["speaker_name"] = $speaker2;
+		$speaker2_record["speaker_esl"] = $speaker2esl;
+		$speaker2_record["speaker_novice"] = $speaker2novice;
 
-if ($action=="edit")
-  {
-    //Check for Team ID. Issue Error and switch to display if missing or not found
-    if ($actionhidden!="edit")
-      {
-        $team_id=trim(@$_GET['team_id']); //Get team_id from querystring
+		$result3=$DBConn->Replace("speaker", $speaker2_record, "speaker_id", true);
+		if (!$result3) {
+			$msg[]="Problems editing Speaker 2 : ".$DBConn->ErrorMsg();
+		}
 
-        //Extract values from database
-        $result=mysql_query("SELECT * FROM team WHERE team_id='$team_id'");
-        if (mysql_num_rows($result)==0)
-      {
-            unset($msg); //remove possible validation msgs
-            $msg[]="Problems accessing team : Record Not Found.";
-            $action="display";
-            
-      }
+		if ((!$result1) || (!$result2) || (!$result3)) {
+			$action="edit";
+		} else {
+			$msg[]="Record Edited Successfully.";
+		}
+	} else {
+		//Back to Edit Mode
+		$action="edit";
+	}
+}
 
-        else
-      {
-            $row=mysql_fetch_assoc($result);
-            $univ_id=$row['univ_id'];
-            $team_code=$row['team_code'];
-	    $esl=$row['esl'];
-	    $novice=$row['novice'];
-            $active=$row['active'];
-            $composite=$row['composite'];
+if ($action=="edit") {
+	//Check for Team ID. Issue Error and switch to display if missing or not found
+	if ($actionhidden!="edit") {
+		$team_id=trim(@$_GET['team_id']); //Get team_id from querystring
 
-            $result=mysql_query("SELECT * FROM speaker WHERE team_id='$team_id' ORDER BY speaker_id ASC");
-            if (mysql_num_rows($result)!=2)
-          {
-                unset($msg);//remove possible validation msgs
-                $msg[]="Problems accessing speaker : Record Not Found.";
-          }
+		//Extract values from database
+		$result=qp("SELECT * FROM team WHERE team_id=?", array($team_id));
+		if ($result->RecordCount()==0) {
+			unset($msg); //remove possible validation msgs
+			$msg[]="Problems accessing team : Record Not Found.";
+			$action="display";
+		} else {
+			$row=$result->FetchRow();
+			$univ_id=$row['univ_id'];
+			$team_code=$row['team_code'];
+			$esl=$row['esl'];
+			$novice=$row['novice'];
+			$active=$row['active'];
+			$composite=$row['composite'];
 
-            $row1=mysql_fetch_assoc($result);
-            $row2=mysql_fetch_assoc($result);
-            $speaker1id=$row1['speaker_id'];
-            $speaker1=$row1['speaker_name'];
-	    $speaker1esl=$row1['speaker_esl'];
-	    $speaker1novice=$row1['speaker_novice'];
-            $speaker2id=$row2['speaker_id'];
-            $speaker2=$row2['speaker_name'];
-	    $speaker2esl=$row2['speaker_esl'];
-	    $speaker2novice=$row2['speaker_novice'];
+			$result=qp("SELECT * FROM speaker WHERE team_id=? ORDER BY speaker_id ASC", array($team_id));
+			if ($result->RecordCount()!=2) {
+				unset($msg);//remove possible validation msgs
+				$msg[]="Problems accessing speaker : Record Not Found.";
+			}
 
-      }
-      
-      }   
-    
-  }
+			$row1=$result->FetchRow();
+			$row2=$result->FetchRow();
+			$speaker1id=$row1['speaker_id'];
+			$speaker1=$row1['speaker_name'];
+			$speaker1esl=$row1['speaker_esl'];
+			$speaker1novice=$row1['speaker_novice'];
+			$speaker2id=$row2['speaker_id'];
+			$speaker2=$row2['speaker_name'];
+			$speaker2esl=$row2['speaker_esl'];
+			$speaker2novice=$row2['speaker_novice'];
+		}
+	}
+
+}
 
 
-switch($action)
-  {
-  case "add" : 
-    $title.=": Add";
-    break;
-  case "edit" :   
-    $title.=": Edit";
-    break;
-                   
-  case "display" :
-    $title.=": Display";
-    break;
-                    
-  case "delete"  :
-    $title.=": Display";
-    break;
-  default :
-    $title=": Display";
-    $action="display";
-                    
-                    
-  }
-
+switch($action) {
+case "add":
+	$title.=": Add";
+	break;
+case "edit":
+	$title.=": Edit";
+	break;
+case "display":
+	$title.=": Display";
+	break;
+case "delete":
+	$title.=": Display";
+	break;
+default:
+	$title=": Display";
+	$action="display";
+}
 
 echo "<h2>$title</h2>\n"; //title
 
-if(isset($msg)) displayMessagesUL(@$msg);
-   
+if(isset($msg)) {
+	displayMessagesUL(@$msg);
+}
+
 //Check for Display
-if ($action=="display")
-  {
-    //Display Data in Tabular Format
-    $query = "SELECT T.team_id, univ_code, team_code, univ_name, S1.speaker_name AS speaker1, S2.speaker_name AS speaker2, S1.speaker_esl AS speaker1esl, S2.speaker_esl AS speaker2esl, esl, S1.speaker_novice as speaker1novice, S2.speaker_novice as speaker2novice, novice, active, composite ";
-    $query.= "FROM university AS U, team AS T, speaker AS S1, speaker AS S2 ";
-    $query.= "WHERE T.univ_id=U.univ_id AND S1.team_id=T.team_id AND S2.team_id=T.team_id AND S1.speaker_id < S2.speaker_id ";
+if ($action=="display") {
+	//Display Data in Tabular Format
+	$query = "SELECT T.team_id, univ_code, team_code, univ_name, S1.speaker_name AS speaker1, S2.speaker_name AS speaker2, S1.speaker_esl AS speaker1esl, S2.speaker_esl AS speaker2esl, esl, S1.speaker_novice as speaker1novice, S2.speaker_novice as speaker2novice, novice, active, composite ";
+	$query.= "FROM university AS U, team AS T, speaker AS S1, speaker AS S2 ";
+	$query.= "WHERE T.univ_id=U.univ_id AND S1.team_id=T.team_id AND S2.team_id=T.team_id AND S1.speaker_id < S2.speaker_id ";
 
-    $active_query = $query . " AND T.ACTIVE = 'Y' ";
-    $query.= "ORDER BY univ_name, team_code ";
-    $result=mysql_query($query);
-    $active_result=mysql_query($active_query);
+	$active_query = $query . " AND T.ACTIVE = 'Y' ";
+	$orderby= "ORDER BY univ_name, team_code ";
+	$result=q($query.$orderby);
+	$active_result=q($active_query.$orderby);
 
-    if (mysql_num_rows($result)==0)
-      {
-    //Print Empty Message    
-    echo "<h3>No Teams Found.</h3>\n";
-    echo "<h3><a href=\"input.php?moduletype=team&amp;action=add\">Add New</a></h3>";
-      }
-    else
-      {
+	if ($result->RecordCount()==0) {
+		//Print Empty Message
+		echo "<h3>No Teams Found.</h3>\n";
+		echo "<h3><a href=\"input.php?moduletype=team&amp;action=add\">Add New</a></h3>";
+	} else {
+		//Check whether to display Delete Button
+		$showdeleteresult=get_num_rounds();
 
-    //Check whether to display Delete Button
-    $query="SHOW  TABLES  LIKE  '%_round_%'";
-    $showdeleteresult=mysql_query($query);
+		if ($showdeleteresult!=0) {
+			$showdelete=0;
+		} else {
+			$showdelete=1;
+		}
 
-    if (mysql_num_rows($showdeleteresult)!=0)
-      $showdelete=0;
-    else
-      $showdelete=1;
+		//Print Table
+		echo "<h3>Total No. of Teams : <span id=\"totalcount\">".$result->RecordCount()."</span> (<span id=\"activecount\">".$active_result->RecordCount()."</span>)</h3>\n";
+		echo "<h3><a href=\"input.php?moduletype=team&amp;action=add\">Add New</a></h3>\n";
+		echo <<<EndHeader
+		<table>
+		<tr>
+			<th>Team</th>
+			<th>University</th>
+			<th>Speaker 1</th>
+			<th>Speaker 2</th>
+			<th>S1 RLS</th>
+			<th>S2 RLS</th>
+			<th>Team RLS</th>
+			<th>S1 Novice?</th>
+			<th>S2 Novice?</th>
+			<th>Novice Team?</th>
+			<th>Active(Y/N)</th>
+			<th>Composite(Y/N)</th>
+		</tr>
+EndHeader;
+		while($row=$result->FetchRow()) {
+			echo "<tr ".($row['active']=='N' ? "class=\"inactive\"" : "") .">\n";
+			echo "\t<td>".$row['univ_code']." ".$row['team_code']."</td>\n";
+			echo "\t<td>".$row['univ_name']."</td>\n";
+			echo "\t<td>".$row['speaker1']."</td>\n";
+			echo "\t<td>".$row['speaker2']."</td>\n";
+			echo "\t<td>".$row['speaker1esl']."</td>\n";
+			echo "\t<td>".$row['speaker2esl']."</td>\n";
+			echo "\t<td>".$row['esl']."</td>\n";
+			echo "\t<td>".$row['speaker1novice']."</td>\n";
+			echo "\t<td>".$row['speaker2novice']."</td>\n";
+			echo "\t<td>".$row['novice']."</td>\n";
+			echo "\t<td class='activetoggle' id='team".$row['team_id']."'>".$row['active']."</td>\n";
+			echo "\t<td>".$row['composite']."</td>\n";
+			echo "\t<td class=\"editdel\"><a href=\"input.php?moduletype=team&amp;action=edit&amp;team_id=".$row['team_id']."\">Edit</a></td>\n";
+			if ($showdelete) {
+			      echo "\t<td class=\"editdel\"><a href=\"input.php?moduletype=team&amp;action=delete&amp;team_id=".$row['team_id']."\" onClick=\"return confirm('Are you sure?');\">Delete</a></td>";
+			}
+			echo "</tr>\n";
+		}
+		echo "</table>\n";
+	}
 
-    //Print Table
-    ?>
-        <h3>Total No. of Teams : <span id="totalcount"><?echo mysql_num_rows($result)?></span> (<span id="activecount"><?echo mysql_num_rows($active_result)?></span>)</h3>          
-      <? echo "<h3><a href=\"input.php?moduletype=team&amp;action=add\">Add New</a></h3>";?>      
-          <table>
-          <tr><th>Team</th><th>University</th><th>Speaker 1</th><th>Speaker 2</th><th>S1 RLS</th><th>S2 RLS</th><th>Team RLS</th><th>S1 Novice?</th><th>S2 Novice?</th><th>Novice Team?</th><th>Active(Y/N)</th><th>Composite(Y/N)</th></tr>
-          <? while($row=mysql_fetch_assoc($result)) { ?>
-
-      <tr <?if ($row['active']=='N') echo "class=\"inactive\""?>>
-        <td><?echo $row['univ_code']." ".$row['team_code'];?></td>
-         <td><?echo $row['univ_name'];?></td>
-         <td><?echo $row['speaker1'] ?></td>
-         <td><?echo $row['speaker2'] ?></td>
-	 <td><?echo $row['speaker1esl'] ?></td>
-	 <td><?echo $row['speaker2esl'] ?></td>
-         <td><?echo $row['esl'];?></td>
-	 <td><?echo $row['speaker1novice'] ?></td>
-	 <td><?echo $row['speaker2novice'] ?></td>
-         <td><?echo $row['novice'];?></td>
-          <td class='activetoggle' id='team<?php echo $row['team_id']?>'><?echo $row['active'];?></td>
-         <td><?echo $row['composite']?></td>
-          <td class="editdel"><a href="input.php?moduletype=team&amp;action=edit&amp;team_id=<?echo $row['team_id'];?>">Edit</a></td>
-         <?
-
-          if ($showdelete)
-               {
-             ?>
-              <td class="editdel"><a href="input.php?moduletype=team&amp;action=delete&amp;team_id=<?echo $row['team_id'];?>" onClick="return confirm('Are you sure?');">Delete</a></td>
-         <?} //Do Not Remove  ?> 
-      </tr>
-
-          <?} //Do Not Remove  ?> 
-    </table>
-
-      <?
-      }
-
-  }
-
- else //Either Add or Edit
-   {
-
+ } else { //Either Add or Edit
      //Display Form and Values
-     ?>
-            
-     <form action="input.php?moduletype=team" method="POST">
-       <input type="hidden" name="actionhidden" value="<?echo $action;?>"/>
-       <input type="hidden" name="team_id" value="<?echo $team_id;?>"/>
-       <input type="hidden" name="speaker1id" value="<?echo $speaker1id;?>"/>
-       <input type="hidden" name="speaker2id" value="<?echo $speaker2id;?>"/>
-	<input type="hidden" name="esl" value="<?echo $esl;?>"/>
-	<input type="hidden" name="novice" value="<?echo $novice;?>"/>
-       <label for="univ_id">University</label>
-       <select id="univ_id" name="univ_id">
-       <?
-       $query="SELECT univ_id,univ_code FROM university ORDER BY univ_code";
-     $result=mysql_query($query);
-     while($row=mysql_fetch_assoc($result))
-       {
-                            
-     if ($row['univ_id']==$univ_id)
-       echo "<option selected value=\"{$row['univ_id']}\">{$row['univ_code']}</option>\n";
-     else
-       echo "<option value=\"{$row['univ_id']}\">{$row['univ_code']}</option>\n";
-       }
-                            
-     ?>
+	echo "<form action=\"input.php?moduletype=team\" method=\"POST\">\n";
+	echo "<input type=\"hidden\" name=\"actionhidden\" value=\"".$action."\"/>\n";
+	echo "<input type=\"hidden\" name=\"team_id\" value=\"".$team_id."\"/>\n";
+	echo "<input type=\"hidden\" name=\"speaker1id\" value=".$speaker1id."\"/>\n";
+	echo "<input type=\"hidden\" name=\"speaker2id\" value=".$speaker2id."\"/>\n";
+	echo "<input type=\"hidden\" name=\"esl\" value=".$esl."\"/>\n";
+	echo "<input type=\"hidden\" name=\"novice\" value=".$novice."\"/>\n";
+	echo "<label for=\"univ_id\">University</label>\n";
+	echo "<select id=\"univ_id\" name=\"univ_id\">\n";
+	$result=q("SELECT univ_id,univ_code FROM university ORDER BY univ_code");
+	while($row=$result->FetchRow()) {
+		if ($row['univ_id']==$univ_id) {
+			echo "<option selected value=\"{$row['univ_id']}\">{$row['univ_code']}</option>\n";
+		} else {
+			echo "<option value=\"{$row['univ_id']}\">{$row['univ_code']}</option>\n";
+		}
+	}
+?>
        </select><br/><br/>
-                
        <label for="team_code">Team Code</label>
        <input type="text" maxlength="50" id="team_code" name="team_code" value="<?echo $team_code;?>"/><br/><br/>
 
@@ -478,7 +430,7 @@ if ($action=="display")
 	<input type="button" value="Cancel" onClick="location.replace('input.php?moduletype=team')"/>
 	</form>
 
-<?
+<?PHP
 
 	}
 ?>

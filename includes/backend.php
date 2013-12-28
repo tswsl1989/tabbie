@@ -432,18 +432,18 @@ function delete_adjud($adjud_id){
 function convert_db_ssesl(){
 	  //for backwards compatability with Tabbie versions <= 1.4.2
 	  // add speaker_esl to speaker and import ESL data from teams
-	    $result = mysql_query("SHOW COLUMNS FROM `speaker` LIKE 'speaker_esl'");
-	    if (!mysql_num_rows($result))
+	    $result = q("SHOW COLUMNS FROM `speaker` LIKE 'speaker_esl'");
+	    if (!$result->RecordCount())
 			{
-				mysql_query("ALTER TABLE  `speaker` ADD  `speaker_esl` CHAR( 3 ) NOT NULL DEFAULT  'N'");
+				q("ALTER TABLE  `speaker` ADD  `speaker_esl` CHAR( 3 ) NOT NULL DEFAULT  'N'");
 				$query="SELECT speaker.speaker_id, team.esl, speaker.speaker_esl FROM  `speaker` INNER JOIN  `team` ON speaker.team_id = team.team_id";
-				$result=mysql_query($query);
-				while ($row = mysql_fetch_array($result)) {
+				$result=q($query);
+				while ($row = $result->FetchRow()) {
 					if ($row[esl]=="Y") set_speaker_esl($row[speaker_id], "Y");
 			    }
 			}
-		mysql_query("ALTER TABLE team CHANGE esl esl VARCHAR (3)");
-		mysql_query("UPDATE team SET esl='ESL' WHERE esl = 'Y'");
+		q("ALTER TABLE team CHANGE esl esl VARCHAR (3)");
+		q("UPDATE team SET esl='ESL' WHERE esl = 'Y'");
 }
 
 function set_speaker_esl($speaker_id, $esl){
@@ -563,7 +563,6 @@ function print_conflicts($adjud_id=0, $negative="<b>None</b>"){
 	$strikelist="";
 	$strikequery="SELECT u.univ_code, t.team_code FROM strikes as s INNER JOIN university AS u on s.univ_id = u.univ_id LEFT JOIN team AS t on s.team_id = t.team_id WHERE s.adjud_id = ?";
 	$strikeresult=qp($strikequery, array($adjud_id));
-	//echo mysql_error();
 	while($strike=$strikeresult->FetchRow()){
 		$strikelist .= $strike['univ_code']." ".$strike['team_code'].", ";
 	}

@@ -21,8 +21,8 @@
  * 
  * end license */
 
-require("includes/display.php");
-require("includes/backend.php");
+require_once("includes/display.php");
+require_once("includes/backend.php");
 
 //Calculate Round Number (should have been already validated)
 $action=@$_GET['action'];

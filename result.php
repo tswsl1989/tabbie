@@ -23,16 +23,13 @@
 
 require("ntu_bridge.php");
 require_once("result/func.php"); //Helper Functions
+require_once("includes/backend.php");
 
 //Get Number of  Rounds Completed
-$query="SELECT param_value FROM settings WHERE param_name='round'";
-$result=mysql_fetch_assoc(mysql_query($query));
-$numrounds=$result['param_value'];
+$numrounds=get_num_rounds();
 
 //Get Number of Rounds result entered for
-$query="SELECT MAX(round_no) FROM results";
-$result=mysql_query($query);
-$numresults=$result ? mysql_fetch_array($result) : array(0 => 0);
+$numresults=get_num_completed_rounds();
 $numresults=$numresults[0];
 
 $nextresult=$numresults+1;

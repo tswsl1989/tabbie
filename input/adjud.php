@@ -78,9 +78,8 @@ if ($actionhidden=="add")
       {
         //Add Stuff to Database
         
-        $query = "INSERT INTO adjudicator(univ_id, adjud_name, ranking, active, status) ";
-        $query.= " VALUES('$univ_id', '$adjud_name', '".intval($ranking)."',  '$active', '$status')";
-        $result=mysql_query($query);
+        $query = "INSERT INTO adjudicator(univ_id, adjud_name, ranking, active, status) VALUES(?, ?, ?, ?, ?)";
+        $result=qp($query, array($univ_id, $adjud_name, intval($ranking), $active, $status));
 
         if (!$result) //Error
       	{
@@ -91,10 +90,10 @@ if ($actionhidden=="add")
             $msg[]="Record Successfully Added";
 
 			//Get the id of the judge we just added. Hacky but would require a pathological error to break
-	        $query = "SELECT adjud_id FROM  adjudicator WHERE univ_id='$univ_id' AND adjud_name='$adjud_name' AND ranking='$ranking' AND active='$active'";
-			$result=mysql_query($query);
-			$row=mysql_fetch_assoc($result);
-		    $adjud_id=$row['adjud_id'];
+	        $query = "SELECT adjud_id FROM  adjudicator WHERE univ_id=? AND adjud_name=? AND ranking=? AND active=?";
+		$result=qp($query, array($univ_id, $adjud_name, $ranking, $active));
+		$row=$result->FetchRow();
+		$adjud_id=$row['adjud_id'];
 			//Strike them from their own institution.
 			add_strike_judge_univ($adjud_id,$univ_id);
 			if(!is_strike_judge_univ($adjud_id, $univ_id)){

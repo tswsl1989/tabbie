@@ -68,21 +68,21 @@ $roundno=@$_GET['roundno'];
         <table>
             <tbody>
 <?php
-$db_result = mysql_query(
+$db_result = q(
     "SELECT T.team_id, univ_code, team_code, univ_name, S1.speaker_name " .
     "AS speaker1, S2.speaker_name AS speaker2, esl, active, composite " .
     "FROM university AS U, team AS T, speaker AS S1, speaker AS S2 " .
     "WHERE T.univ_id=U.univ_id AND S1.team_id=T.team_id AND " . 
     "S2.team_id=T.team_id AND S1.speaker_id<S2.speaker_id AND T.active='Y' " .
     "ORDER BY univ_code, team_code ");
-$row=mysql_fetch_assoc($db_result);
+$row=$db_result->FetchRow();
 //Quick hack to id the first row
 print "<tr><td class='team' id='team1'>{$row['univ_code']} {$row['team_code']}</td>";
 $query = "SELECT debate_id AS debate_id, T1.team_code AS ogt, T2.team_code AS oot, T3.team_code AS cgt, T4.team_code AS cot, U1.univ_code AS ogtc, U2.univ_code AS ootc, U3.univ_code AS cgtc, U4.univ_code AS cotc, venue_name, venue_location ";
 $query .= "FROM draws D, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4,venue ";
-$query .= "WHERE D.round_no=$roundno AND og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND D.venue_id=venue.venue_id AND (og = {$row['team_id']} OR oo = {$row['team_id']} OR cg = {$row['team_id']} OR co = {$row['team_id']})"; 
-$result=mysql_query($query);
-$row_debate=mysql_fetch_assoc($result);
+$query .= "WHERE D.round_no=$roundno AND og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND D.venue_id=venue.venue_id AND (og=? OR oo=? OR cg=? OR co=?)"; 
+$result=qp($query, array($row['team_id'], $row['team_id'], $row['team_id'], $row['team_id']));
+$row_debate=$result->FetchRow();
 
 $debate_id = $row_debate['debate_id'];
 
@@ -119,13 +119,13 @@ echo "</td>\n";
 
 echo "</tr>\n";
     
-while ($row = mysql_fetch_assoc($db_result)) {
+while ($row = $db_result->FetchRow()) {
 	print "<tr><td class='team'>{$row['univ_code']} {$row['team_code']}</td>";
 	$query = "SELECT debate_id AS debate_id, T1.team_code AS ogt, T2.team_code AS oot, T3.team_code AS cgt, T4.team_code AS cot, U1.univ_code AS ogtc, U2.univ_code AS ootc, U3.univ_code AS cgtc, U4.univ_code AS cotc, venue_name, venue_location ";
 	$query .= "FROM draws D, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4,venue ";
-	$query .= "WHERE D.round_no=$roundno AND og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND D.venue_id=venue.venue_id AND (og = {$row['team_id']} OR oo = {$row['team_id']} OR cg = {$row['team_id']} OR co = {$row['team_id']})"; 
-	$result=mysql_query($query);
-	$row_debate=mysql_fetch_assoc($result);
+	$query .= "WHERE D.round_no=$roundno AND og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND D.venue_id=venue.venue_id AND (og = ? OR oo = ? OR cg = ? OR co = ?)"; 
+	$result=qp($query, array($row['team_id'], $row['team_id'], $row['team_id'], $row['team_id']));
+	$row_debate=$result->FetchRow();
 
 	$debate_id = $row_debate['debate_id'];
 	$chfadj = get_chair($roundno, $debate_id);

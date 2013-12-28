@@ -24,13 +24,13 @@ require_once("includes/backend.php");
 require_once("draw/adjudicator/simulated_annealing_config.php");
 require_once("includes/adjudicator.php");
 
-$roundno=@$_GET['roundno'];
+$roundno=(isset($_GET['roundno']) ? $_GET['roundno'] : 0);
 $slide=@$_GET['slide'];
 $norefresh=@$_GET['norefresh'];
-	$query="SELECT COUNT(*) FROM `draws` WHERE round_no=$roundno";
-	$result=mysql_query($query);
-	$row=mysql_fetch_array($result);
-	$maxrooms=$row["COUNT(*)"];
+$query="SELECT COUNT(*) AS count FROM draws WHERE round_no=?";
+$result=qp($query, array($roundno));
+$row=$result->FetchRow();
+$maxrooms=$row["count"];
 $refreshspeed=$scoring_factors["draw_table_speed"];
 
 $intslide=intval($slide);
@@ -65,13 +65,12 @@ if($intslide > $maxrooms) $slide="premotion";
 			echo("<div class='notice'>" . get_motion_for_round($roundno) . "</div>");
 		} else {
 			?><div class='container'><?php
-			$query = "SELECT * FROM `draws` WHERE round_no=$roundno ORDER BY venue_id ASC";
-			$db_result=mysql_query($query);
-			for($i=1;$i<$intslide;$i++)
-			  {
-				$row=mysql_fetch_assoc($db_result);
-			  }	
-			$row = mysql_fetch_array($db_result);
+			$query = "SELECT * FROM draws WHERE round_no=? ORDER BY venue_id ASC";
+			$db_result=qp($query, array($roundno));
+			for($i=1;$i<$intslide;$i++) {
+				$row=$db_result->FetchRow();
+			}
+			$row = $db_result->FetchRow();
 			echo("<div class='venue'>".venue_name($row["venue_id"])."</div>");
 			echo("<div class='prop'>Proposition</div>");
 			echo("<div class='opp'>Opposition</div>");

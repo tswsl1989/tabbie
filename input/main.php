@@ -21,39 +21,41 @@
  * 
  * end license */
 
+require_once("includes/backend.php");
+
 $query="SELECT COUNT(*) AS num FROM venue";
-$result=mysql_query($query);
-$row=mysql_fetch_assoc($result);
+$result=q($query);
+$row=$result->FetchRow();
 $numvenue=$row['num'];
 
 $query="SELECT COUNT(*) AS num FROM venue WHERE active='Y'";
-$result=mysql_query($query);
-$row=mysql_fetch_assoc($result);
+$result=q($query);
+$row=$result->FetchRow();
 $numvenueactive=$row['num'];
 
 $query="SELECT COUNT(*) AS num FROM university";
-$result=mysql_query($query);
-$row=mysql_fetch_assoc($result);
+$result=q($query);
+$row=$result->FetchRow();
 $numuniv=$row['num'];
 
 $query="SELECT COUNT(*) AS num FROM team";
-$result=mysql_query($query);
-$row=mysql_fetch_assoc($result);
+$result=q($query);
+$row=$result->FetchRow();
 $numteam=$row['num'];
 
 $query="SELECT COUNT(*) AS num FROM team WHERE active='Y'";
-$result=mysql_query($query);
-$row=mysql_fetch_assoc($result);
+$result=q($query);
+$row=$result->FetchRow();
 $numteamactive=$row['num'];
 
 $query="SELECT COUNT(*) AS num FROM adjudicator";
-$result=mysql_query($query);
-$row=mysql_fetch_assoc($result);
+$result=q($query);
+$row=$result->FetchRow();
 $numadjud=$row['num'];
 
 $query="SELECT COUNT(*) AS num FROM adjudicator WHERE active='Y'";
-$result=mysql_query($query);
-$row=mysql_fetch_assoc($result);
+$result=q($query);
+$row=$result->FetchRow();
 $numadjudactive=$row['num'];
 
 

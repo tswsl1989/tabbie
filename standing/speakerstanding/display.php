@@ -113,8 +113,8 @@ if ($action == "display")
     if ($list=="novice")
 	    $query.=" WHERE speaker_novice = 'Y'";
 
-    $result = mysql_query($query);
-    $speaker_count=mysql_num_rows($result);
+    $result = q($query);
+    $speaker_count=$result->RecordCount();
     
     //echo "query => $query <BR>";
     //echo "$speaker_count <BR>";
@@ -122,8 +122,7 @@ if ($action == "display")
     // Create array with all the team ids
     $index=0;
     $speaker_array = array();
-    while ($row=mysql_fetch_assoc($result))
-    {
+    while ($row=$result->FetchRow()) {
         $speaker_array[$index] = array("index" => $index++,
                             "speakerid" => $row['speaker_id'],
                             "speakername" => $row['speaker_name'],
@@ -141,8 +140,8 @@ if ($action == "display")
             $name_query = "SELECT team.team_id, univ.univ_code AS univ_code, team.team_code AS team_code ";
             $name_query .= "FROM university AS univ, team AS team ";
             $name_query .= "WHERE team.team_id=$teamid AND team.univ_id = univ.univ_id ";
-            $name_result = mysql_query($name_query);
-            $name_row = mysql_fetch_assoc($name_result);
+            $name_result = q($name_query);
+            $name_row = $name_result->FetchRow();
             $teamname = $name_row['univ_code'].' '.$name_row['team_code'];
             $speaker["teamname"] = $teamname;
             $speaker["team_id"] = $name_row['team_id'];
@@ -163,8 +162,8 @@ if ($action == "display")
         {
             $score_query = "SELECT points FROM speaker_results ";
             $score_query .= "WHERE round_no=$x AND speaker_id = '$speaker_id' ";
-            $score_result = mysql_query($score_query);
-            $score_row = mysql_fetch_assoc($score_result);
+            $score_result = q($score_query);
+            $score_row = $score_result->FetchRow();
             $points += $score_row['points'];
             $speaker_array[$index]["round_$x"] = $score_row['points'];
         }

@@ -21,8 +21,8 @@
  * 
  * end license */
 
-require("includes/display.php");
-require("includes/backend.php");
+require_once("includes/display.php");
+require_once("includes/backend.php");
 
 //Get POST values and validate/convert them
 
@@ -55,22 +55,22 @@ if (($actionhidden=="add")||($actionhidden=="edit")) //do validation
 if ($action=="delete")
   {
     //Check for whether debates have started
-    $query="SHOW  TABLES  LIKE  '%_round_%'";
-    $result=mysql_query($query);
 
-    if (mysql_num_rows($result)!=0)
+    if (get_num_rounds()!=0)
       $msg[]="Debates in progress. Cannot delete now.";
     else
       {    
     
         //Delete Stuff
         $venue_id=trim(@$_GET['venue_id']);
-        $query="DELETE FROM venue WHERE venue_id='$venue_id'";
-        $result=mysql_query($query);
+        $query="DELETE FROM venue WHERE venue_id=?";
+        $result=$DBConn->Execute($query, array($venue_id));
     
         //Check for Error
-        if (mysql_affected_rows()==0)
-      $msg[]="There were problems deleting : No such record.";
+        if (!$result) {
+		$msg[]="There were problems deleting : No such record.";
+		$msg[]=$DBConn->ErrorMsg();
+	}
       }
     
     //Change Mode to Display

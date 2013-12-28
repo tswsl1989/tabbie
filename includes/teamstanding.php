@@ -52,9 +52,9 @@ function __fillUpTeamnames($team_array) {
         $teamid = $cc["teamid"];
         $name_query = "SELECT univ.univ_code AS univ_code, team.team_code AS team_code ";
         $name_query .= "FROM university AS univ, team AS team ";
-        $name_query .= "WHERE team.team_id=$teamid AND team.univ_id = univ.univ_id ";
-        $name_result = mysql_query($name_query);
-        $name_row = mysql_fetch_assoc($name_result);
+        $name_query .= "WHERE team.team_id=? AND team.univ_id = univ.univ_id ";
+        $name_result = qp($name_query, array($teamid));
+        $name_row = $name_result->FetchRow();
         $teamname = $name_row['univ_code'].' '.$name_row['team_code'];
         $cc["teamname"] = $teamname;
         $result[] = $cc;
@@ -68,14 +68,13 @@ function __fillUpLowestBreak($team_array) {
     foreach ($team_array as $cc)
     {
         $teamid = $cc["teamid"];
-        $esl_query = "SELECT `esl` FROM `team` WHERE `team_id`=$teamid";
-        $esl_result = mysql_query($esl_query);
-        $esl_row = mysql_fetch_assoc($esl_result);
+        $esl_result = qp("SELECT esl FROM team WHERE team_id=?", array($teamid));
+        $esl_row = $esl_result->FetchRow();
         $cc["lowest_break"] = $esl_row['esl'];
 		$result[]=$cc;
     }
     return $result;
-	
+
 }
 
 function team_standing_array($roundno, $list="all") {
@@ -84,10 +83,10 @@ function team_standing_array($roundno, $list="all") {
 
     if ($list=="esl")
         $query.=" WHERE esl = 'ESL' OR esl = 'EFL'";
-        
+
     if ($list=="break")
         $query.=" WHERE composite = 'N' ";
-        
+
     if ($list=="eslbreak")
         $query.=" WHERE (esl = 'ESL' OR esl = 'EFL') and composite = 'N' ";
 
@@ -103,80 +102,79 @@ function team_standing_array($roundno, $list="all") {
     if ($list=="novicebreak")
         $query.=" WHERE novice = 'Y' and composite = 'N' ";
 
-    $result = mysql_query($query);
-    $team_count=mysql_num_rows($result);
-            
+    $result = q($query);
+    $team_count=$result->RecordCount();
+
     // Create array with all the team ids
     $index=0;
     $team_array = array();
-    while ($row = mysql_fetch_assoc($result))
+    while ($row = $result->FetchRow())
     {
         $team_array[$index] = array("index" => $index++,
-                            "teamid" => $row['team_id'],
-                            "team_id" => $row['team_id'], //bweghhh.... 
-                            "teamname" => ' ',
-							"lowest_break" => ' ',
-                            "score" => 0,
-                            "speaker" => 0);    
+		"teamid" => $row['team_id'],
+		"team_id" => $row['team_id'], //bweghhh....
+		"teamname" => ' ',
+		"lowest_break" => ' ',
+		"score" => 0,
+		"speaker" => 0);
     }
-    
+
     $team_array = __fillUpTeamnames($team_array);
-	$team_array = __fillUpLowestBreak($team_array);
-    
+    $team_array = __fillUpLowestBreak($team_array);
+
     foreach($team_array as &$team)
         $team['rankings'] = rankings_for_team_wudc_2004_article_4_a_iii($team['teamid'], $roundno);
 
     // Run through the array and add the points
-    foreach($team_array as $cc) 
+    foreach($team_array as $cc)
     {
         $index = $cc["index"];
         $team_id = $cc["teamid"];
         $score = 0;
         $speaker = 0;
-        for ($x=1;$x<=$roundno;$x++)
-        {
+        for ($x=1;$x<=$roundno;$x++) {
             $team_array[$index]["round_$x"] = 0; //default;
             // Check for first
-            $score_query = "SELECT first FROM results WHERE round_no=$x AND first = '$team_id' ";
-            $score_result = mysql_query($score_query);
-            $score_count = mysql_num_rows($score_result);
+            $score_query = "SELECT first FROM results WHERE round_no=? AND first=? ";
+            $score_result = qp($score_query, array($x, $team_id));
+            $score_count = $score_result->RecordCount();
             if ($score_count > 0) {
                 $team_array[$index]["round_$x"] = 3;
             }
-    
+
             // Check for second
-            $score_query = "SELECT second FROM results WHERE round_no=$x AND second = '$team_id' ";
-            $score_result = mysql_query($score_query);
-            $score_count = mysql_num_rows($score_result);
+            $score_query = "SELECT second FROM results WHERE round_no=? AND second=? ";
+            $score_result = qp($score_query, array($x, $team_id));
+            $score_count = $score_result->RecordCount();
             if ($score_count > 0)
                 $team_array[$index]["round_$x"] = 2;
-    
+
             // Check for third
-            $score_query = "SELECT third FROM results WHERE round_no=$x AND third = '$team_id' ";
-            $score_result = mysql_query($score_query);
-            $score_count = mysql_num_rows($score_result);
+            $score_query = "SELECT third FROM results WHERE round_no=? AND third=? ";
+            $score_result = qp($score_query, array($x, $team_id));
+            $score_count = $score_result->RecordCount();
             if ($score_count > 0)
                 $team_array[$index]["round_$x"] = 1;
-            
+
 
             $score +=  $team_array[$index]["round_$x"];
             // Speaker points
             $score_query = "SELECT points FROM speaker_results AS round, speaker AS speaker ";
-            $score_query .= "WHERE round.round_no=$x AND speaker.team_id = '$team_id' AND speaker.speaker_id = round.speaker_id ";
-            $score_result = mysql_query($score_query);
-            while ($score_row = mysql_fetch_assoc($score_result))
-            {
+            $score_query .= "WHERE round.round_no=? AND speaker.team_id=? AND speaker.speaker_id = round.speaker_id ";
+	    $score_result = qp($score_query, array($x, $team_id));
+            $score_count = $score_result->RecordCount();
+            while ($score_row = $score_result->FetchRow()) {
                 $speaker += $score_row['points'];
             }
         }
         $team_array[$index]["score"] = $score;
         $team_array[$index]["speaker"] = $speaker;
     }
-    
-    
+
+
     // Sorting the array
     usort($team_array, "cmp_teams_on_points_asdf");
-    
+
     $ranking = 1;
     $prev_ranking = 1;
     $prev_concat = "something";
@@ -190,7 +188,7 @@ function team_standing_array($roundno, $list="all") {
         $ranking++;
     }
 
-    
+
     return $team_array;
 
 }

@@ -219,7 +219,7 @@ if(isset($generate)){
 		
 		*/
 		$slidecount = 0;
-		while ($row_debate=mysql_fetch_assoc($result))
+		while ($row_debate=$result->FetchRow())
 		{
 			$slidecount++;
 			if(($slidecount % 2) == 1){

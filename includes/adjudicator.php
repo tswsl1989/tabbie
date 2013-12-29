@@ -24,67 +24,50 @@
 require_once("includes/backend.php");
 
 function __get_university_id_by_code($univ_code) {
-    $db_result = mysql_query("SELECT univ_id FROM university WHERE univ_code = '$univ_code'");
-    $row = mysql_fetch_assoc($db_result);
-    return $row['univ_id'];
+	$db_result = qp("SELECT univ_id FROM university WHERE univ_code = ?", array($univ_code));
+	$row = $db_result->FetchRow();
+	return $row['univ_id'];
 }
 
 function __get_team_id_by_codes($univ_code, $team_code) {
-    $univ_id = __get_university_id_by_code($univ_code);
-    $db_result = mysql_query("SELECT team_id FROM team WHERE univ_id = '$univ_id' AND team_code = '$team_code'");
-    $row = mysql_fetch_assoc($db_result);
-    return $row['team_id'];
+	$univ_id = __get_university_id_by_code($univ_code);
+	$db_result = qp("SELECT team_id FROM team WHERE univ_id = ? AND team_code = ?", array($univ_id, $team_code));
+	$row = $db_result->FetchRow();
+	return $row['team_id'];
 }
 
 function get_adjudicator_by_id($adjud_id) {
-    $query = "SELECT adjud_name, adjud_id, univ_id, ranking, status FROM adjudicator WHERE adjud_id='$adjud_id'";
-    $db_result = mysql_query($query);
-    $result = array();
-    $row = mysql_fetch_assoc($db_result);
-    $adjudicator = array();
-    $adjudicator['adjud_name'] = $row['adjud_name'];
-    $adjudicator['adjud_id'] = $row['adjud_id'];
-    $adjudicator['ranking'] = $row['ranking'];
+	$query = "SELECT adjud_name, adjud_id, univ_id, ranking, status FROM adjudicator WHERE adjud_id=?";
+	$db_result = qp($query, array($adjud_id));
+	$result = array();
+	$row = $db_result->FetchRow();
+	$adjudicator = array();
+	$adjudicator['adjud_name'] = $row['adjud_name'];
+	$adjudicator['adjud_id'] = $row['adjud_id'];
+	$adjudicator['ranking'] = $row['ranking'];
 	$adjudicator['status'] = $row['status'];
 	$adjudicator['team_conflicts'] = array();
 	$adjudicator['univ_conflicts'] = array();
-    //$adjudicator['univ_conflicts'][] = $row['univ_id']; - self-strike automatically added
-	$query = "SELECT univ_id FROM strikes WHERE adjud_id=$adjud_id AND team_id IS NULL";
-	$strikeresult=mysql_query($query);
-	while($strike=mysql_fetch_assoc($strikeresult)) {
+	$query = "SELECT univ_id FROM strikes WHERE adjud_id=? AND team_id IS NULL";
+	$strikeresult=qp($query, array($adjud_id));
+	while($strike=$strikeresult->FetchRow()) {
 		$adjudicator['univ_conflicts'][]=$strike['univ_id'];
-		}
-	$query = "SELECT team_id FROM strikes WHERE adjud_id=$adjud_id AND team_id IS NOT NULL";
-	$strikeresult=mysql_query($query);
-	while($strike=mysql_fetch_assoc($strikeresult)) {$adjudicator['team_conflicts'][]=$strike['team_id'];}
-	//echo("Adjudicator: ".$adjud_id."<br/>");
-	//foreach($adjudicator['univ_conflicts'] as $uconflict){
-	//	echo("Conflicted university ".$uconflict."<br/>");
-	//}
-	//foreach($adjudicator['team_conflicts'] as $tconflict){
-	//	echo("Conflicted team ".$tconflict."<br/>");
-	//}
-	//echo("<br/><br/>");
-    //$adjudicator['team_conflicts'] = array();
-    //$conflicts = preg_split("/,/", $row['conflicts'], -1, PREG_SPLIT_NO_EMPTY);
-    //foreach ($conflicts as $conflict) {
-    //    $parts = split("[.]", $conflict);
-    //    if (sizeof($parts) == 1)
-    //        $adjudicator['univ_conflicts'][] = __get_university_id_by_code($conflict);
-    //    elseif (sizeof($parts == 2)) {
-    //            $adjudicator['team_conflicts'][] = __get_team_id_by_codes($parts[0], $parts[1]);
-    //    }
-    //}
-    return $adjudicator;
+	}
+	$query = "SELECT team_id FROM strikes WHERE adjud_id=? AND team_id IS NOT NULL";
+	$strikeresult=qp($query, array($adjud_id));
+	while($strike=$strikeresult->FetchRow()) {
+		$adjudicator['team_conflicts'][]=$strike['team_id'];
+	}
+	return $adjudicator;
 }
 
 function get_active_adjudicators($order_by='adjud_id') {
-    $db_result = mysql_query("SELECT adjud_id FROM adjudicator WHERE active='Y' ORDER BY $order_by");
-    $result = array();
-    while ($row = mysql_fetch_assoc($db_result)) {
-        $result[] = get_adjudicator_by_id($row['adjud_id']);
-    }
-    return $result;
+	$db_result = q("SELECT adjud_id FROM adjudicator WHERE active='Y' ORDER BY $order_by");
+	$result = array();
+	while ($row = $db_result->FetchResult()) {
+		$result[] = get_adjudicator_by_id($row['adjud_id']);
+	}
+	return $result;
 }
 
 function create_temp_adjudicator_table($round) {
@@ -164,10 +147,10 @@ function debates_from_temp_draw_with_adjudicators($round) {
 }
 
 function get_chair($round, $debate_id) {
-	$adj_query = "SELECT DA.adjud_id AS adjud_id, AJ.adjud_name AS adjud_name FROM draw_adjud DA, adjudicator AJ WHERE DA.round_no = $round AND DA.debate_id = $debate_id AND DA.adjud_id = AJ.adjud_id AND DA.status = 'chair'";
-	$adj_result=mysql_query($adj_query);
+	$adj_query = "SELECT DA.adjud_id AS adjud_id, AJ.adjud_name AS adjud_name FROM draw_adjud DA, adjudicator AJ WHERE DA.round_no=? AND DA.debate_id =? AND DA.adjud_id = AJ.adjud_id AND DA.status = 'chair'";
+	$adj_result=qp($adj_query, array($round, $debate_id));
 	if ($adj_result) {
-		$adj_row=mysql_fetch_assoc($adj_result);
+		$adj_row=$adj_result->FetchRow();
 		return $adj_row['adjud_name'];
 	} else {
 		return FALSE;
@@ -175,11 +158,11 @@ function get_chair($round, $debate_id) {
 }
 
 function get_panel($round, $debate_id) {
-	$pan_query = "SELECT DA.adjud_id AS adjud_id, AJ.adjud_name AS adjud_name FROM draw_adjud AS DA, adjudicator AS AJ WHERE DA.round_no = $round AND debate_id = $debate_id AND DA.adjud_id = AJ.adjud_id AND DA.status = 'panelist' ";
-	$pan_result = mysql_query($pan_query);
+	$pan_query = "SELECT DA.adjud_id AS adjud_id, AJ.adjud_name AS adjud_name FROM draw_adjud AS DA, adjudicator AS AJ WHERE DA.round_no = ? AND debate_id = ? AND DA.adjud_id = AJ.adjud_id AND DA.status = 'panelist' ";
+	$pan_result = qp($pan_query, array($round, $debate_id));
 	$rv = array();
-	if(mysql_num_rows($pan_result) > 0){
-		while($pan_row=mysql_fetch_assoc($pan_result)) {
+	if($pan_result->RecordCount() > 0){
+		while($pan_row=$pan_result->FetchRow()) {
 			$rv[]=$pan_row['adjud_name'];
 		}
 	}
@@ -187,13 +170,12 @@ function get_panel($round, $debate_id) {
 }
 
 function get_trainees($round, $debate_id) {
-	$trainee_query = "SELECT DA.adjud_id AS adjud_id, AJ.adjud_name AS adjud_name FROM draw_adjud AS DA, adjudicator AS AJ WHERE DA.round_no=$round AND debate_id = $debate_id AND DA.adjud_id = AJ.adjud_id AND DA.status = 'trainee' ";
-	$trainee_result=mysql_query($trainee_query);
-
-	$num_trainee=mysql_num_rows($trainee_result);
+	$trainee_query = "SELECT DA.adjud_id AS adjud_id, AJ.adjud_name AS adjud_name FROM draw_adjud AS DA, adjudicator AS AJ WHERE DA.round_no=? AND debate_id=? AND DA.adjud_id = AJ.adjud_id AND DA.status = 'trainee' ";
+	$trainee_result=qp($trainee_query, array($round, $debate_id));
+	$num_trainee=$trainee_result->RecordCount();
 	$rv=array();
 	if ($num_trainee > 0){
-		while($trainee_row=mysql_fetch_assoc($trainee_result)) {    
+		while($trainee_row=$trainee_result->FetchRow()) {    
 			$rv[] = $trainee_row['adjud_name'];
 		}
 	}

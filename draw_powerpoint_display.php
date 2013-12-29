@@ -71,7 +71,9 @@ $roundno=@$_GET['roundno'];
 	$venue_query .= "WHERE d.round_no=? AND d.venue_id = venue.venue_id AND ogteam.team_id = d.og AND oguniv.univ_id = ogteam.univ_id AND ooteam.team_id = d.oo AND oouniv.univ_id = ooteam.univ_id AND cgteam.team_id = d.cg AND cguniv.univ_id = cgteam.univ_id AND coteam.team_id = d.co AND couniv.univ_id = coteam.univ_id ";
 	$venue_query .= "ORDER BY RAND() ";
 	$venue_result = qp($venue_query, array($roundno));
-	print mysql_error();
+	if (!$venue_result) {
+		print $DBConn->ErrorMsg();
+	}
 	while ($venue_row=$venue_result->FetchRow())
 	{
 		$debate_id = $venue_row['debate_id'];

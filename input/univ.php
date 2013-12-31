@@ -21,7 +21,7 @@
  * 
  * end license */
 
-require("includes/display.php");
+require_once("includes/display.php");
 require_once("includes/backend.php");
 
 //Get POST values and validate/convert them

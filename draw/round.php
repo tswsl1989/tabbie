@@ -23,7 +23,7 @@
 
 //Purpose :   Display the draws of the previous rounds in the tournament.
 
-require("includes/display.php");
+require_once("includes/display.php");
 
 //Calculate Round Number (should have been already validated)
 if(array_key_exists('action', @$_GET)) $action=@$_GET['action'];

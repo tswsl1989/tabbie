@@ -21,7 +21,7 @@
  * 
  * end license */
 
-require("includes/display.php");
+require_once("includes/display.php");
 
 if(array_key_exists("action", @$_GET)) $action=trim(@$_GET['action']); //Check action
 $validate=1;

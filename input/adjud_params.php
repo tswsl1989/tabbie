@@ -21,7 +21,7 @@
  * 
  * end license */
 require_once("draw/adjudicator/simulated_annealing_config.php");
-require("includes/display.php");
+require_once("includes/display.php");
 
 $submitted="";
 if(array_key_exists("save", @$_POST)) $submitted=trim(@$_POST['save']);

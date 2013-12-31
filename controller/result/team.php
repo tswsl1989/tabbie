@@ -46,14 +46,15 @@ if(!($action=="LIST")){
 //Get current round no.
 $round = get_num_rounds();
 
-$masterquery="SELECT * FROM `temp_result_round_$round`";
+$masterquery="SELECT * FROM temp_result";
 
 switch ($action) {
 	case "LIST":
 		if($debate_id){
-			$masterquery.="WHERE `debate_id`='$debate_id'";
+			$masterquery.="WHERE debate_id=?";
 		}
 		$masterquery.=" ORDER BY debate_id ASC";
-		echo(mysql_to_xml("$masterquery", "debate"));
+		$rs = qp($masterquery, array($debate_id));
+		echo recordset_to_xml($rs, "debate"));
 		break;
 }

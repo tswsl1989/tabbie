@@ -64,7 +64,7 @@ function get_adjudicator_by_id($adjud_id) {
 function get_active_adjudicators($order_by='adjud_id') {
 	$db_result = q("SELECT adjud_id FROM adjudicator WHERE active='Y' ORDER BY $order_by");
 	$result = array();
-	while ($row = $db_result->FetchResult()) {
+	while ($row = $db_result->FetchRow()) {
 		$result[] = get_adjudicator_by_id($row['adjud_id']);
 	}
 	return $result;

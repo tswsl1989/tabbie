@@ -452,8 +452,6 @@ function set_speaker_esl($speaker_id, $esl){
 
 function makesafe($string){
 	$string=trim($string);
-	$string=str_replace("'", "’", $string);
-	$string=str_replace(";", "⁏", $string);
 	return $string;
 }
 

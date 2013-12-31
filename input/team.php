@@ -33,6 +33,7 @@ convert_db_ssesl();
 
 $actionhidden="";
 $univ_id=$team_code=$active=$composite=$speaker1=$speaker2=$speaker1esl=$speaker2esl=$esl=$speaker1novice=$speaker2novice=$novice="";
+$recordedesl=$recordednovice="";
 
 if(array_key_exists("univ_id", @$_POST)) $univ_id=trim(@$_POST['univ_id']);
 if(array_key_exists("team_code", @$_POST)) $team_code=makesafe(@$_POST['team_code']);
@@ -104,36 +105,35 @@ if (($actionhidden=="add")||($actionhidden=="edit")) { //do validation
 		$msg[]=$messagestr;
 	}
 
-    if ((!$active=='Y') && (!$active=='N')) {
-        $msg[]="Active Status not set properly.";
-        $validate=0;
-    }
+	if ((!$active=='Y') && (!$active=='N')) {
+		$msg[]="Active Status not set properly.";
+		$validate=0;
+	}
 
-    if ((!$composite=='Y') && (!$composite=='N')) {
-        $msg[]="Composite Status not set properly.";
-        $validate=0;
-      }
+	if ((!$composite=='Y') && (!$composite=='N')) {
+		$msg[]="Composite Status not set properly.";
+		$validate=0;
+	}
 
-    if (strcasecmp($speaker1, $speaker2)==0)
-      {
-        $msg[]="Speaker names cannot be equal.";
-        $validate=0;
-      }
+	if (strcasecmp($speaker1, $speaker2)==0) {
+		$msg[]="Speaker names cannot be equal.";
+		$validate=0;
+	}
 
-    if ((!$univ_id) || (!$team_code) || (!$speaker1) ||(!$speaker2)) $validate=0;
-  }
+	if ((!$univ_id) || (!$team_code) || (!$speaker1) ||(!$speaker2)) $validate=0;
+}
 
 if ($action=="delete") {
-    $msg=delete_team(@$_GET['team_id']);
-    $action="display";
- }
+	$msg=delete_team(@$_GET['team_id']);
+	$action="display";
+}
 
 if ($actionhidden=="add") {
-    //Check Validation
-    if ($validate==1) {
-        //Insert Team First
-	$query1 = "INSERT INTO team(univ_id, team_code, esl, novice, active, composite) VALUES(?, ?, ?, ?, ?, ?)";
-	$result1=qp($query1, array($univ_id, $team_code, $esl, $novice, $active, $composite));
+	//Check Validation
+	if ($validate==1) {
+		//Insert Team First
+		$query1 = "INSERT INTO team(univ_id, team_code, esl, novice, active, composite) VALUES(?, ?, ?, ?, ?, ?)";
+		$result1=qp($query1, array($univ_id, $team_code, $esl, $novice, $active, $composite));
 
         if ($result1) {
 		$queryteam="SELECT team_id FROM team WHERE univ_id=? AND team_code=?";
@@ -362,11 +362,13 @@ EndHeader;
      //Display Form and Values
 	echo "<form action=\"input.php?moduletype=team\" method=\"POST\">\n";
 	echo "<input type=\"hidden\" name=\"actionhidden\" value=\"".$action."\"/>\n";
-	echo "<input type=\"hidden\" name=\"team_id\" value=\"".$team_id."\"/>\n";
-	echo "<input type=\"hidden\" name=\"speaker1id\" value=".$speaker1id."\"/>\n";
-	echo "<input type=\"hidden\" name=\"speaker2id\" value=".$speaker2id."\"/>\n";
-	echo "<input type=\"hidden\" name=\"esl\" value=".$esl."\"/>\n";
-	echo "<input type=\"hidden\" name=\"novice\" value=".$novice."\"/>\n";
+	if ($action == "edit") {
+		echo "<input type=\"hidden\" name=\"team_id\" value=\"".$team_id."\"/>\n";
+		echo "<input type=\"hidden\" name=\"speaker1id\" value=".$speaker1id."\"/>\n";
+		echo "<input type=\"hidden\" name=\"speaker2id\" value=".$speaker2id."\"/>\n";
+		echo "<input type=\"hidden\" name=\"esl\" value=".$esl."\"/>\n";
+		echo "<input type=\"hidden\" name=\"novice\" value=".$novice."\"/>\n";
+	}
 	echo "<label for=\"univ_id\">University</label>\n";
 	echo "<select id=\"univ_id\" name=\"univ_id\">\n";
 	$result=q("SELECT univ_id,univ_code FROM university ORDER BY univ_code");

@@ -70,7 +70,7 @@ if ($action=="delete") {
 				$query="DELETE FROM university WHERE univ_id=?";
 				$db_result=qp($query, array($univ_id));
 				//Check for Error
-				if ($result) {
+				if ($db_result) {
 					$msg[] = "University $univ_id deleted";
 				} else {
 					$msg[]="There were problems deleting university $univ_id: ".$DBConn->ErrorMsg();

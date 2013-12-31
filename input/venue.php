@@ -210,7 +210,9 @@ EndHeader;
 	//Display Form and Values
 	echo "<form action=\"input.php?moduletype=venue\" method=\"POST\">\n";
 	echo "<input type=\"hidden\" name=\"actionhidden\" value=\"".$action."\"/>\n";
-	echo "<input type=\"hidden\" name=\"venue_id\" value=\"".$venue_id."\"/>\n";
+	if ($action=="edit") {
+		echo "<input type=\"hidden\" name=\"venue_id\" value=\"".$venue_id."\"/>\n";
+	}
 	echo "<label for=\"venue_name\">Venue Name</label>\n";
 	echo "<input type=\"text\" id=\"venue_name\" name=\"venue_name\" value=\"".$venue_name."\"/><br/>\n";
 	echo "<label for=\"venue_location\">Venue Location</label>\n";

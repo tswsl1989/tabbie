@@ -533,6 +533,10 @@ function strikes_to_conflict_list($adjud_id){
 
 function mysql_to_xml($query, $baseelement){
 	$result=q($query);
+	return recordset_to_xml($result, $baseelement);
+}
+
+function recordset_to_xml($result, $baseelement) {
 	$dom = new DomDocument('1.0', 'utf8');
 	$top = $dom->createElement('collection');
 	$top = $dom->appendChild($top);

@@ -27,7 +27,7 @@ function q($query) {
     $result = $DBConn->Execute($query);
     if (!$result) {
         $error = $DBConn->ErrorMsg();
-        throw new Exception("Error in query [$query]:" .  $error);
+        throw new Exception("Error in query ".$error." [$query]");
     }
     return $result;
 }
@@ -37,7 +37,7 @@ function qp($query, $params) {
     $result = $DBConn->Execute($query, $params);
     if (!$result) {
         $error = $DBConn->ErrorMsg();
-        throw new Exception("Error in query [$query, ".print_r($params)."]:" .  $error);
+        throw new Exception("Error in query: ".$error." [$query, ".print_r($params, 1)."]");
     }
     return $result;
 }

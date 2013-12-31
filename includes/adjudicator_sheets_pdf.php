@@ -22,6 +22,8 @@
  * end license */
 
 require_once('config/settings.php');
+date_default_timezone_set(@date_default_timezone_get());
+
 require('includes/fpdf/fpdf.php');
 
 function speaker(&$pdf, $r, $speaker) {

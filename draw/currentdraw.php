@@ -152,7 +152,7 @@ PRIMARY KEY (debate_id))";
     $details = array();
     reallocate_simulated_annealing();
 
-	$query= "CREATE TABLE draw_lock_round_$nextround (`lock_id` MEDIUMINT( 9 ) NOT NULL ,`debate_id` MEDIUMINT( 9 ) NULL ,`adjud_id` MEDIUMINT NULL ,`expiry` BIGINT NOT NULL ,`client` VARCHAR( 64 ) NOT NULL ,PRIMARY KEY ( `lock_id` ) ,INDEX ( `client` )) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_unicode_ci";
+	$query= "CREATE TABLE IF NOT EXISTS draw_lock (`lock_id` MEDIUMINT( 9 ) NOT NULL ,`debate_id` MEDIUMINT( 9 ) NULL ,`adjud_id` MEDIUMINT NULL ,`expiry` BIGINT NOT NULL ,`client` VARCHAR( 64 ) NOT NULL ,PRIMARY KEY ( `lock_id` ) ,INDEX ( `client` )) CHARACTER SET utf8 COLLATE utf8_unicode_ci";
 	$result = q($query);
 	
 	$adjudicator_end=microtime(true);

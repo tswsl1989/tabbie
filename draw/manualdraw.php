@@ -25,6 +25,7 @@ require_once("includes/display.php");
 require_once("includes/backend.php");
 require_once("includes/db_tools.php");
 require_once("includes/http.php");
+require_once("draw/adjudicator/simulated_annealing.php");
 require_once("controller/draw/adjud.php");
 
 $action="";
@@ -312,10 +313,11 @@ if ((mysql_num_rows($result))!=2) //both or one of the tables don't exist
 	        mysql_query($query);
 	        $query="DROP TABLE temp_adjud_round_$nextround";
 	        mysql_query($query);
-		$query="DROP TABLE draw_lock_round_$nextround";
-		mysql_query($query);
+		$query="DROP TABLE IF EXISTS draw_lock";
+		q($query);
         
-		mysql_query("UPDATE settings SET param_value=".$nextround." WHERE param_name='round'"); 
+		store_scoring_factors_to_db(array("round" => $nextround));
+
 	        //Redirect
 	        redirect("draw.php?moduletype=round&action=showdraw&roundno=$nextround");
 		}

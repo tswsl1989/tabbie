@@ -28,9 +28,9 @@ require_once("includes/backend.php");
 
 function is_locked_by_client($field, $value, $client, $round){
 	$expiry=time();
-	$query="SELECT `lock_id` FROM draw_lock_round_$round WHERE `$field`='$value' AND `client`='$client' AND `expiry`>'$expiry';";
-	$result=mysql_query($query);
-	if (mysql_count_rows($result)>0){
+	$query="SELECT lock_id FROM draw_lock WHERE ?=? AND client=? AND expiry>?";
+	$result=qp($query, array($field, $value, $client, $expiry));
+	if ($result->RecordCount()>0){
 		return true;
 	} else {
 		return false;
@@ -39,10 +39,9 @@ function is_locked_by_client($field, $value, $client, $round){
 
 function is_locked_by_other($field, $value, $client, $round){
 	$expiry=time();
-	$query="SELECT `lock_id` FROM draw_lock_round_$round WHERE `$field`='$value' AND `client`!='$client' AND `expiry`>'$expiry';";
-	echo $query;
-	$result=mysql_query($query);
-	if (mysql_num_rows($result)>0){
+	$query="SELECT lock_id FROM draw_lock WHERE ?=? AND client!=? AND expiry>?";
+	$result($query, array($field, $value, $client, $expiry));
+	if ($result->RecordCount()>0){
 		return true;
 	} else {
 		return false;
@@ -51,8 +50,8 @@ function is_locked_by_other($field, $value, $client, $round){
 
 function clean_locks(){
 	$expiry=time();
-	$query="DELETE FROM draw_lock_round_$round WHERE `expiry`<'$expiry';";
-	mysql_query($query);
+	$query="DELETE FROM draw_lock WHERE expiry<?";
+	qp($query, array($expiry));
 }
 
 //Information from the client
@@ -65,9 +64,9 @@ $client = htmlspecialchars(trim($_POST['client']));
 $round = get_num_rounds()+1;
 
 //Check lock tables exist
-$query="SHOW TABLES LIKE 'draw_lock_round%'";
-$result=mysql_query($query);
-if(mysql_num_rows($result)!=1){
+$query="SHOW TABLES LIKE 'draw_lock'";
+$result=q($query);
+if($result->RecordCount()!=1){
 	//This API is only functional while a temporary draw is open
 	header('HTTP/1.1 412 Precondition Failed');
 	echo('Unable to access lock tables.');
@@ -107,17 +106,18 @@ switch ($action) {
 			echo('Resource locked by another client');
 			break;
 		} else {
-			$query="INSERT INTO draw_lock_round_$round (`$lockfield` , `expiry` , `client`) VALUES ( '$locktarget', '$expiry' , '$client');";
-			mysql_query($query);
-			$query="SELECT `lock_id`, `$lockfield`, `expiry`, `client` FROM draw_lock_round_$round WHERE `$lockfield`='$locktarget' AND `expiry`='$expiry' AND `client`='$client';";
-			echo(mysql_to_xml("$query", "lock"));
+			$query="INSERT INTO draw_lock (? , expiry, client) VALUES (?, ?, ?);";
+			qp($query, array($lockfield, $locktarget, $expiry, $client));
+			$query="SELECT lock_id, ?, expiry, client FROM draw_lock WHERE ?=? AND expiry=? AND client=?";
+			$rs=qp($query, array($lockfield, $lockfield, $locktarget, $expiry, $client));
+			echo(recordset_to_xml($rs, "lock"));
 			break;
 		}
 	case "UNLOCK":
 		//Unlock will *not* fail if no lock is present
 		if(is_locked_by_client($lockfield, $locktarget, $client, $round)){
-			$query="DELETE FROM draw_lock_round_$round WHERE `$lockfield`='$locktarget' AND `client`='$client'";
-			mysql_query($query);
+			$query="DELETE FROM draw_lock WHERE ?=? AND client=?";
+			qp($query, array($lockfield, $locktarget, $client);
 			header('HTTP/1.1 200 OK');
 			echo('Unlocked');
 			break;

@@ -400,12 +400,12 @@ function delete_team($team_id) {
     } else {
         $result1=qp("DELETE FROM speaker WHERE team_id=?", array($team_id));
         //Check for Error
-        if ($result1->Affected_Rows()==0) {
+        if ($result1->RecordCount()==0) {
             $msg[]="There were problems deleting speakers: No such record.";
         }
         $result2=qp("DELETE FROM team WHERE team_id=?", array($team_id));
         //Check for Error
-        if ($result2->Affected_Rows()==0) {
+        if ($result2->RecordCount()==0) {
             $msg[]="There were problems deleting team: No such record.";
 	}
     }

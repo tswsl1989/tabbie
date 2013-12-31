@@ -113,7 +113,7 @@ if (!$team_id) {
         
             print "<h3>Speakers:</h3>";
     
-            $db_result = q("SELECT SR.points, speaker.speaker_name, university.univ_code, team.team_code FROM speaker_results SR, speaker, team, university WHERE SR.round_no=? AND debate_id=? AND SR.speaker_id = speaker.speaker_id AND speaker.team_id = team.team_id AND team.univ_id = university.univ_id ORDER BY speaker_name", array($round, $debate_id));
+            $db_result = qp("SELECT SR.points, speaker.speaker_name, university.univ_code, team.team_code FROM speaker_results SR, speaker, team, university WHERE SR.round_no=? AND debate_id=? AND SR.speaker_id = speaker.speaker_id AND speaker.team_id = team.team_id AND team.univ_id = university.univ_id ORDER BY speaker_name", array($round, $debate_id));
             
             print "<table><tr><th>Name</th><th>Team</th><th>Points</th></tr>";
             while ($row = $db_result->FetchRow()) {
@@ -123,7 +123,7 @@ if (!$team_id) {
     
             print "<h3>Adjudicators:</h3>";
     
-            $db_result = q("SELECT draw_adjud.status, adjudicator.adjud_name, university.univ_name, university.univ_code FROM draw_adjud, adjudicator, university WHERE draw_adjud.round_no=? AND debate_id=? AND draw_adjud.adjud_id = adjudicator.adjud_id AND adjudicator.univ_id = university.univ_id ORDER BY status", array($round, $debate_id));
+            $db_result = qp("SELECT draw_adjud.status, adjudicator.adjud_name, university.univ_name, university.univ_code FROM draw_adjud, adjudicator, university WHERE draw_adjud.round_no=? AND debate_id=? AND draw_adjud.adjud_id = adjudicator.adjud_id AND adjudicator.univ_id = university.univ_id ORDER BY status", array($round, $debate_id));
             
             print "<table><tr><th>Role</th><th>Name</th><th>University</th></tr>";
             while ($row = $db_result->FetchRow()) {

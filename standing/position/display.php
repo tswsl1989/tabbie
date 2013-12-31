@@ -80,28 +80,28 @@ if ($action == "display")
             for ($x = 1; $x <= $round; $x++) {
                 // Check for OG
                 $score_query = "SELECT og FROM draws WHERE round_no=? AND og = ? ";
-                $score_result = qp($score_query, array($x, $team_id);
+                $score_result = qp($score_query, array($x, $team_id));
                 $score_count = $score_result->FetchRow();
                 if ($score_count > 0)
                     $og++;
         
                 // Check for OO
                 $score_query = "SELECT oo FROM draws WHERE round_no=? AND oo = ? ";
-                $score_result = qp($score_query, array($x, $team_id);
+                $score_result = qp($score_query, array($x, $team_id));
                 $score_count = $score_result->RecordCount();
                 if ($score_count > 0)
                     $oo++;
         
                 // Check for CG
                 $score_query = "SELECT cg FROM draws WHERE round_no=? AND cg = ? ";
-                $score_result = qp($score_query, array($x, $team_id);
+                $score_result = qp($score_query, array($x, $team_id));
                 $score_count = $score_result->RecordCount();
                 if ($score_count > 0)
                     $cg++;
                 
                 // Check for CO
                 $score_query = "SELECT co FROM draws WHERE round_no=? AND co = ? ";
-                $score_result = qp($score_query, array($x, $team_id);
+                $score_result = qp($score_query, array($x, $team_id));
                 $score_count = $score_result->RecordCount();
                 if ($score_count > 0)
                     $co++;

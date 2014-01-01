@@ -20,7 +20,6 @@
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  * end license */
-/* Modified by Tom Lake <tswsl1989@sucs.org> and released 2011-02-20 */
 
 /* WARNING:
    INCLUDE OTHER TABBIE FILES WITH CARE. MANY OF THEM WILL FAIL WITHOUT config/settings.php

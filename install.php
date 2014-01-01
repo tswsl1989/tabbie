@@ -87,11 +87,10 @@ $queries = explode(';', $queries_text);
 ?><p style="font-family: courier; font-size: 10px;"><?php
 
 $all_is_well = true;
-mysql_query("SET NAMES 'utf8' COLLATE 'utf8_unicode_ci'");
-mysql_query("DROP DATABASE $database_name");
-$all_is_well = execute_query_print_result("CREATE DATABASE $database_name CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-") && $all_is_well;
-mysql_select_db($database_name);
+$DBConn->Execute("SET NAMES 'utf8' COLLATE 'utf8_unicode_ci'");
+$DBConn->Execute("DROP DATABASE ?", array($database_name));
+$all_is_well = execute_query_print_result("CREATE DATABASE $database_name CHARACTER SET utf8 COLLATE utf8_unicode_ci;") && $all_is_well;
+$DBConn->Execute("USE ?", array($database_name));
 foreach ($queries as $query) {
     $all_is_well = execute_query_print_result($query) && $all_is_well;
 }
@@ -100,7 +99,7 @@ if (file_exists("install/university.sql")) {
 	$queries = explode(";", file_get_contents("install/university.sql"));
 	$u = true;
 	foreach ($queries as $query) {
-		$u = mysql_query($query) && $u;
+		$u = q($query) && $u;
 	}
 	if ($u) {
 		echo "Success!</h3>";

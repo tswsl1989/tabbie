@@ -81,80 +81,70 @@ if ($validate) {
 if (($action=="draw") && ($validate == 1)) {
 	$debater_start=microtime(true);
 
-    $teams = get_teams_positions_points(get_num_rounds());
-    
-    require_once("draw/algorithms/silver_line.php");
+	$teams = get_teams_positions_points(get_num_rounds());
 
-    $debates = draw_silver_line($teams, $nextround);
+	require_once("draw/algorithms/silver_line.php");
 
-    if (! validate_draw($teams, $debates))
-        $msg[] = "The Algorithm has not created a valid draw!!!";
-    
-    $score = debates_badness($debates); //only works for silver_line since others don't attribute enough data
-    $debater_end=microtime(true);
-    $msg[] = "The Debater Allocation Algorithm has created a draw with score $score, and 0 is the best possible score.";
+	$debates = draw_silver_line($teams, $nextround);
 
-    function funny_conversion_for_ntu_code($debates) {
-        $result = array();
-        foreach ($debates as $debate) {
-            foreach ($debate as $team) {
-                $result[] = array($team["team_id"], "NOT-USED");
-            }
-        }
-        return $result;
-    }
-    $teamarray = funny_conversion_for_ntu_code($debates);
+	if (! validate_draw($teams, $debates)) {
+		$msg[] = "The Algorithm has not created a valid draw!!!";
+	}
 
-    //At this point $teamarray looks like this:
-    // array(
-    //     array("8", "NOT-USED"),
-    //     array("4", "NOT-USED"),...
+	$score = debates_badness($debates); //only works for silver_line since others don't attribute enough data
+	$debater_end=microtime(true);
+	$msg[] = "The Debater Allocation Algorithm has created a draw with score $score, and 0 is the best possible score.";
 
-    //Store draw in temporary database
+	function funny_conversion_for_ntu_code($debates) {
+		$result = array();
+		foreach ($debates as $debate) {
+			foreach ($debate as $team) {
+				$result[] = array($team["team_id"], "NOT-USED");
+			}
+		}
+		return $result;
+	}
+	$teamarray = funny_conversion_for_ntu_code($debates);
 
-    $tablename = "temp_draw_round_$nextround";
-    mysql_query("DROP TABLE IF EXISTS `$tablename`"); //KvS notes that this query apparently fails (but expectedly) in round 0
+	//At this point $teamarray looks like this:
+	// array(
+	//     array("8", "NOT-USED"),
+	//     array("4", "NOT-USED"),...
+
+	//Store draw in temporary database
+
+	q("DROP TABLE IF EXISTS temp_draw");
 	//Should you be looking for the creation of the temp_adjud table, it's in a function in includes/adjudicator
-    $query= "CREATE TABLE $tablename (
-debate_id MEDIUMINT(9) NOT NULL ,
-og MEDIUMINT(9) NOT NULL ,
-oo MEDIUMINT(9) NOT NULL ,
-cg MEDIUMINT(9) NOT NULL ,
-co MEDIUMINT(9) NOT NULL ,
-venue_id MEDIUMINT(9) NOT NULL ,
-PRIMARY KEY (debate_id))";
-
-    $result = q($query);
-    
-    $result1 = q("SELECT venue_id FROM venue WHERE active='Y'");
-    while ($row1 = $result1->FetchRow()) {
-        $venue[] = $row1['venue_id'];
-    }
-
-    shuffle($venue);
-    
-    $index = 0;
-    while ($index < count($teamarray))
-    {
-        //generate debate ID after multiplying current round with 10000
-        $debate_id = (10000 * $nextround) + ($index/4);
-
-        $og=$teamarray[$index++][0];
-        $oo=$teamarray[$index++][0];
-        $cg=$teamarray[$index++][0];
-        $co=$teamarray[$index++][0];
-        $venue_id=array_shift($venue);
-
-        //insert into database
-        q("INSERT INTO $tablename (debate_id, og, oo, cg, co, venue_id) VALUES('$debate_id', '$og', '$oo', '$cg', '$co', '$venue_id')");
-
-    }
-    $details = array();
-    reallocate_simulated_annealing();
-
-	$query= "CREATE TABLE IF NOT EXISTS draw_lock (`lock_id` MEDIUMINT( 9 ) NOT NULL ,`debate_id` MEDIUMINT( 9 ) NULL ,`adjud_id` MEDIUMINT NULL ,`expiry` BIGINT NOT NULL ,`client` VARCHAR( 64 ) NOT NULL ,PRIMARY KEY ( `lock_id` ) ,INDEX ( `client` )) CHARACTER SET utf8 COLLATE utf8_unicode_ci";
+	$query= "CREATE TABLE temp_draw (debate_id MEDIUMINT(9) NOT NULL, og MEDIUMINT(9) NOT NULL, oo MEDIUMINT(9) NOT NULL, cg MEDIUMINT(9) NOT NULL, co MEDIUMINT(9) NOT NULL, venue_id MEDIUMINT(9) NOT NULL, PRIMARY KEY (debate_id))";
 	$result = q($query);
-	
+
+	$result1 = q("SELECT venue_id FROM venue WHERE active='Y'");
+	while ($row1 = $result1->FetchRow()) {
+		$venue[] = $row1['venue_id'];
+	}
+
+	shuffle($venue);
+
+	$index = 0;
+	while ($index < count($teamarray)) {
+		//generate debate ID after multiplying current round with 10000
+		$debate_id = (10000 * $nextround) + ($index/4);
+
+		$og=$teamarray[$index++][0];
+		$oo=$teamarray[$index++][0];
+		$cg=$teamarray[$index++][0];
+		$co=$teamarray[$index++][0];
+		$venue_id=array_shift($venue);
+
+		//insert into database
+		qp("INSERT INTO temp_draw (debate_id, og, oo, cg, co, venue_id) VALUES(?, ?, ?, ?, ?, ?)",array($debate_id, $og, $oo, $cg, $co, $venue_id));
+	}
+	$details = array();
+	reallocate_simulated_annealing();
+
+	$query= "CREATE TABLE IF NOT EXISTS draw_lock (lock_id MEDIUMINT(9) NOT NULL, debate_id MEDIUMINT(9) NULL,adjud_id MEDIUMINT NULL, expiry BIGINT NOT NULL, client VARCHAR(64) NOT NULL, PRIMARY KEY (lock_id), INDEX (client)) CHARACTER SET utf8 COLLATE utf8_unicode_ci";
+	$result = q($query);
+
 	$adjudicator_end=microtime(true);
 	$adjudicator_time=round($adjudicator_end-$debater_end,3);
 	$debater_time=round($debater_end-$debater_start,3);
@@ -181,14 +171,14 @@ if(isset($msg)) displayMessagesUL(@$msg);
 if (($validate==1)) {
 
     //Display the table of calculated draw
-    $query = 'SELECT A1.debate_id AS debate_id, T1.team_code AS ogt, T2.team_code AS oot, T3.team_code AS cgt, T4.team_code AS cot, U1.univ_code AS ogtc, U2.univ_code AS ootc, U3.univ_code AS cgtc, U4.univ_code AS cotc, venue_name, venue_location, T1.team_id AS ogid, T2.team_id AS ooid, T3.team_id AS cgid, T4.team_id AS coid ';
-    $query .= "FROM temp_draw_round_$nextround AS A1, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4,venue ";
-    $query .= "WHERE og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND A1.venue_id=venue.venue_id "; 
-    $query .= "ORDER BY venue_name";
-
-    $result=mysql_query($query); //KvS notes that this query apparently fails (but expectedly) in round 0
     
-    if ($result) {
+    if (has_temp_draw()) {
+	    $query = 'SELECT A1.debate_id AS debate_id, T1.team_code AS ogt, T2.team_code AS oot, T3.team_code AS cgt, T4.team_code AS cot, U1.univ_code AS ogtc, U2.univ_code AS ootc, U3.univ_code AS cgtc, U4.univ_code AS cotc, venue_name, venue_location, T1.team_id AS ogid, T2.team_id AS ooid, T3.team_id AS cgid, T4.team_id AS coid ';
+	    $query .= "FROM temp_draw AS A1, team T1, team T2, team T3, team T4, university U1, university U2, university U3, university U4,venue ";
+	    $query .= "WHERE og = T1.team_id AND oo = T2.team_id AND cg = T3.team_id AND co = T4.team_id AND T1.univ_id = U1.univ_id AND T2.univ_id = U2.univ_id AND T3.univ_id = U3.univ_id AND T4.univ_id = U4.univ_id AND A1.venue_id=venue.venue_id "; 
+	    $query .= "ORDER BY venue_name";
+
+	    $result=q($query); 
         echo "<p>From here you can either:</p>";
         echo "<h3><a href=\"draw.php?moduletype=currentdraw&amp;action=draw_adjudicators_again\">Give the computer another shot at allocating the adjudicators (Using the current state to generate a better result).</a></h3>";
         echo '<p>or</p>';
@@ -197,7 +187,7 @@ if (($validate==1)) {
         echo '<h3><a href="draw.php?moduletype=manualdraw&amp;action=finalise">Finalize the draw</a></h3>';
 
         $table_data = array();
-        while($row = mysql_fetch_assoc($result)) {
+        while($row = $result->FetchRow()) {
             foreach (array("venue_name", "ogtc", "ogt", "ootc", "oot", "cgtc", "cgt", "cotc", "cot", "debate_id") as $copy) {
                 $row2[$copy] = $row[$copy];
 	    }
@@ -208,8 +198,8 @@ if (($validate==1)) {
             $row2['points'] = $row2['ogpoints'] + $row2['oopoints'] + $row2['cgpoints'] + $row2['copoints'];
 
             //Find Chief Adjudicator
-            $query="SELECT A.adjud_name AS adjud_name, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='chair' AND T.debate_id='{$row['debate_id']}'";
-            $resultadjud=q($query);
+            $query="SELECT A.adjud_name AS adjud_name, A.ranking FROM temp_adjud AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='chair' AND T.debate_id=?";
+            $resultadjud=qp($query, array($row['debate_id']));
 
             if ($resultadjud->RecordCount() > 0) {
                 $rowadjud = $resultadjud->FetchRow();
@@ -217,8 +207,8 @@ if (($validate==1)) {
             }
 
             //Find Panelists
-            $query="SELECT A.adjud_name AS adjud_name, A.ranking FROM temp_adjud_round_$nextround AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='panelist' AND T.debate_id='{$row['debate_id']}'";
-            $resultadjud=q($query);
+	    $query="SELECT A.adjud_name AS adjud_name, A.ranking FROM temp_adjud AS T, adjudicator AS A WHERE A.adjud_id=T.adjud_id AND T.status='panelist' AND T.debate_id=?";
+            $resultadjud=qp($query, array($row['debate_id']));
 
             if ($resultadjud->RecordCount() > 0) {
                 $row2['panel'] = array();
@@ -232,7 +222,7 @@ if (($validate==1)) {
         usort($table_data, "cmp_debate_desc");
 
         echo "<table>\n";
-            echo "<tr><th>Venue Name</th><th>1st Prop</th><th>1st Opp</th><th>2nd Prop</th><th>2nd Opp</th><th>Avg. Points</th><th>Chair</th><th>Panelists</th><th>Adj. Allocation Score</th></tr>\n";
+	echo "<tr><th>Venue Name</th><th>1st Prop</th><th>1st Opp</th><th>2nd Prop</th><th>2nd Opp</th><th>Avg. Points</th><th>Chair</th><th>Panelists</th><th>Adj. Allocation Score</th></tr>\n";
 
         foreach ($table_data as $row) {
             echo "<tr>\n";
@@ -255,8 +245,7 @@ if (($validate==1)) {
                 echo "<td><b>None Assigned</b></td>";
             else {
                 echo "<td><ul>\n";
-                foreach ($row['panel'] as $panellist)
-                {
+                foreach ($row['panel'] as $panellist) {
                     echo "<li>$panellist</li>\n";
                 }
                 echo "</ul></td>\n";

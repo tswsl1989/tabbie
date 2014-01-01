@@ -71,79 +71,71 @@ function get_active_adjudicators($order_by='adjud_id') {
 }
 
 function create_temp_adjudicator_table($round) {
-    $tablename = "temp_adjud_round_$round";
-    mysql_query("DROP TABLE $tablename");
-
-    $query = "CREATE TABLE `$tablename` (";
-	$query .= " `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,";
-	$query .= " `debate_id` MEDIUMINT NOT NULL ,";
-    $query .= " `adjud_id` MEDIUMINT NOT NULL ,";
-    $query .= " `status` ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL , UNIQUE KEY `adjud_id` (`adjud_id`) );";
-    $db_result = mysql_query($query);
-    if (!$db_result)
-        return mysql_error();
+	q("DROP TABLE IF EXISTS temp_adjud");
+	$query = "CREATE TABLE temp_adjud (";
+	$query .= " time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,";
+	$query .= " debate_id MEDIUMINT NOT NULL ,";
+	$query .= " adjud_id MEDIUMINT NOT NULL ,";
+	$query .= " status ENUM( 'chair', 'panelist', 'trainee' ) NOT NULL , UNIQUE KEY adjud_id (adjud_id) );";
+	$db_result = q($query);
+	if (!$db_result)
+		return $DBConn->ErrorMsg();
 }
 
 function debates_from_temp_draw_no_adjudicators($round) {
-    //join with debates_from_temp_draw_with_adjudicators
-    $query =
-        "SELECT debate_id, og, oo, cg, co, T1.univ_id AS univ_1, T2.univ_id AS univ_2, " . 
-        "T3.univ_id AS univ_3, T4.univ_id AS univ_4 " .
-        
-        "FROM temp_draw_round_$round AS D, team AS T1, team AS T2, team AS T3, team AS T4 " .
-        
-        "WHERE D.og = T1.team_id AND D.oo = T2.team_id AND D.cg = T3.team_id AND D.co = T4.team_id " .
-        "ORDER BY debate_id";
-    $db_result = mysql_query($query);
-    print mysql_error();
-    $result = array();
-    while ($row = mysql_fetch_assoc($db_result)) {
-        $new_row = array();
-        $new_row['debate_id'] = $row['debate_id'];
-        $new_row['universities'] = array($row['univ_1'], $row['univ_2'], $row['univ_3'], $row['univ_4']);
-        
-        $new_row['points'] = 0;
-        $new_row['teams'] = array();
-        foreach (array('og', 'oo', 'cg', 'co') as $position) {
-            $new_row['teams'][] = $row[$position];
-            $new_row['points'] += points_for_team($row[$position], $round - 1);
-        }
-        $result[] = $new_row;
-    }
-    return $result;
+	//join with debates_from_temp_draw_with_adjudicators
+	$query = "SELECT debate_id, og, oo, cg, co, T1.univ_id AS univ_1, T2.univ_id AS univ_2, T3.univ_id AS univ_3, T4.univ_id AS univ_4 ";
+	$query .= "FROM temp_draw AS D, team AS T1, team AS T2, team AS T3, team AS T4 WHERE D.og = T1.team_id AND D.oo = T2.team_id AND D.cg = T3.team_id AND D.co = T4.team_id ";
+        $query .= "ORDER BY debate_id";
+	$db_result = q($query);
+	if (!$db_result) {
+		print $DBConn->ErrorMsg();
+	}
+	$result = array();
+	while ($row = $db_result->FetchRow()) {
+		$new_row = array();
+		$new_row['debate_id'] = $row['debate_id'];
+		$new_row['universities'] = array($row['univ_1'], $row['univ_2'], $row['univ_3'], $row['univ_4']);
+
+		$new_row['points'] = 0;
+		$new_row['teams'] = array();
+		foreach (array('og', 'oo', 'cg', 'co') as $position) {
+			$new_row['teams'][] = $row[$position];
+			$new_row['points'] += points_for_team($row[$position], $round - 1);
+		}
+		$result[] = $new_row;
+	}
+	return $result;
 }
 
 function debates_from_temp_draw_with_adjudicators($round) {
-    $query =
-        "SELECT debate_id, og, oo, cg, co, T1.univ_id AS univ_1, T2.univ_id AS univ_2, " . 
-        "T3.univ_id AS univ_3, T4.univ_id AS univ_4 " .
-        
-        "FROM temp_draw_round_$round AS D, team AS T1, team AS T2, team AS T3, team AS T4 " .
-        
-        "WHERE D.og = T1.team_id AND D.oo = T2.team_id AND D.cg = T3.team_id AND D.co = T4.team_id " .
-        "ORDER BY debate_id";
-    $db_result = mysql_query($query);
-    print mysql_error();
-    $result = array();
-    while ($row = mysql_fetch_assoc($db_result)) {
-        $new_row = array();
-        $new_row['debate_id'] = $row['debate_id'];
-        $new_row['universities'] = array($row['univ_1'], $row['univ_2'], $row['univ_3'], $row['univ_4']);
-        
-        $new_row['points'] = 0;
-        $new_row['teams'] = array();
-        foreach (array('og', 'oo', 'cg', 'co') as $position) {
-            $new_row['teams'][] = $row[$position];
-            $new_row['points'] += points_for_team($row[$position], $round - 1);
-        }
-        $new_row['adjudicators'] = array();
-        $adjudicators_db_result = mysql_query("SELECT adjud_id FROM temp_adjud_round_$round WHERE debate_id='{$row['debate_id']}'");
-	while ($row2 = mysql_fetch_assoc($adjudicators_db_result)) {
-            $new_row['adjudicators'][] = get_adjudicator_by_id($row2['adjud_id']);
-        }
-        $result[] = $new_row;
-    }
-    return $result;
+	$query = "SELECT debate_id, og, oo, cg, co, T1.univ_id AS univ_1, T2.univ_id AS univ_2, T3.univ_id AS univ_3, T4.univ_id AS univ_4 ";
+	$query .= "FROM temp_draw AS D, team AS T1, team AS T2, team AS T3, team AS T4 WHERE D.og = T1.team_id AND D.oo = T2.team_id AND D.cg = T3.team_id AND D.co = T4.team_id ";
+        $query .= "ORDER BY debate_id";
+	$db_result = q($query);
+	if (!$db_result) {
+		print $DBConn->ErrorMsg();
+	}
+	$result = array();
+	while ($row = $db_result->FetchRow()) {
+		$new_row = array();
+		$new_row['debate_id'] = $row['debate_id'];
+		$new_row['universities'] = array($row['univ_1'], $row['univ_2'], $row['univ_3'], $row['univ_4']);
+
+		$new_row['points'] = 0;
+		$new_row['teams'] = array();
+		foreach (array('og', 'oo', 'cg', 'co') as $position) {
+			$new_row['teams'][] = $row[$position];
+			$new_row['points'] += points_for_team($row[$position], $round - 1);
+		}
+		$new_row['adjudicators'] = array();
+		$adjudicators_db_result = qp("SELECT adjud_id FROM temp_adjud WHERE debate_id=?", array($row['debate_id']));
+		while ($row2 = $adjudicators_db_result->FetchRow()) {
+			$new_row['adjudicators'][] = get_adjudicator_by_id($row2['adjud_id']);
+		}
+		$result[] = $new_row;
+	}
+	return $result;
 }
 
 function get_chair($round, $debate_id) {

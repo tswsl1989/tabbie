@@ -24,27 +24,28 @@
 //Energy calculation:
 
 function ensure_scoring_factors_in_db() {
-    $result = mysql_query("SHOW TABLES LIKE 'settings'");
-    if (!mysql_num_rows($result)) {
-        $result = mysql_query("SHOW TABLES LIKE 'configure_adjud_draw'");
-        if (!mysql_num_rows($result)) {
+    $result = q("SHOW TABLES LIKE 'settings'");
+    if (!$result->RecordCount()) {
+        $result = q("SHOW TABLES LIKE 'configure_adjud_draw'");
+        if (!$result->RecordCount()) {
             //for backwards compatability with Tabbie versions <= 1.3.1
-            mysql_query("CREATE TABLE settings (param_name varchar(100), param_value double, PRIMARY KEY (param_name))");
+            q("CREATE TABLE settings (param_name varchar(100), param_value double, PRIMARY KEY (param_name))");
 	    print "No settings or configure_adjud_draw table found. Creating settings table<br />";
 	} else {
-            mysql_query("RENAME TABLE configure_adjud_draw TO settings");
+            q("RENAME TABLE configure_adjud_draw TO settings");
             print "Renaming configure_adjud_draw to settings<br />";
 	}
     }
-    if (mysql_num_rows(mysql_query("SHOW TABLES LIKE 'highlight'"))) {
+    $hl=q("SHOW TABLES LIKE 'highlight'");
+    if ($hl->RecordCount()) {
 	print "Highlight table found - migrating<br />";
-	$r = mysql_query("SELECT * FROM highlight");
-        if (mysql_num_rows($r) > 1) {
+	$r = q("SELECT * FROM highlight");
+        if ($r->RecordCount() > 1) {
 	    print "Multiple highlights defined - will not migrate<br />";
 	} else {
-            $h = mysql_fetch_assoc($r);
-	    if (mysql_query("INSERT INTO settings VALUES ('highlight_lowerlimit',".$h['lowerlimit']."), ('highlight_upperlimit', ".$h['upperlimit'].")")) {
-                mysql_query("DROP TABLE highlight");
+            $h = $r->FetchRow();
+	    if (qp("INSERT INTO settings VALUES ('highlight_lowerlimit',?) ('highlight_upperlimit', ?)", array($h['lowerlimit'], $h['upperlimit']))) {
+                q("DROP TABLE highlight");
 	    }
 	}
     }
@@ -70,9 +71,9 @@ function ensure_scoring_factors_in_db() {
     $defapplied = 0;
     $defs = array();
     foreach ($values as $name => $value) {
-        $db_res = mysql_query("SELECT * FROM settings WHERE param_name='$name'");
-        if (!(mysql_fetch_assoc($db_res))) {
-            mysql_query("INSERT INTO settings (param_name, param_value) VALUES ('$name', $value)");
+        $db_res = qp("SELECT * FROM settings WHERE param_name=?", array($name));
+        if (!($db_res->RecordCount() > 0)) {
+            qp("INSERT INTO settings (param_name, param_value) VALUES (?, ?)", array($name, $value));
 	    $defapplied = 1;
 	    $defs[]=$name;
         }
@@ -86,8 +87,8 @@ function ensure_scoring_factors_in_db() {
 function get_scoring_factors_from_db() {
     ensure_scoring_factors_in_db();
     $params = array();
-    $db_res = mysql_query("SELECT param_name, param_value FROM settings");
-    while ($row = mysql_fetch_assoc($db_res)) {
+    $db_res = q("SELECT param_name, param_value FROM settings");
+    while ($row = $db_res->FetchRow()) {
         $params[$row['param_name']] = $row['param_value'];
     }
     return $params;
@@ -95,7 +96,7 @@ function get_scoring_factors_from_db() {
 
 function store_scoring_factors_to_db($params) {
     foreach ($params as $param => $pvalue) {
-        mysql_query("UPDATE settings SET param_value='$pvalue' WHERE param_name='$param'");
+        qp("UPDATE settings SET param_value=? WHERE param_name=?", array($pvalue, $param));
     }
 }
 

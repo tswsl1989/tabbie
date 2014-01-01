@@ -269,27 +269,26 @@ function validate_adjudicators($debates) {
 }
 
 function write_to_db($debates, $round) {
-    //add some checks here...
-  if (validate_adjudicators($debates)) {
-    create_temp_adjudicator_table($round);
-    foreach ($debates as &$debate) {
-        usort($debate['adjudicators'], 'cmp_ranking');
-        $chair = array_pop($debate['adjudicators']);
-		$query="INSERT INTO `temp_adjud_round_$round` (`debate_id`, `adjud_id`, `status`) VALUES ('{$debate['debate_id']}','{$chair['adjud_id']}','chair')";
-        if(!mysql_query($query)){
-			echo mysql_error();
-		}
-        foreach ($debate['adjudicators'] as $adjudicator) {
-			$query="INSERT INTO `temp_adjud_round_$round` (`debate_id`, `adjud_id`, `status`) VALUES ('{$debate['debate_id']}','{$adjudicator['adjud_id']}','panelist')";
-            if(!mysql_query($query)){
-				echo mysql_error();
+	//add some checks here...
+	if (validate_adjudicators($debates)) {
+		create_temp_adjudicator_table($round);
+		foreach ($debates as &$debate) {
+			usort($debate['adjudicators'], 'cmp_ranking');
+			$chair = array_pop($debate['adjudicators']);
+			$query="INSERT INTO temp_adjud (debate_id, adjud_id, status) VALUES (?, ?, 'chair')";
+			if(!qp($query, array($debate['debate_id'], $chair['adjud_id']))){
+				echo $DBConn->ErrorMsg();
+			}
+			foreach ($debate['adjudicators'] as $adjudicator) {
+				$query="INSERT INTO temp_adjud (debate_id, adjud_id, status) VALUES (?, ?, 'panelist')";
+				if(!qp($query, array($debate['debate_id'], $adjudicator['adjud_id']))){
+					echo $DBConn->ErrorMsg();
+				}
 			}
 		}
-    }
-  }
-      else {
-	echo "<b>Error in Simulated annealing, adjudication failed validity test!</b><br>";
-      }
+	} else {
+		echo "<b>Error in Simulated annealing, adjudication failed validity test!</b><br>";
+	}
 }
 
 function initial_distribution(&$debates, &$adjudicators) {

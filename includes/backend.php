@@ -30,8 +30,10 @@ function get_num_rounds() {
 }
 
 function has_temp_draw() {
-    $result = q("SHOW TABLES LIKE 'temp_draw_round%'");
-    return $result->RecordCount();
+	$tdresult=q("SHOW TABLES LIKE 'temp_draw'");
+	$taresult=q("SHOW TABLES LIKE 'temp_adjud'");
+
+	return ($tdresult->RecordCount()==1 && $taresult->RecordCount()==1);
 }
 
 function get_num_completed_rounds() {
@@ -45,7 +47,7 @@ function get_num_completed_rounds() {
 }
 
 function has_temp_result() {
-    $result = q("SHOW TABLES LIKE 'temp_result_round%'");
+    $result = q("SHOW TABLES LIKE 'temp_result'");
     return $result->RecordCount();
 }
 
@@ -371,7 +373,7 @@ function team_code_long_table($team_id) {
 }
 
 function venue_name($venue_id) {
-	$db_result=q("SELECT venue_name FROM `venue` WHERE venue_id=$venue_id");
+	$db_result=q("SELECT venue_name FROM venue WHERE venue_id=$venue_id");
 	$row = $db_result->FetchRow();
 	return $row['venue_name'];
 }
@@ -432,11 +434,11 @@ function delete_adjud($adjud_id){
 function convert_db_ssesl(){
 	  //for backwards compatability with Tabbie versions <= 1.4.2
 	  // add speaker_esl to speaker and import ESL data from teams
-	    $result = q("SHOW COLUMNS FROM `speaker` LIKE 'speaker_esl'");
+	    $result = q("SHOW COLUMNS FROM speaker LIKE 'speaker_esl'");
 	    if (!$result->RecordCount())
 			{
-				q("ALTER TABLE  `speaker` ADD  `speaker_esl` CHAR( 3 ) NOT NULL DEFAULT  'N'");
-				$query="SELECT speaker.speaker_id, team.esl, speaker.speaker_esl FROM  `speaker` INNER JOIN  `team` ON speaker.team_id = team.team_id";
+				q("ALTER TABLE  speaker ADD  speaker_esl CHAR( 3 ) NOT NULL DEFAULT  'N'");
+				$query="SELECT speaker.speaker_id, team.esl, speaker.speaker_esl FROM  speaker INNER JOIN  team ON speaker.team_id = team.team_id";
 				$result=q($query);
 				while ($row = $result->FetchRow()) {
 					if ($row[esl]=="Y") set_speaker_esl($row[speaker_id], "Y");
@@ -447,7 +449,7 @@ function convert_db_ssesl(){
 }
 
 function set_speaker_esl($speaker_id, $esl){
-	return q("UPDATE `speaker` SET  `speaker_esl`=? WHERE  `speaker`.`speaker_id` =?", array($esl,$speaker_id));
+	return q("UPDATE speaker SET  speaker_esl=? WHERE  speaker.speaker_id =?", array($esl,$speaker_id));
 }
 
 function makesafe($string){
@@ -492,14 +494,14 @@ function is_strike_judge_team($adjud_id, $team_id){
 }
 
 function univ_id_from_team($team_id){
-	$result = qp("SELECT `univ_id` FROM `team` WHERE `team_id`=?", array($team_id));
+	$result = qp("SELECT univ_id FROM team WHERE team_id=?", array($team_id));
 	$row = $result->FetchRow();
 	return $row['univ_id'];
 }
 
 function is_strike_judge_univ($adjud_id, $univ_id){
 	$query=
-	$resultstrike=qp("SELECT * FROM `strikes` WHERE `adjud_id`=? AND `univ_id`=? AND `team_id` IS NULL", array($adjud_id, $univ_id));
+	$resultstrike=qp("SELECT * FROM strikes WHERE adjud_id=? AND univ_id=? AND team_id IS NULL", array($adjud_id, $univ_id));
 	$rownum=$resultstrike->RecordCount();
 	if ($rownum>0){
 		//echo("strike on university $univ_id");
@@ -510,7 +512,7 @@ function is_strike_judge_univ($adjud_id, $univ_id){
 	}
 }
 function del_strike_id($strike_id){
-	return qp("DELETE FROM `strikes` WHERE `strikes`.`strike_id` = ?" , array($strike_id));
+	return qp("DELETE FROM strikes WHERE strikes.strike_id = ?" , array($strike_id));
 }
 
 function get_team_id($univ_id, $team_code){
@@ -579,7 +581,7 @@ function print_conflicts($adjud_id=0, $negative="<b>None</b>"){
 
 function finalise_temporary_draw($nextround) {
     $query = "SELECT DISTINCT COUNT(*) AS numadjud ";
-    $query .= "FROM temp_adjud_round_$nextround ";
+    $query .= "FROM temp_adjud";
     $query .= "WHERE STATUS = 'chair'";
 
     $resultnumadjud=q($query);
@@ -588,7 +590,7 @@ function finalise_temporary_draw($nextround) {
 
 
     $query = "SELECT COUNT(*) AS numdebates ";
-    $query .= "FROM temp_draw_round_$nextround ";
+    $query .= "FROM temp_draw";
 
     $resultnumdebates=q($query);
     $rownumdebates=$resultnumdebates->FetchRow();
@@ -599,7 +601,7 @@ function finalise_temporary_draw($nextround) {
         $msg[]="ERROR! There are debates with no Chair Adjudicator Allocated";
 		return 0;
       }
-	 $query="SELECT `adjud_id`, `og`, `oo`, `cg`, `co` FROM `temp_adjud_round_$nextround` INNER JOIN `temp_draw_round_$nextround` ON `temp_adjud_round_$nextround`.`debate_id`=`temp_draw_round_$nextround`.`debate_id`";
+	 $query="SELECT adjud_id, og, oo, cg, co FROM temp_adjud INNER JOIN temp_draw ON temp_adjud.debate_id=temp_draw.debate_id";
 	 if(!($result=q($query))){
 		 $msg[]="ERROR - strike query failed to execute";
 		return 0;
@@ -609,7 +611,7 @@ function finalise_temporary_draw($nextround) {
 			$ooid=$row['oo'];
 			$cgid=$row['cg'];
 			$coid=$row['co'];
-			$query="SELECT `univ_id` FROM `team` WHERE `team_id`=? OR `team_id`=? OR `team_id` = ? OR `team_id` = ?";
+			$query="SELECT univ_id FROM team WHERE team_id=? OR team_id=? OR team_id = ? OR team_id = ?";
 			$univ_id_result=qp($query, array($ogid, $ooid, $cgid, $coid));
 			if($univ_id_result->RecordCount()!=4){
 				$msg[]="ERROR - more than four teams for id (!)";
@@ -620,7 +622,7 @@ function finalise_temporary_draw($nextround) {
 			while($univ_id_row=$univ_id_result->FetchRow()){
 				$univ_ids[]=$univ_id_row['univ_id'];
 			}
-			$query="SELECT * FROM `strikes` WHERE `adjud_id`=? AND ((`team_id`=? OR `team_id`=? OR `team_id`=? OR `team_id`=? ) OR ((`univ_id`=? OR `univ_id`=? OR `univ_id`=? OR `univ_id`=?) AND `team_id` IS NULL))";
+			$query="SELECT * FROM strikes WHERE adjud_id=? AND ((team_id=? OR team_id=? OR team_id=? OR team_id=? ) OR ((univ_id=? OR univ_id=? OR univ_id=? OR univ_id=?) AND team_id IS NULL))";
 			$param=array($row['adjud_id'], $ogid, $ooid, $cgid, $coid, $univ_ids[0], $univ_ids[1], $univ_ids[2], $univ_ids[3]);
 			echo("<br/>");
 			if(!($strikeresult=qp($query, $param))){

@@ -28,9 +28,8 @@ require_once("includes/backend.php");
 
 <?php 
 $nextround=@$_GET['nextround'];
-$query = "SELECT A.adjud_id, A.adjud_name, A.ranking ";
-$query .= "FROM adjudicator A ";
-$query .= "LEFT JOIN temp_adjud_round_$nextround T ON A.adjud_id = T.adjud_id ";
+$query = "SELECT A.adjud_id, A.adjud_name, A.ranking FROM adjudicator A ";
+$query .= "LEFT JOIN temp_adjud T ON A.adjud_id = T.adjud_id ";
 $query .= "WHERE T.adjud_id IS NULL AND active='Y' ORDER BY ranking DESC, adjud_id ASC";        
 $result=q($query);
 if ($result->RecordCount()>0) {

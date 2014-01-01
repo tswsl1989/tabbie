@@ -38,13 +38,15 @@ a chair.*/
 
 function is_panelist($adjud_id, $round){
 		//RETURN 0 DOES NOT MEAN THEY ARE A CHAIR (!)
-		$query="SELECT COUNT(adjud_id) FROM temp_adjud_round_$round WHERE `adjud_id`='$adjud_id' AND `status`='panelist';";
-		if($count=mysql_fetch_assoc(mysql_query($query))){
+		$query="SELECT COUNT(adjud_id) FROM temp_adjud WHERE adjud_id=? AND status='panelist';";
+		$rs=qp($query, array($adjud_id));
+		if($count=$rs->FetchRow()){
 			if($count['COUNT(adjud_id)']==1){
 				return 1;
 			} else {
-				$query="SELECT COUNT(adjud_id) FROM temp_adjud_round_$round WHERE `adjud_id`='$adjud_id'";
-				if($count=mysql_fetch_assoc(mysql_query($query))){
+				$query="SELECT COUNT(adjud_id) FROM temp_adjud WHERE adjud_id=?";
+				$rs=qp($query, array($adjud_id));
+				if($count=$rs->FetchRow()){
 					$offset=$count['COUNT(adjud_id)'];
 					//error_log("Offset $offset",0);
 					if($offset==1){
@@ -68,20 +70,17 @@ function is_panelist($adjud_id, $round){
 
 function add_adjudicator($adjud_id, $debate_id, $status, $round){
 	
-	$query="DELETE FROM temp_adjud_round_$round WHERE `adjud_id`='$adjud_id';";
-	echo $query;
-	if(mysql_query($query)){
-		$query="INSERT INTO temp_adjud_round_$round (`debate_id`, `adjud_id`, `status`) VALUES ('$debate_id', '$adjud_id', '$status');";
-		echo $query;
-		if(mysql_query($query)){
+	$query="DELETE FROM temp_adjud WHERE adjud_id=?;";
+	if(qp($query, array($adjud_id))){
+		$query="INSERT INTO temp_adjud (debate_id, adjud_id, status) VALUES (?, ?, ?)";
+		if(qp($query, array($debate_id, $adjud_id, $status))){
 			//return 1;
 		} else {
 			//return 0;
 		}
-		$query="SELECT debate_id FROM temp_adjud_round_$round WHERE `adjud_id`='$adjud_id';";
-		$result=mysql_query($query);
-		$row=mysql_fetch_assoc($result);
-		echo $row['debate_id'];
+		$query="SELECT debate_id FROM temp_adjud WHERE adjud_id=?";
+		$result=qp($query, array($adjud_id));
+		$row=$result->FetchRow();
 		if($row['debate_id']==$debate_id){
 			echo("Good change.");
 		} else {
@@ -125,23 +124,27 @@ if(!($action=="LIST"||$action=="ADD"||$action=="CHAIR")){
 }
 
 
-$masterquery="SELECT debate_id, adjudicator.adjud_id AS id, adjudicator.ranking AS ranking, `temp_adjud_round_$round`.`status` AS status, adjudicator.adjud_name AS name, adjudicator.status AS trainee FROM `temp_adjud_round_$round` INNER JOIN adjudicator ON adjudicator.adjud_id = temp_adjud_round_$round.adjud_id ";
+$masterquery="SELECT debate_id, adjudicator.adjud_id AS id, adjudicator.ranking AS ranking, temp_adjud.status AS status, adjudicator.adjud_name AS name, adjudicator.status AS trainee FROM temp_adjud INNER JOIN adjudicator ON adjudicator.adjud_id = temp_adjud.adjud_id ";
 
 switch ($action) {
 	case "LIST":
+		$params=array();
 		if(isset($time)){
-			$masterquery.="WHERE UNIX_TIMESTAMP(`time`) > '$time'";
+			$masterquery.="WHERE UNIX_TIMESTAMP(time) > ?";
+			$params[]=$time;
 		}
 		if(isset($adjud_id)){
-			$masterquery.="WHERE `temp_adjud_round_$round`.`adjud_id` = '$adjud_id'";
+			$masterquery.="WHERE temp_adjud.adjud_id = ?";
+			$params[]=$adjud_id;
 		}
 		if(isset($free)){
-			$masterquery = "SELECT A.adjud_id AS id, A.adjud_name AS name, A.ranking AS ranking, T.`status` AS status, A.`status` AS trainee, CONCAT('FREE','') AS debate_id ";
-		    $masterquery .= "FROM adjudicator A ";
-		    $masterquery .= "LEFT JOIN temp_adjud_round_$round T ON A.adjud_id = T.adjud_id ";
-		    $masterquery .= "WHERE T.adjud_id IS NULL AND active='Y' ORDER BY ranking DESC";
-		} 
-		echo(mysql_to_xml("$masterquery", "adjudicator"));
+			$masterquery = "SELECT A.adjud_id AS id, A.adjud_name AS name, A.ranking AS ranking, T.status AS status, A.status AS trainee, CONCAT('FREE','') AS debate_id ";
+			$masterquery .= "FROM adjudicator A LEFT JOIN temp_adjud T ON A.adjud_id = T.adjud_id ";
+			$masterquery .= "WHERE T.adjud_id IS NULL AND active='Y' ORDER BY ranking DESC";
+			$params=array();
+		}
+		$results = qp($masterquery, $params);
+		echo(recordset_to_xml($results, "adjudicator"));
 		break;
 	case "ADD":
 		if($adjud_id&&$debate_id){
@@ -167,11 +170,10 @@ switch ($action) {
 	case "CHAIR":
 		if($adjud_id&&$debate_id){
 			if(is_panelist($adjud_id, $round)){
-				$query="SELECT adjud_id FROM temp_adjud_round_$round WHERE `status`='chair' AND `debate_id`='$debate_id';";
-				echo $query;
-				if($result=mysql_query($query)){
+				$query="SELECT adjud_id FROM temp_adjud WHERE status='chair' AND debate_id=?";
+				if($result=qp($query, array($debate_id))){
 					$success=true;
-					while($adjudicator = mysql_fetch_assoc($result)){
+					while($adjudicator = $result->FetchRow()){
 						if(add_adjudicator($adjudicator['adjud_id'],$debate_id,"panelist",$round)){
 							$success=$success&&true;
 						} else {

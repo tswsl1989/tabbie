@@ -269,3 +269,22 @@ tr.inactive
 	text-align: right;
 	font-size: 85%;
 }
+
+.install_checks ul li{
+	margin-left: 5em;
+}
+
+.pass {
+	color: #009900;
+	font-weight: bold;
+}
+
+.fail {
+	color: #DD0000;
+	font-weight: bold;
+}
+
+.warn {
+	color: #FFAA00;
+	font-weight: bold;
+}

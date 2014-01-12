@@ -29,15 +29,166 @@ $title = "Install Tabbie";
 $ntu_controller = $moduletype = "";
 require_once("view/header.php");
 require_once("includes/dbimport.php");
-?>
-    <h2>Installation</h2>
-<?php
+echo "<h2>Tabbie - Installation</h2>";
+
 $action="";
 if(array_key_exists("action", @$_POST)) $action=trim(@$_POST['action']);
 $filename = "config/settings.php";
 
+$messages=array();
 if ($action == "install") {
-	if ($_FILES['local_image']['error'] == 0){
+	$all_is_well = write_config($filename);
+	if ($all_is_well) {
+		$all_is_well = handle_image();
+	}
+
+	if ($all_is_well) {
+		require_once("includes/dbconnection.php");
+		$queries_text = file_get_contents("install/create_db.sql");
+		$queries = explode(';', $queries_text);
+
+		echo "<p style=\"font-family: courier; font-size: 10px;\">";
+
+		$DBConn->Execute("SET NAMES 'utf8' COLLATE 'utf8_unicode_ci'");
+		$DBConn->Execute("DROP DATABASE $database_name;");
+		if ($all_is_well) {
+			$all_is_well = $DBConn->Execute("CREATE DATABASE $database_name CHARACTER SET utf8 COLLATE utf8_unicode_ci;") && $all_is_well;
+			$all_is_well = $DBConn->Execute("USE $database_name") && $all_is_well;
+			if (!$all_is_well) {
+				$messages[] = "Unable to create and select database: ".$DBConn->ErrorMsg();
+			} else {
+				$messages[] = "Database created";
+			}
+		} 
+
+		if ($all_is_well) {
+			$l=0;
+			foreach ($queries as $query) {
+				if (trim($query)=="") {
+					continue;
+				}
+				$all_is_well = $DBConn->Execute($query) && $all_is_well;
+				$l++;
+				if (!$all_is_well) {
+					$messages[] = "DB Error at query $l: ".$DBConn->ErrorMsg();
+				}
+			}
+		}
+
+		if ($all_is_well) {
+			$messages[] = "Database structure created";
+		} else {
+			$messages[] = "Failed to create database structures. Check SQL error messages";
+		}
+
+		if (file_exists("install/university.sql") && $all_is_well) {
+			$queries = explode(";", file_get_contents("install/university.sql"));
+			$u = true;
+			foreach ($queries as $query) {
+				$u = $DBConn->Execute($query) && $u;
+			}
+			if ($u) {
+				$messages[]="University list successfully loaded";
+			} else {
+				$messages[]="Failed to load university list";
+			}
+		}
+		echo "</p>";
+	}
+
+	if ($messages !== "") {
+		echo "<div class=\"install_checks\"><ul>\n";
+		foreach ($messages as $msg) {
+			echo "<li>".$msg."</li>";
+		}
+		echo "</ul></div>";
+	}
+
+	if ($all_is_well) {
+		echo '<h2>Installation Successful</h2><a href="index.php">Start using Tabbie</a>';
+	} else {
+		echo '<h2>Installation Failed</h2>Check error messages above';
+	}
+
+} else {
+	echo "<div class=\"install_checks\">\n<ul>";
+	echo "<strong>Checking requirements:</strong>";
+	if (file_exists($filename)) {
+		echo "<li><span class=\"warn\">Warning</span> - Tabbie is already installed. Executing this procedure again will erase all data</li>\n";
+	}
+	if (!defined('PHP_VERSION_ID')) {
+		$version = explode('.', PHP_VERSION);
+		define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
+	}
+	$bail = 0;
+	if (PHP_VERSION_ID < 50000) {
+		echo "<li><span class=\"fail\">Fail</span> - PHP version 5.0 or greater required (".PHP_VERSION." found)</li>\n";
+		$bail++;
+	} else {
+		echo "<li><span class=pass>Pass</span> - PHP version ".PHP_VERSION."</li>\n";
+	}
+	if (!ini_get("short_open_tags")) {
+		if (PHP_VERSION_ID < 50400) {
+			echo "<li><span class=fail>Fail</span> - PHP: 'short_open_tags' must be enabled in php.ini</li>\n";
+			$bail++;
+		} else {
+			echo "<li><span class=pass>Pass</span> - PHP 'short_open_tags' disabled, but PHP version > 5.4.0</li>\n";
+		}
+	} else {
+		echo "<li><span class=pass>Pass</span> - PHP: 'short_open_tags' enabled</li>\n";
+	}
+
+	if (is_dir("./config/")) {
+		if (is_writable("./config/")) {
+			echo "<li><span class=pass>Pass</span> - Config directory is writable</li>\n";
+		} else {
+			echo "<li><span class=fail>Fail</span> - Config directory read-only</li>\n";
+			$bail++;
+		}
+	} else if (is_writable(".") && mkdir("./config/")) {
+		echo "<li><span class=pass>Pass</span> - Config directory created</li>\n";
+	} else {
+		echo "<li><span class=fail>Fail</span> - Config directory does not exist and could not be created<br />Please create a directory called 'config' and make it writable by the webserver</li>\n";
+		$bail++;
+	}
+
+	if (include("adodb/adodb.inc.php")) {
+		echo "<li><span class=pass>Pass</span> - ADODB available</li>\n";
+	} else {
+		echo "<li><span class=fail>Fail</span> - ADODB not available</li>\n";
+		$bail++;
+	}
+	echo "</ul></div>\n";
+
+	if ($bail) {
+		echo "<h3>Installation checks failed (".$bail." failures) - please fix these issues before continuing</h3>\n";
+	} else {
+?>
+
+<form action="install.php" enctype="multipart/form-data" method="POST">
+	<input type="hidden" name="action" value="install"/>
+	<input type="hidden" name="MAX_FILE_SIZE" value="300000" /></td></tr>
+	<table>
+		<tr><td><label for="database_host">DB Host: </label></td><td><input type="text" size="30" name="database_host" value="localhost" /></td><td>Host for primary database. Almost always localhost</td></tr>
+		<tr><td><label for="database_user">DB User: </label></td><td><input type="text" size="30" name="database_user" value="root" /></td><td>&nbsp;</tr>
+		<tr><td><label for="database_password">DB Password: </label></td><td><input type="password" size="30" name="database_password" value="" /></td><td>&nbsp;</td></tr>
+		<tr><td><label for="database_name">DB Name: </label></td><td><input type="text" size="30" name="database_name" value="tabbie" /></td><td>Account specified above must be able to create and delete tables in this database</td></tr>
+		<tr><td><label for="local_name">Tournament Name:</label></td><td><input type="text" size="30" name="local_name" value="Tabbie" /></td><td>Tournament title to be displayed on menu screens and printouts</tr>
+		<tr><td><label for="local_image">Tournament Logo: </label></td><td><input type="file" name="local_image" value=""></td><td><em>Optional</em> - As above</tr>
+		<tr><td><label for="submit">Go!</label></td><td><input type="submit" value="Install"/></td><td>&nbsp;</td></tr>
+	</table>
+</form>
+<?php
+	}
+}
+
+echo "</div>";
+include('view/footer.php');
+echo "</body>\n</html>";
+
+function handle_image() {
+	global $messages;
+	if ($_FILES['local_image']['error'] == 0) {
 		$im_str=file_get_contents($_FILES['local_image']['tmp_name']);
 		$image=imagecreatefromstring($im_str);
 		$x=imagesx($image);
@@ -53,95 +204,40 @@ if ($action == "install") {
 		$resized=imagecreatetruecolor($new_x,$new_y);
 		imagecopyresampled($resized, $image, 0, 0, 0, 0, $new_x, $new_y, $x, $y);
 		if (imagepng($resized,"./config/local_logo.png")){
-			$image_path="config/local_logo.png";
+			$messages[]="Local logo resized and saved";
+			return true;
 		}else{
-			die("Unable to save resized image");
+			$messages[]="Unable to save resized image";
+			return false;
 		}
-	} elseif($_FILES['local_image']['error'] == 4) { 
+	} elseif($_FILES['local_image']['error'] == 4) {
 		$image_path="";
+		return true;
 	} else{
-		echo "Image Upload Failed";
-		die("Unable to proceed - Image Upload failed with error code ".$_FILES['local_image']['error']);
-	}
-    $setup_contents = '<?php
-$database_host = "' . @$_POST['database_host'] . '";
-$database_user = "' . @$_POST['database_user'] . '";
-$database_password = "' . @$_POST['database_password'] . '";
-$database_name = "' . @$_POST['database_name'] . '";
-$local_name = "'.@$_POST['local_name'].'";
-$local_image ="'.$image_path.'";
-?>';
-
-$f = fopen($filename, 'w');
-if (!$f) {
-    echo "<h2>can't write to file '$filename'</h2>Make sure you have the right  directory permissions";
-    die;
-}
-fwrite($f, $setup_contents);
-fclose($f);
-
-require_once("includes/dbconnection.php");
-$queries_text = file_get_contents("install/create_db.sql");
-$queries = explode(';', $queries_text);
-
-?><p style="font-family: courier; font-size: 10px;"><?php
-
-$all_is_well = true;
-$DBConn->Execute("SET NAMES 'utf8' COLLATE 'utf8_unicode_ci'");
-$DBConn->Execute("DROP DATABASE ?", array($database_name));
-$all_is_well = execute_query_print_result("CREATE DATABASE $database_name CHARACTER SET utf8 COLLATE utf8_unicode_ci;") && $all_is_well;
-$DBConn->Execute("USE ?", array($database_name));
-foreach ($queries as $query) {
-    $all_is_well = execute_query_print_result($query) && $all_is_well;
-}
-if (file_exists("install/university.sql")) {
-	echo "<h3> University code list found, loading...";
-	$queries = explode(";", file_get_contents("install/university.sql"));
-	$u = true;
-	foreach ($queries as $query) {
-		$u = q($query) && $u;
-	}
-	if ($u) {
-		echo "Success!</h3>";
-	} else {
-		echo "Failed!</h3>";
+		$messages[]="Image Upload Failed with error code".$_FILES['local_image']['error'];
+		return false;
 	}
 }
-?></p><?php
 
-if ($all_is_well) {
-    echo '<h2>Installation Successful</h2><a href="index.php">Start using Tabbie</a>';
-} else echo '<h2>Installation Failed</h2>Make sure you have the right Database  permissions';
+function write_config($filename) {
+	global $messages;
+	$setup_contents = "<?PHP\n";
+	$setup_contents .= "\$database_host = '".$_POST['database_host']."';\n";
+	$setup_contents .= "\$database_user = '".$_POST['database_user']."';\n";
+	$setup_contents .= "\$database_password = '".$_POST['database_password']."';\n";
+	$setup_contents .= "\$database_name = '".$_POST['database_name']."';\n";
+	$setup_contents .= "\$local_name = '".$_POST['local_name']."';\n";
+	if (file_exists("config/local_logo.png")) {
+		$setup_contents .= "\$local_image ='config/local_logo.png';\n";
+	}
+	$setup_contents .= "?>";
 
-} else {
-    if (file_exists($filename)) {
-        echo "<h3>Warning - Tabbie is already installed. Executing this procedure again will erase all data</h3>";
-    }
-?>
-<p>
-Please fill out the form below. If you have no idea what these options mean - just click on the install button. Users that try to reinstall here: Please be aware of the fact that any existing data in the database indicated below will be overwritten.
-</p>
-
-<form action="install.php" enctype="multipart/form-data" method="POST">
-    <input type="hidden" name="action" value="install"/>
-    <input type="text" size="30" name="database_host" value="localhost"> Database Host<br/>
-    <input type="text" size="30" name="database_user" value="root"> Database User<br/>
-    <input type="text" size="30" name="database_password" value=""> Database Password<br/>
-    <input type="text" size="30" name="database_name" value="tabbie"> Database Name<br/>
-    <input type="text" size="30" name="local_name" value="Tabbie"> Tournament Title<br/>
-    <input type="hidden" name="MAX_FILE_SIZE" value="300000">
-    <input type="file" name="local_image" value=""> Logo<br/>
-    <input type="submit" value="Install"/>
-</form>
-
-<p>
-Tournament title is displayed on menu screens and printouts.</p>
-<?php
+	$f = fopen($filename, 'w');
+	if (!$f || fwrite($f, $setup_contents) === false) {
+		$messages="Unable to write to file '$filename'. Check directory permissions";
+		return false;
+	}
+	fclose($f);
+	return true;
 }
 ?>
-
-  </div>
-
-<?php require('view/footer.php'); ?>
-</body>
-</html>

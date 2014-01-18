@@ -35,9 +35,26 @@ $action="";
 if(array_key_exists("action", @$_POST)) $action=trim(@$_POST['action']);
 $filename = "config/settings.php";
 
+$reinstall = false;
+$reinstall = file_exists($filename);
+
 $messages=array();
 if ($action == "install") {
+	if ($reinstall) {
+		$vars = array("database_user", "database_password", "database_name");
+		foreach ($vars as $v) {
+			$tmp  = get_old_config_val($filename, $v);
+			if (trim($_POST[$v])=="" && $tmp) {
+				$_POST[$v] = $tmp;
+			}
+		}
+	}
+
 	$all_is_well = write_config($filename);
+	if ($all_is_well) {
+		$all_is_well = include($filename);
+	}
+
 	if ($all_is_well) {
 		$all_is_well = handle_image();
 	}
@@ -113,7 +130,7 @@ if ($action == "install") {
 } else {
 	echo "<div class=\"install_checks\">\n<ul>";
 	echo "<strong>Checking requirements:</strong>";
-	if (file_exists($filename)) {
+	if ($reinstall) {
 		echo "<li><span class=\"warn\">Warning</span> - Tabbie is already installed. Executing this procedure again will erase all data</li>\n";
 	}
 	if (!defined('PHP_VERSION_ID')) {
@@ -163,22 +180,30 @@ if ($action == "install") {
 	if ($bail) {
 		echo "<h3>Installation checks failed (".$bail." failures) - please fix these issues before continuing</h3>\n";
 	} else {
-?>
+		echo <<<FormTop
 
 <form action="install.php" enctype="multipart/form-data" method="POST">
 	<input type="hidden" name="action" value="install"/>
 	<input type="hidden" name="MAX_FILE_SIZE" value="300000" /></td></tr>
 	<table>
 		<tr><td><label for="database_host">DB Host: </label></td><td><input type="text" size="30" name="database_host" value="localhost" /></td><td>Host for primary database. Almost always localhost</td></tr>
-		<tr><td><label for="database_user">DB User: </label></td><td><input type="text" size="30" name="database_user" value="root" /></td><td>&nbsp;</tr>
-		<tr><td><label for="database_password">DB Password: </label></td><td><input type="password" size="30" name="database_password" value="" /></td><td>&nbsp;</td></tr>
-		<tr><td><label for="database_name">DB Name: </label></td><td><input type="text" size="30" name="database_name" value="tabbie" /></td><td>Account specified above must be able to create and delete tables in this database</td></tr>
+FormTop;
+		if ($reinstall) {
+			echo "\t\t<tr><td><label for=\"database_user\">DB User: </label></td><td><input type=\"text\" size=\"30\" name=\"database_user\" value=\"\" /></td><td>Leave blank to use current username</tr>";
+			echo "\t\t<tr><td><label for=\"database_password\">DB Password: </label></td><td><input type=\"password\" size=\"30\" name=\"database_password\" value=\"\" /></td><td>Leave blank to use current password</td></tr>";
+			echo "\t\t<tr><td><label for=\"database_name\">DB Name: </label></td><td><input type=\"text\" size=\"30\" name=\"database_name\" value=\"".get_old_config_val($filename, "database_name")."\" /></td><td>Account specified above must be able to create and delete tables in this database</td></tr>";
+		} else {
+			echo "\t\t<tr><td><label for=\"database_user\">DB User: </label></td><td><input type=\"text\" size=\"30\" name=\"database_user\" value=\"\" /></td>&nbsp;<td></tr>";
+			echo "\t\t<tr><td><label for=\"database_password\">DB Password: </label></td><td><input type=\"password\" size=\"30\" name=\"database_password\" value=\"\" /></td><td>&nbsp;</td></tr>";
+			echo "<tr><td><label for=\"database_name\">DB Name: </label></td><td><input type=\"text\" size=\"30\" name=\"database_name\" value=\"tabbie\" /></td><td>Account specified above must be able to create and delete tables in this database</td></tr>";
+		}
+		echo <<<FormBottom
 		<tr><td><label for="local_name">Tournament Name:</label></td><td><input type="text" size="30" name="local_name" value="Tabbie" /></td><td>Tournament title to be displayed on menu screens and printouts</tr>
 		<tr><td><label for="local_image">Tournament Logo: </label></td><td><input type="file" name="local_image" value=""></td><td><em>Optional</em> - As above</tr>
 		<tr><td><label for="submit">Go!</label></td><td><input type="submit" value="Install"/></td><td>&nbsp;</td></tr>
 	</table>
 </form>
-<?php
+FormBottom;
 	}
 }
 
@@ -232,12 +257,27 @@ function write_config($filename) {
 	}
 	$setup_contents .= "?>";
 
+	if (!is_writable($filename)) {
+		$messages[]="Unable to write to file '$filename'. Check directory permissions";
+		return false;
+	}
 	$f = fopen($filename, 'w');
-	if (!$f || fwrite($f, $setup_contents) === false) {
-		$messages="Unable to write to file '$filename'. Check directory permissions";
+	if (fwrite($f, $setup_contents) === false) {
+		$messages[]="Failed to write to file '$filename'. Check permissions";
 		return false;
 	}
 	fclose($f);
 	return true;
+}
+
+function get_old_config_val($fname, $vname) {
+	if (include($fname)) {
+		# Including a file in a function restricts its scope
+		# This means that variables defined in $fname are only visible here
+		# If a variable exists with the name passed as $vname then its value is returned
+		return isset($$vname) ? $$vname : false;
+	} else {
+		return false;
+	}
 }
 ?>

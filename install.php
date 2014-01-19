@@ -155,6 +155,12 @@ if ($action == "install") {
 		echo "<li><span class=pass>Pass</span> - PHP: 'short_open_tags' enabled</li>\n";
 	}
 
+	if (extension_loaded("mbstring")) {
+		echo "<li><span class=\"pass\">Pass</span> - PHP Multibyte string support loaded</li>\n";
+	} else {
+		echo "<li>span class=\"warn\">Warning</span> - PHP Multibyte string support not loaded<br />Foreign characters may be misprinted on ballots or cause other errors</li>\n";
+	}
+
 	if (is_dir("./config/")) {
 		if (is_writable("./config/")) {
 			echo "<li><span class=pass>Pass</span> - Config directory is writable</li>\n";
@@ -175,6 +181,7 @@ if ($action == "install") {
 		echo "<li><span class=fail>Fail</span> - ADODB not available</li>\n";
 		$bail++;
 	}
+
 	echo "</ul></div>\n";
 
 	if ($bail) {

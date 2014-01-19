@@ -38,6 +38,7 @@ This version also includes code from other projects:
 
  - PHPPowerPoint (LGPL v2.1)
  - FPDF (Freeware - "You may use, modify and redistribute this softare as you wish")
+ - tFPDF (LGPL) and DejaVu fonts
  - jQuery, jQuery UI and various jQuery plugins/libraries (See files for details)
 
 Contributors

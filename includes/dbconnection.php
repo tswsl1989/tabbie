@@ -27,4 +27,6 @@ require_once("adodb/adodb.inc.php");
 global $DBconn;
 $DBConn = ADONewConnection("mysqli://$database_user:$database_password@$database_host/$database_name");
 $DBConn->SetFetchMode(ADODB_FETCH_ASSOC);
+$DBConn->Execute("SET NAMES utf8");
+$DBConn->SetCharSet('utf8')
 ?>

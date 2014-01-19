@@ -44,9 +44,9 @@ exec($command, $output, $return_value);
 $attempted[] = array($command,$return_value,$output);
 
 if ($return_value == 0) {
-    header('Content-type: text/plain'); 
-    header('Content-Disposition: attachment; filename="' . $database_name . '.sql"');
-    header( "Content-Description: File Transfer");
+	header('Content-type: text/plain');
+	header('Content-Disposition: attachment; filename="'.$database_name.'-'.date("Ymd-His").'.sql"');
+	header("Content-Description: File Transfer");
     
 	foreach ($output as $line){
 		print "$line\n";

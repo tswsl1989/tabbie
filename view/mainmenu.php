@@ -44,7 +44,7 @@ include('config/settings.php');
     <li><a href="result.php"<?= ($ntu_controller=="result")?" class=\"activemain\"":""?>>Results</a></li>
     <li><a href="standing.php"<?= ($ntu_controller=="standing")?" class=\"activemain\"":""?>>Standings</a></li>
     <li><a href="print.php"<?= ($ntu_controller=="print")?" class=\"activemain\"":""?>>Print</a></li>
-    <li><a href="backup.php">Backup</a></li>
+    <li><a href="backup.php"<?= ($ntu_controller=="backup")?" class=\"activemain\"":""?>>Backup</a></li>
     <li><a href="import.php"<?= ($ntu_controller=="import")?" class=\"activemain\"":""?>>Import</a></li>
 </ul>
 </div>

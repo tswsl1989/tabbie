@@ -143,7 +143,7 @@ if (get_num_rounds() == 0 && !has_temp_draw()) {
 
 <h3>After the tournament</h3>
 <ul>
-<li>Present the results as a website (not implemented yet)</li>
+<li><a href="team_print.php">Present the results as a website</a></li>
 </ul>
 
 <? } ?>

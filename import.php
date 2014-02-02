@@ -38,7 +38,8 @@ Use this page to import SQL files. SQL files can be created by clicking on "back
 
 <form enctype="multipart/form-data" action="import.php" method="POST">
 <input type="hidden" name="MAX_FILE_SIZE" value="1000000" />
-Choose a file to upload: <input name="uploadedfile" type="file" /><br />
+<label for="uploadedfile">Choose a file to upload:</label> <input name="uploadedfile" type="file" /><br /><br />
+<label for="drop_create">Drop and recreate DB?</label> <input name="drop_create" type="checkbox" value="drop" /><br /><br />
 <input type="submit" value="Start Import" />
 </form>
 
@@ -48,15 +49,17 @@ Choose a file to upload: <input name="uploadedfile" type="file" /><br />
 if ( array_key_exists("uploadedfile", @$_FILES)) {
 	$problem = false;
 
-	if (!$DBConn->Execute("DROP DATABASE $database_name")) {
+	if (isset($_POST['drop_create']) && $_POST['drop_create']=="drop") {
+		if (!$DBConn->Execute("DROP DATABASE $database_name")) {
+			$problem = true;
+			print $DBConn->ErrorMsg() . "<br>";
+		}
+		if (!$DBConn->Execute("CREATE DATABASE $database_name")) {
 		$problem = true;
 		print $DBConn->ErrorMsg() . "<br>";
+		}
+		$DBConn->Execute("USE $database_name");
 	}
-	if (!$DBConn->Execute("CREATE DATABASE $database_name")) {
-		$problem = true;
-		print $DBConn->ErrorMsg() . "<br>";
-	}
-	$DBConn->Execute("USE $database_name");
 
 	echo ('<p style="font-family: courier; font-size: 10px;">');
 	$contents = file_get_contents($_FILES['uploadedfile']['tmp_name']);
@@ -84,10 +87,10 @@ if ( array_key_exists("uploadedfile", @$_FILES)) {
 			while($adjudicator=$strikeresult->FetchRow()){
 			    $conflicts = preg_split("/, /", $adjudicator['conflicts'], -1, PREG_SPLIT_NO_EMPTY);
 			    foreach ($conflicts as $conflict) {
-					$parts = split("[.]", $conflict);
-					if (sizeof($parts) == 1) {
+					$parts = preg_split("/\./", $conflict);
+					if (count($parts) == 1) {
 					    add_strike_judge_univ($adjudicator['adjud_id'],__get_university_id_by_code($conflict));
-					} elseif (sizeof($parts == 2)) {
+					} elseif (count($parts == 2)) {
 					    add_strike_judge_team($adjudicator['adjud_id'],__get_team_id_by_codes($parts[0], $parts[1]));
 					}
 				}				

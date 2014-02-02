@@ -20,8 +20,9 @@
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  * end license */
-require_once("draw/adjudicator/simulated_annealing_config.php");
 require_once("includes/display.php");
+require_once("includes/backend.php");
+require_once("draw/adjudicator/simulated_annealing_config.php");
 
 $submitted="";
 if(array_key_exists("save", @$_POST)) $submitted=trim(@$_POST['save']);

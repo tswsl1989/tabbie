@@ -26,7 +26,7 @@ require_once("includes/db_tools.php");
 require_once("includes/http.php");
 require_once("draw/adjudicator/simulated_annealing.php");
 require_once("controller/draw/adjud.php");
-date_default_timezone_set(@date_default_timezone_set());
+date_default_timezone_set(@date_default_timezone_get());
 
 $action="";
 $lastmodified="";

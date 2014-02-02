@@ -26,6 +26,7 @@ require_once("includes/db_tools.php");
 require_once("includes/http.php");
 require_once("draw/adjudicator/simulated_annealing.php");
 require_once("controller/draw/adjud.php");
+date_default_timezone_set(@date_default_timezone_set());
 
 $action="";
 $lastmodified="";
@@ -303,40 +304,39 @@ echo '<h3><a href="draw.php?moduletype=dragdraw">Manually adjust adjudicators an
 if ($exist) {
     if ($action=="edit") {
 	//Display Debate Details
-        $query="SELECT  v.venue_id,venue_name,t1.team_code as ogtc,u1.univ_code as oguc,t2.team_code as ootc,u2.univ_code as oouc,t3.team_code as cgtc,u3.univ_code as cguc,t4.team_code as cotc,u4.univ_code as couc, t1.team_id AS ogid, t2.team_id AS ooid, t3.team_id AS cgid, t4.team_id AS coid  ";
-        $query.="FROM temp_draw d, team t1,team t2, team t3, team t4, university u1, university u2, university u3, university u4, venue v WHERE d.venue_id=v.venue_id AND d.og=t1.team_id AND t1.univ_id=u1.univ_id ";
-        $query.= "AND d.oo=t2.team_id AND t2.univ_id=u2.univ_id AND d.cg=t3.team_id AND t3.univ_id=u3.univ_id AND d.co=t4.team_id AND t4.univ_id=u4.univ_id AND d.debate_id=?";
-        
-        $result=qp($query, array($debate_id));
-        $row=$result->FetchRow();
+	$query="SELECT  v.venue_id,venue_name,t1.team_code as ogtc,u1.univ_code as oguc,t2.team_code as ootc,u2.univ_code as oouc,t3.team_code as cgtc,u3.univ_code as cguc,t4.team_code as cotc,u4.univ_code as couc, t1.team_id AS ogid, t2.team_id AS ooid, t3.team_id AS cgid, t4.team_id AS coid  ";
+	$query.="FROM temp_draw d, team t1,team t2, team t3, team t4, university u1, university u2, university u3, university u4, venue v WHERE d.venue_id=v.venue_id AND d.og=t1.team_id AND t1.univ_id=u1.univ_id ";
+	$query.= "AND d.oo=t2.team_id AND t2.univ_id=u2.univ_id AND d.cg=t3.team_id AND t3.univ_id=u3.univ_id AND d.co=t4.team_id AND t4.univ_id=u4.univ_id AND d.debate_id=?";
+
+	$result=qp($query, array($debate_id));
+	$row=$result->FetchRow();
 	$venue_id=$row['venue_id'];
 	$venue_name=$row['venue_name'];
-    
+
 	$ogpoints = points_for_team($row['ogid'], $numdraws);
 	$oopoints = points_for_team($row['ooid'], $numdraws);
 	$cgpoints = points_for_team($row['cgid'], $numdraws);
 	$copoints = points_for_team($row['coid'], $numdraws);
-        
+
 	$totalpoints = $ogpoints + $oopoints + $cgpoints + $copoints;
 
-    
 	echo "<div id=\"debatedetails\">\n";
 	echo "<h3>Opening Government : ".$row['oguc']." ".$row['ogtc']." (".$ogpoints.")</h3>";
 	echo "<h3>Opening Opposition : ".$row['oouc']." ".$row['ootc']." (".$oopoints.")</h3>";
 	echo "<h3>Closing Government : ".$row['cguc']." ".$row['cgtc']." (".$cgpoints.")</h3>";
 	echo "<h3>Opening Government : ".$row['couc']." ".$row['cotc']." (".$copoints.")</h3>";
 	echo "</div>\n";
-            
-        //For the purpose of testing of conflicts
-        $ogid=$row['ogid'];
-        $ooid=$row['ooid'];
-        $cgid=$row['cgid'];
-        $coid=$row['coid'];
-        
-        echo "<form name=\"manualallocform\" method=\"POST\" action=\"draw.php?moduletype=manualdraw&amp;action=doedit&amp;debate_id=$debate_id\">\n";
 
-        echo "<br/><input type=\"submit\" value=\"Modify Allocation\"/>";
-        echo " <input type=\"button\" value=\"Cancel\" onClick=\"location.replace('draw.php?moduletype=manualdraw')\"/>";
+	//For the purpose of testing of conflicts
+	$ogid=$row['ogid'];
+	$ooid=$row['ooid'];
+	$cgid=$row['cgid'];
+	$coid=$row['coid'];
+
+	echo "<form name=\"manualallocform\" method=\"POST\" action=\"draw.php?moduletype=manualdraw&amp;action=doedit&amp;debate_id=$debate_id\">\n";
+
+	echo "<br/><input type=\"submit\" value=\"Modify Allocation\"/>";
+	echo " <input type=\"button\" value=\"Cancel\" onClick=\"location.replace('draw.php?moduletype=manualdraw')\"/>";
 	echo "<h3>Venue</h3>\n";
 	echo "<select  id=\"venueselect\" name=\"venueselect\" style=\"margin-left:80px\">\n";
 	//Display List of available venues
@@ -345,19 +345,19 @@ if ($exist) {
 	//Load Unoccupied Venues
 	$query= "SELECT V.venue_id, V.venue_name FROM venue V LEFT OUTER JOIN temp_draw T ON V.venue_id = T.venue_id WHERE V.active = 'Y' AND T.venue_id IS NULL";
 	$resultvenue=q($query);
-    
+
 	while($rowvenue=$resultvenue->FetchRow()) {
 		echo "<option value=\"{$rowvenue['venue_id']}\">{$rowvenue['venue_name']}</option>\n";
 	}
 	echo "</select>\n";
 	echo "<div>\n";    
 	echo "<h3>Allocated Adjudicators</h3>\n";
-        
-        //read all adjudicators from present round along with their status
-        $query="SELECT  A.adjud_id AS adjud_id,adjud_name, T.status AS status, A.ranking AS ranking FROM adjudicator AS A,temp_adjud AS T WHERE A.adjud_id=T.adjud_id AND T.debate_id=? ORDER BY status";
+
+	//read all adjudicators from present round along with their status
+	$query="SELECT  A.adjud_id AS adjud_id,adjud_name, T.status AS status, A.ranking AS ranking FROM adjudicator AS A,temp_adjud AS T WHERE A.adjud_id=T.adjud_id AND T.debate_id=? ORDER BY status";
 	$result=qp($query, array($debate_id));
 
-        if ($result->RecordCount()!=0) {
+	if ($result->RecordCount()!=0) {
 		echo "<table>\n";
 		echo "<th>Remove(Y/N)</th><th>Adjudicator</th><th>Status</th><th>Ranking</th><th>Conflicts</th>\n";
 		while($row=$result->FetchRow()) {
@@ -384,9 +384,8 @@ if ($exist) {
 	} else {
 		echo "<p>No Adjudicators Assigned</p>";
 	}
-        echo "</div>";
-
-        echo "<div>";
+	echo "</div>";
+	echo "<div>";
 	echo "<h3>Adjudicator Pool</h3>";
 	$query = "SELECT A.adjud_id, A.adjud_name, A.ranking ";
 	$query .= "FROM adjudicator A LEFT JOIN temp_adjud T ON A.adjud_id = T.adjud_id ";
@@ -422,13 +421,12 @@ if ($exist) {
 	} else {
 		echo "<p>No more Adjudicators left!</p>\n";
 	}
-            
-        echo "</div>\n";
-        echo "<br/><input type=\"submit\" value=\"Modify Allocation\"/>";
-        echo " <input type=\"button\" value=\"Cancel\" onClick=\"location.replace('draw.php?moduletype=manualdraw')\"/>";
-        echo "</form>\n";
-        
-       
+
+	echo "</div>\n";
+	echo "<br/><input type=\"submit\" value=\"Modify Allocation\"/>";
+	echo " <input type=\"button\" value=\"Cancel\" onClick=\"location.replace('draw.php?moduletype=manualdraw')\"/>";
+	echo "</form>\n";
+
     }
 
     if ($action=="display") {

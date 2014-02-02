@@ -22,6 +22,7 @@
  * end license */
 
 require_once("includes/display.php");
+require_once("includes/settings.php");
 
 if(array_key_exists("action", @$_GET)) $action=trim(@$_GET['action']); //Check action
 $validate=1;
@@ -632,9 +633,8 @@ if ($nextresult==$numrounds)
     {    
       echo "<h3>Debate Details</h3>\n";
       echo "<p>Venue : $venue</p>\n";
-      require_once("draw/adjudicator/simulated_annealing_config.php");
-      $lower_limit = $scoring_factors['highlight_lowerlimit'];
-      $upper_limit = $scoring_factors['highlight_upperlimit'];
+      $lower_limit = get_setting('highlight_lowerlimit');
+      $upper_limit = get_setting('highlight_upperlimit');
 
       //sort scores to find position
       $scores_arr['og']=$team_og_score;

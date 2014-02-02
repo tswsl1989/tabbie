@@ -23,7 +23,7 @@
 
 require_once("includes/adjudicator.php");
 require_once("includes/backend.php");
-require_once("draw/adjudicator/simulated_annealing_config.php");
+require_once("includes/settings.php");
 
 //for information on what simulated annealing is, see: http://en.wikipedia.org/wiki/Simulated_annealing
 

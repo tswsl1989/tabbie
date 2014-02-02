@@ -23,10 +23,10 @@
 
 require_once("includes/dbconnection.php");
 require_once("includes/db_tools.php");
+require_once("includes/settings.php");
 
 function get_num_rounds() {
-    $result = q("SELECT param_value FROM settings WHERE param_name='round'");
-    return $result->Fields("param_value");
+	return get_setting("round");
 }
 
 function has_temp_draw() {

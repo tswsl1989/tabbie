@@ -22,7 +22,7 @@
  * end license */
 require_once("includes/display.php");
 require_once("includes/backend.php");
-require_once("draw/adjudicator/simulated_annealing_config.php");
+require_once("includes/settings.php");
 
 $submitted="";
 if(array_key_exists("save", @$_POST)) $submitted=trim(@$_POST['save']);
@@ -30,10 +30,10 @@ if ($submitted) {
   foreach ($scoring_factors as $pname=>$pvalue) {
     $scoring_factors[$pname]=trim(@$_POST["param_".$pname]);
   }
-  store_scoring_factors_to_db($scoring_factors);
+  store_settings_to_db($scoring_factors);
 }
 
-echo "<h2>Adjust adjudicator allocation parameters</h2>\n"; //title
+echo "<h2>Adjust settings and adjudicator allocation parameters</h2>\n"; //title
 echo "<form action=\"input.php?moduletype=adjud_params\" method=POST><table><tr><th>Parameter name</th><th>parameter value</th></tr>";
 //iterate over params:
 foreach ($scoring_factors as $pname => $pvalue) {

@@ -237,6 +237,19 @@ if (!has_temp_draw()) {
 			$query="INSERT INTO draw_adjud SELECT ? as 'round_no', debate_id, adjud_id, status FROM temp_adjud";
 			qp($query, array($nextround));
 
+			if ($scoring_factors['eballots_enabled'] == 1) {
+				$rs=qp("SELECT * FROM draws WHERE round_no = ?", array($nextround));
+				while ($r = $rs->FetchRow()) {
+					$query="INSERT INTO eballot_rooms (round_no, debate_id, auth_code) VALUES (?, ?, ?)";
+					$auth_code = hash("crc32b", implode("/", array($r['debate_id'], $nextround, date("c"))));
+					if (!qp($query, array($nextround, $r['debate_id'], $auth_code))) {
+						$msg[]="Failed to add eBallot details for debate ".@$r['debate_id']." - ".$DBConn->ErrorMsg();
+					}
+				}
+			} else {
+				die("eBallots disabled");
+			}
+
 			//Make non-chair trainees, trainees.
 			$query="UPDATE draw_adjud INNER JOIN adjudicator ON draw_adjud.adjud_id = adjudicator.adjud_id SET draw_adjud.status = 'trainee' WHERE adjudicator.status = 'trainee' AND draw_adjud.status != 'chair' AND draw_adjud.round_no = ?";
 			qp($query, array($nextround));
@@ -248,9 +261,14 @@ if (!has_temp_draw()) {
 			q($query);
 			$query="DROP TABLE IF EXISTS draw_lock";
 			q($query);
-			store_scoring_factors_to_db(array("round" => $nextround));
+			store_settings_to_db(array("round" => $nextround));
 			//Redirect
-			redirect("draw.php?moduletype=round&action=showdraw&roundno=$nextround");
+			if (isset($msg)) {
+				$action = "display";
+				displayMessagesUL(@$msg);
+			} else {
+				redirect("draw.php?moduletype=round&action=showdraw&roundno=$nextround");
+			}
 		}
 	}
 
@@ -302,12 +320,12 @@ if ($exist) {
 	$totalpoints = $ogpoints + $oopoints + $cgpoints + $copoints;
 
     
-        echo "<div id=\"debatedetails\">\n";
+	echo "<div id=\"debatedetails\">\n";
 	echo "<h3>Opening Government : ".$row['oguc']." ".$row['ogtc']." (".$ogpoints.")</h3>";
 	echo "<h3>Opening Opposition : ".$row['oouc']." ".$row['ootc']." (".$oopoints.")</h3>";
 	echo "<h3>Closing Government : ".$row['cguc']." ".$row['cgtc']." (".$cgpoints.")</h3>";
 	echo "<h3>Opening Government : ".$row['couc']." ".$row['cotc']." (".$copoints.")</h3>";
-        echo "</div>\n";
+	echo "</div>\n";
             
         //For the purpose of testing of conflicts
         $ogid=$row['ogid'];

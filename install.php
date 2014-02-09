@@ -24,7 +24,7 @@
 /* WARNING:
    INCLUDE OTHER TABBIE FILES WITH CARE. MANY OF THEM WILL FAIL WITHOUT config/settings.php
 */
-
+date_default_timezone_set(@date_default_timezone_get());
 $title = "Install Tabbie";
 $ntu_controller = $moduletype = "";
 require_once("view/header.php");
@@ -183,6 +183,8 @@ if ($action == "install") {
 	}
 
 	echo "</ul></div>\n";
+	$uripath = substr($_SERVER['REQUEST_URI'], 0, -1 * strlen(basename($_SERVER['REQUEST_URI'])));
+	$eballpathguess = "http" . (isset($_SERVER['HTTPS']) ? 's' : '') . "://{$_SERVER['HTTP_HOST']}".$uripath."eballots/";
 
 	if ($bail) {
 		echo "<h3>Installation checks failed (".$bail." failures) - please fix these issues before continuing</h3>\n";
@@ -198,7 +200,7 @@ FormTop;
 		if ($reinstall) {
 			echo "\t\t<tr><td><label for=\"database_user\">DB User: </label></td><td><input type=\"text\" size=\"30\" name=\"database_user\" value=\"\" /></td><td>Leave blank to use current username</tr>";
 			echo "\t\t<tr><td><label for=\"database_password\">DB Password: </label></td><td><input type=\"password\" size=\"30\" name=\"database_password\" value=\"\" /></td><td>Leave blank to use current password</td></tr>";
-			echo "\t\t<tr><td><label for=\"database_name\">DB Name: </label></td><td><input type=\"text\" size=\"30\" name=\"database_name\" value=\"".get_old_config_val($filename, "database_name")."\" /></td><td>Account specified above must be able to create and delete tables in this database</td></tr>";
+			echo "\t\t<tr><td><label for=\"database_name\">DB Name: </label></td><td><input type=\"text\" size=\"30\" name=\"database_name\" value=\"\" /></td><td>Account specified above must be able to create and delete tables in this database</td></tr>";
 		} else {
 			echo "\t\t<tr><td><label for=\"database_user\">DB User: </label></td><td><input type=\"text\" size=\"30\" name=\"database_user\" value=\"\" /></td>&nbsp;<td></tr>";
 			echo "\t\t<tr><td><label for=\"database_password\">DB Password: </label></td><td><input type=\"password\" size=\"30\" name=\"database_password\" value=\"\" /></td><td>&nbsp;</td></tr>";
@@ -207,6 +209,7 @@ FormTop;
 		echo <<<FormBottom
 		<tr><td><label for="local_name">Tournament Name:</label></td><td><input type="text" size="30" name="local_name" value="Tabbie" /></td><td>Tournament title to be displayed on menu screens and printouts</tr>
 		<tr><td><label for="local_image">Tournament Logo: </label></td><td><input type="file" name="local_image" value=""></td><td><em>Optional</em> - As above</tr>
+		<tr><td><label for="eballot_path">eBallot Path:</label></td><td><input type="text" name="eballot_path" value="$eballpathguess" /></td><td>Path to eBallot interface. Change if this is hosted on another instance of Tabbie, or the guessed address is incorrect</td></tr>
 		<tr><td><label for="submit">Go!</label></td><td><input type="submit" value="Install"/></td><td>&nbsp;</td></tr>
 	</table>
 </form>
@@ -259,6 +262,7 @@ function write_config($filename) {
 	$setup_contents .= "\$database_password = '".$_POST['database_password']."';\n";
 	$setup_contents .= "\$database_name = '".$_POST['database_name']."';\n";
 	$setup_contents .= "\$local_name = '".$_POST['local_name']."';\n";
+	$setup_contents .= "\$eballot_path = '".$_POST['eballot_path']."';\n";
 	if (file_exists("config/local_logo.png")) {
 		$setup_contents .= "\$local_image ='config/local_logo.png';\n";
 	}
@@ -278,7 +282,7 @@ function write_config($filename) {
 }
 
 function get_old_config_val($fname, $vname) {
-	if (include($fname)) {
+	if (@include($fname)) {
 		# Including a file in a function restricts its scope
 		# This means that variables defined in $fname are only visible here
 		# If a variable exists with the name passed as $vname then its value is returned

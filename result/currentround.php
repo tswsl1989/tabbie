@@ -365,6 +365,10 @@ if ($nextresult!=$numrounds) {
 
 					$query="INSERT INTO temp_speaker_result(speaker_id, debate_id, round_no) VALUES(?, ?, ?)";
 					$result=qp($query, array($result_speaker_id, $result_debate_id, $nextresult));
+					if (get_setting("eballots_enabled")) {
+						$query="INSERT INTO eballot_scores (round_no, debate_id, speaker_id) VALUES (?, ?, ?)";
+						$result=qp($query, array($nextresult, $result_debate_id, $result_speaker_id));
+					}
 				}
 			}
 		}

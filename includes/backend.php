@@ -288,32 +288,36 @@ function adjudicator_sheets($round) {
         list($cgspkr1, $cgspkr2) = get_speaker_names($cgid);
         list($cospkr1, $cospkr2) = get_speaker_names($coid);
 
-        @$panelist_2 = @$panelist_2 ? (", " . @$panelist_2) : "";
-        @$panelist_3 = @$panelist_3 ? (", " . @$panelist_3) : "";
-
-        $page = array(
-            "chair" => $chair,
-			"panel" => $panel,
-			"round" => $round,
-            "venue" => "$venue_name" . ($venue_location ? " at $venue_location" : ""),
-            "motion" => $motion,
-            "og" => $og,
-            "oo" => $oo,
-            "cg" => $cg,
-            "co" => $co,
-            "og1" => $ogspkr1,
-            "og2" => $ogspkr2,
-            "oo1" => $oospkr1,
-            "oo2" => $oospkr2,
-            "cg1" => $cgspkr1,
-            "cg2" => $cgspkr2,
-            "co1" => $cospkr1,
-            "co2" => $cospkr2
-            );
+	$page = array(
+		"debate_id" => $debate_id,
+		"chair" => $chair,
+		"panel" => $panel,
+		"round" => $round,
+		"venue" => "$venue_name" . ($venue_location ? " at $venue_location" : ""),
+		"motion" => $motion,
+		"og" => $og,
+		"oo" => $oo,
+		"cg" => $cg,
+		"co" => $co,
+		"og1" => $ogspkr1,
+		"og2" => $ogspkr2,
+		"oo1" => $oospkr1,
+		"oo2" => $oospkr2,
+		"cg1" => $cgspkr1,
+		"cg2" => $cgspkr2,
+		"co1" => $cospkr1,
+		"co2" => $cospkr2
+	);
+	if (get_setting("eballots_enabled") == 1) {
+		$page["auth_code"] = get_auth_code($debate_id);
+	}
         $data[] = $page;
     }
     $result = array();
-    $result["header"] = array("Chair", "Round", "Venue", "Motion", "Opening Government", "Opening Opposition", "Closing Government", "Closing Opposition", "Opening Government Speaker 1", "Opening Government Speaker 2", "Opening Opposition Speaker 1", "Opening Opposition Speaker 2", "Closing Government Speaker 1", "Closing Government Speaker 2", "Closing Opposition Speaker 1", "Closing Opposition Speaker 2");
+    $result["header"] = array("debate_id", "Chair", "Round", "Venue", "Motion", "Opening Government", "Opening Opposition", "Closing Government", "Closing Opposition", "Opening Government Speaker 1", "Opening Government Speaker 2", "Opening Opposition Speaker 1", "Opening Opposition Speaker 2", "Closing Government Speaker 1", "Closing Government Speaker 2", "Closing Opposition Speaker 1", "Closing Opposition Speaker 2");
+    if (get_setting("eballots_enabled") == 1) {
+	    $result["header"][] = "eBallot Authentication Code";
+    }
     $result["data"] = $data;
     return $result;
 }
@@ -649,4 +653,10 @@ function get_speaker_names($team_id) {
 	return array($spkr_row[0]['speaker_name'], $spkr_row[1]['speaker_name']);
 }
 
+function get_auth_code($debate_id) {
+	$query = "SELECT auth_code FROM eballot_rooms WHERE debate_id = ?";
+	$rs = qp($query, array($debate_id));
+	$r = $rs->FetchRow();
+	return $r['auth_code'];
+}
 ?>

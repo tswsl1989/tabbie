@@ -34,7 +34,8 @@ INSERT INTO `settings` VALUES
 	('watched_not_watched',150),
 	('draw_table_speed',8),
 	('highlight_lowerlimit', 50),
-	('highlight_upperlimit', 90);
+	('highlight_upperlimit', 90),
+	('eballots_enabled', 1);
 	
 CREATE TABLE `motions` (
   `round_no` smallint(6) NOT NULL DEFAULT '0',
@@ -130,3 +131,21 @@ CREATE TABLE `speaker_results` (
 	`points` smallint(9) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`speaker_id`, `round_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT="Speaker results";
+
+CREATE TABLE `eballot_scores` (
+	`round_no` MEDIUMINT(9) NOT NULL,
+	`debate_id` MEDIUMINT(9) NOT NULL,
+	`speaker_id` MEDIUMINT(9) NOT NULL,
+	`speaker_score` SMALLINT(9) NOT NULL DEFAULT '0',
+	PRIMARY KEY (`round_no`, `debate_id`, `speaker_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT="eBallot scores";
+
+CREATE TABLE `eballot_rooms` (
+	`round_no` MEDIUMINT(9) NOT NULL,
+	`debate_id` MEDIUMINT(9) NOT NULL,
+	`auth_code` VARCHAR(8) NOT NULL,
+	`updated` TIMESTAMP NOT NULL,
+	`note` TEXT NULL,
+	PRIMARY KEY (`round_no`, `debate_id`),
+	UNIQUE KEY `auth` (`auth_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT="eBallot rooms";

@@ -26,6 +26,8 @@ date_default_timezone_set(@date_default_timezone_get());
 
 require('includes/fpdf/fpdf.php');
 require('includes/fpdf/tfpdf.php');
+require_once("includes/phpqrcode.php");
+require_once("includes/settings.php");
 
 function text_convert($t) {
 	if (extension_loaded('mbstring')) {
@@ -78,6 +80,7 @@ function two_teams(&$pdf, $r, $teams) {
 
 function adjudicator_sheets_pdf($filename, $data) {
     global $local_image;
+    global $eballot_path;
     if (extension_loaded('mbstring')) {
 	# Multibyte support available, so use UTF-8 support
 	$pdf = new tFPDF("L"); #Landscape
@@ -91,21 +94,32 @@ function adjudicator_sheets_pdf($filename, $data) {
     foreach ($data as $r) {
         $pdf->AddPage();
         $pdf->SetLeftMargin(25);
+        $pdf->SetAutoPageBreak(false);
         $pdf->SetLineWidth(1.0);
 	$pdf->SetFont($fontName,'B', 10, true);
 
         if (file_exists($local_image))  {
             $pdf->Image($local_image,240,10);
         }
-        $pdf->Cell(220, 8, "Venue: " . text_convert($r['venue']));
-        $pdf->Ln();
         $pdf->Cell(20, 8, "Round: " . text_convert($r['round']));
+	if (get_setting('eballots_enabled')==1) {
+		$pdf->Cell(80, 8, "Ballot Code: " . text_convert($r['auth_code']));
+		$qrfile = tempnam(NULL, "qrc");
+		QRCode::png($eballot_path."?debate=".$r['debate_id']."&ballot_code=".$r['auth_code']."&stage=2", $qrfile);
+		$pdf->Image($qrfile, 190, 8, 30, 30, "png");
+	}
+        $pdf->Ln();
+        $pdf->Cell(220, 8, "Venue: " . text_convert($r['venue']));
         $pdf->Ln();
         $pdf->Cell(200, 8, "Chair: " . text_convert($r['chair']));
         $pdf->Ln();
         $pdf->Cell(200, 8, "Panel: " . text_convert($r['panel']));
         $pdf->Ln();
-        $pdf->MultiCell(250, 8, "Motion: " . text_convert($r['motion']));
+	if ($r['motion'] == "") {
+		$pdf->MultiCell(250, 8, "Motion unavailable at print time - contact the CA team for details");
+	} else {
+		$pdf->MultiCell(250, 8, "Motion: " . text_convert($r['motion']));
+	}
         $pdf->Ln();
         two_teams($pdf, $r, array(
             array("name" => "Opening Gov.", "short" => "og"),
@@ -115,6 +129,11 @@ function adjudicator_sheets_pdf($filename, $data) {
             array("name" => "Closing Gov.", "short" => "cg"),
             array("name" => "Closing Opp.", "short" => "co")));
         $pdf->SetFont($fontName,'B', 10, true);
+	if (get_setting('eballots_enabled') == 1) {
+		$pdf->Cell(220, 8, "Submit eBallots to ".$eballot_path);
+		$pdf->Ln();
+	}
+
         $pdf->Cell(220, 8, "The best team gets Rank 1. Higher rank requires higher total team score (no equal scores).");
 	$pdf->Ln();
 	$pdf->Cell(220, 8, "Failure to comply with this instruction will affect your judge ranking.");

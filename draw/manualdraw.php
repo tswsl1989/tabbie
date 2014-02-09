@@ -218,12 +218,12 @@ if (!has_temp_draw()) {
 					$msg[]="ERROR - strike query failed to execute";
 				} else if($strikeresult->RecordCount()>0) {
 					$validate=0;
-					$msg[]="ERROR - strike in draw";
-					$msg[]="Adjudicator ".$row["adjud_id"]." is conflicted from their debate. Either clear the conflict or reallocate the adjudicator to proceed.";	
 					$allow_override = 1;
 					if(isset($_GET['override']) && $_GET['override']=='alpha'){
-						$msg[]="Adjudicator clash override in effect";
 						$validate=1;
+					} else {
+						$msg[]="ERROR - strike in draw";
+						$msg[]="Adjudicator ".$row["adjud_id"]." is conflicted from their debate. Either clear the conflict or reallocate the adjudicator to proceed.";
 					}
 				}
 			}
@@ -238,7 +238,7 @@ if (!has_temp_draw()) {
 			$query="INSERT INTO draw_adjud SELECT ? as 'round_no', debate_id, adjud_id, status FROM temp_adjud";
 			qp($query, array($nextround));
 
-			if ($scoring_factors['eballots_enabled'] == 1) {
+			if (get_setting('eballots_enabled') == 1) {
 				$rs=qp("SELECT * FROM draws WHERE round_no = ?", array($nextround));
 				while ($r = $rs->FetchRow()) {
 					$query="INSERT INTO eballot_rooms (round_no, debate_id, auth_code) VALUES (?, ?, ?)";
@@ -247,8 +247,6 @@ if (!has_temp_draw()) {
 						$msg[]="Failed to add eBallot details for debate ".@$r['debate_id']." - ".$DBConn->ErrorMsg();
 					}
 				}
-			} else {
-				die("eBallots disabled");
 			}
 
 			//Make non-chair trainees, trainees.

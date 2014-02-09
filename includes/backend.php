@@ -52,10 +52,14 @@ function has_temp_result() {
 }
 
 function __team_on_ranking($round, $team_id, $ranking) {
-    $query="SELECT * FROM results WHERE round_no=? AND $ranking=?"; /* Needs to be a better way than this. Including $ranking in params gets it quoted, which breaks as the final criteria always returns false */
-    $params=array($round, $team_id);
-    $rs = qp($query, $params);
-    return $rs->RecordCount();
+	/*
+	 * Needs to be a better way than this. Including $ranking in params gets it quoted,
+	 * which breaks as the final criteria always returns false
+	 */
+	    $query="SELECT * FROM results WHERE round_no=? AND $ranking=?";
+	    $params=array($round, $team_id);
+	    $rs = qp($query, $params);
+	    return $rs->RecordCount();
 }
 
 function __team_on_position($round, $team_id, $position) {
@@ -381,7 +385,7 @@ function venue_name($venue_id) {
 function get_room_name_from_debate($debate_id, $round){
 	$query = "SELECT venue_name FROM venue INNER JOIN draws ON venue.venue_id = draws.venue_id WHERE round_no=? AND debate_id = ?";
 	$param = array($round, $debate_id);
-	$rws = qp($query, $param);
+	$res = qp($query, $param);
 	return $res->Fields("venue_name");
 }
 
@@ -639,7 +643,7 @@ function finalise_temporary_draw($nextround) {
 }
 
 function get_speaker_names($team_id) {
-        $spkr_query = "SELECT speaker_name FROM speaker WHERE team_id = ? ORDER BY speaker_name ";
+        $spkr_query = "SELECT speaker_name FROM speaker WHERE team_id = ? ORDER BY speaker_id ASC";
         $spkr_result = qp($spkr_query, array($team_id));
 	$spkr_row = $spkr_result->GetArray();
 	return array($spkr_row[0]['speaker_name'], $spkr_row[1]['speaker_name']);

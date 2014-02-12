@@ -6,11 +6,12 @@ require_once("../includes/backend.php");
 $title = "eBallots - ".$local_name;
 page_header($title);
 
+
 if (get_setting("eballots_enabled") != 1) {
 	echo "<div class=\"alert alert-danger\">eBallots are currently disabled</div>";
 	page_footer();
 	return;
-} else if (has_temp_table()==false) {
+} else if (has_temp_result()==false) {
 	echo "<div class=\"alert alert-danger\">
 		<p>Temporary tables for this round have not yet been created.<br />
 		Send paper ballot back if completed or try again shortly</p>

@@ -198,6 +198,7 @@ function score_input_page($debate, $ac) {
 	echo "<input type=\"hidden\" name=\"stage\" value=\"3\">\n";
 	echo "<input type=\"hidden\" name=\"ballot_code\" value=\"$ac\">\n";
 	echo "<input type=\"hidden\" name=\"debate\" value=\"$debate\">\n";
+	$tab=1;
 	foreach ($positions as $pos) {
 		if ($pos == "og" || $pos == "cg") {
 			echo "<div class=\"row\">\n";
@@ -208,11 +209,11 @@ function score_input_page($debate, $ac) {
 		echo "\t<h4>".$team_name."</h4>";
 	        echo "\t<div class=\"row\">\n";
 		echo "\t\t<label class=\"col-xs-9\" for=\"".$pos."1\">".$speakers[0]."</label>\n";
-		echo "\t\t<input class=\"col-xs-3\" min=\"50\" max=\"90\" maxlength=\"2\" id=\"".$pos."1\" name=\"".$pos."1\" type=\"number\" required>\n";
+		echo "\t\t<input class=\"col-xs-3\" min=\"50\" max=\"90\" tabindex=\"".$tab++."\" maxlength=\"2\" id=\"".$pos."1\" name=\"".$pos."1\" type=\"number\" required>\n";
 		echo "\t</div>\n";
 	        echo "\t<div class=\"row\">\n";
 		echo "\t\t<label class=\"col-xs-9\" for=\"".$pos."2\">".$speakers[1]."</label>\n";
-		echo "\t\t<input class=\"col-xs-3\" min=\"50\" max=\"90\" maxlength=\"2\" id=\"".$pos."2\" name=\"".$pos."2\" type=\"number\" required>\n";
+		echo "\t\t<input class=\"col-xs-3\" min=\"50\" max=\"90\" tabindex=\"".$tab++."\" maxlength=\"2\" id=\"".$pos."2\" name=\"".$pos."2\" type=\"number\" required>\n";
 		echo "\t</div>\n";
 		echo "</div>\n";
 		echo "<div class=\"clearfix visible-xs visible-sm\"></div>\n";
@@ -222,7 +223,7 @@ function score_input_page($debate, $ac) {
 	}
 	echo "<hr />";
 	echo "<div class=\"row\"><label for=\"note\" class=\"col-xs-12 col-md-4\">Additional Information</label>\n";
-	echo "<input type=\"text\" name=\"note\" id=\"note\" placeholder=\"Any extra information for the tab room?\" class=\"col-xs-12 col-md-8\">\n";
+	echo "<input type=\"text\" name=\"note\" id=\"note\" tabindex=\"".$tab++."\" placeholder=\"Any extra information for the tab room?\" class=\"col-xs-12 col-md-8\">\n";
 	echo "</div>\n";
 	echo "<hr />";
 	echo "<div class=\"row\">";

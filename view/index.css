@@ -288,3 +288,11 @@ tr.inactive
 	color: #FFAA00;
 	font-weight: bold;
 }
+
+tr.res_g td {
+  background: #ccffcc;
+}
+
+tr.res_b td {
+  background: #ccccff;
+}

@@ -81,7 +81,7 @@ if ($nextresult!=$numrounds) {
 			$query.="FROM temp_speaker_result TS, speaker S, draws D  ";
 			$query.="WHERE D.round_no = ? AND TS.speaker_id=S.speaker_id AND TS.debate_id=? AND D.cg=S.team_id "; //Closing Govt
 			$query.="ORDER BY S.speaker_name";
-			$result=qp($query,arraY($nextresult, $debate_id));
+			$result=qp($query,array($nextresult, $debate_id));
 			//Get first speaker details
 			$row=$result->FetchRow();
 			$speaker1_cg_id=$row['speaker_id'];
@@ -472,8 +472,10 @@ if ($nextresult==$numrounds) {
 		if($resultresult) {
 			//Display result in table
 			echo"<table>\n";
-			echo "<th>Edit</th><th>Venue</th><th>Opening Govt.</th><th>Opening Opp.</th><th>Closing Govt.</th><th>Closing Opp.</th><th>Chair Judge</th>\n";
+			echo "<tr><th>Edit</th><th>Venue</th><th>Opening Govt.</th><th>Opening Opp.</th><th>Closing Govt.</th><th>Closing Opp.</th><th>Chair Judge</th><th>eBallot entered?</th></tr>\n";
 			while($rowresults=$resultresult->FetchRow()) {
+				$eballrs = qp("SELECT MAX(speaker_score) as MSS FROM eballot_scores WHERE round_no=? AND debate_id=?", array($nextresult, $rowresults["debate_id"]));
+				$eball = $eballrs->FetchRow();
 				$results_debate_id=$rowresults['debate_id'];
 				
 				$first=$rowresults['first'];
@@ -499,7 +501,14 @@ if ($nextresult==$numrounds) {
 				$cg_pos=returnPositionString(returnposition($first,$second,$third,$fourth,$cg));
 				$co_pos=returnPositionString(returnposition($first,$second,$third,$fourth,$co));
 
-				$rowclass=($og_pos=="<b>none</b>" && $oo_pos=="<b>none</b>" && $cg_pos=="<b>none</b>" && $co_pos=="<b>none</b>") ? "res_r" : "res_g";
+				$rowclass = "res_r";
+				if ($eball && $eball["MSS"] > 0) {
+					$ebcell="<td>Y</td>\n";
+					$rowclass = "res_b";
+				} else {
+					$ebcell="<td>N</td>\n";
+				}
+				$rowclass=($og_pos=="<b>none</b>" && $oo_pos=="<b>none</b>" && $cg_pos=="<b>none</b>" && $co_pos=="<b>none</b>") ? $rowclass : "res_g";
 
 				echo "<tr class='$rowclass'>\n";
 				echo "<td class=\"editdel\"><a href=\"result.php?moduletype=currentround&amp;action=edit&amp;debate_id=$results_debate_id\">Edit</a></td>";
@@ -509,6 +518,7 @@ if ($nextresult==$numrounds) {
 				echo "<td>$team_cg_name (".$cg_pos.")</td>\n";
 				echo "<td>$team_co_name (".$co_pos.")</td>\n";
 				echo "<td>$chair</td>";
+				echo $ebcell;
 				echo"</tr>\n";
 			}
 			echo "</table>";

@@ -129,6 +129,40 @@ if ($nextresult!=$numrounds) {
 		}
 	}
 
+	if ($action=="import") {
+		unset($msg);
+		$debate_id=@$_GET['debate_id'];
+
+		$query="SELECT * FROM temp_result WHERE debate_id=?";
+		$result=qp($query, array($debate_id));
+		$r2 = qp("SELECT MAX(speaker_score) AS MSS FROM eballot_scores WHERE debate_id=?", array($debate_id));
+		$r2 = $r2->FetchRow();
+		if ($result->RecordCount()==0) {
+			$validate=0;
+			$msg[]="Invalid Debate ID. No such debate in database.";
+			$action="display";
+		} else if ($r2["MSS"] == 0) {
+			$msg[] = "No eballot scores entered for debate ID $debate_id";
+			$action="display";
+		} else {
+			$rs = qp("SELECT speaker_id, speaker_score FROM eballot_scores WHERE debate_id=?", array($debate_id));
+			foreach ($rs as $key => $fields) {
+				$query ="UPDATE temp_speaker_result SET points = ? WHERE debate_id = ? AND speaker_id = ?";
+				$f = qp($query, array($fields['speaker_score'], $debate_id, $fields['speaker_id']));
+				if (!$f) {
+					$msg[]="Unable to import scores for speaker ".$fields['speaker_id']." in debate ".$debate_id;"<br />".$DBConn->ErrorMsg();
+				}
+			}
+			if (isset($msg)) {
+				$msg[] = "Review error messages above before editing scores";
+			} else {
+				$msg[] = "Scores copied - edit room to verify and confirm results before continuing";
+			}
+
+		}
+		$action="display";
+	}
+
 	if ($action=="edit") {
 		unset($msg);
 		//Load the scores (taken from post above) to the post values)
@@ -310,7 +344,7 @@ if ($nextresult!=$numrounds) {
 		} else {
 			$action="edit"; //Go back to edit mode
 		}
-		}
+	}
 
 	if ($action=="create") {
 		unset($msg);
@@ -374,6 +408,7 @@ if ($nextresult!=$numrounds) {
 		}
 		$result="display";
 	}
+
 
 	if ($action=="finalize") {
 		//Finalize the results after some checks
@@ -503,10 +538,18 @@ if ($nextresult==$numrounds) {
 
 				$rowclass = "res_r";
 				if ($eball && $eball["MSS"] > 0) {
-					$ebcell="<td>Y</td>\n";
+					$nrs = qp("SELECT note FROM eballot_rooms WHERE debate_id = ?", array($results_debate_id));
+					$n = $nrs->FetchRow();
+					if ($n) {
+						$note = " - ".$n['note'];
+					} else {
+						$note = "";
+					}
+
+					$ebcell="<td><a href=\"result.php?moduletype=currentround&amp;action=import&amp;debate_id=$results_debate_id\">Yes</a>$note</td>\n";
 					$rowclass = "res_b";
 				} else {
-					$ebcell="<td>N</td>\n";
+					$ebcell="<td>No</td>\n";
 				}
 				$rowclass=($og_pos=="<b>none</b>" && $oo_pos=="<b>none</b>" && $cg_pos=="<b>none</b>" && $co_pos=="<b>none</b>") ? $rowclass : "res_g";
 

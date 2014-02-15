@@ -403,6 +403,7 @@ function get_university($univ_id) {
 }
 
 function delete_team($team_id) {
+    global $DBConn;
     //Check for whether debates have started
     $c = count_rows("draws");
     if ($c!=0) {
@@ -410,12 +411,12 @@ function delete_team($team_id) {
     } else {
         $result1=qp("DELETE FROM speaker WHERE team_id=?", array($team_id));
         //Check for Error
-        if ($result1->RecordCount()==0) {
+        if ($DBConn->Affected_Rows()==0) {
             $msg[]="There were problems deleting speakers: No such record.";
         }
         $result2=qp("DELETE FROM team WHERE team_id=?", array($team_id));
         //Check for Error
-        if ($result2->RecordCount()==0) {
+        if ($DBConn->Affected_Rows()==0) {
             $msg[]="There were problems deleting team: No such record.";
 	}
     }

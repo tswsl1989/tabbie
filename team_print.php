@@ -158,7 +158,7 @@ foreach($speaker_array as $cc) {
 	$points = 0;
 	for ($x=1;$x<=$roundno;$x++) {
 		$score_query = "SELECT points FROM speaker_results WHERE round_no=? AND speaker_id=?";
-		$score_result = qp($score_query, array($round, $speaker_id));
+		$score_result = qp($score_query, array($x, $speaker_id));
 		$score_row = $score_result->FetchRow();
 		$points += $score_row['points'];
 		$speaker_array[$index]["round_$x"] = $score_row['points'];
@@ -182,8 +182,8 @@ for ($x=1;$x<=$roundno;$x++) {
 $contents.="<th>Total Points</th></tr>\n";
 
 $prev_points = "something";
-
-for ($x=0;$x<count($speaker_array);$x++) {
+$salength = count($speaker_array);
+for ($x=0;$x<$salength;$x++) {
 	$ranking = ($x+1);
 	if ($speaker_array[$x]["points"] != $prev_points) {
 		$prev_points = $speaker_array[$x]["points"];
@@ -204,7 +204,6 @@ for ($x=0;$x<count($speaker_array);$x++) {
 }
 $contents.="</table>\n</body></html>";
 $zipFile->addFromString($dest_dir."speakertab.html", $contents);
-
 //And Now the Team Tab
 $team_array = team_standing_array($roundno);
 

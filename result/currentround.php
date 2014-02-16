@@ -48,7 +48,7 @@ if ($nextresult!=$numrounds) {
 			$query="SELECT S.speaker_id, S.speaker_name ";
 			$query.="FROM temp_speaker_result TS, speaker S, draws D  ";
 			$query.="WHERE D.round_no=? AND TS.speaker_id=S.speaker_id AND TS.debate_id=? AND D.og=S.team_id "; //Opening Govt
-			$query.="ORDER BY S.speaker_name";
+			$query.="ORDER BY S.speaker_id";
 			$result=qp($query, array($nextresult, $debate_id));
 			//Get first speaker details
 			$row=$result->FetchRow();
@@ -64,7 +64,7 @@ if ($nextresult!=$numrounds) {
 			$query="SELECT S.speaker_id, S.speaker_name ";
 			$query.="FROM temp_speaker_result TS, speaker S, draws D  ";
 			$query.="WHERE D.round_no=? AND TS.speaker_id=S.speaker_id AND TS.debate_id=? AND D.oo=S.team_id ";//Opening Opp
-			$query.="ORDER BY S.speaker_name";
+			$query.="ORDER BY S.speaker_id";
 			$result=qp($query, array($nextresult, $debate_id));
 			//Get first speaker details
 			$row=$result->FetchRow();
@@ -80,7 +80,7 @@ if ($nextresult!=$numrounds) {
 			$query="SELECT S.speaker_id, S.speaker_name ";
 			$query.="FROM temp_speaker_result TS, speaker S, draws D  ";
 			$query.="WHERE D.round_no = ? AND TS.speaker_id=S.speaker_id AND TS.debate_id=? AND D.cg=S.team_id "; //Closing Govt
-			$query.="ORDER BY S.speaker_name";
+			$query.="ORDER BY S.speaker_id";
 			$result=qp($query,array($nextresult, $debate_id));
 			//Get first speaker details
 			$row=$result->FetchRow();
@@ -96,7 +96,7 @@ if ($nextresult!=$numrounds) {
 			$query="SELECT S.speaker_id, S.speaker_name ";
 			$query.="FROM temp_speaker_result TS, speaker S, draws D  ";
 			$query.="WHERE D.round_no=? AND TS.speaker_id=S.speaker_id AND TS.debate_id=? AND D.co=S.team_id "; //Closing Opp
-			$query.="ORDER BY S.speaker_name";
+			$query.="ORDER BY S.speaker_id";
 			$result=qp($query, array($nextresult, $debate_id));
 			//Get first speaker details
 			$row=$result->FetchRow();

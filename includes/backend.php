@@ -424,20 +424,21 @@ function delete_team($team_id) {
 }
 
 function delete_adjud($adjud_id){
-    $c = count_rows("draws");
-    if ($c!=0) {
-        $msg[]="Debates in progress. Cannot delete now.";
-    } else {
-        //Delete Stuff
-        $adjud_id=trim(@$_GET['adjud_id']);
-	$result=qp("DELETE FROM adjudicator WHERE adjud_id=?", array($adjud_id));
+	global $DBConn;
+	$c = count_rows("draws");
+	if ($c!=0) {
+		$msg[]="Debates in progress. Cannot delete now.";
+	} else {
+		//Delete Stuff
+		$adjud_id=trim(@$_GET['adjud_id']);
+		$result=qp("DELETE FROM adjudicator WHERE adjud_id=?", array($adjud_id));
 
-        //Check for Error
-        if ($result->Affected_Rows()==0) {
-            $msg[]="There were problems deleting : No such record.";
-        }
-    }
-    return $msg;
+		//Check for Error
+		if ($DBConn->Affected_Rows()==0) {
+		    $msg[]="There were problems deleting : No such record.";
+		}
+	}
+	return isset($msg) ? $msg : "";
 }
 
 function convert_db_ssesl(){
@@ -475,12 +476,13 @@ function add_strike_judge_univ($adjud_id, $univ_id){
 }
 
 function del_strike_judge_team($adjud_id, $team_id){
+	global $DBConn;
 	//you'd better pass this function a valid strike or else: it's 1am.
 	$r=qp("SELECT * FROM strikes WHERE adjud_id=? AND team_id=?", array($adjud_id, $team_id));
 	$row=$r->FetchRow();
 	$strike_id=$row['team_id'];
 	$r=qp("DELETE * FROM strikes where strike_id=?", array($strike_id));
-	return $r->Affected_Rows();
+	return $DBConn->Affected_Rows();
 }
 
 function is_strike_judge_team($adjud_id, $team_id){

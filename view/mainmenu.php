@@ -25,7 +25,7 @@ include('config/settings.php');
 
 <h2 id="title">
 <?PHP
- if($local_image != "" && file_exists($local_image)) {
+ if(isset($local_image) && ($local_image != "" && file_exists($local_image))) {
 	 echo '<img src="'.$local_image.'" alt="Logo" />';
  }
  if($local_name!=""){

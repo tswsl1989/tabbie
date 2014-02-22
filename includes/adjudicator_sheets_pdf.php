@@ -26,7 +26,6 @@ date_default_timezone_set(@date_default_timezone_get());
 
 require('includes/fpdf/fpdf.php');
 require('includes/fpdf/tfpdf.php');
-require_once("includes/phpqrcode.php");
 require_once("includes/settings.php");
 
 function text_convert($t) {
@@ -105,7 +104,14 @@ function adjudicator_sheets_pdf($filename, $data) {
 	if (get_setting('eballots_enabled')==1) {
 		$pdf->Cell(80, 8, "Ballot Code: " . text_convert($r['auth_code']));
 		$qrfile = tempnam(NULL, "qrc");
-		QRCode::png($eballot_path."?debate=".$r['debate_id']."&ballot_code=".$r['auth_code']."&stage=2", $qrfile);
+		$qrcode = "https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=".urlencode($eballot_path."?debate=".$r['debate_id']."&ballot_code=".$r['auth_code']."&stage=2");
+		$ch = curl_init($qrcode);
+		$qrf = fopen($qrfile, "w+");
+		curl_setopt($ch, CURLOPT_FILE, $qrf);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_exec($ch);
+		curl_close($ch);
+		fflush($qrf);
 		$pdf->Image($qrfile, 190, 8, 30, 30, "png");
 	}
         $pdf->Ln();

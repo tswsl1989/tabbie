@@ -40,7 +40,6 @@ This version also includes code from other projects:
  - FPDF (Freeware - "You may use, modify and redistribute this softare as you wish")
  - tFPDF (LGPL) and DejaVu fonts
  - jQuery, jQuery UI and various jQuery plugins/libraries (See files for details)
- - phpqrcode (LGPL v3)
  - Bootstrap and Simplex theme from bootswatch.com (Both MIT Licensed)
 
 Contributors

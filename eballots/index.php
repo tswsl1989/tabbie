@@ -242,6 +242,12 @@ function score_check_page($debate, $ac, $tpos, $tscore, $hl, $validated) {
 	$rs= qp("SELECT og, oo, cg, co FROM draws WHERE debate_id = ?", array($debate));
 	$team_ids = $rs->FetchRow();
 	
+	if ($validated) {
+		echo "<div class=\"alert alert-success\"><p>Check scores and rankings, then submit this ballot using the button at the bottom of the screen</p></div>\n";
+	} else {
+		echo "<div class=\"alert alert-warning\"><p>Check rankings and fix highlighted scores. Submit paper ballot to the tab room if scores are legitimately outside the normally awarded range</p></div>\n";
+	}
+		
 	echo "<form action=\".\" method=\"POST\" class=\"form-horizontal\" role=\"form\">\n";
 	echo "<input type=\"hidden\" name=\"stage\" value=\"4\">\n";
 	echo "<input type=\"hidden\" name=\"ballot_code\" value=\"$ac\">\n";

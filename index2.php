@@ -31,7 +31,7 @@ require("view/mainmenu.php");
 require_once("includes/backend.php");
 $round = get_num_rounds();
 $next_round = $round + 1;
-
+$state=$p_state="";
 if (get_num_rounds() == 0 && !has_temp_draw()) {
     $state = "before_tournament";
     $p_state = "The tournament has not started yet - i.e., there has not been a draw for the first round yet.";

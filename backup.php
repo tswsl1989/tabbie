@@ -34,6 +34,8 @@ require("view/mainmenu.php");
 <ul>
     <li><a href="backup/mysqldump.php">Dump database using mysqldump</a><br />This is the older method, and should work fine. If in doubt, use this option</li>
     <li><a href="backup/adodbdump.php">Dump database using ADODB code</a><br />This method is newer and less tested. Does not depend on mysqldump being available</li>
+    <li><a href="backup/dumpuniversity.php">Dump university list for use during future installs</a><br />
+Download this file and put it in the <span style="font-family: monospace;">install/</span> folder if you want to re-use the current university list during future installations of Tabbie</li>
 </ul>
 
 <?php

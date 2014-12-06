@@ -47,6 +47,13 @@ if (get_num_rounds() == 0 && !has_temp_draw()) {
 } elseif (get_num_rounds() > get_num_completed_rounds() && !has_temp_draw() && has_temp_result()) {
     $state = "during_results";
     $p_state = "You are inputting the results for round $round.";
+} else {
+	$state="unknown";
+	$p_state="Tabbie's database is in an odd state. This may mean that temporary draw or results tables are present that should have been deleted<br />";
+	$p_state .= "get_num_rounds(): ".get_num_rounds()."<br />";
+	$p_state .= "get_num_completed_rounds(): ".get_num_completed_rounds()."<br />";
+	$p_state .= "has_temp_draw(): ".has_temp_draw()."<br />";
+	$p_state .= "has_temp_result(): ".has_temp_result()."<br />";
 }
 ?>
 

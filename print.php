@@ -64,7 +64,7 @@ List of teams, and their venues</a>
 <h3>Analysis (Use for own pleasure or distribute)</h3>
 <ul>
 <li><a href="results_by_position.php">Motion Fairness</li>
-<li><a href="team_overview.php">Team Overview</li>
+<li><a href="team_overview.php">Team Overview</a></li>
 </ul>
 
 <?php

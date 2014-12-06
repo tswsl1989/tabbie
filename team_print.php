@@ -194,7 +194,7 @@ for ($x=0;$x<$salength;$x++) {
 	$contents.="<tr>\n";
 	$contents.="<td>$display_ranking</td>\n";
 	$contents.="<td>".$speaker_array[$x]["speakername"]."</td>\n";
-	$contents.="<td>"."<a href=\"teamID{$speaker_array[$x]['team_id']}.html\">".$speaker_array[$x]["teamname"]."</td>\n";
+	$contents.="<td>"."<a href=\"teamID{$speaker_array[$x]['team_id']}.html\">".$speaker_array[$x]["teamname"]."</a></td>\n";
 	for ($y=1;$y<=$roundno;$y++) {
 		$contents.="<td>" . $speaker_array[$x]["round_$y"] . "</td>";
 	}

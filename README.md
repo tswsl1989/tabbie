@@ -30,6 +30,11 @@ The master branch of the [GitHub repository](https://github.com/tswsl1989/tabbie
 
 The last public release and latest code taken from SourceForge are also available, tagged "v1.5" and "trunk".
 
+Demo
+----
+A demonstration version is available [here](http://demo.leftdiodes.co.uk/)
+To access the demo, use the username 'demo' and password 'tabbi3demo!'.
+
 License
 -------
 Tabbie is released under Version 2 of the GNU General Public License. See the LICENSE file for further details.

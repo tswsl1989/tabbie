@@ -119,6 +119,11 @@ case 2:
 		$stage = 0;
 		break;
 	}
+	if ($er['round_no'] != get_num_rounds()) {
+		$msg[] = "Debate ID not valid for this round";
+		$stage = 0;
+		break;
+	}
 	$debate = $er['debate_id'];
 	$ac =$er['auth_code'];
 	break;
@@ -158,7 +163,7 @@ function display_errors($m) {
 }
 
 function login_page() {
-	$rs = qp("SELECT v.venue_name, d.debate_id FROM draws as d INNER JOIN venue as v ON v.venue_id=d.venue_id WHERE d.debate_id IN (SELECT debate_id FROM eballot_rooms WHERE round_no=?)", array(get_num_rounds()));
+	$rs = qp("SELECT v.venue_name, d.debate_id FROM draws as d INNER JOIN venue as v ON v.venue_id=d.venue_id WHERE d.debate_id IN (SELECT debate_id FROM eballot_rooms WHERE round_no=?) ORDER BY v.venue_name", array(get_num_rounds()));
 	$rooms = $rs->GetMenu("debate", "", true, false, "", "class=\"form-control\" required autofocus");
 ?>
     <form action="." method="POST" class="form-horizontal" role="form">

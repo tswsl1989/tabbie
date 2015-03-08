@@ -1,24 +1,24 @@
 <?php /* begin license *
- * 
+ *
  *     Tabbie, Debating Tabbing Software
  *     Copyright Contributors
- * 
+ *
  *     This file is part of Tabbie
- * 
+ *
  *     Tabbie is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
  *     the Free Software Foundation; either version 2 of the License, or
  *     (at your option) any later version.
- * 
+ *
  *     Tabbie is distributed in the hope that it will be useful,
  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
  *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *     GNU General Public License for more details.
- * 
+ *
  *     You should have received a copy of the GNU General Public License
  *     along with Tabbie; if not, write to the Free Software
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  * end license */
 
 require_once('includes/backend.php');
@@ -32,7 +32,7 @@ if(array_key_exists("warning", @$_GET)) $warning=@$_GET['warning'];
 $list=false;
 if(array_key_exists("list", @$_POST)) $list=@$_POST['list'];
 if (!$list)
-{    
+{
 	if(array_key_exists("list", @$_POST)){
 		$list=trim(@$_GET['list']); //list : all, esl, break, eslbreak
 	} else {
@@ -41,7 +41,7 @@ if (!$list)
 }
 
 if (($numdraws <> $numresults) && !$round)
-{   
+{
     $warnmsg[]="Results for the ongoing draw (Round ".$numdraws.") has not been entered.";
     $warnmsg[]="This round will not be reflected in the standings.";
     $warnmsg[]="<BR>";
@@ -68,7 +68,7 @@ switch($list)
 	$list = "all";
 	break;
 }
-                
+
 switch($action)
 {
 case "display":
@@ -93,9 +93,9 @@ if ($action == "warning")
     //Display Messages
     for($x=0;$x<count($warnmsg);$x++)
         echo "<p class=\"err\">".$warnmsg[$x]."</p>\n";
-    ?>
-    <h3><a href="standing.php?moduletype=speakerstanding&list=<?echo $list?>&action=display&warning=done">Click to confirm</a></h3>
-    <?
+
+    echo "<h3><a href=\"standing.php?moduletype=speakerstanding&list=".$list."&action=display&warning=done>Click to confirm</a></h3>";
+
 }
 
 
@@ -115,10 +115,10 @@ if ($action == "display")
 
     $result = q($query);
     $speaker_count=$result->RecordCount();
-    
+
     //echo "query => $query <BR>";
     //echo "$speaker_count <BR>";
-    
+
     // Create array with all the team ids
     $index=0;
     $speaker_array = array();
@@ -128,10 +128,10 @@ if ($action == "display")
                             "speakername" => $row['speaker_name'],
                             "teamid" => $row['team_id'],
                             "teamname" => ' ',
-                            "points" => 0);    
+                            "points" => 0);
     }
-    
-    
+
+
     // Fill up all the team names
     function fillUpTeamNames($speaker_array) {
         $result = array();
@@ -150,9 +150,9 @@ if ($action == "display")
         return $result;
     }
     $speaker_array = fillUpTeamNames($speaker_array);
-    
+
     // Run through the array and add the points
-    foreach($speaker_array as $cc) 
+    foreach($speaker_array as $cc)
     {
         $index = $cc["index"];
         $speaker_id = $cc["speakerid"];
@@ -169,15 +169,15 @@ if ($action == "display")
         }
         $speaker_array[$index]["points"] = $points;
     }
-    
-    
+
+
     // Sorting the array
     function cmp ($a, $b) {
         return ($a["points"] > $b["points"]) ? -1 : 1;
     }
     usort($speaker_array, "cmp");
-    
-    
+
+
     // Displaying the standings
     echo "<table>\n";
     echo "<tr><th>Position</th><th>Speaker Name</th><th>Team Name</th>";
@@ -188,7 +188,7 @@ if ($action == "display")
     $prev_points = "something";
 
     for ($x=0;$x<count($speaker_array);$x++)
-    {   
+    {
         $ranking = ($x+1);
         if ($speaker_array[$x]["points"] != $prev_points) {
             $prev_points = $speaker_array[$x]["points"];
@@ -203,10 +203,10 @@ if ($action == "display")
                 echo "<td>" . $speaker_array[$x]["round_$y"] . "</td>";
             echo "<td>".$speaker_array[$x]["points"]."</td>\n";
         echo "</tr>\n";
-        
+
     }
     echo "</table>\n";
-    
+
     /*
     //Code for testing the present array content
     foreach($speaker_array as $cc) {
@@ -217,7 +217,7 @@ if ($action == "display")
         print "<BR>";
     }
     */
-    
+
     //echo "DONE PROCESSING! ";
 }
 

@@ -1,42 +1,42 @@
 <?php /* begin license *
- * 
+ *
  *     Tabbie, Debating Tabbing Software
  *     Copyright Contributors
- * 
+ *
  *     This file is part of Tabbie
- * 
+ *
  *     Tabbie is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
  *     the Free Software Foundation; either version 2 of the License, or
  *     (at your option) any later version.
- * 
+ *
  *     Tabbie is distributed in the hope that it will be useful,
  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
  *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *     GNU General Public License for more details.
- * 
+ *
  *     You should have received a copy of the GNU General Public License
  *     along with Tabbie; if not, write to the Free Software
  *     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  * end license */ ?>
   <div>
     <h2 class="hide">Teamstandings Submenu</h2>
     <form action=standing.php?moduletype=teamstanding method="POST">
         <label for="list">List Type: </label>
         <select id="list" name="list">
-            <option value="all" <?echo ($list=="all")?"selected":"" ?>>All</option>
-            <option value="esl" <?echo ($list=="esl")?"selected":"" ?>>ESL</option>
-            <option value="break" <?echo ($list=="break")?"selected":"" ?>>Breakable</option>
-            <option value="eslbreak" <?echo ($list=="eslbreak")?"selected":"" ?>>ESL Breakable</option>
-            <option value="efl" <?echo ($list=="efl")?"selected":"" ?>>EFL</option>
-            <option value="eflbreak" <?echo ($list=="eflbreak")?"selected":"" ?>>EFL Breakable</option>
-            <option value="novice" <?echo ($list=="novice")?"selected":"" ?>>Novice</option>
-            <option value="novicebreak" <?echo ($list=="novicebreak")?"selected":"" ?>>Novice Breakable</option>
+            <option value="all" <?php echo ($list=="all")?"selected":"" ?>>All</option>
+            <option value="esl" <?php echo ($list=="esl")?"selected":"" ?>>ESL</option>
+            <option value="break" <?php echo ($list=="break")?"selected":"" ?>>Breakable</option>
+            <option value="eslbreak" <?php echo ($list=="eslbreak")?"selected":"" ?>>ESL Breakable</option>
+            <option value="efl" <?php echo ($list=="efl")?"selected":"" ?>>EFL</option>
+            <option value="eflbreak" <?php echo ($list=="eflbreak")?"selected":"" ?>>EFL Breakable</option>
+            <option value="novice" <?php echo ($list=="novice")?"selected":"" ?>>Novice</option>
+            <option value="novicebreak" <?php echo ($list=="novicebreak")?"selected":"" ?>>Novice Breakable</option>
         </select> <br/><br/>
-        
+
         <label for="round">Round: </label>
-        <?
+        <?php
 	if ($numresults > 0) {
 		echo '<select id="round" name="round">';
 	        if (!$round)
@@ -54,8 +54,7 @@
 	}
     ?>
     <br/><br/>
-    
+
     <input type="submit" value="Change"/>
      </form>
    </div>
-

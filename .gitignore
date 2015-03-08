@@ -4,3 +4,4 @@ config/settings.php
 error_log
 config/version.txt
 install/university.sql
+adodb/

@@ -22,11 +22,13 @@
  * end license */
 
 
-function redirect($address) { ?>
+function redirect($address) {
+	echo <<<END
     <script type="text/javascript">
     <!--
     window.location = "<?= $address ?>"
     //-->
-    </script> <?
+    </script>
+END;
 }
 ?>

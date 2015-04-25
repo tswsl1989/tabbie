@@ -307,67 +307,6 @@ if(isset($generate)){
 	Rooms per slide: <select name="roomsperslide"><option value="1" selected="selected">1</option><option value="2">2</option></select>
 	<input type="submit" value="Generate PowerPoint"/>
 	</form>
-	<?
+<?php
 }
-
-
-
-
-
-/*
-
-
-
-
-
-//	createGeneralSlide
-//	Create a slide with the Tabbie bottom-strap
-
-function setshapeColor(PHPPowerPoint_Shape $shape, PHPPowerPoint_Style_Color $color){
-	$shape->getFill()->setStartColor($color);
-	$shape->getFill()->setEndColor($color);
-	$shape->getFill()->setFillType( PHPPowerPoint_Style_Fill::FILL_SOLID);
-	return $shape;
-}
-
-
-
-function createGeneralSlide(PHPPowerPoint $presentation){
-	$slide = $presentation->createSlide();
-	$shape = $slide->createRichTextShape();
-	$shape->setWidth(950);
-	$shape->setHeight(40);
-	$shape->setOffsetX(0);
-	$shape->setOffsetY(720-40);
-	$shape->getAlignment()->setHorizontal( PHPPowerPoint_Style_Alignment::HORIZONTAL_CENTER);
-	$shape->getAlignment()->setVertical( PHPPowerPoint_Style_Alignment::VERTICAL_CENTER);
-	$textrun = $shape->createTextRun("Created with Tabbie. http://tabbie.wikidot.com. Maintained by Giles Robertson.".$shape->getFill());
-	$textrun->getFont()->setSize(14);
-	$textrun->getFont()->setName("Helvetica");
-	$textrun->getFont()->setColor(new PHPPowerPoint_Style_Color( 'FF974A1C' ));
-	
-	return $slide;
-}
-
-$presentation = new PHPPowerPoint();
-$presentation->getProperties()->setCreator("Tabbie");
-
-// Remove the automatically generated first slide
-$presentation->removeSlideByIndex(0);
-
-$currentSlide = createGeneralSlide($presentation);
-
-$shape = $currentSlide->createRichTextShape();
-$shape->setHeight(300);
-$shape->setWidth(600);
-$shape->setOffsetX(170);
-$shape->setOffsetY(180);
-$shape->getAlignment()->setHorizontal( PHPPowerPoint_Style_Alignment::HORIZONTAL_CENTER);
-$textRun = $shape->createTextRun("Round $roundno");
-$textRun->getFont()->setBold(true);
-$textRun->getFont()->setSize(80);
-
-$objWriter = PHPPowerPoint_IOFactory::createWriter($presentation, 'PowerPoint2007');
-$objWriter->save("php://output");
-*/
 ?>

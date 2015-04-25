@@ -53,28 +53,16 @@ if ($return_value == 0) {
 	}
 
 } else { // attempt 2a (assuming Windows/WOS):
-	/* retained for historical interest
-	$strip_diskname = 2; // "C:"
-	$script_directory = substr($_SERVER['SCRIPT_FILENAME'], $strip_diskname, strrpos($_SERVER['SCRIPT_FILENAME'], '/') - $strip_diskname);
-	$command = "cd \"\\$script_directory/../../mysql/bin/\" && $basecommand";
-
-
-	$output = array();
-	$return_value = "undefined";
-
-	exec($command, $output, $return_value);
-	$attempted[] = array($command,$return_value,$output);
-	*/
 	if ($return_value == 0) { //Will always be true
-    	header('Content-type: text/plain'); 
-    	header('Content-Disposition: attachment; filename="' . $database_name . '.sql"');
-    	header( "Content-Description: File Transfer");
+		header('Content-type: text/plain'); 
+		header('Content-Disposition: attachment; filename="' . $database_name . '.sql"');
+		header( "Content-Description: File Transfer");
 		
 		foreach ($output as $line){
 			print "$line\n";
 		}
         
-	} 	else { // attempt 2b (assuming Windows XP):
+	} else { // attempt 2b (assuming Windows XP):
 
 		$strip_diskname = 2; // "C:"
 		//The next line assumes the file is called "backup.php" and that the path separator is 1 character!
@@ -122,7 +110,7 @@ if ($return_value == 0) {
 				?> <h3>Backup Failed</h3> 
 				<p>
 				
-				<?
+				<?php
 				    foreach ($attempted as $attempt){
 				        echo("<p>There was a problem executing the command <b>" . $attempt[0] . "</b> error code: " . $attempt[1] . " output: <i> " . print_r($attempt[2]) . "</i></p>");
 					}

@@ -23,7 +23,7 @@ if (get_setting("eballots_enabled") != 1) {
 if (!isset($_POST['stage'])||!is_numeric($_POST['stage'])) {
 	if (isset($_GET['stage']) && $_GET['stage'] = 2) {
 		$stage = 2;
-		$_POST['debate'] = $_GET['debate'];
+		$_POST['debate'] = hexdec($_GET['debate']);
 		$_POST['ballot_code'] = $_GET['ballot_code'];
 	} else {
 		$stage = 0;

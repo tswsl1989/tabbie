@@ -104,7 +104,7 @@ function adjudicator_sheets_pdf($filename, $data) {
 	if (get_setting('eballots_enabled')==1) {
 		$pdf->Cell(80, 8, "Ballot Code: " . text_convert($r['auth_code']));
 		$qrfile = tempnam(NULL, "qrc");
-		$qrcode = "https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=".urlencode($eballot_path."?debate=".$r['debate_id']."&ballot_code=".$r['auth_code']."&stage=2");
+		$qrcode = "https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=".urlencode($eballot_path."?debate=".dechex($r['debate_id'])."&ballot_code=".$r['auth_code']."&stage=2");
 		$ch = curl_init($qrcode);
 		$qrf = fopen($qrfile, "w+");
 		curl_setopt($ch, CURLOPT_FILE, $qrf);

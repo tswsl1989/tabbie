@@ -62,7 +62,7 @@ if (get_num_rounds() == 0 && !has_temp_draw()) {
 <?= $p_state ?> 
 </p>
 
-<? if ($state == "before_tournament") { ?>
+<?php if ($state == "before_tournament") { ?>
 
 <h3>Before the tournament &amp; during registration</h3>
 <ul>
@@ -76,28 +76,28 @@ if (get_num_rounds() == 0 && !has_temp_draw()) {
 <h3>Before the first regular round</h3>
 <ul>
 
-<? } if (in_array($state, array("before_draw", "during_draw", "during_round"))) { ?>
+<?php } if (in_array($state, array("before_draw", "during_draw", "during_round"))) { ?>
 
 <h3>Before each regular round</h3>
 <ul>
 
-<? } if ($state == "before_draw") { ?>
+<?php } if ($state == "before_draw") { ?>
 
 <li><a href="input.php?moduletype=venue">Update venues according to availability</a></li>
 <li><a href="input.php?moduletype=team">Update team status according to presence</a></li>
 <li><a href="input.php?moduletype=adjud">Update adjudicator status according to presence</a></li>
 
-<? } if ($state == "before_tournament" || $state == "before_draw") { ?>
+<?php } if ($state == "before_tournament" || $state == "before_draw") { ?>
 
 <li><a href="input.php?moduletype=adjud_params">Adapt the parameters for adjudicator allocation</a></li>
 <li><a href="draw.php?moduletype=currentdraw&amp;action=draw">Request the automated draw</a></li>
 
-<? } if ($state == "during_draw") { ?>
+<?php } if ($state == "during_draw") { ?>
 
 <li><a href="draw.php?moduletype=manualdraw">Manually adjust adjudicators and rooms</a></li>
 <li><a href="draw.php?moduletype=manualdraw&amp;action=finalise">Finalize the draw</a></li>
 
-<? } if ($state == "during_round") { ?>
+<?php } if ($state == "during_round") { ?>
 
 <li><a href="rest.php?result_type=pdf&amp;function=adjudicator_sheets&amp;param=<?= $round ?>">Print the adjudicator sheets with room-specific info</a> (and have them distributed)</li>
 <li>Display the draw</li>
@@ -109,33 +109,33 @@ if (get_num_rounds() == 0 && !has_temp_draw()) {
 <li><a href="motion.php?roundno=<?= $round ?>">Display the motion</a></li>
 <li><a href="backup.php">Make a backup (and save it on another computer)</a></li>
 
-<? } if (in_array($state, array("before_draw", "before_tournament", "during_draw", "during_round"))) { ?>
+<?php } if (in_array($state, array("before_draw", "before_tournament", "during_draw", "during_round"))) { ?>
 
 </ul>
 
-<? } if (in_array($state, array("during_round", "during_results", "before_draw"))) { ?>
+<?php } if (in_array($state, array("during_round", "during_results", "before_draw"))) { ?>
 
 <h3>After each regular round</h3>
 <ul>
 
-<? } if ($state == "during_round") { ?>
+<?php } if ($state == "during_round") { ?>
 
 <li><a href="result.php?moduletype=currentround&amp;action=create">Start Inputting results</a></li>
 
-<? } if ($state == "during_results") { ?>
+<?php } if ($state == "during_results") { ?>
 
 <li><a href="result.php?moduletype=currentround">Continue Inputting results</a></li>
 <li><a href="result.php?moduletype=currentround&amp;action=finalize">Finalize results</a></li>
 
-<? } if ($state == "before_draw") { ?>
+<?php } if ($state == "before_draw") { ?>
 
 <li><a href="backup.php">Make a backup (and save it on another computer)</a></li>
 
-<? } if (in_array($state, array("during_round", "during_results", "before_draw"))) { ?>
+<?php } if (in_array($state, array("during_round", "during_results", "before_draw"))) { ?>
 
 </ul>
 
-<? } if ($state == "before_draw") { ?>
+<?php } if ($state == "before_draw") { ?>
 
 <h3>Before the break</h3>
 <ul>
@@ -153,7 +153,7 @@ if (get_num_rounds() == 0 && !has_temp_draw()) {
 <li><a href="team_print.php">Present the results as a website</a></li>
 </ul>
 
-<? } ?>
+<?php } ?>
 
 </p>
 <?php

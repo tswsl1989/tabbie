@@ -382,53 +382,53 @@ EndHeader;
 ?>
        </select><br/><br/>
        <label for="team_code">Team Code</label>
-       <input type="text" maxlength="50" id="team_code" name="team_code" value="<?echo $team_code;?>"/><br/><br/>
+       <input type="text" maxlength="50" id="team_code" name="team_code" value="<?= $team_code;?>"/><br/><br/>
 
 	<br /><strong>Speaker Details</strong><br />
 	<table>
 	<tr><th>&nbsp</th><th>Name</th><th>ESL/EFL</th><th>Novice</th></tr>
 	<tr>
 		<td>1.</td>
-		<td><input maxlength="100" type="text" id="speaker1" name="speaker1" value="<?echo $speaker1;?>"/></td>
+		<td><input maxlength="100" type="text" id="speaker1" name="speaker1" value="<?= $speaker1;?>"/></td>
 		<td><select id="speaker1esl" name="speaker1esl">
-			<option value="N" <?echo ($speaker1esl=="N")?"selected":""?>>No</option>
-			<option value="ESL" <?echo ($speaker1esl=="ESL")?"selected":""?>>ESL</option>
-			<option value="EFL" <?echo ($speaker1esl=="EFL")?"selected":""?>>EFL</option>
+			<option value="N" <?= ($speaker1esl=="N")?"selected":""?>>No</option>
+			<option value="ESL" <?= ($speaker1esl=="ESL")?"selected":""?>>ESL</option>
+			<option value="EFL" <?= ($speaker1esl=="EFL")?"selected":""?>>EFL</option>
 		</select></td>
 		<td><select id="speaker1novice" name="speaker1novice">
-			<option value="N" <?echo ($speaker1novice=="N")?"selected":""?>>No</option>
-			<option value="Y" <?echo ($speaker1novice=="Y")?"selected":""?>>Yes</option>
+			<option value="N" <?= ($speaker1novice=="N")?"selected":""?>>No</option>
+			<option value="Y" <?= ($speaker1novice=="Y")?"selected":""?>>Yes</option>
 		</select></td>
 	</tr>
 	<tr>
 		<td>2.</td>
-		<td><input maxlength="100" type="text" id="speaker2" name="speaker2" value="<?echo $speaker2;?>"/></td>
+		<td><input maxlength="100" type="text" id="speaker2" name="speaker2" value="<?= $speaker2;?>"/></td>
 		<td><select id="speaker2esl" name="speaker2esl">
-			<option value="N" <?echo ($speaker2esl=="N")?"selected":""?>>No</option>
-			<option value="ESL" <?echo ($speaker2esl=="ESL")?"selected":""?>>ESL</option>
-			<option value="EFL" <?echo ($speaker2esl=="EFL")?"selected":""?>>EFL</option>
+			<option value="N" <?= ($speaker2esl=="N")?"selected":""?>>No</option>
+			<option value="ESL" <?= ($speaker2esl=="ESL")?"selected":""?>>ESL</option>
+			<option value="EFL" <?= ($speaker2esl=="EFL")?"selected":""?>>EFL</option>
 		</select></td>
 		<td><select id="speaker2novice" name="speaker2novice">
-			<option value="N" <?echo ($speaker2novice=="N")?"selected":""?>>No</option>
-			<option value="Y" <?echo ($speaker2novice=="Y")?"selected":""?>>Yes</option>
+			<option value="N" <?= ($speaker2novice=="N")?"selected":""?>>No</option>
+			<option value="Y" <?= ($speaker2novice=="Y")?"selected":""?>>Yes</option>
 		</select></td>
 	</tr>
 	</table>
 
 	<label for="active">Active</label>
 	<select id="active" name="active">
-		<option value="Y" <?echo ($active=="Y")?"selected":""?>>Yes</option>
-		<option value="N" <?echo ($active=="N")?"selected":""?>>No</option>
+		<option value="Y" <?= ($active=="Y")?"selected":""?>>Yes</option>
+		<option value="N" <?= ($active=="N")?"selected":""?>>No</option>
 	</select> <br/><br/>
 
 	<label for="composite">Composite</label>
 	<select id="composite" name="composite">
-		<option value="N" <?echo ($composite=="N")?"selected":""?>>No</option>
-		<option value="Y" <?echo ($composite=="Y")?"selected":""?>>Yes</option>
+		<option value="N" <?= ($composite=="N")?"selected":""?>>No</option>
+		<option value="Y" <?= ($composite=="Y")?"selected":""?>>Yes</option>
 	</select> <br/><br/>
 
 
-	<input type="submit" value="<?echo ($action=="edit")?"Edit Team":"Add Team" ;?>"/>
+	<input type="submit" value="<?= ($action=="edit")?"Edit Team":"Add Team" ;?>"/>
 	<input type="button" value="Cancel" onClick="location.replace('input.php?moduletype=team')"/>
 	</form>
 

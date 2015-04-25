@@ -160,26 +160,23 @@ if ($action=="edit") {
 }
 
 
-switch($action)
-  {
-  case "add" :
-    $title.=": Add";
-    break;
-  case "edit" :
-    $title.=": Edit";
-    break;
-
-  case "display" :
-    $title.=": Display";
-    break;
-
-  case "delete"  :
-    $title.=": Display";
-    break;
-  default :
-    $title=": Display";
-    $action="display";
-  }
+switch($action) {
+case "add":
+	$title.=": Add";
+	break;
+case "edit":
+	$title.=": Edit";
+	break;
+case "display":
+	$title.=": Display";
+	break;
+case "delete":
+	$title.=": Display";
+	break;
+default:
+	$title=": Display";
+	$action="display";
+}
 
 
 echo "<h2>$title</h2>\n"; //titlek
@@ -187,74 +184,58 @@ echo "<h2>$title</h2>\n"; //titlek
 if(isset($msg)) displayMessagesUL(@$msg);
 
 //Check for Display
-if ($action=="display")
-  {
-    //Display Data in Tabular Format
-    $result=q("SELECT * FROM motions ORDER BY round_no");
+if ($action=="display") {
+	//Display Data in Tabular Format
+	$result=q("SELECT * FROM motions ORDER BY round_no");
 
-    if ($result->RecordCount()==0)
-      {
-    //Print Empty Message
-    echo "<h3>No Motions Found.</h3>";
-    echo "<h3><a href=\"input.php?moduletype=motion&amp;action=add\">Add New</a></h3>";
-      }
-    else
-      {
+	if ($result->RecordCount()==0) {
+		//Print Empty Message
+		echo "<h3>No Motions Found.</h3>";
+		echo "<h3><a href=\"input.php?moduletype=motion&amp;action=add\">Add New</a></h3>";
+	} else {
+		//Print Table
+?>
 
-    //Print Table
-    ?>
-
-      <h3>Total No. of Motions : <?echo $result->RecordCount()?></h3>
-
-         <?echo "<h3><a href=\"input.php?moduletype=motion&amp;action=add\">Add New</a></h3>";?>
-      <table>
-         <tr><th>Round Number</th><th>Motion</th><th>Info Slide</th><th>Text</th></tr>
-         <? while($row=$result->FetchRow()) { ?>
-
-      <tr>
-        <td><?echo $row['round_no'];?></td>
-    <td><?echo $row['motion'];?></td>
-	<td><?echo $row['info_slide'];?></td>
-	<td><?echo $row['info'];?></td>
-    <td class="editdel"><a href="input.php?moduletype=motion&amp;action=edit&amp;round_no=<?echo $row['round_no'];?>">Edit</a></td>
-	<td class="editdel"><a href="input.php?moduletype=motion&amp;action=delete&amp;round_no=<?echo $row['round_no'];?>">Delete</a></td>
-      </tr>
-          <?} //Do Not Remove  ?>
-    </table>
-
-  <?
-      }
-  }
-
- else //Either Add or Edit
-   {
-
-     //Display Form and Values
-     ?>
-            
-     <form action="input.php?moduletype=motion" method="POST">
-       <input type="hidden" name="actionhidden" value="<?echo $action;?>"/>
-       <? if ($action == "edit") { ?>
-        <input type="hidden" name="round_no" value="<?echo $round_no;?>"/>
-        <? } else { ?>
-       <label for="round_no">Round Number</label>
-        <input type="text" name="round_no" value="<?echo $round_no;?>"/><br><br>
-        <? } ?>
-       <label for="motion">Motion</label>
-       <textarea rows="3" cols="60" id="motion" name="motion"><?= $motion ?></textarea><br/><br/>
-	   <label for="info_slide">Info Slide</label>
-	    <select id="info_slide" name="info_slide">
-		 <option value="Y" <?echo ($info_slide=="Y")?"selected":""?>>Yes</option>
-         <option value="N" <?echo (($info_slide=="N")||(!$info_slide))?"selected":""?>>No</option>
-        </select><br/><br/>
-	   <label for="info">Text</label>
-	    <textarea type="text" rows="3" cols="60" id="info" name="info"><?= $info ?></textarea><br/><br/>
-
-                  <input type="submit" value="<?echo ($action=="edit")?"Edit Motion":"Add Motion" ;?>"/>
-                  <input type="button" value="Cancel" onClick="location.replace('input.php?moduletype=motion')"/>
-                  </form>
-            
-                  <?
-            
-                  }
+	<h3>Total No. of Motions : <?= $result->RecordCount()?></h3>
+	 <?= "<h3><a href=\"input.php?moduletype=motion&amp;action=add\">Add New</a></h3>";?>
+	<table>
+		 <tr><th>Round Number</th><th>Motion</th><th>Info Slide</th><th>Text</th></tr>
+	 <?php while($row=$result->FetchRow()) { ?>
+		<tr>
+			<td><?= $row['round_no'];?></td>
+			<td><?= $row['motion'];?></td>
+			<td><?= $row['info_slide'];?></td>
+			<td><?= $row['info'];?></td>
+			<td class="editdel"><a href="input.php?moduletype=motion&amp;action=edit&amp;round_no=<?= $row['round_no'];?>">Edit</a></td>
+			<td class="editdel"><a href="input.php?moduletype=motion&amp;action=delete&amp;round_no=<?= $row['round_no'];?>">Delete</a></td>
+		</tr>
+	  <?php } //Do Not Remove  ?>
+	</table>
+<?php
+	}
+} else { //Either Add or Edit
+	//Display Form and Values
+?>
+	<form action="input.php?moduletype=motion" method="POST">
+		<input type="hidden" name="actionhidden" value="<?= $action;?>"/>
+		<?php if ($action == "edit") { ?>
+			<input type="hidden" name="round_no" value="<?= $round_no;?>"/>
+		<?php } else { ?>
+		<label for="round_no">Round Number</label>
+		<input type="text" name="round_no" value="<?= $round_no;?>"/><br><br>
+		<?php } ?>
+		<label for="motion">Motion</label>
+		<textarea rows="3" cols="60" id="motion" name="motion"><?= $motion ?></textarea><br/><br/>
+		<label for="info_slide">Info Slide</label>
+		<select id="info_slide" name="info_slide">
+			<option value="Y" <?= ($info_slide=="Y")?"selected":""?>>Yes</option>
+			<option value="N" <?= (($info_slide=="N")||(!$info_slide))?"selected":""?>>No</option>
+		</select><br/><br/>
+		<label for="info">Text</label>
+		<textarea type="text" rows="3" cols="60" id="info" name="info"><?= $info ?></textarea><br/><br/>
+		<input type="submit" value="<?= ($action=="edit")?"Edit Motion":"Add Motion" ;?>"/>
+		<input type="button" value="Cancel" onClick="location.replace('input.php?moduletype=motion')"/>
+	</form>
+	<?php
+}
 ?>

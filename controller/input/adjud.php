@@ -35,43 +35,55 @@ if(!($adjud_id && $action)){
 	die();
 }
 
-if($action!="ACTIVETOGGLE"){
-	//Error condition: client requested non-existent team.
-	header('HTTP/1.1 403 Forbidden');
-	echo 'Action not valid ('.$action.')';
-	die();
+switch($action) {
+	case 'ACTIVETOGGLE':
+		toggle_adjudicator($adjud_id);
+		print_adjudicator_xml($adjud_id);
+		break;
+	default:
+		header('HTTP/1.1 403 Forbidden');
+		echo 'Action not valid ('.$action.')';
+		break;
 }
 
-$query="SELECT `adjud_id`, `active` FROM `adjudicator` WHERE `adjud_id` =?";
-$result=qp($query, array($adjud_id));
-if($result->RecordCount()!=1){
-	//Adjud_id was not unique: risk working on the wrong adjudicator
-	header('HTTP/1.1 403 Forbidden');
-	echo('Adjud_id did not specify a unique adjudicator ($adjud_id)');
-	die();
+
+
+function toggle_adjudicator($adjud_id) {
+	global $DBCONN;
+	$query="SELECT `adjud_id`, `active` FROM `adjudicator` WHERE `adjud_id` =?";
+	$result=qp($query, array($adjud_id));
+	if($result->RecordCount()!=1){
+		//Adjud_id was not unique: risk working on the wrong adjudicator
+		header('HTTP/1.1 403 Forbidden');
+		echo('Adjud_id did not specify a unique adjudicator ($adjud_id)');
+		die();
+	}
+
+	$adjudicator=$result->FetchRow();
+
+	if($adjudicator['active']=="Y"){
+		$active="N";
+	}
+	if($adjudicator['active']=="N"){
+		$active="Y";
+	}
+
+	//$active needs to be a valid value before we put it into the DB!
+	if (!(($active == "Y") || ($active == "N"))) {
+		header("HTTP/1.1 403 Forbidden");
+		echo "Active state invalid";
+		die();
+	}
+
+	$query = "UPDATE `adjudicator` SET `active` = ? WHERE `adjud_id` = ?";
+	$result=qp($query, array($active, $adjud_id));
+	if (!$result) {
+		echo $DBCONN->ErrorMsg();
+	}
+	return $result;
 }
 
-$adjudicator=$result->FetchRow();
-
-if($adjudicator['active']=="Y"){
-	$active="N";
+function print_adjudicator_xml($adjud_id) {
+	echo(mysql_to_xml("SELECT `adjud_id`, `active` FROM `adjudicator` WHERE `adjud_id`='$adjud_id'","adjudicator"));
 }
-if($adjudicator['active']=="N"){
-	$active="Y";
-}
-
-//$active needs to be a valid value before we put it into the DB!
-if (!(($active == "Y") || ($active == "N"))) {
-	header("HTTP/1.1 403 Forbidden");
-	echo "Active state invalid";
-	die();
-}
-
-$query = "UPDATE `adjudicator` SET `active` = ? WHERE `adjud_id` = ?";
-$result=qp($query, array($active, $adjud_id));
-if (!$result) {
-	echo $DBCONN->ErrorMsg();
-}
-
-echo(mysql_to_xml("SELECT `adjud_id`, `active` FROM `adjudicator` WHERE `adjud_id`='$adjud_id'","adjudicator"));
 ?>

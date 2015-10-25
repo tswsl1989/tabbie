@@ -26,7 +26,7 @@ function redirect($address) {
 	echo <<<END
     <script type="text/javascript">
     <!--
-    window.location = "<?= $address ?>"
+    window.location = "$address"
     //-->
     </script>
 END;

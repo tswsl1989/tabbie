@@ -73,7 +73,7 @@ if (!has_temp_draw()) {
 			$adjud_result['status']=$adjud_row['status'];
 			$adjud_result['trainee']=$adjud_row['trainee'];
 			$striketype = is_four_id_conflict($adjud_row['id'], $row['og_id'], $row['oo_id'], $row['cg_id'], $row['co_id']);
-			if ($striketype) {
+			if ($striketype > 0) {
 				$adjud_result['strike']=true;
 				$adjud_result['striketype'] = $striketype; //2 for team, 1 for university.
 			}else{

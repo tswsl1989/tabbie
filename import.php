@@ -43,11 +43,13 @@ Use this page to import SQL files. SQL files can be created by clicking on "back
 <input type="submit" value="Start Import" />
 </form>
 
-
 </p>
 <?php
 if ( array_key_exists("uploadedfile", @$_FILES)) {
 	$problem = false;
+	echo <<<WARN
+<div id='import-warning' style='display: block; width:100%, padding-top: 15px; padding-bottom: 15px; background: #ffcc00; text-align: center; color: #000000; font-size: +1em;'><strong>CAUTION:&nbsp;</strong> Wait for import to complete before navigating away from this page</div>
+WARN;
 
 	if (isset($_POST['drop_create']) && $_POST['drop_create']=="drop") {
 		if (!$DBConn->Execute("DROP DATABASE $database_name")) {
@@ -67,7 +69,7 @@ if ( array_key_exists("uploadedfile", @$_FILES)) {
 	// If it's a windows system, carriage returns are \r\n;, if unix, \n; Accommodate.
 	$lines = explode(strpos($contents,";\r\n") ? ";\r\n" : ";\n", $contents);
 	foreach ($lines as $line) {
-		execute_query_print_result($line);
+		$problem = !execute_query_print_result($line) || $problem; // Return false on error, so negate
 	}
 	echo('</p>');
 
@@ -99,6 +101,7 @@ if ( array_key_exists("uploadedfile", @$_FILES)) {
 			$query="ALTER TABLE adjudicator DROP COLUMN conflicts";
 			$r=$DBConn->Execute($query);
 			if (!$r) {
+				$problem = true;
 				print $DBConn->ErrorMsg();
 			}
 			print "<p>Conflicts converted to new format.</p>";
@@ -117,9 +120,22 @@ if ( array_key_exists("uploadedfile", @$_FILES)) {
 	}
 
 	if (! $problem ) {
-		print "<p><b>Imported File Succesfully</b></p>";
+		echo<<<EOHTML
+		<p><b>Imported File Succesfully</b></p>
+		<script type='text/javascript'>
+		$('#import-warning').css("background", "#00dd00");
+		$('#import-warning').html("<strong>Success!&nbsp;</strong> Data successfully imported!");
+		</script>
+EOHTML;
 	} else {
-		print "<p><b>Imported Encountered Problems</b></p>";
+		echo<<<EOHTML
+		<p><b>Imported Encountered Problems</b></p>
+		<script type='text/javascript'>
+		$('#import-warning').css("background", "#dd0000");
+		$('#import-warning').css("color", "#ffffff");
+		$('#import-warning').html("<strong>Error:&nbsp;</strong> Problem found while importing data, see bold statements below for details");
+		</script>
+EOHTML;
 	}
 }
 require('view/footer.php');

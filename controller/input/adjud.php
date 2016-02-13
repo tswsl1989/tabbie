@@ -40,6 +40,22 @@ switch($action) {
 		toggle_adjudicator($adjud_id);
 		print_adjudicator_xml($adjud_id);
 		break;
+	case 'BIG_INCREMENT':
+		adjust_adjudicator_rank($adjud_id, +10);
+		print_adjudicator_xml($adjud_id);
+		break;
+	case 'BIG_DECREMENT':
+		adjust_adjudicator_rank($adjud_id, -10);
+		print_adjudicator_xml($adjud_id);
+		break;
+	case 'LITTLE_INCREMENT':
+		adjust_adjudicator_rank($adjud_id, +5);
+		print_adjudicator_xml($adjud_id);
+		break;
+	case 'LITTLE_DECREMENT':
+		adjust_adjudicator_rank($adjud_id, -5);
+		print_adjudicator_xml($adjud_id);
+		break;
 	default:
 		header('HTTP/1.1 403 Forbidden');
 		echo 'Action not valid ('.$action.')';
@@ -83,7 +99,37 @@ function toggle_adjudicator($adjud_id) {
 	return $result;
 }
 
+function adjust_adjudicator_rank($adjud_id, $qty) {
+	global $DBCONN;
+	$query="SELECT `adjud_id`, `ranking` FROM `adjudicator` WHERE `adjud_id` =?";
+	$result=qp($query, array($adjud_id));
+	if($result->RecordCount()!=1){
+		//Adjud_id was not unique: risk working on the wrong adjudicator
+		header('HTTP/1.1 403 Forbidden');
+		echo('Adjud_id did not specify a unique adjudicator ($adjud_id)');
+		die();
+	}
+
+	$adjudicator=$result->FetchRow();
+
+	$ranking = $adjudicator['ranking'] + $qty;
+
+	//$active needs to be a valid value before we put it into the DB!
+	if ($ranking < 1  || $ranking > 100) {
+		header("HTTP/1.1 403 Forbidden");
+		echo "Invalid rank result";
+		die();
+	}
+
+	$query = "UPDATE `adjudicator` SET `ranking` = ? WHERE `adjud_id` = ?";
+	$result=qp($query, array($ranking, $adjud_id));
+	if (!$result) {
+		echo $DBCONN->ErrorMsg();
+	}
+	return $result;
+}
+
 function print_adjudicator_xml($adjud_id) {
-	echo(mysql_to_xml("SELECT `adjud_id`, `active` FROM `adjudicator` WHERE `adjud_id`='$adjud_id'","adjudicator"));
+	echo(mysql_to_xml("SELECT `adjud_id`, `ranking`, `active` FROM `adjudicator` WHERE `adjud_id`='$adjud_id'","adjudicator"));
 }
 ?>

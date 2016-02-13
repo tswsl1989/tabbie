@@ -68,7 +68,7 @@ $(document).ready(function() {
 		});
 		updatecounts();
 	}
-	
+
 	function failuremsg(text){
 		$('.failure').html(text);
 	 	$.ajax({
@@ -122,6 +122,60 @@ $(document).ready(function() {
 			failure: failuremsg,
 		});
 	});
+
 });
 
+function updateranks(xml){
+    $('adjudicator',xml).each(function() {
+        adjudicatorRank=$("#Rank"+$(this).find("adjud_id").text());
+        adjudicatorRank.text($(this).find("ranking").text());
+    });
+}
 
+function bigdec(id) {
+    $.ajax({
+            url: "controller/input/adjud.php",
+            data: {
+                    adjud_id: id,
+                    action: "BIG_DECREMENT",
+            },
+            type: 'POST',
+            success: updateranks,
+    });
+};
+
+function lildec(id) {
+    $.ajax({
+            url: "controller/input/adjud.php",
+            data: {
+                    adjud_id: id,
+                    action: "LITTLE_DECREMENT",
+            },
+            type: 'POST',
+            success: updateranks,
+    });
+};
+
+function lilinc(id) {
+    $.ajax({
+            url: "controller/input/adjud.php",
+            data: {
+                    adjud_id: id,
+                    action: "LITTLE_INCREMENT",
+            },
+            type: 'POST',
+            success: updateranks,
+    });
+};
+
+function biginc(id) {
+    $.ajax({
+            url: "controller/input/adjud.php",
+            data: {
+                    adjud_id: id,
+                    action: "BIG_INCREMENT",
+            },
+            type: 'POST',
+            success: updateranks,
+    });
+};

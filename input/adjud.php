@@ -213,6 +213,7 @@ if ($action=="display") {
 			<th>Name</th>
 			<th>University</th>
 			<th>Ranking</th>
+			<th>Adjust Rank</th>
 			<th>Active(Y/N)</th>
 			<th>Status</th>
 			<th>Conflicts</th>
@@ -222,7 +223,13 @@ EndHeader;
 			echo "<tr ".($row['active']=='N' ? "class=\"inactive\"" : "").">\n";
 			echo "\t<td>".$row['adjud_name']."</td>\n";
 			echo "\t<td>".$row['univ_code']."</td>\n";
-			echo "\t<td>".$row['ranking']."</td>\n";
+			echo "\t<td id='Rank".$row['adjud_id']."'>".$row['ranking']."</td>\n";
+			echo "\t<td>
+				<a id='BDadjud".$row['adjud_id']."' onclick='javascript:bigdec(".$row['adjud_id'].")'>&lt;&lt;</a>&nbsp;
+				<a id='LDadjud".$row['adjud_id']."' onclick='javascript:lildec(".$row['adjud_id'].")'>&lt;</a>&nbsp;
+				<a id='LIadjud".$row['adjud_id']."' onclick='javascript:lilinc(".$row['adjud_id'].")'>&gt;</a>&nbsp;
+				<a id='BIadjud".$row['adjud_id']."' onclick='javascript:biginc(".$row['adjud_id'].")'>&gt;&gt;</a>
+				</td>";
 			echo "\t<td class='activetoggle' id='adjud".$row['adjud_id']."'>".$row['active']."</td>\n";
 			echo "\t<td>".($row['status']=='normal' ? "--" : $row['status'])."</td>\n";
 			echo "\t<td>".print_conflicts($row['adjud_id'])."</td>\n";

@@ -59,8 +59,9 @@ if($result=qp($query, array($debate_id))){
 	$ooid=$row['oo'];
 	$cgid=$row['cg'];
 	$coid=$row['co'];
-	if(is_four_id_conflict($adjud_id, $ogid, $ooid, $cgid, $coid)){
-		echo("<?xml version='1.0' encoding='utf8'?><collection><strike><adjud_id>$adjud_id</adjud_id></strike></collection>");
+	$striketype=(is_four_id_conflict($adjud_id, $ogid, $ooid, $cgid, $coid));
+	if ($striketype) {
+		echo("<?xml version='1.0' encoding='utf8'?><collection><strike><adjud_id>$adjud_id</adjud_id><type>$striketype</type></strike></collection>");
 	} 
 } else {
 	header('HTTP/1.1 400 Bad Request');

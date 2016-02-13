@@ -492,11 +492,11 @@ function is_strike_judge_team($adjud_id, $team_id){
 	if ($rownum>0){
 		//echo("struck by team");
 		//echo("strike on university $team_id");
-		return true;
+		return 2;
 	} else {
 		if(is_strike_judge_univ($adjud_id, univ_id_from_team($team_id))){
 			//echo("struck by univ");
-			return true;
+			return 1;
 		} else {
 			//echo("not struck");
 			return false;
@@ -517,7 +517,7 @@ function is_strike_judge_univ($adjud_id, $univ_id){
 	if ($rownum>0){
 		//echo("strike on university $univ_id");
 		//echo $query;
-		return true;
+		return 1;
 	} else {
 		return false;
 	}
@@ -566,12 +566,13 @@ function recordset_to_xml($result, $baseelement) {
 }
 
 function is_four_id_conflict($adjud_id, $ogid, $ooid, $cgid, $coid){
-	if ( (is_strike_judge_team($adjud_id, $ogid))|| (is_strike_judge_team($adjud_id, $ooid)) || (is_strike_judge_team($adjud_id, $cgid)) || (is_strike_judge_team($adjud_id, $coid)) ){
-		return true;
-	} else {
-		return false;
-	}
-
+	$strikes = array(
+		is_strike_judge_team($adjud_id, $ogid),
+		is_strike_judge_team($adjud_id, $ooid),
+		is_strike_judge_team($adjud_id, $cgid),
+		is_strike_judge_team($adjud_id, $coid)
+       	);
+	return max($strikes); // 2 if any team strikes, 1 if any university strikes. Else 0
 }
 
 function print_conflicts($adjud_id=0, $negative="<b>None</b>"){

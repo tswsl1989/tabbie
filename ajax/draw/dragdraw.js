@@ -53,16 +53,37 @@ function strike_check(adjud_id, debate_id, lockrelease) {
 		function(xml) {
 			//console.log("Strike response was: " + xml);
 			should_strike=0;
+                        strike_type = 0;
 			$('strike', xml).each(function() {
 				if ($(this).find("adjud_id").text() == adjud_id) {
 					should_strike=1;
 				}
+                                if (should_strike) {
+                                    st = parseInt($(this).find("type").text(), 10);
+                                    if (! isNaN(st)) {
+                                        strike_type = Math.max(strike_type, st);
+                                    }
+                                }
 			});
 			if(should_strike){
-				//console.log("Striking adjudicator " + adjud_id);
-				$('#A'+adjud_id).addClass('strike');
+				//console.log("Striking adjudicator " + adjud_id + " - " + strike_type);
+                                if (strike_type == 2) {
+                                    $('#A'+adjud_id).addClass('strike-team');
+                                    $('#A'+adjud_id).removeClass('strike-univ');
+                                    $('#A'+adjud_id).removeClass('strike');
+                                } else if (strike_type == 1) {
+                                    $('#A'+adjud_id).addClass('strike-univ');
+                                    $('#A'+adjud_id).removeClass('strike-team');
+                                    $('#A'+adjud_id).removeClass('strike');
+                                } else {
+                                    $('#A'+adjud_id).addClass('strike');
+                                    $('#A'+adjud_id).removeClass('strike-team');
+                                    $('#A'+adjud_id).removeClass('strike-univ');
+                                }
 			} else {
 				//console.log("Destriking adjudicator " + adjud_id);
+				$('#A'+adjud_id).removeClass('strike-team');
+				$('#A'+adjud_id).removeClass('strike-univ');
 				$('#A'+adjud_id).removeClass('strike');
 			}
 			returnval = 1;

@@ -72,8 +72,10 @@ if (!has_temp_draw()) {
 			$adjud_result['ranking']=$adjud_row['ranking'];
 			$adjud_result['status']=$adjud_row['status'];
 			$adjud_result['trainee']=$adjud_row['trainee'];
-			if(is_four_id_conflict($adjud_row['id'], $row['og_id'], $row['oo_id'], $row['cg_id'], $row['co_id'])){
+			$striketype = is_four_id_conflict($adjud_row['id'], $row['og_id'], $row['oo_id'], $row['cg_id'], $row['co_id']);
+			if ($striketype) {
 				$adjud_result['strike']=true;
+				$adjud_result['striketype'] = $striketype; //2 for team, 1 for university.
 			}else{
 				$adjud_result['strike']=false;
 			}
@@ -129,7 +131,16 @@ if (!has_temp_draw()) {
 				echo("class='adjudicator");
 				if($adjudicator['status']=='chair'){echo(" chair");}
 				if($adjudicator['trainee']=='trainee'){echo(" trainee");}
-				if($adjudicator['strike']){echo(" strike");}
+				if($adjudicator['strike']){
+					if ($adjudicator['striketype'] == 2) {
+						echo(" strike-team");
+					} else if ($adjudicator['striketype'] == 1) {
+						echo(" strike-univ");
+					} else {
+						// Shouldn't happen, so mark as general strike.
+						echo(" strike");
+					}
+				}
 				echo("'>".$adjudicator['name']);
 				echo(" <span class='ranking'>".$adjudicator['ranking']."</span></li>");
 			}

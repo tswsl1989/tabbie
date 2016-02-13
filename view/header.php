@@ -25,9 +25,12 @@
     
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-    <title><?= $title ?></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="<?= @$dir_hack ?>view/index.css">
+	<title><?= $title ?></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="stylesheet" href="<?= @$dir_hack ?>view/index.css">
+	<script type="text/JavaScript" src="js/jquery-1.3.2.min.js"></script>
+	<script type="text/JavaScript" src="js/jquery-ui-1.7.1.custom.min.js"></script>
+	<script type="text/JavaScript" src="js/jquery.livequery.js"></script>
 <?php
  if (file_exists('view/custom.css')) {?>
     <link rel="stylesheet" href="<?= @$dir_hack ?>view/custom.css">
@@ -49,9 +52,6 @@ if(file_exists($ajaxpath)){ ?>
 	var moduletype = "<?= $moduletype ?>";
 	var client = "<?= sha1($_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT'].'sodiumchloride')?>";//hackish but does the job
 	</script>
-	<script type="text/JavaScript" src="js/jquery-1.3.2.min.js"></script>
-    <script type="text/JavaScript" src="js/jquery-ui-1.7.1.custom.min.js"></script>
-	<script type="text/JavaScript" src="js/jquery.livequery.js"></script>
 	<script type="text/JavaScript" src="<?= $ajaxpath ?>"></script>
 <?php } 
 //load custom CSS files for each controller/module

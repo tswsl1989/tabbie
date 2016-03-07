@@ -6,12 +6,12 @@ Tabbie is a web based tabbing system for British Parliamentary style debating to
 Requirements
 ------------
 
- * PHP 5+ - currently tested on 5.4 and 5.5
+ * PHP 5+ - currently tested on 5.4 and 5.6
  * MySQL 5+ (or a compatible fork) - currently tested on MariaDB and MySQL 5.5
  * ADODB - a PHP database library
  * A web server compatible with PHP
  
-This version of tabbie is generally tested against PHP 5.5 and 5.4, MySQL and MariaDB 5.5 on web servers running Apache 2.2 and Apache 2.4
+This version of tabbie is generally tested against PHP 5.4 and 5.6, MySQL and MariaDB 5.5 on web servers running Apache 2.2 and Apache 2.4
 
 Installation
 ------------
@@ -42,7 +42,7 @@ Tabbie is released under Version 2 of the GNU General Public License. See the LI
 This version also includes code from other projects:
 
  - PHPPowerPoint (LGPL v2.1)
- - FPDF (Freeware - "You may use, modify and redistribute this softare as you wish")
+ - FPDF (Freeware - "You may use, modify and redistribute this software as you wish")
  - tFPDF (LGPL) and DejaVu fonts
  - jQuery, jQuery UI and various jQuery plugins/libraries (See files for details)
  - Bootstrap and Simplex theme from bootswatch.com (Both MIT Licensed)
@@ -53,6 +53,7 @@ This version of Tabbie includes code and concepts from:
 
  * Thomas Lake
  * Richard Coates (who also maintains his own version of Tabbie)
+ * Tito Sarrionandia
 
 The contributors listed on SourceForge or in the version history for this project are:
 
